@@ -15,7 +15,7 @@
  */
 
 /*
- * IBM OpenAPI SDK Code Generator Version: 3.84.1-55f6d880-20240110-194020
+ * IBM OpenAPI SDK Code Generator Version: 3.93.0-c40121e6-20240729-182103
  */
 
 // Package watsonxdatav2 : Operations and models for the WatsonxDataV2 service
@@ -25,9 +25,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"reflect"
+	"strings"
 	"time"
 
 	"github.com/IBM/go-sdk-core/v5/core"
@@ -63,22 +63,26 @@ func NewWatsonxDataV2UsingExternalConfig(options *WatsonxDataV2Options) (watsonx
 	if options.Authenticator == nil {
 		options.Authenticator, err = core.GetAuthenticatorFromEnvironment(options.ServiceName)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "env-auth-error", common.GetComponentInfo())
 			return
 		}
 	}
 
 	watsonxData, err = NewWatsonxDataV2(options)
+	err = core.RepurposeSDKProblem(err, "new-client-error")
 	if err != nil {
 		return
 	}
 
 	err = watsonxData.Service.ConfigureService(options.ServiceName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "client-config-error", common.GetComponentInfo())
 		return
 	}
 
 	if options.URL != "" {
 		err = watsonxData.Service.SetServiceURL(options.URL)
+		err = core.RepurposeSDKProblem(err, "url-set-error")
 	}
 	return
 }
@@ -92,12 +96,14 @@ func NewWatsonxDataV2(options *WatsonxDataV2Options) (service *WatsonxDataV2, er
 
 	baseService, err := core.NewBaseService(serviceOptions)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "new-base-error", common.GetComponentInfo())
 		return
 	}
 
 	if options.URL != "" {
 		err = baseService.SetServiceURL(options.URL)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "set-url-error", common.GetComponentInfo())
 			return
 		}
 	}
@@ -111,7 +117,7 @@ func NewWatsonxDataV2(options *WatsonxDataV2Options) (service *WatsonxDataV2, er
 
 // GetServiceURLForRegion returns the service URL to be used for the specified region
 func GetServiceURLForRegion(region string) (string, error) {
-	return "", fmt.Errorf("service does not support regional URLs")
+	return "", core.SDKErrorf(nil, "service does not support regional URLs", "no-regional-support", common.GetComponentInfo())
 }
 
 // Clone makes a copy of "watsonxData" suitable for processing requests.
@@ -126,7 +132,11 @@ func (watsonxData *WatsonxDataV2) Clone() *WatsonxDataV2 {
 
 // SetServiceURL sets the service URL
 func (watsonxData *WatsonxDataV2) SetServiceURL(url string) error {
-	return watsonxData.Service.SetServiceURL(url)
+	err := watsonxData.Service.SetServiceURL(url)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-set-error", common.GetComponentInfo())
+	}
+	return err
 }
 
 // GetServiceURL returns the service URL
@@ -163,13 +173,16 @@ func (watsonxData *WatsonxDataV2) DisableRetries() {
 // ListBucketRegistrations : Get bucket registrations
 // Get list of registered buckets.
 func (watsonxData *WatsonxDataV2) ListBucketRegistrations(listBucketRegistrationsOptions *ListBucketRegistrationsOptions) (result *BucketRegistrationCollection, response *core.DetailedResponse, err error) {
-	return watsonxData.ListBucketRegistrationsWithContext(context.Background(), listBucketRegistrationsOptions)
+	result, response, err = watsonxData.ListBucketRegistrationsWithContext(context.Background(), listBucketRegistrationsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // ListBucketRegistrationsWithContext is an alternate form of the ListBucketRegistrations method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) ListBucketRegistrationsWithContext(ctx context.Context, listBucketRegistrationsOptions *ListBucketRegistrationsOptions) (result *BucketRegistrationCollection, response *core.DetailedResponse, err error) {
 	err = core.ValidateStruct(listBucketRegistrationsOptions, "listBucketRegistrationsOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -178,6 +191,7 @@ func (watsonxData *WatsonxDataV2) ListBucketRegistrationsWithContext(ctx context
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/bucket_registrations`, nil)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -196,17 +210,21 @@ func (watsonxData *WatsonxDataV2) ListBucketRegistrationsWithContext(ctx context
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "list_bucket_registrations", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalBucketRegistrationCollection)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -218,17 +236,21 @@ func (watsonxData *WatsonxDataV2) ListBucketRegistrationsWithContext(ctx context
 // CreateBucketRegistration : Register bucket
 // Register a new bucket.
 func (watsonxData *WatsonxDataV2) CreateBucketRegistration(createBucketRegistrationOptions *CreateBucketRegistrationOptions) (result *BucketRegistration, response *core.DetailedResponse, err error) {
-	return watsonxData.CreateBucketRegistrationWithContext(context.Background(), createBucketRegistrationOptions)
+	result, response, err = watsonxData.CreateBucketRegistrationWithContext(context.Background(), createBucketRegistrationOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // CreateBucketRegistrationWithContext is an alternate form of the CreateBucketRegistration method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) CreateBucketRegistrationWithContext(ctx context.Context, createBucketRegistrationOptions *CreateBucketRegistrationOptions) (result *BucketRegistration, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(createBucketRegistrationOptions, "createBucketRegistrationOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(createBucketRegistrationOptions, "createBucketRegistrationOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -237,6 +259,7 @@ func (watsonxData *WatsonxDataV2) CreateBucketRegistrationWithContext(ctx contex
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/bucket_registrations`, nil)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -281,22 +304,27 @@ func (watsonxData *WatsonxDataV2) CreateBucketRegistrationWithContext(ctx contex
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "create_bucket_registration", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalBucketRegistration)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -308,17 +336,21 @@ func (watsonxData *WatsonxDataV2) CreateBucketRegistrationWithContext(ctx contex
 // GetBucketRegistration : Get bucket
 // Get a registered bucket.
 func (watsonxData *WatsonxDataV2) GetBucketRegistration(getBucketRegistrationOptions *GetBucketRegistrationOptions) (result *BucketRegistration, response *core.DetailedResponse, err error) {
-	return watsonxData.GetBucketRegistrationWithContext(context.Background(), getBucketRegistrationOptions)
+	result, response, err = watsonxData.GetBucketRegistrationWithContext(context.Background(), getBucketRegistrationOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // GetBucketRegistrationWithContext is an alternate form of the GetBucketRegistration method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) GetBucketRegistrationWithContext(ctx context.Context, getBucketRegistrationOptions *GetBucketRegistrationOptions) (result *BucketRegistration, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(getBucketRegistrationOptions, "getBucketRegistrationOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(getBucketRegistrationOptions, "getBucketRegistrationOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -331,6 +363,7 @@ func (watsonxData *WatsonxDataV2) GetBucketRegistrationWithContext(ctx context.C
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/bucket_registrations/{bucket_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -349,17 +382,21 @@ func (watsonxData *WatsonxDataV2) GetBucketRegistrationWithContext(ctx context.C
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "get_bucket_registration", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalBucketRegistration)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -368,25 +405,29 @@ func (watsonxData *WatsonxDataV2) GetBucketRegistrationWithContext(ctx context.C
 	return
 }
 
-// DeleteBucketRegistration : Unregister Bucket
-// Unregister a bucket.
-func (watsonxData *WatsonxDataV2) DeleteBucketRegistration(deleteBucketRegistrationOptions *DeleteBucketRegistrationOptions) (response *core.DetailedResponse, err error) {
-	return watsonxData.DeleteBucketRegistrationWithContext(context.Background(), deleteBucketRegistrationOptions)
+// DeregisterBucket : Deregister Bucket
+// Deregister a bucket.
+func (watsonxData *WatsonxDataV2) DeregisterBucket(deregisterBucketOptions *DeregisterBucketOptions) (response *core.DetailedResponse, err error) {
+	response, err = watsonxData.DeregisterBucketWithContext(context.Background(), deregisterBucketOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
-// DeleteBucketRegistrationWithContext is an alternate form of the DeleteBucketRegistration method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) DeleteBucketRegistrationWithContext(ctx context.Context, deleteBucketRegistrationOptions *DeleteBucketRegistrationOptions) (response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(deleteBucketRegistrationOptions, "deleteBucketRegistrationOptions cannot be nil")
+// DeregisterBucketWithContext is an alternate form of the DeregisterBucket method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) DeregisterBucketWithContext(ctx context.Context, deregisterBucketOptions *DeregisterBucketOptions) (response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(deregisterBucketOptions, "deregisterBucketOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(deleteBucketRegistrationOptions, "deleteBucketRegistrationOptions")
+	err = core.ValidateStruct(deregisterBucketOptions, "deregisterBucketOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"bucket_id": *deleteBucketRegistrationOptions.BucketID,
+		"bucket_id": *deregisterBucketOptions.BucketID,
 	}
 
 	builder := core.NewRequestBuilder(core.DELETE)
@@ -394,27 +435,34 @@ func (watsonxData *WatsonxDataV2) DeleteBucketRegistrationWithContext(ctx contex
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/bucket_registrations/{bucket_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
-	for headerName, headerValue := range deleteBucketRegistrationOptions.Headers {
+	for headerName, headerValue := range deregisterBucketOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "DeleteBucketRegistration")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "DeregisterBucket")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
-	if deleteBucketRegistrationOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*deleteBucketRegistrationOptions.AuthInstanceID))
+	if deregisterBucketOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*deregisterBucketOptions.AuthInstanceID))
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "deregister_bucket", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
 
 	return
 }
@@ -422,17 +470,21 @@ func (watsonxData *WatsonxDataV2) DeleteBucketRegistrationWithContext(ctx contex
 // UpdateBucketRegistration : Update bucket
 // Update bucket details & credentials.
 func (watsonxData *WatsonxDataV2) UpdateBucketRegistration(updateBucketRegistrationOptions *UpdateBucketRegistrationOptions) (result *BucketRegistration, response *core.DetailedResponse, err error) {
-	return watsonxData.UpdateBucketRegistrationWithContext(context.Background(), updateBucketRegistrationOptions)
+	result, response, err = watsonxData.UpdateBucketRegistrationWithContext(context.Background(), updateBucketRegistrationOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // UpdateBucketRegistrationWithContext is an alternate form of the UpdateBucketRegistration method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) UpdateBucketRegistrationWithContext(ctx context.Context, updateBucketRegistrationOptions *UpdateBucketRegistrationOptions) (result *BucketRegistration, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(updateBucketRegistrationOptions, "updateBucketRegistrationOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(updateBucketRegistrationOptions, "updateBucketRegistrationOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -445,6 +497,7 @@ func (watsonxData *WatsonxDataV2) UpdateBucketRegistrationWithContext(ctx contex
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/bucket_registrations/{bucket_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -457,29 +510,34 @@ func (watsonxData *WatsonxDataV2) UpdateBucketRegistrationWithContext(ctx contex
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
-	builder.AddHeader("Content-Type", "application/json-patch+json")
+	builder.AddHeader("Content-Type", "application/merge-patch+json")
 	if updateBucketRegistrationOptions.AuthInstanceID != nil {
 		builder.AddHeader("AuthInstanceId", fmt.Sprint(*updateBucketRegistrationOptions.AuthInstanceID))
 	}
 
 	_, err = builder.SetBodyContentJSON(updateBucketRegistrationOptions.Body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "update_bucket_registration", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalBucketRegistration)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -491,17 +549,21 @@ func (watsonxData *WatsonxDataV2) UpdateBucketRegistrationWithContext(ctx contex
 // CreateActivateBucket : Activate Bucket
 // Activate a registered bucket.
 func (watsonxData *WatsonxDataV2) CreateActivateBucket(createActivateBucketOptions *CreateActivateBucketOptions) (result *CreateActivateBucketCreatedBody, response *core.DetailedResponse, err error) {
-	return watsonxData.CreateActivateBucketWithContext(context.Background(), createActivateBucketOptions)
+	result, response, err = watsonxData.CreateActivateBucketWithContext(context.Background(), createActivateBucketOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // CreateActivateBucketWithContext is an alternate form of the CreateActivateBucket method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) CreateActivateBucketWithContext(ctx context.Context, createActivateBucketOptions *CreateActivateBucketOptions) (result *CreateActivateBucketCreatedBody, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(createActivateBucketOptions, "createActivateBucketOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(createActivateBucketOptions, "createActivateBucketOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -514,6 +576,7 @@ func (watsonxData *WatsonxDataV2) CreateActivateBucketWithContext(ctx context.Co
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/bucket_registrations/{bucket_id}/activate`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -532,17 +595,21 @@ func (watsonxData *WatsonxDataV2) CreateActivateBucketWithContext(ctx context.Co
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "create_activate_bucket", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCreateActivateBucketCreatedBody)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -554,17 +621,21 @@ func (watsonxData *WatsonxDataV2) CreateActivateBucketWithContext(ctx context.Co
 // DeleteDeactivateBucket : Deactivate Bucket
 // Deactivate a bucket.
 func (watsonxData *WatsonxDataV2) DeleteDeactivateBucket(deleteDeactivateBucketOptions *DeleteDeactivateBucketOptions) (response *core.DetailedResponse, err error) {
-	return watsonxData.DeleteDeactivateBucketWithContext(context.Background(), deleteDeactivateBucketOptions)
+	response, err = watsonxData.DeleteDeactivateBucketWithContext(context.Background(), deleteDeactivateBucketOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // DeleteDeactivateBucketWithContext is an alternate form of the DeleteDeactivateBucket method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) DeleteDeactivateBucketWithContext(ctx context.Context, deleteDeactivateBucketOptions *DeleteDeactivateBucketOptions) (response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(deleteDeactivateBucketOptions, "deleteDeactivateBucketOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(deleteDeactivateBucketOptions, "deleteDeactivateBucketOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -577,6 +648,7 @@ func (watsonxData *WatsonxDataV2) DeleteDeactivateBucketWithContext(ctx context.
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/bucket_registrations/{bucket_id}/deactivate`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -594,10 +666,16 @@ func (watsonxData *WatsonxDataV2) DeleteDeactivateBucketWithContext(ctx context.
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_deactivate_bucket", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
 
 	return
 }
@@ -605,17 +683,21 @@ func (watsonxData *WatsonxDataV2) DeleteDeactivateBucketWithContext(ctx context.
 // ListBucketObjects : List bucket objects
 // Fetch all objects from a given bucket.
 func (watsonxData *WatsonxDataV2) ListBucketObjects(listBucketObjectsOptions *ListBucketObjectsOptions) (result *BucketRegistrationObjectCollection, response *core.DetailedResponse, err error) {
-	return watsonxData.ListBucketObjectsWithContext(context.Background(), listBucketObjectsOptions)
+	result, response, err = watsonxData.ListBucketObjectsWithContext(context.Background(), listBucketObjectsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // ListBucketObjectsWithContext is an alternate form of the ListBucketObjects method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) ListBucketObjectsWithContext(ctx context.Context, listBucketObjectsOptions *ListBucketObjectsOptions) (result *BucketRegistrationObjectCollection, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(listBucketObjectsOptions, "listBucketObjectsOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(listBucketObjectsOptions, "listBucketObjectsOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -628,6 +710,7 @@ func (watsonxData *WatsonxDataV2) ListBucketObjectsWithContext(ctx context.Conte
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/bucket_registrations/{bucket_id}/objects`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -646,187 +729,21 @@ func (watsonxData *WatsonxDataV2) ListBucketObjectsWithContext(ctx context.Conte
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "list_bucket_objects", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalBucketRegistrationObjectCollection)
 		if err != nil {
-			return
-		}
-		response.Result = result
-	}
-
-	return
-}
-
-// TestBucketConnection : Check bucket credentials to be valid
-// Check whether provided bucket credentials are valid or not.
-func (watsonxData *WatsonxDataV2) TestBucketConnection(testBucketConnectionOptions *TestBucketConnectionOptions) (result *TestBucketConnectionOKBody, response *core.DetailedResponse, err error) {
-	return watsonxData.TestBucketConnectionWithContext(context.Background(), testBucketConnectionOptions)
-}
-
-// TestBucketConnectionWithContext is an alternate form of the TestBucketConnection method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) TestBucketConnectionWithContext(ctx context.Context, testBucketConnectionOptions *TestBucketConnectionOptions) (result *TestBucketConnectionOKBody, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(testBucketConnectionOptions, "testBucketConnectionOptions cannot be nil")
-	if err != nil {
-		return
-	}
-	err = core.ValidateStruct(testBucketConnectionOptions, "testBucketConnectionOptions")
-	if err != nil {
-		return
-	}
-
-	builder := core.NewRequestBuilder(core.POST)
-	builder = builder.WithContext(ctx)
-	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/test_bucket_connection`, nil)
-	if err != nil {
-		return
-	}
-
-	for headerName, headerValue := range testBucketConnectionOptions.Headers {
-		builder.AddHeader(headerName, headerValue)
-	}
-
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "TestBucketConnection")
-	for headerName, headerValue := range sdkHeaders {
-		builder.AddHeader(headerName, headerValue)
-	}
-	builder.AddHeader("Accept", "application/json")
-	builder.AddHeader("Content-Type", "application/json")
-	if testBucketConnectionOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*testBucketConnectionOptions.AuthInstanceID))
-	}
-
-	body := make(map[string]interface{})
-	if testBucketConnectionOptions.AccessKey != nil {
-		body["access_key"] = testBucketConnectionOptions.AccessKey
-	}
-	if testBucketConnectionOptions.BucketName != nil {
-		body["bucket_name"] = testBucketConnectionOptions.BucketName
-	}
-	if testBucketConnectionOptions.BucketType != nil {
-		body["bucket_type"] = testBucketConnectionOptions.BucketType
-	}
-	if testBucketConnectionOptions.Endpoint != nil {
-		body["endpoint"] = testBucketConnectionOptions.Endpoint
-	}
-	if testBucketConnectionOptions.Region != nil {
-		body["region"] = testBucketConnectionOptions.Region
-	}
-	if testBucketConnectionOptions.SecretKey != nil {
-		body["secret_key"] = testBucketConnectionOptions.SecretKey
-	}
-	_, err = builder.SetBodyContentJSON(body)
-	if err != nil {
-		return
-	}
-
-	request, err := builder.Build()
-	if err != nil {
-		return
-	}
-
-	var rawResponse map[string]json.RawMessage
-	response, err = watsonxData.Service.Request(request, &rawResponse)
-	if err != nil {
-		return
-	}
-	if rawResponse != nil {
-		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalTestBucketConnectionOKBody)
-		if err != nil {
-			return
-		}
-		response.Result = result
-	}
-
-	return
-}
-
-// CreateDriverDatabaseCatalog : Add/Create database with driver
-// Add or create a new database with driver.
-func (watsonxData *WatsonxDataV2) CreateDriverDatabaseCatalog(createDriverDatabaseCatalogOptions *CreateDriverDatabaseCatalogOptions) (result *DatabaseRegistration, response *core.DetailedResponse, err error) {
-	return watsonxData.CreateDriverDatabaseCatalogWithContext(context.Background(), createDriverDatabaseCatalogOptions)
-}
-
-// CreateDriverDatabaseCatalogWithContext is an alternate form of the CreateDriverDatabaseCatalog method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) CreateDriverDatabaseCatalogWithContext(ctx context.Context, createDriverDatabaseCatalogOptions *CreateDriverDatabaseCatalogOptions) (result *DatabaseRegistration, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(createDriverDatabaseCatalogOptions, "createDriverDatabaseCatalogOptions cannot be nil")
-	if err != nil {
-		return
-	}
-	err = core.ValidateStruct(createDriverDatabaseCatalogOptions, "createDriverDatabaseCatalogOptions")
-	if err != nil {
-		return
-	}
-
-	builder := core.NewRequestBuilder(core.POST)
-	builder = builder.WithContext(ctx)
-	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/database_driver_registrations`, nil)
-	if err != nil {
-		return
-	}
-
-	for headerName, headerValue := range createDriverDatabaseCatalogOptions.Headers {
-		builder.AddHeader(headerName, headerValue)
-	}
-
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateDriverDatabaseCatalog")
-	for headerName, headerValue := range sdkHeaders {
-		builder.AddHeader(headerName, headerValue)
-	}
-	builder.AddHeader("Accept", "application/json")
-	if createDriverDatabaseCatalogOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createDriverDatabaseCatalogOptions.AuthInstanceID))
-	}
-
-	builder.AddFormData("driver", "filename",
-		core.StringNilMapper(createDriverDatabaseCatalogOptions.DriverContentType), createDriverDatabaseCatalogOptions.Driver)
-	builder.AddFormData("driver_file_name", "", "", fmt.Sprint(*createDriverDatabaseCatalogOptions.DriverFileName))
-	builder.AddFormData("database_display_name", "", "", fmt.Sprint(*createDriverDatabaseCatalogOptions.DatabaseDisplayName))
-	builder.AddFormData("database_type", "", "", fmt.Sprint(*createDriverDatabaseCatalogOptions.DatabaseType))
-	builder.AddFormData("catalog_name", "", "", fmt.Sprint(*createDriverDatabaseCatalogOptions.CatalogName))
-	builder.AddFormData("hostname", "", "", fmt.Sprint(*createDriverDatabaseCatalogOptions.Hostname))
-	builder.AddFormData("port", "", "", fmt.Sprint(*createDriverDatabaseCatalogOptions.Port))
-	builder.AddFormData("username", "", "", fmt.Sprint(*createDriverDatabaseCatalogOptions.Username))
-	builder.AddFormData("password", "", "", fmt.Sprint(*createDriverDatabaseCatalogOptions.Password))
-	builder.AddFormData("database_name", "", "", fmt.Sprint(*createDriverDatabaseCatalogOptions.DatabaseName))
-	if createDriverDatabaseCatalogOptions.Certificate != nil {
-		builder.AddFormData("certificate", "", "", fmt.Sprint(*createDriverDatabaseCatalogOptions.Certificate))
-	}
-	if createDriverDatabaseCatalogOptions.CertificateExtension != nil {
-		builder.AddFormData("certificate_extension", "", "", fmt.Sprint(*createDriverDatabaseCatalogOptions.CertificateExtension))
-	}
-	if createDriverDatabaseCatalogOptions.Ssl != nil {
-		builder.AddFormData("ssl", "", "", fmt.Sprint(*createDriverDatabaseCatalogOptions.Ssl))
-	}
-	if createDriverDatabaseCatalogOptions.Description != nil {
-		builder.AddFormData("description", "", "", fmt.Sprint(*createDriverDatabaseCatalogOptions.Description))
-	}
-	if createDriverDatabaseCatalogOptions.CreatedOn != nil {
-		builder.AddFormData("created_on", "", "", fmt.Sprint(*createDriverDatabaseCatalogOptions.CreatedOn))
-	}
-
-	request, err := builder.Build()
-	if err != nil {
-		return
-	}
-
-	var rawResponse map[string]json.RawMessage
-	response, err = watsonxData.Service.Request(request, &rawResponse)
-	if err != nil {
-		return
-	}
-	if rawResponse != nil {
-		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalDatabaseRegistration)
-		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -838,13 +755,16 @@ func (watsonxData *WatsonxDataV2) CreateDriverDatabaseCatalogWithContext(ctx con
 // ListDatabaseRegistrations : Get databases
 // Get list of databases.
 func (watsonxData *WatsonxDataV2) ListDatabaseRegistrations(listDatabaseRegistrationsOptions *ListDatabaseRegistrationsOptions) (result *DatabaseRegistrationCollection, response *core.DetailedResponse, err error) {
-	return watsonxData.ListDatabaseRegistrationsWithContext(context.Background(), listDatabaseRegistrationsOptions)
+	result, response, err = watsonxData.ListDatabaseRegistrationsWithContext(context.Background(), listDatabaseRegistrationsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // ListDatabaseRegistrationsWithContext is an alternate form of the ListDatabaseRegistrations method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) ListDatabaseRegistrationsWithContext(ctx context.Context, listDatabaseRegistrationsOptions *ListDatabaseRegistrationsOptions) (result *DatabaseRegistrationCollection, response *core.DetailedResponse, err error) {
 	err = core.ValidateStruct(listDatabaseRegistrationsOptions, "listDatabaseRegistrationsOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -853,6 +773,7 @@ func (watsonxData *WatsonxDataV2) ListDatabaseRegistrationsWithContext(ctx conte
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/database_registrations`, nil)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -871,17 +792,21 @@ func (watsonxData *WatsonxDataV2) ListDatabaseRegistrationsWithContext(ctx conte
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "list_database_registrations", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalDatabaseRegistrationCollection)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -893,17 +818,21 @@ func (watsonxData *WatsonxDataV2) ListDatabaseRegistrationsWithContext(ctx conte
 // CreateDatabaseRegistration : Add/Create database
 // Add or create a new database.
 func (watsonxData *WatsonxDataV2) CreateDatabaseRegistration(createDatabaseRegistrationOptions *CreateDatabaseRegistrationOptions) (result *DatabaseRegistration, response *core.DetailedResponse, err error) {
-	return watsonxData.CreateDatabaseRegistrationWithContext(context.Background(), createDatabaseRegistrationOptions)
+	result, response, err = watsonxData.CreateDatabaseRegistrationWithContext(context.Background(), createDatabaseRegistrationOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // CreateDatabaseRegistrationWithContext is an alternate form of the CreateDatabaseRegistration method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) CreateDatabaseRegistrationWithContext(ctx context.Context, createDatabaseRegistrationOptions *CreateDatabaseRegistrationOptions) (result *DatabaseRegistration, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(createDatabaseRegistrationOptions, "createDatabaseRegistrationOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(createDatabaseRegistrationOptions, "createDatabaseRegistrationOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -912,6 +841,7 @@ func (watsonxData *WatsonxDataV2) CreateDatabaseRegistrationWithContext(ctx cont
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/database_registrations`, nil)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -956,22 +886,27 @@ func (watsonxData *WatsonxDataV2) CreateDatabaseRegistrationWithContext(ctx cont
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "create_database_registration", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalDatabaseRegistration)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -983,17 +918,21 @@ func (watsonxData *WatsonxDataV2) CreateDatabaseRegistrationWithContext(ctx cont
 // GetDatabase : Get database
 // Get a registered databases.
 func (watsonxData *WatsonxDataV2) GetDatabase(getDatabaseOptions *GetDatabaseOptions) (result *DatabaseRegistration, response *core.DetailedResponse, err error) {
-	return watsonxData.GetDatabaseWithContext(context.Background(), getDatabaseOptions)
+	result, response, err = watsonxData.GetDatabaseWithContext(context.Background(), getDatabaseOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // GetDatabaseWithContext is an alternate form of the GetDatabase method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) GetDatabaseWithContext(ctx context.Context, getDatabaseOptions *GetDatabaseOptions) (result *DatabaseRegistration, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(getDatabaseOptions, "getDatabaseOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(getDatabaseOptions, "getDatabaseOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -1006,6 +945,7 @@ func (watsonxData *WatsonxDataV2) GetDatabaseWithContext(ctx context.Context, ge
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/database_registrations/{database_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -1024,17 +964,21 @@ func (watsonxData *WatsonxDataV2) GetDatabaseWithContext(ctx context.Context, ge
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "get_database", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalDatabaseRegistration)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -1046,17 +990,21 @@ func (watsonxData *WatsonxDataV2) GetDatabaseWithContext(ctx context.Context, ge
 // DeleteDatabaseCatalog : Delete database
 // Delete a database.
 func (watsonxData *WatsonxDataV2) DeleteDatabaseCatalog(deleteDatabaseCatalogOptions *DeleteDatabaseCatalogOptions) (response *core.DetailedResponse, err error) {
-	return watsonxData.DeleteDatabaseCatalogWithContext(context.Background(), deleteDatabaseCatalogOptions)
+	response, err = watsonxData.DeleteDatabaseCatalogWithContext(context.Background(), deleteDatabaseCatalogOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // DeleteDatabaseCatalogWithContext is an alternate form of the DeleteDatabaseCatalog method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) DeleteDatabaseCatalogWithContext(ctx context.Context, deleteDatabaseCatalogOptions *DeleteDatabaseCatalogOptions) (response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(deleteDatabaseCatalogOptions, "deleteDatabaseCatalogOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(deleteDatabaseCatalogOptions, "deleteDatabaseCatalogOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -1069,6 +1017,7 @@ func (watsonxData *WatsonxDataV2) DeleteDatabaseCatalogWithContext(ctx context.C
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/database_registrations/{database_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -1086,10 +1035,16 @@ func (watsonxData *WatsonxDataV2) DeleteDatabaseCatalogWithContext(ctx context.C
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_database_catalog", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
 
 	return
 }
@@ -1097,17 +1052,21 @@ func (watsonxData *WatsonxDataV2) DeleteDatabaseCatalogWithContext(ctx context.C
 // UpdateDatabase : Update database
 // Update database details.
 func (watsonxData *WatsonxDataV2) UpdateDatabase(updateDatabaseOptions *UpdateDatabaseOptions) (result *DatabaseRegistration, response *core.DetailedResponse, err error) {
-	return watsonxData.UpdateDatabaseWithContext(context.Background(), updateDatabaseOptions)
+	result, response, err = watsonxData.UpdateDatabaseWithContext(context.Background(), updateDatabaseOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // UpdateDatabaseWithContext is an alternate form of the UpdateDatabase method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) UpdateDatabaseWithContext(ctx context.Context, updateDatabaseOptions *UpdateDatabaseOptions) (result *DatabaseRegistration, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(updateDatabaseOptions, "updateDatabaseOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(updateDatabaseOptions, "updateDatabaseOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -1120,6 +1079,7 @@ func (watsonxData *WatsonxDataV2) UpdateDatabaseWithContext(ctx context.Context,
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/database_registrations/{database_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -1132,732 +1092,34 @@ func (watsonxData *WatsonxDataV2) UpdateDatabaseWithContext(ctx context.Context,
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
-	builder.AddHeader("Content-Type", "application/json-patch+json")
+	builder.AddHeader("Content-Type", "application/merge-patch+json")
 	if updateDatabaseOptions.AuthInstanceID != nil {
 		builder.AddHeader("AuthInstanceId", fmt.Sprint(*updateDatabaseOptions.AuthInstanceID))
 	}
 
 	_, err = builder.SetBodyContentJSON(updateDatabaseOptions.Body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "update_database", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalDatabaseRegistration)
 		if err != nil {
-			return
-		}
-		response.Result = result
-	}
-
-	return
-}
-
-// ValidateDatabaseConnection : Validate database connection
-// API to validate the database connection.
-func (watsonxData *WatsonxDataV2) ValidateDatabaseConnection(validateDatabaseConnectionOptions *ValidateDatabaseConnectionOptions) (result *TestDatabaseConnectionResponse, response *core.DetailedResponse, err error) {
-	return watsonxData.ValidateDatabaseConnectionWithContext(context.Background(), validateDatabaseConnectionOptions)
-}
-
-// ValidateDatabaseConnectionWithContext is an alternate form of the ValidateDatabaseConnection method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) ValidateDatabaseConnectionWithContext(ctx context.Context, validateDatabaseConnectionOptions *ValidateDatabaseConnectionOptions) (result *TestDatabaseConnectionResponse, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(validateDatabaseConnectionOptions, "validateDatabaseConnectionOptions cannot be nil")
-	if err != nil {
-		return
-	}
-	err = core.ValidateStruct(validateDatabaseConnectionOptions, "validateDatabaseConnectionOptions")
-	if err != nil {
-		return
-	}
-
-	builder := core.NewRequestBuilder(core.POST)
-	builder = builder.WithContext(ctx)
-	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/test_database_connection`, nil)
-	if err != nil {
-		return
-	}
-
-	for headerName, headerValue := range validateDatabaseConnectionOptions.Headers {
-		builder.AddHeader(headerName, headerValue)
-	}
-
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "ValidateDatabaseConnection")
-	for headerName, headerValue := range sdkHeaders {
-		builder.AddHeader(headerName, headerValue)
-	}
-	builder.AddHeader("Accept", "application/json")
-	builder.AddHeader("Content-Type", "application/json")
-	if validateDatabaseConnectionOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*validateDatabaseConnectionOptions.AuthInstanceID))
-	}
-
-	body := make(map[string]interface{})
-	if validateDatabaseConnectionOptions.DatabaseDetails != nil {
-		body["database_details"] = validateDatabaseConnectionOptions.DatabaseDetails
-	}
-	if validateDatabaseConnectionOptions.DatabaseType != nil {
-		body["database_type"] = validateDatabaseConnectionOptions.DatabaseType
-	}
-	if validateDatabaseConnectionOptions.Certificate != nil {
-		body["certificate"] = validateDatabaseConnectionOptions.Certificate
-	}
-	_, err = builder.SetBodyContentJSON(body)
-	if err != nil {
-		return
-	}
-
-	request, err := builder.Build()
-	if err != nil {
-		return
-	}
-
-	var rawResponse map[string]json.RawMessage
-	response, err = watsonxData.Service.Request(request, &rawResponse)
-	if err != nil {
-		return
-	}
-	if rawResponse != nil {
-		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalTestDatabaseConnectionResponse)
-		if err != nil {
-			return
-		}
-		response.Result = result
-	}
-
-	return
-}
-
-// ListDb2Engines : Get list of db2 engines
-// Get list of all db2 engines.
-func (watsonxData *WatsonxDataV2) ListDb2Engines(listDb2EnginesOptions *ListDb2EnginesOptions) (result *Db2EngineCollection, response *core.DetailedResponse, err error) {
-	return watsonxData.ListDb2EnginesWithContext(context.Background(), listDb2EnginesOptions)
-}
-
-// ListDb2EnginesWithContext is an alternate form of the ListDb2Engines method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) ListDb2EnginesWithContext(ctx context.Context, listDb2EnginesOptions *ListDb2EnginesOptions) (result *Db2EngineCollection, response *core.DetailedResponse, err error) {
-	err = core.ValidateStruct(listDb2EnginesOptions, "listDb2EnginesOptions")
-	if err != nil {
-		return
-	}
-
-	builder := core.NewRequestBuilder(core.GET)
-	builder = builder.WithContext(ctx)
-	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/db2_engines`, nil)
-	if err != nil {
-		return
-	}
-
-	for headerName, headerValue := range listDb2EnginesOptions.Headers {
-		builder.AddHeader(headerName, headerValue)
-	}
-
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "ListDb2Engines")
-	for headerName, headerValue := range sdkHeaders {
-		builder.AddHeader(headerName, headerValue)
-	}
-	builder.AddHeader("Accept", "application/json")
-	if listDb2EnginesOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*listDb2EnginesOptions.AuthInstanceID))
-	}
-
-	request, err := builder.Build()
-	if err != nil {
-		return
-	}
-
-	var rawResponse map[string]json.RawMessage
-	response, err = watsonxData.Service.Request(request, &rawResponse)
-	if err != nil {
-		return
-	}
-	if rawResponse != nil {
-		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalDb2EngineCollection)
-		if err != nil {
-			return
-		}
-		response.Result = result
-	}
-
-	return
-}
-
-// CreateDb2Engine : Create db2 engine
-// Create a new db2 engine.
-func (watsonxData *WatsonxDataV2) CreateDb2Engine(createDb2EngineOptions *CreateDb2EngineOptions) (result *Db2Engine, response *core.DetailedResponse, err error) {
-	return watsonxData.CreateDb2EngineWithContext(context.Background(), createDb2EngineOptions)
-}
-
-// CreateDb2EngineWithContext is an alternate form of the CreateDb2Engine method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) CreateDb2EngineWithContext(ctx context.Context, createDb2EngineOptions *CreateDb2EngineOptions) (result *Db2Engine, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(createDb2EngineOptions, "createDb2EngineOptions cannot be nil")
-	if err != nil {
-		return
-	}
-	err = core.ValidateStruct(createDb2EngineOptions, "createDb2EngineOptions")
-	if err != nil {
-		return
-	}
-
-	builder := core.NewRequestBuilder(core.POST)
-	builder = builder.WithContext(ctx)
-	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/db2_engines`, nil)
-	if err != nil {
-		return
-	}
-
-	for headerName, headerValue := range createDb2EngineOptions.Headers {
-		builder.AddHeader(headerName, headerValue)
-	}
-
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateDb2Engine")
-	for headerName, headerValue := range sdkHeaders {
-		builder.AddHeader(headerName, headerValue)
-	}
-	builder.AddHeader("Accept", "application/json")
-	builder.AddHeader("Content-Type", "application/json")
-	if createDb2EngineOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createDb2EngineOptions.AuthInstanceID))
-	}
-
-	body := make(map[string]interface{})
-	if createDb2EngineOptions.Origin != nil {
-		body["origin"] = createDb2EngineOptions.Origin
-	}
-	if createDb2EngineOptions.Type != nil {
-		body["type"] = createDb2EngineOptions.Type
-	}
-	if createDb2EngineOptions.Description != nil {
-		body["description"] = createDb2EngineOptions.Description
-	}
-	if createDb2EngineOptions.EngineDetails != nil {
-		body["engine_details"] = createDb2EngineOptions.EngineDetails
-	}
-	if createDb2EngineOptions.EngineDisplayName != nil {
-		body["engine_display_name"] = createDb2EngineOptions.EngineDisplayName
-	}
-	if createDb2EngineOptions.Tags != nil {
-		body["tags"] = createDb2EngineOptions.Tags
-	}
-	_, err = builder.SetBodyContentJSON(body)
-	if err != nil {
-		return
-	}
-
-	request, err := builder.Build()
-	if err != nil {
-		return
-	}
-
-	var rawResponse map[string]json.RawMessage
-	response, err = watsonxData.Service.Request(request, &rawResponse)
-	if err != nil {
-		return
-	}
-	if rawResponse != nil {
-		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalDb2Engine)
-		if err != nil {
-			return
-		}
-		response.Result = result
-	}
-
-	return
-}
-
-// DeleteDb2Engine : Delete db2 engine
-// Delete a db2 engine.
-func (watsonxData *WatsonxDataV2) DeleteDb2Engine(deleteDb2EngineOptions *DeleteDb2EngineOptions) (response *core.DetailedResponse, err error) {
-	return watsonxData.DeleteDb2EngineWithContext(context.Background(), deleteDb2EngineOptions)
-}
-
-// DeleteDb2EngineWithContext is an alternate form of the DeleteDb2Engine method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) DeleteDb2EngineWithContext(ctx context.Context, deleteDb2EngineOptions *DeleteDb2EngineOptions) (response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(deleteDb2EngineOptions, "deleteDb2EngineOptions cannot be nil")
-	if err != nil {
-		return
-	}
-	err = core.ValidateStruct(deleteDb2EngineOptions, "deleteDb2EngineOptions")
-	if err != nil {
-		return
-	}
-
-	pathParamsMap := map[string]string{
-		"engine_id": *deleteDb2EngineOptions.EngineID,
-	}
-
-	builder := core.NewRequestBuilder(core.DELETE)
-	builder = builder.WithContext(ctx)
-	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/db2_engines/{engine_id}`, pathParamsMap)
-	if err != nil {
-		return
-	}
-
-	for headerName, headerValue := range deleteDb2EngineOptions.Headers {
-		builder.AddHeader(headerName, headerValue)
-	}
-
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "DeleteDb2Engine")
-	for headerName, headerValue := range sdkHeaders {
-		builder.AddHeader(headerName, headerValue)
-	}
-	if deleteDb2EngineOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*deleteDb2EngineOptions.AuthInstanceID))
-	}
-
-	request, err := builder.Build()
-	if err != nil {
-		return
-	}
-
-	response, err = watsonxData.Service.Request(request, nil)
-
-	return
-}
-
-// UpdateDb2Engine : Update db2 engine
-// Update details of db2 engine.
-func (watsonxData *WatsonxDataV2) UpdateDb2Engine(updateDb2EngineOptions *UpdateDb2EngineOptions) (result *Db2Engine, response *core.DetailedResponse, err error) {
-	return watsonxData.UpdateDb2EngineWithContext(context.Background(), updateDb2EngineOptions)
-}
-
-// UpdateDb2EngineWithContext is an alternate form of the UpdateDb2Engine method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) UpdateDb2EngineWithContext(ctx context.Context, updateDb2EngineOptions *UpdateDb2EngineOptions) (result *Db2Engine, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(updateDb2EngineOptions, "updateDb2EngineOptions cannot be nil")
-	if err != nil {
-		return
-	}
-	err = core.ValidateStruct(updateDb2EngineOptions, "updateDb2EngineOptions")
-	if err != nil {
-		return
-	}
-
-	pathParamsMap := map[string]string{
-		"engine_id": *updateDb2EngineOptions.EngineID,
-	}
-
-	builder := core.NewRequestBuilder(core.PATCH)
-	builder = builder.WithContext(ctx)
-	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/db2_engines/{engine_id}`, pathParamsMap)
-	if err != nil {
-		return
-	}
-
-	for headerName, headerValue := range updateDb2EngineOptions.Headers {
-		builder.AddHeader(headerName, headerValue)
-	}
-
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "UpdateDb2Engine")
-	for headerName, headerValue := range sdkHeaders {
-		builder.AddHeader(headerName, headerValue)
-	}
-	builder.AddHeader("Accept", "application/json")
-	builder.AddHeader("Content-Type", "application/json-patch+json")
-	if updateDb2EngineOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*updateDb2EngineOptions.AuthInstanceID))
-	}
-
-	_, err = builder.SetBodyContentJSON(updateDb2EngineOptions.Body)
-	if err != nil {
-		return
-	}
-
-	request, err := builder.Build()
-	if err != nil {
-		return
-	}
-
-	var rawResponse map[string]json.RawMessage
-	response, err = watsonxData.Service.Request(request, &rawResponse)
-	if err != nil {
-		return
-	}
-	if rawResponse != nil {
-		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalDb2Engine)
-		if err != nil {
-			return
-		}
-		response.Result = result
-	}
-
-	return
-}
-
-// GetEngines : Get all engines
-// Get all engine details.
-func (watsonxData *WatsonxDataV2) GetEngines(getEnginesOptions *GetEnginesOptions) (result *Engines, response *core.DetailedResponse, err error) {
-	return watsonxData.GetEnginesWithContext(context.Background(), getEnginesOptions)
-}
-
-// GetEnginesWithContext is an alternate form of the GetEngines method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) GetEnginesWithContext(ctx context.Context, getEnginesOptions *GetEnginesOptions) (result *Engines, response *core.DetailedResponse, err error) {
-	err = core.ValidateStruct(getEnginesOptions, "getEnginesOptions")
-	if err != nil {
-		return
-	}
-
-	builder := core.NewRequestBuilder(core.GET)
-	builder = builder.WithContext(ctx)
-	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/engines`, nil)
-	if err != nil {
-		return
-	}
-
-	for headerName, headerValue := range getEnginesOptions.Headers {
-		builder.AddHeader(headerName, headerValue)
-	}
-
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "GetEngines")
-	for headerName, headerValue := range sdkHeaders {
-		builder.AddHeader(headerName, headerValue)
-	}
-	builder.AddHeader("Accept", "application/json")
-	if getEnginesOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*getEnginesOptions.AuthInstanceID))
-	}
-
-	request, err := builder.Build()
-	if err != nil {
-		return
-	}
-
-	var rawResponse map[string]json.RawMessage
-	response, err = watsonxData.Service.Request(request, &rawResponse)
-	if err != nil {
-		return
-	}
-	if rawResponse != nil {
-		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalEngines)
-		if err != nil {
-			return
-		}
-		response.Result = result
-	}
-
-	return
-}
-
-// GetDeployments : Get deployments
-// Get list of all deployments.
-func (watsonxData *WatsonxDataV2) GetDeployments(getDeploymentsOptions *GetDeploymentsOptions) (result *GetDeploymentsOKBody, response *core.DetailedResponse, err error) {
-	return watsonxData.GetDeploymentsWithContext(context.Background(), getDeploymentsOptions)
-}
-
-// GetDeploymentsWithContext is an alternate form of the GetDeployments method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) GetDeploymentsWithContext(ctx context.Context, getDeploymentsOptions *GetDeploymentsOptions) (result *GetDeploymentsOKBody, response *core.DetailedResponse, err error) {
-	err = core.ValidateStruct(getDeploymentsOptions, "getDeploymentsOptions")
-	if err != nil {
-		return
-	}
-
-	builder := core.NewRequestBuilder(core.GET)
-	builder = builder.WithContext(ctx)
-	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/instance`, nil)
-	if err != nil {
-		return
-	}
-
-	for headerName, headerValue := range getDeploymentsOptions.Headers {
-		builder.AddHeader(headerName, headerValue)
-	}
-
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "GetDeployments")
-	for headerName, headerValue := range sdkHeaders {
-		builder.AddHeader(headerName, headerValue)
-	}
-	builder.AddHeader("Accept", "application/json")
-	if getDeploymentsOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*getDeploymentsOptions.AuthInstanceID))
-	}
-
-	request, err := builder.Build()
-	if err != nil {
-		return
-	}
-
-	var rawResponse map[string]json.RawMessage
-	response, err = watsonxData.Service.Request(request, &rawResponse)
-	if err != nil {
-		return
-	}
-	if rawResponse != nil {
-		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalGetDeploymentsOKBody)
-		if err != nil {
-			return
-		}
-		response.Result = result
-	}
-
-	return
-}
-
-// ListNetezzaEngines : Get list of netezza engines
-// Get list of all netezza engines.
-func (watsonxData *WatsonxDataV2) ListNetezzaEngines(listNetezzaEnginesOptions *ListNetezzaEnginesOptions) (result *NetezzaEngineCollection, response *core.DetailedResponse, err error) {
-	return watsonxData.ListNetezzaEnginesWithContext(context.Background(), listNetezzaEnginesOptions)
-}
-
-// ListNetezzaEnginesWithContext is an alternate form of the ListNetezzaEngines method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) ListNetezzaEnginesWithContext(ctx context.Context, listNetezzaEnginesOptions *ListNetezzaEnginesOptions) (result *NetezzaEngineCollection, response *core.DetailedResponse, err error) {
-	err = core.ValidateStruct(listNetezzaEnginesOptions, "listNetezzaEnginesOptions")
-	if err != nil {
-		return
-	}
-
-	builder := core.NewRequestBuilder(core.GET)
-	builder = builder.WithContext(ctx)
-	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/netezza_engines`, nil)
-	if err != nil {
-		return
-	}
-
-	for headerName, headerValue := range listNetezzaEnginesOptions.Headers {
-		builder.AddHeader(headerName, headerValue)
-	}
-
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "ListNetezzaEngines")
-	for headerName, headerValue := range sdkHeaders {
-		builder.AddHeader(headerName, headerValue)
-	}
-	builder.AddHeader("Accept", "application/json")
-	if listNetezzaEnginesOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*listNetezzaEnginesOptions.AuthInstanceID))
-	}
-
-	request, err := builder.Build()
-	if err != nil {
-		return
-	}
-
-	var rawResponse map[string]json.RawMessage
-	response, err = watsonxData.Service.Request(request, &rawResponse)
-	if err != nil {
-		return
-	}
-	if rawResponse != nil {
-		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalNetezzaEngineCollection)
-		if err != nil {
-			return
-		}
-		response.Result = result
-	}
-
-	return
-}
-
-// CreateNetezzaEngine : Create netezza engine
-// Create a new netezza engine.
-func (watsonxData *WatsonxDataV2) CreateNetezzaEngine(createNetezzaEngineOptions *CreateNetezzaEngineOptions) (result *NetezzaEngine, response *core.DetailedResponse, err error) {
-	return watsonxData.CreateNetezzaEngineWithContext(context.Background(), createNetezzaEngineOptions)
-}
-
-// CreateNetezzaEngineWithContext is an alternate form of the CreateNetezzaEngine method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) CreateNetezzaEngineWithContext(ctx context.Context, createNetezzaEngineOptions *CreateNetezzaEngineOptions) (result *NetezzaEngine, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(createNetezzaEngineOptions, "createNetezzaEngineOptions cannot be nil")
-	if err != nil {
-		return
-	}
-	err = core.ValidateStruct(createNetezzaEngineOptions, "createNetezzaEngineOptions")
-	if err != nil {
-		return
-	}
-
-	builder := core.NewRequestBuilder(core.POST)
-	builder = builder.WithContext(ctx)
-	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/netezza_engines`, nil)
-	if err != nil {
-		return
-	}
-
-	for headerName, headerValue := range createNetezzaEngineOptions.Headers {
-		builder.AddHeader(headerName, headerValue)
-	}
-
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateNetezzaEngine")
-	for headerName, headerValue := range sdkHeaders {
-		builder.AddHeader(headerName, headerValue)
-	}
-	builder.AddHeader("Accept", "application/json")
-	builder.AddHeader("Content-Type", "application/json")
-	if createNetezzaEngineOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createNetezzaEngineOptions.AuthInstanceID))
-	}
-
-	body := make(map[string]interface{})
-	if createNetezzaEngineOptions.Origin != nil {
-		body["origin"] = createNetezzaEngineOptions.Origin
-	}
-	if createNetezzaEngineOptions.Type != nil {
-		body["type"] = createNetezzaEngineOptions.Type
-	}
-	if createNetezzaEngineOptions.Description != nil {
-		body["description"] = createNetezzaEngineOptions.Description
-	}
-	if createNetezzaEngineOptions.EngineDetails != nil {
-		body["engine_details"] = createNetezzaEngineOptions.EngineDetails
-	}
-	if createNetezzaEngineOptions.EngineDisplayName != nil {
-		body["engine_display_name"] = createNetezzaEngineOptions.EngineDisplayName
-	}
-	if createNetezzaEngineOptions.Tags != nil {
-		body["tags"] = createNetezzaEngineOptions.Tags
-	}
-	_, err = builder.SetBodyContentJSON(body)
-	if err != nil {
-		return
-	}
-
-	request, err := builder.Build()
-	if err != nil {
-		return
-	}
-
-	var rawResponse map[string]json.RawMessage
-	response, err = watsonxData.Service.Request(request, &rawResponse)
-	if err != nil {
-		return
-	}
-	if rawResponse != nil {
-		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalNetezzaEngine)
-		if err != nil {
-			return
-		}
-		response.Result = result
-	}
-
-	return
-}
-
-// DeleteNetezzaEngine : Delete netezza engine
-// Delete a netezza engine.
-func (watsonxData *WatsonxDataV2) DeleteNetezzaEngine(deleteNetezzaEngineOptions *DeleteNetezzaEngineOptions) (response *core.DetailedResponse, err error) {
-	return watsonxData.DeleteNetezzaEngineWithContext(context.Background(), deleteNetezzaEngineOptions)
-}
-
-// DeleteNetezzaEngineWithContext is an alternate form of the DeleteNetezzaEngine method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) DeleteNetezzaEngineWithContext(ctx context.Context, deleteNetezzaEngineOptions *DeleteNetezzaEngineOptions) (response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(deleteNetezzaEngineOptions, "deleteNetezzaEngineOptions cannot be nil")
-	if err != nil {
-		return
-	}
-	err = core.ValidateStruct(deleteNetezzaEngineOptions, "deleteNetezzaEngineOptions")
-	if err != nil {
-		return
-	}
-
-	pathParamsMap := map[string]string{
-		"engine_id": *deleteNetezzaEngineOptions.EngineID,
-	}
-
-	builder := core.NewRequestBuilder(core.DELETE)
-	builder = builder.WithContext(ctx)
-	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/netezza_engines/{engine_id}`, pathParamsMap)
-	if err != nil {
-		return
-	}
-
-	for headerName, headerValue := range deleteNetezzaEngineOptions.Headers {
-		builder.AddHeader(headerName, headerValue)
-	}
-
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "DeleteNetezzaEngine")
-	for headerName, headerValue := range sdkHeaders {
-		builder.AddHeader(headerName, headerValue)
-	}
-	if deleteNetezzaEngineOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*deleteNetezzaEngineOptions.AuthInstanceID))
-	}
-
-	request, err := builder.Build()
-	if err != nil {
-		return
-	}
-
-	response, err = watsonxData.Service.Request(request, nil)
-
-	return
-}
-
-// UpdateNetezzaEngine : Update netezza engine
-// Update details of netezza engine.
-func (watsonxData *WatsonxDataV2) UpdateNetezzaEngine(updateNetezzaEngineOptions *UpdateNetezzaEngineOptions) (result *NetezzaEngine, response *core.DetailedResponse, err error) {
-	return watsonxData.UpdateNetezzaEngineWithContext(context.Background(), updateNetezzaEngineOptions)
-}
-
-// UpdateNetezzaEngineWithContext is an alternate form of the UpdateNetezzaEngine method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) UpdateNetezzaEngineWithContext(ctx context.Context, updateNetezzaEngineOptions *UpdateNetezzaEngineOptions) (result *NetezzaEngine, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(updateNetezzaEngineOptions, "updateNetezzaEngineOptions cannot be nil")
-	if err != nil {
-		return
-	}
-	err = core.ValidateStruct(updateNetezzaEngineOptions, "updateNetezzaEngineOptions")
-	if err != nil {
-		return
-	}
-
-	pathParamsMap := map[string]string{
-		"engine_id": *updateNetezzaEngineOptions.EngineID,
-	}
-
-	builder := core.NewRequestBuilder(core.PATCH)
-	builder = builder.WithContext(ctx)
-	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/netezza_engines/{engine_id}`, pathParamsMap)
-	if err != nil {
-		return
-	}
-
-	for headerName, headerValue := range updateNetezzaEngineOptions.Headers {
-		builder.AddHeader(headerName, headerValue)
-	}
-
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "UpdateNetezzaEngine")
-	for headerName, headerValue := range sdkHeaders {
-		builder.AddHeader(headerName, headerValue)
-	}
-	builder.AddHeader("Accept", "application/json")
-	builder.AddHeader("Content-Type", "application/json-patch+json")
-	if updateNetezzaEngineOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*updateNetezzaEngineOptions.AuthInstanceID))
-	}
-
-	_, err = builder.SetBodyContentJSON(updateNetezzaEngineOptions.Body)
-	if err != nil {
-		return
-	}
-
-	request, err := builder.Build()
-	if err != nil {
-		return
-	}
-
-	var rawResponse map[string]json.RawMessage
-	response, err = watsonxData.Service.Request(request, &rawResponse)
-	if err != nil {
-		return
-	}
-	if rawResponse != nil {
-		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalNetezzaEngine)
-		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -1869,13 +1131,16 @@ func (watsonxData *WatsonxDataV2) UpdateNetezzaEngineWithContext(ctx context.Con
 // ListOtherEngines : List other engines
 // list all other engine details.
 func (watsonxData *WatsonxDataV2) ListOtherEngines(listOtherEnginesOptions *ListOtherEnginesOptions) (result *OtherEngineCollection, response *core.DetailedResponse, err error) {
-	return watsonxData.ListOtherEnginesWithContext(context.Background(), listOtherEnginesOptions)
+	result, response, err = watsonxData.ListOtherEnginesWithContext(context.Background(), listOtherEnginesOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // ListOtherEnginesWithContext is an alternate form of the ListOtherEngines method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) ListOtherEnginesWithContext(ctx context.Context, listOtherEnginesOptions *ListOtherEnginesOptions) (result *OtherEngineCollection, response *core.DetailedResponse, err error) {
 	err = core.ValidateStruct(listOtherEnginesOptions, "listOtherEnginesOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -1884,6 +1149,7 @@ func (watsonxData *WatsonxDataV2) ListOtherEnginesWithContext(ctx context.Contex
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/other_engines`, nil)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -1902,17 +1168,21 @@ func (watsonxData *WatsonxDataV2) ListOtherEnginesWithContext(ctx context.Contex
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "list_other_engines", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalOtherEngineCollection)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -1924,17 +1194,21 @@ func (watsonxData *WatsonxDataV2) ListOtherEnginesWithContext(ctx context.Contex
 // CreateOtherEngine : Create other engine
 // Create a new engine.
 func (watsonxData *WatsonxDataV2) CreateOtherEngine(createOtherEngineOptions *CreateOtherEngineOptions) (result *OtherEngine, response *core.DetailedResponse, err error) {
-	return watsonxData.CreateOtherEngineWithContext(context.Background(), createOtherEngineOptions)
+	result, response, err = watsonxData.CreateOtherEngineWithContext(context.Background(), createOtherEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // CreateOtherEngineWithContext is an alternate form of the CreateOtherEngine method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) CreateOtherEngineWithContext(ctx context.Context, createOtherEngineOptions *CreateOtherEngineOptions) (result *OtherEngine, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(createOtherEngineOptions, "createOtherEngineOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(createOtherEngineOptions, "createOtherEngineOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -1943,6 +1217,7 @@ func (watsonxData *WatsonxDataV2) CreateOtherEngineWithContext(ctx context.Conte
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/other_engines`, nil)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -1981,22 +1256,27 @@ func (watsonxData *WatsonxDataV2) CreateOtherEngineWithContext(ctx context.Conte
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "create_other_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalOtherEngine)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -2008,17 +1288,21 @@ func (watsonxData *WatsonxDataV2) CreateOtherEngineWithContext(ctx context.Conte
 // DeleteOtherEngine : Delete engine
 // Delete an engine from lakehouse.
 func (watsonxData *WatsonxDataV2) DeleteOtherEngine(deleteOtherEngineOptions *DeleteOtherEngineOptions) (response *core.DetailedResponse, err error) {
-	return watsonxData.DeleteOtherEngineWithContext(context.Background(), deleteOtherEngineOptions)
+	response, err = watsonxData.DeleteOtherEngineWithContext(context.Background(), deleteOtherEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // DeleteOtherEngineWithContext is an alternate form of the DeleteOtherEngine method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) DeleteOtherEngineWithContext(ctx context.Context, deleteOtherEngineOptions *DeleteOtherEngineOptions) (response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(deleteOtherEngineOptions, "deleteOtherEngineOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(deleteOtherEngineOptions, "deleteOtherEngineOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2031,6 +1315,7 @@ func (watsonxData *WatsonxDataV2) DeleteOtherEngineWithContext(ctx context.Conte
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/other_engines/{engine_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2048,10 +1333,606 @@ func (watsonxData *WatsonxDataV2) DeleteOtherEngineWithContext(ctx context.Conte
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_other_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+
+	return
+}
+
+// ListDb2Engines : Get list of db2 engines
+// Get list of all db2 engines.
+func (watsonxData *WatsonxDataV2) ListDb2Engines(listDb2EnginesOptions *ListDb2EnginesOptions) (result *Db2EngineCollection, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.ListDb2EnginesWithContext(context.Background(), listDb2EnginesOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// ListDb2EnginesWithContext is an alternate form of the ListDb2Engines method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) ListDb2EnginesWithContext(ctx context.Context, listDb2EnginesOptions *ListDb2EnginesOptions) (result *Db2EngineCollection, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(listDb2EnginesOptions, "listDb2EnginesOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/db2_engines`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range listDb2EnginesOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "ListDb2Engines")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if listDb2EnginesOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*listDb2EnginesOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "list_db2_engines", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalDb2EngineCollection)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// CreateDb2Engine : Create db2 engine
+// Create a new db2 engine.
+func (watsonxData *WatsonxDataV2) CreateDb2Engine(createDb2EngineOptions *CreateDb2EngineOptions) (result *Db2Engine, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.CreateDb2EngineWithContext(context.Background(), createDb2EngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreateDb2EngineWithContext is an alternate form of the CreateDb2Engine method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreateDb2EngineWithContext(ctx context.Context, createDb2EngineOptions *CreateDb2EngineOptions) (result *Db2Engine, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createDb2EngineOptions, "createDb2EngineOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createDb2EngineOptions, "createDb2EngineOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/db2_engines`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range createDb2EngineOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateDb2Engine")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+	if createDb2EngineOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createDb2EngineOptions.AuthInstanceID))
+	}
+
+	body := make(map[string]interface{})
+	if createDb2EngineOptions.Origin != nil {
+		body["origin"] = createDb2EngineOptions.Origin
+	}
+	if createDb2EngineOptions.Description != nil {
+		body["description"] = createDb2EngineOptions.Description
+	}
+	if createDb2EngineOptions.EngineDetails != nil {
+		body["engine_details"] = createDb2EngineOptions.EngineDetails
+	}
+	if createDb2EngineOptions.EngineDisplayName != nil {
+		body["engine_display_name"] = createDb2EngineOptions.EngineDisplayName
+	}
+	if createDb2EngineOptions.Tags != nil {
+		body["tags"] = createDb2EngineOptions.Tags
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_db2_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalDb2Engine)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// DeleteDb2Engine : Delete db2 engine
+// Delete a db2 engine.
+func (watsonxData *WatsonxDataV2) DeleteDb2Engine(deleteDb2EngineOptions *DeleteDb2EngineOptions) (response *core.DetailedResponse, err error) {
+	response, err = watsonxData.DeleteDb2EngineWithContext(context.Background(), deleteDb2EngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// DeleteDb2EngineWithContext is an alternate form of the DeleteDb2Engine method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) DeleteDb2EngineWithContext(ctx context.Context, deleteDb2EngineOptions *DeleteDb2EngineOptions) (response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(deleteDb2EngineOptions, "deleteDb2EngineOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(deleteDb2EngineOptions, "deleteDb2EngineOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"engine_id": *deleteDb2EngineOptions.EngineID,
+	}
+
+	builder := core.NewRequestBuilder(core.DELETE)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/db2_engines/{engine_id}`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range deleteDb2EngineOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "DeleteDb2Engine")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	if deleteDb2EngineOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*deleteDb2EngineOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_db2_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+
+	return
+}
+
+// UpdateDb2Engine : Update db2 engine
+// Update details of db2 engine.
+func (watsonxData *WatsonxDataV2) UpdateDb2Engine(updateDb2EngineOptions *UpdateDb2EngineOptions) (result *Db2Engine, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.UpdateDb2EngineWithContext(context.Background(), updateDb2EngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// UpdateDb2EngineWithContext is an alternate form of the UpdateDb2Engine method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) UpdateDb2EngineWithContext(ctx context.Context, updateDb2EngineOptions *UpdateDb2EngineOptions) (result *Db2Engine, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(updateDb2EngineOptions, "updateDb2EngineOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(updateDb2EngineOptions, "updateDb2EngineOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"engine_id": *updateDb2EngineOptions.EngineID,
+	}
+
+	builder := core.NewRequestBuilder(core.PATCH)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/db2_engines/{engine_id}`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range updateDb2EngineOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "UpdateDb2Engine")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/merge-patch+json")
+	if updateDb2EngineOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*updateDb2EngineOptions.AuthInstanceID))
+	}
+
+	_, err = builder.SetBodyContentJSON(updateDb2EngineOptions.Body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "update_db2_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalDb2Engine)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// ListNetezzaEngines : Get list of netezza engines
+// Get list of all netezza engines.
+func (watsonxData *WatsonxDataV2) ListNetezzaEngines(listNetezzaEnginesOptions *ListNetezzaEnginesOptions) (result *NetezzaEngineCollection, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.ListNetezzaEnginesWithContext(context.Background(), listNetezzaEnginesOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// ListNetezzaEnginesWithContext is an alternate form of the ListNetezzaEngines method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) ListNetezzaEnginesWithContext(ctx context.Context, listNetezzaEnginesOptions *ListNetezzaEnginesOptions) (result *NetezzaEngineCollection, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(listNetezzaEnginesOptions, "listNetezzaEnginesOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/netezza_engines`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range listNetezzaEnginesOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "ListNetezzaEngines")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if listNetezzaEnginesOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*listNetezzaEnginesOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "list_netezza_engines", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalNetezzaEngineCollection)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// CreateNetezzaEngine : Create netezza engine
+// Create a new netezza engine.
+func (watsonxData *WatsonxDataV2) CreateNetezzaEngine(createNetezzaEngineOptions *CreateNetezzaEngineOptions) (result *NetezzaEngine, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.CreateNetezzaEngineWithContext(context.Background(), createNetezzaEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreateNetezzaEngineWithContext is an alternate form of the CreateNetezzaEngine method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreateNetezzaEngineWithContext(ctx context.Context, createNetezzaEngineOptions *CreateNetezzaEngineOptions) (result *NetezzaEngine, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createNetezzaEngineOptions, "createNetezzaEngineOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createNetezzaEngineOptions, "createNetezzaEngineOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/netezza_engines`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range createNetezzaEngineOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateNetezzaEngine")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+	if createNetezzaEngineOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createNetezzaEngineOptions.AuthInstanceID))
+	}
+
+	body := make(map[string]interface{})
+	if createNetezzaEngineOptions.Origin != nil {
+		body["origin"] = createNetezzaEngineOptions.Origin
+	}
+	if createNetezzaEngineOptions.Description != nil {
+		body["description"] = createNetezzaEngineOptions.Description
+	}
+	if createNetezzaEngineOptions.EngineDetails != nil {
+		body["engine_details"] = createNetezzaEngineOptions.EngineDetails
+	}
+	if createNetezzaEngineOptions.EngineDisplayName != nil {
+		body["engine_display_name"] = createNetezzaEngineOptions.EngineDisplayName
+	}
+	if createNetezzaEngineOptions.Tags != nil {
+		body["tags"] = createNetezzaEngineOptions.Tags
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_netezza_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalNetezzaEngine)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// DeleteNetezzaEngine : Delete netezza engine
+// Delete a netezza engine.
+func (watsonxData *WatsonxDataV2) DeleteNetezzaEngine(deleteNetezzaEngineOptions *DeleteNetezzaEngineOptions) (response *core.DetailedResponse, err error) {
+	response, err = watsonxData.DeleteNetezzaEngineWithContext(context.Background(), deleteNetezzaEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// DeleteNetezzaEngineWithContext is an alternate form of the DeleteNetezzaEngine method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) DeleteNetezzaEngineWithContext(ctx context.Context, deleteNetezzaEngineOptions *DeleteNetezzaEngineOptions) (response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(deleteNetezzaEngineOptions, "deleteNetezzaEngineOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(deleteNetezzaEngineOptions, "deleteNetezzaEngineOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"engine_id": *deleteNetezzaEngineOptions.EngineID,
+	}
+
+	builder := core.NewRequestBuilder(core.DELETE)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/netezza_engines/{engine_id}`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range deleteNetezzaEngineOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "DeleteNetezzaEngine")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	if deleteNetezzaEngineOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*deleteNetezzaEngineOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_netezza_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+
+	return
+}
+
+// UpdateNetezzaEngine : Update netezza engine
+// Update details of netezza engine.
+func (watsonxData *WatsonxDataV2) UpdateNetezzaEngine(updateNetezzaEngineOptions *UpdateNetezzaEngineOptions) (result *NetezzaEngine, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.UpdateNetezzaEngineWithContext(context.Background(), updateNetezzaEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// UpdateNetezzaEngineWithContext is an alternate form of the UpdateNetezzaEngine method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) UpdateNetezzaEngineWithContext(ctx context.Context, updateNetezzaEngineOptions *UpdateNetezzaEngineOptions) (result *NetezzaEngine, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(updateNetezzaEngineOptions, "updateNetezzaEngineOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(updateNetezzaEngineOptions, "updateNetezzaEngineOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"engine_id": *updateNetezzaEngineOptions.EngineID,
+	}
+
+	builder := core.NewRequestBuilder(core.PATCH)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/netezza_engines/{engine_id}`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range updateNetezzaEngineOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "UpdateNetezzaEngine")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/merge-patch+json")
+	if updateNetezzaEngineOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*updateNetezzaEngineOptions.AuthInstanceID))
+	}
+
+	_, err = builder.SetBodyContentJSON(updateNetezzaEngineOptions.Body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "update_netezza_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalNetezzaEngine)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
 
 	return
 }
@@ -2059,13 +1940,16 @@ func (watsonxData *WatsonxDataV2) DeleteOtherEngineWithContext(ctx context.Conte
 // ListPrestissimoEngines : Get list of prestissimo engines
 // Get list of all prestissimo engines.
 func (watsonxData *WatsonxDataV2) ListPrestissimoEngines(listPrestissimoEnginesOptions *ListPrestissimoEnginesOptions) (result *PrestissimoEngineCollection, response *core.DetailedResponse, err error) {
-	return watsonxData.ListPrestissimoEnginesWithContext(context.Background(), listPrestissimoEnginesOptions)
+	result, response, err = watsonxData.ListPrestissimoEnginesWithContext(context.Background(), listPrestissimoEnginesOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // ListPrestissimoEnginesWithContext is an alternate form of the ListPrestissimoEngines method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) ListPrestissimoEnginesWithContext(ctx context.Context, listPrestissimoEnginesOptions *ListPrestissimoEnginesOptions) (result *PrestissimoEngineCollection, response *core.DetailedResponse, err error) {
 	err = core.ValidateStruct(listPrestissimoEnginesOptions, "listPrestissimoEnginesOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2074,6 +1958,7 @@ func (watsonxData *WatsonxDataV2) ListPrestissimoEnginesWithContext(ctx context.
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/prestissimo_engines`, nil)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2092,17 +1977,21 @@ func (watsonxData *WatsonxDataV2) ListPrestissimoEnginesWithContext(ctx context.
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "list_prestissimo_engines", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalPrestissimoEngineCollection)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -2114,17 +2003,21 @@ func (watsonxData *WatsonxDataV2) ListPrestissimoEnginesWithContext(ctx context.
 // CreatePrestissimoEngine : Create prestissimo engine
 // Create a new prestissimo engine.
 func (watsonxData *WatsonxDataV2) CreatePrestissimoEngine(createPrestissimoEngineOptions *CreatePrestissimoEngineOptions) (result *PrestissimoEngine, response *core.DetailedResponse, err error) {
-	return watsonxData.CreatePrestissimoEngineWithContext(context.Background(), createPrestissimoEngineOptions)
+	result, response, err = watsonxData.CreatePrestissimoEngineWithContext(context.Background(), createPrestissimoEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // CreatePrestissimoEngineWithContext is an alternate form of the CreatePrestissimoEngine method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) CreatePrestissimoEngineWithContext(ctx context.Context, createPrestissimoEngineOptions *CreatePrestissimoEngineOptions) (result *PrestissimoEngine, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(createPrestissimoEngineOptions, "createPrestissimoEngineOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(createPrestissimoEngineOptions, "createPrestissimoEngineOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2133,6 +2026,7 @@ func (watsonxData *WatsonxDataV2) CreatePrestissimoEngineWithContext(ctx context
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/prestissimo_engines`, nil)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2153,9 +2047,6 @@ func (watsonxData *WatsonxDataV2) CreatePrestissimoEngineWithContext(ctx context
 	body := make(map[string]interface{})
 	if createPrestissimoEngineOptions.Origin != nil {
 		body["origin"] = createPrestissimoEngineOptions.Origin
-	}
-	if createPrestissimoEngineOptions.Type != nil {
-		body["type"] = createPrestissimoEngineOptions.Type
 	}
 	if createPrestissimoEngineOptions.AssociatedCatalogs != nil {
 		body["associated_catalogs"] = createPrestissimoEngineOptions.AssociatedCatalogs
@@ -2180,22 +2071,27 @@ func (watsonxData *WatsonxDataV2) CreatePrestissimoEngineWithContext(ctx context
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "create_prestissimo_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalPrestissimoEngine)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -2207,17 +2103,21 @@ func (watsonxData *WatsonxDataV2) CreatePrestissimoEngineWithContext(ctx context
 // GetPrestissimoEngine : Get prestissimo engine
 // Get details of one prestissimo engine.
 func (watsonxData *WatsonxDataV2) GetPrestissimoEngine(getPrestissimoEngineOptions *GetPrestissimoEngineOptions) (result *PrestissimoEngine, response *core.DetailedResponse, err error) {
-	return watsonxData.GetPrestissimoEngineWithContext(context.Background(), getPrestissimoEngineOptions)
+	result, response, err = watsonxData.GetPrestissimoEngineWithContext(context.Background(), getPrestissimoEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // GetPrestissimoEngineWithContext is an alternate form of the GetPrestissimoEngine method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) GetPrestissimoEngineWithContext(ctx context.Context, getPrestissimoEngineOptions *GetPrestissimoEngineOptions) (result *PrestissimoEngine, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(getPrestissimoEngineOptions, "getPrestissimoEngineOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(getPrestissimoEngineOptions, "getPrestissimoEngineOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2230,6 +2130,7 @@ func (watsonxData *WatsonxDataV2) GetPrestissimoEngineWithContext(ctx context.Co
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/prestissimo_engines/{engine_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2248,17 +2149,21 @@ func (watsonxData *WatsonxDataV2) GetPrestissimoEngineWithContext(ctx context.Co
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "get_prestissimo_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalPrestissimoEngine)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -2270,17 +2175,21 @@ func (watsonxData *WatsonxDataV2) GetPrestissimoEngineWithContext(ctx context.Co
 // DeletePrestissimoEngine : Delete prestissimo engine
 // Delete a prestissimo engine.
 func (watsonxData *WatsonxDataV2) DeletePrestissimoEngine(deletePrestissimoEngineOptions *DeletePrestissimoEngineOptions) (response *core.DetailedResponse, err error) {
-	return watsonxData.DeletePrestissimoEngineWithContext(context.Background(), deletePrestissimoEngineOptions)
+	response, err = watsonxData.DeletePrestissimoEngineWithContext(context.Background(), deletePrestissimoEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // DeletePrestissimoEngineWithContext is an alternate form of the DeletePrestissimoEngine method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) DeletePrestissimoEngineWithContext(ctx context.Context, deletePrestissimoEngineOptions *DeletePrestissimoEngineOptions) (response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(deletePrestissimoEngineOptions, "deletePrestissimoEngineOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(deletePrestissimoEngineOptions, "deletePrestissimoEngineOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2293,6 +2202,7 @@ func (watsonxData *WatsonxDataV2) DeletePrestissimoEngineWithContext(ctx context
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/prestissimo_engines/{engine_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2310,10 +2220,16 @@ func (watsonxData *WatsonxDataV2) DeletePrestissimoEngineWithContext(ctx context
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_prestissimo_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
 
 	return
 }
@@ -2321,17 +2237,21 @@ func (watsonxData *WatsonxDataV2) DeletePrestissimoEngineWithContext(ctx context
 // UpdatePrestissimoEngine : Update prestissimo engine
 // Update details of prestissimo engine.
 func (watsonxData *WatsonxDataV2) UpdatePrestissimoEngine(updatePrestissimoEngineOptions *UpdatePrestissimoEngineOptions) (result *PrestissimoEngine, response *core.DetailedResponse, err error) {
-	return watsonxData.UpdatePrestissimoEngineWithContext(context.Background(), updatePrestissimoEngineOptions)
+	result, response, err = watsonxData.UpdatePrestissimoEngineWithContext(context.Background(), updatePrestissimoEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // UpdatePrestissimoEngineWithContext is an alternate form of the UpdatePrestissimoEngine method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) UpdatePrestissimoEngineWithContext(ctx context.Context, updatePrestissimoEngineOptions *UpdatePrestissimoEngineOptions) (result *PrestissimoEngine, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(updatePrestissimoEngineOptions, "updatePrestissimoEngineOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(updatePrestissimoEngineOptions, "updatePrestissimoEngineOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2344,6 +2264,7 @@ func (watsonxData *WatsonxDataV2) UpdatePrestissimoEngineWithContext(ctx context
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/prestissimo_engines/{engine_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2356,29 +2277,34 @@ func (watsonxData *WatsonxDataV2) UpdatePrestissimoEngineWithContext(ctx context
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
-	builder.AddHeader("Content-Type", "application/json-patch+json")
+	builder.AddHeader("Content-Type", "application/merge-patch+json")
 	if updatePrestissimoEngineOptions.AuthInstanceID != nil {
 		builder.AddHeader("AuthInstanceId", fmt.Sprint(*updatePrestissimoEngineOptions.AuthInstanceID))
 	}
 
 	_, err = builder.SetBodyContentJSON(updatePrestissimoEngineOptions.Body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "update_prestissimo_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalPrestissimoEngine)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -2390,17 +2316,21 @@ func (watsonxData *WatsonxDataV2) UpdatePrestissimoEngineWithContext(ctx context
 // ListPrestissimoEngineCatalogs : Get prestissimo engine catalogs
 // Get list of all catalogs attached a prestissimo engine.
 func (watsonxData *WatsonxDataV2) ListPrestissimoEngineCatalogs(listPrestissimoEngineCatalogsOptions *ListPrestissimoEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
-	return watsonxData.ListPrestissimoEngineCatalogsWithContext(context.Background(), listPrestissimoEngineCatalogsOptions)
+	result, response, err = watsonxData.ListPrestissimoEngineCatalogsWithContext(context.Background(), listPrestissimoEngineCatalogsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // ListPrestissimoEngineCatalogsWithContext is an alternate form of the ListPrestissimoEngineCatalogs method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) ListPrestissimoEngineCatalogsWithContext(ctx context.Context, listPrestissimoEngineCatalogsOptions *ListPrestissimoEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(listPrestissimoEngineCatalogsOptions, "listPrestissimoEngineCatalogsOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(listPrestissimoEngineCatalogsOptions, "listPrestissimoEngineCatalogsOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2413,6 +2343,7 @@ func (watsonxData *WatsonxDataV2) ListPrestissimoEngineCatalogsWithContext(ctx c
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/prestissimo_engines/{engine_id}/catalogs`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2431,17 +2362,21 @@ func (watsonxData *WatsonxDataV2) ListPrestissimoEngineCatalogsWithContext(ctx c
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "list_prestissimo_engine_catalogs", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCatalogCollection)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -2450,63 +2385,81 @@ func (watsonxData *WatsonxDataV2) ListPrestissimoEngineCatalogsWithContext(ctx c
 	return
 }
 
-// ReplacePrestissimoEngineCatalogs : Associate catalogs to a prestissimo engine
+// AddPrestissimoEngineCatalogs : Associate catalogs to a prestissimo engine
 // Associate one or more catalogs to a prestissimo engine.
-func (watsonxData *WatsonxDataV2) ReplacePrestissimoEngineCatalogs(replacePrestissimoEngineCatalogsOptions *ReplacePrestissimoEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
-	return watsonxData.ReplacePrestissimoEngineCatalogsWithContext(context.Background(), replacePrestissimoEngineCatalogsOptions)
+func (watsonxData *WatsonxDataV2) AddPrestissimoEngineCatalogs(addPrestissimoEngineCatalogsOptions *AddPrestissimoEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.AddPrestissimoEngineCatalogsWithContext(context.Background(), addPrestissimoEngineCatalogsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
-// ReplacePrestissimoEngineCatalogsWithContext is an alternate form of the ReplacePrestissimoEngineCatalogs method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) ReplacePrestissimoEngineCatalogsWithContext(ctx context.Context, replacePrestissimoEngineCatalogsOptions *ReplacePrestissimoEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(replacePrestissimoEngineCatalogsOptions, "replacePrestissimoEngineCatalogsOptions cannot be nil")
+// AddPrestissimoEngineCatalogsWithContext is an alternate form of the AddPrestissimoEngineCatalogs method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) AddPrestissimoEngineCatalogsWithContext(ctx context.Context, addPrestissimoEngineCatalogsOptions *AddPrestissimoEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(addPrestissimoEngineCatalogsOptions, "addPrestissimoEngineCatalogsOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(replacePrestissimoEngineCatalogsOptions, "replacePrestissimoEngineCatalogsOptions")
+	err = core.ValidateStruct(addPrestissimoEngineCatalogsOptions, "addPrestissimoEngineCatalogsOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id": *replacePrestissimoEngineCatalogsOptions.EngineID,
+		"engine_id": *addPrestissimoEngineCatalogsOptions.EngineID,
 	}
 
-	builder := core.NewRequestBuilder(core.PUT)
+	builder := core.NewRequestBuilder(core.POST)
 	builder = builder.WithContext(ctx)
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/prestissimo_engines/{engine_id}/catalogs`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
-	for headerName, headerValue := range replacePrestissimoEngineCatalogsOptions.Headers {
+	for headerName, headerValue := range addPrestissimoEngineCatalogsOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "ReplacePrestissimoEngineCatalogs")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "AddPrestissimoEngineCatalogs")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
-	if replacePrestissimoEngineCatalogsOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*replacePrestissimoEngineCatalogsOptions.AuthInstanceID))
+	builder.AddHeader("Content-Type", "application/json")
+	if addPrestissimoEngineCatalogsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*addPrestissimoEngineCatalogsOptions.AuthInstanceID))
 	}
 
-	builder.AddQuery("catalog_names", fmt.Sprint(*replacePrestissimoEngineCatalogsOptions.CatalogNames))
+	body := make(map[string]interface{})
+	if addPrestissimoEngineCatalogsOptions.CatalogNames != nil {
+		body["catalog_names"] = addPrestissimoEngineCatalogsOptions.CatalogNames
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "add_prestissimo_engine_catalogs", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCatalogCollection)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -2518,17 +2471,21 @@ func (watsonxData *WatsonxDataV2) ReplacePrestissimoEngineCatalogsWithContext(ct
 // DeletePrestissimoEngineCatalogs : Disassociate catalogs from a prestissimo engine
 // Disassociate one or more catalogs from a prestissimo engine.
 func (watsonxData *WatsonxDataV2) DeletePrestissimoEngineCatalogs(deletePrestissimoEngineCatalogsOptions *DeletePrestissimoEngineCatalogsOptions) (response *core.DetailedResponse, err error) {
-	return watsonxData.DeletePrestissimoEngineCatalogsWithContext(context.Background(), deletePrestissimoEngineCatalogsOptions)
+	response, err = watsonxData.DeletePrestissimoEngineCatalogsWithContext(context.Background(), deletePrestissimoEngineCatalogsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // DeletePrestissimoEngineCatalogsWithContext is an alternate form of the DeletePrestissimoEngineCatalogs method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) DeletePrestissimoEngineCatalogsWithContext(ctx context.Context, deletePrestissimoEngineCatalogsOptions *DeletePrestissimoEngineCatalogsOptions) (response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(deletePrestissimoEngineCatalogsOptions, "deletePrestissimoEngineCatalogsOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(deletePrestissimoEngineCatalogsOptions, "deletePrestissimoEngineCatalogsOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2541,6 +2498,7 @@ func (watsonxData *WatsonxDataV2) DeletePrestissimoEngineCatalogsWithContext(ctx
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/prestissimo_engines/{engine_id}/catalogs`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2560,10 +2518,16 @@ func (watsonxData *WatsonxDataV2) DeletePrestissimoEngineCatalogsWithContext(ctx
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_prestissimo_engine_catalogs", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
 
 	return
 }
@@ -2571,17 +2535,21 @@ func (watsonxData *WatsonxDataV2) DeletePrestissimoEngineCatalogsWithContext(ctx
 // GetPrestissimoEngineCatalog : Get prestissimo engine catalog
 // Get catalog attached to a prestissimo engine.
 func (watsonxData *WatsonxDataV2) GetPrestissimoEngineCatalog(getPrestissimoEngineCatalogOptions *GetPrestissimoEngineCatalogOptions) (result *Catalog, response *core.DetailedResponse, err error) {
-	return watsonxData.GetPrestissimoEngineCatalogWithContext(context.Background(), getPrestissimoEngineCatalogOptions)
+	result, response, err = watsonxData.GetPrestissimoEngineCatalogWithContext(context.Background(), getPrestissimoEngineCatalogOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // GetPrestissimoEngineCatalogWithContext is an alternate form of the GetPrestissimoEngineCatalog method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) GetPrestissimoEngineCatalogWithContext(ctx context.Context, getPrestissimoEngineCatalogOptions *GetPrestissimoEngineCatalogOptions) (result *Catalog, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(getPrestissimoEngineCatalogOptions, "getPrestissimoEngineCatalogOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(getPrestissimoEngineCatalogOptions, "getPrestissimoEngineCatalogOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2595,6 +2563,7 @@ func (watsonxData *WatsonxDataV2) GetPrestissimoEngineCatalogWithContext(ctx con
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/prestissimo_engines/{engine_id}/catalogs/{catalog_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2613,17 +2582,21 @@ func (watsonxData *WatsonxDataV2) GetPrestissimoEngineCatalogWithContext(ctx con
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "get_prestissimo_engine_catalog", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCatalog)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -2632,25 +2605,29 @@ func (watsonxData *WatsonxDataV2) GetPrestissimoEngineCatalogWithContext(ctx con
 	return
 }
 
-// CreatePrestissimoEnginePause : Pause prestissimo engine
+// PausePrestissimoEngine : Pause prestissimo engine
 // Pause a running prestissimo engine.
-func (watsonxData *WatsonxDataV2) CreatePrestissimoEnginePause(createPrestissimoEnginePauseOptions *CreatePrestissimoEnginePauseOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
-	return watsonxData.CreatePrestissimoEnginePauseWithContext(context.Background(), createPrestissimoEnginePauseOptions)
+func (watsonxData *WatsonxDataV2) PausePrestissimoEngine(pausePrestissimoEngineOptions *PausePrestissimoEngineOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.PausePrestissimoEngineWithContext(context.Background(), pausePrestissimoEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
-// CreatePrestissimoEnginePauseWithContext is an alternate form of the CreatePrestissimoEnginePause method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) CreatePrestissimoEnginePauseWithContext(ctx context.Context, createPrestissimoEnginePauseOptions *CreatePrestissimoEnginePauseOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(createPrestissimoEnginePauseOptions, "createPrestissimoEnginePauseOptions cannot be nil")
+// PausePrestissimoEngineWithContext is an alternate form of the PausePrestissimoEngine method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) PausePrestissimoEngineWithContext(ctx context.Context, pausePrestissimoEngineOptions *PausePrestissimoEngineOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(pausePrestissimoEngineOptions, "pausePrestissimoEngineOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(createPrestissimoEnginePauseOptions, "createPrestissimoEnginePauseOptions")
+	err = core.ValidateStruct(pausePrestissimoEngineOptions, "pausePrestissimoEngineOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id": *createPrestissimoEnginePauseOptions.EngineID,
+		"engine_id": *pausePrestissimoEngineOptions.EngineID,
 	}
 
 	builder := core.NewRequestBuilder(core.POST)
@@ -2658,35 +2635,40 @@ func (watsonxData *WatsonxDataV2) CreatePrestissimoEnginePauseWithContext(ctx co
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/prestissimo_engines/{engine_id}/pause`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
-	for headerName, headerValue := range createPrestissimoEnginePauseOptions.Headers {
+	for headerName, headerValue := range pausePrestissimoEngineOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreatePrestissimoEnginePause")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "PausePrestissimoEngine")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
-	if createPrestissimoEnginePauseOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createPrestissimoEnginePauseOptions.AuthInstanceID))
+	if pausePrestissimoEngineOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*pausePrestissimoEngineOptions.AuthInstanceID))
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "pause_prestissimo_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSuccessResponse)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -2698,17 +2680,21 @@ func (watsonxData *WatsonxDataV2) CreatePrestissimoEnginePauseWithContext(ctx co
 // RunPrestissimoExplainStatement : Explain query
 // Explain a query statement.
 func (watsonxData *WatsonxDataV2) RunPrestissimoExplainStatement(runPrestissimoExplainStatementOptions *RunPrestissimoExplainStatementOptions) (result *ResultPrestissimoExplainStatement, response *core.DetailedResponse, err error) {
-	return watsonxData.RunPrestissimoExplainStatementWithContext(context.Background(), runPrestissimoExplainStatementOptions)
+	result, response, err = watsonxData.RunPrestissimoExplainStatementWithContext(context.Background(), runPrestissimoExplainStatementOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // RunPrestissimoExplainStatementWithContext is an alternate form of the RunPrestissimoExplainStatement method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) RunPrestissimoExplainStatementWithContext(ctx context.Context, runPrestissimoExplainStatementOptions *RunPrestissimoExplainStatementOptions) (result *ResultPrestissimoExplainStatement, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(runPrestissimoExplainStatementOptions, "runPrestissimoExplainStatementOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(runPrestissimoExplainStatementOptions, "runPrestissimoExplainStatementOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2721,6 +2707,7 @@ func (watsonxData *WatsonxDataV2) RunPrestissimoExplainStatementWithContext(ctx 
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/prestissimo_engines/{engine_id}/query_explain`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2750,22 +2737,27 @@ func (watsonxData *WatsonxDataV2) RunPrestissimoExplainStatementWithContext(ctx 
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "run_prestissimo_explain_statement", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalResultPrestissimoExplainStatement)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -2777,17 +2769,21 @@ func (watsonxData *WatsonxDataV2) RunPrestissimoExplainStatementWithContext(ctx 
 // RunPrestissimoExplainAnalyzeStatement : Explain analyze
 // Return query metrics after query is complete.
 func (watsonxData *WatsonxDataV2) RunPrestissimoExplainAnalyzeStatement(runPrestissimoExplainAnalyzeStatementOptions *RunPrestissimoExplainAnalyzeStatementOptions) (result *ResultRunPrestissimoExplainAnalyzeStatement, response *core.DetailedResponse, err error) {
-	return watsonxData.RunPrestissimoExplainAnalyzeStatementWithContext(context.Background(), runPrestissimoExplainAnalyzeStatementOptions)
+	result, response, err = watsonxData.RunPrestissimoExplainAnalyzeStatementWithContext(context.Background(), runPrestissimoExplainAnalyzeStatementOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // RunPrestissimoExplainAnalyzeStatementWithContext is an alternate form of the RunPrestissimoExplainAnalyzeStatement method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) RunPrestissimoExplainAnalyzeStatementWithContext(ctx context.Context, runPrestissimoExplainAnalyzeStatementOptions *RunPrestissimoExplainAnalyzeStatementOptions) (result *ResultRunPrestissimoExplainAnalyzeStatement, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(runPrestissimoExplainAnalyzeStatementOptions, "runPrestissimoExplainAnalyzeStatementOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(runPrestissimoExplainAnalyzeStatementOptions, "runPrestissimoExplainAnalyzeStatementOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2800,6 +2796,7 @@ func (watsonxData *WatsonxDataV2) RunPrestissimoExplainAnalyzeStatementWithConte
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/prestissimo_engines/{engine_id}/query_explain_analyze`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -2826,22 +2823,27 @@ func (watsonxData *WatsonxDataV2) RunPrestissimoExplainAnalyzeStatementWithConte
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "run_prestissimo_explain_analyze_statement", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalResultRunPrestissimoExplainAnalyzeStatement)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -2850,25 +2852,29 @@ func (watsonxData *WatsonxDataV2) RunPrestissimoExplainAnalyzeStatementWithConte
 	return
 }
 
-// CreatePrestissimoEngineRestart : Restart a prestissimo engine
+// RestartPrestissimoEngine : Restart a prestissimo engine
 // Restart an existing prestissimo engine.
-func (watsonxData *WatsonxDataV2) CreatePrestissimoEngineRestart(createPrestissimoEngineRestartOptions *CreatePrestissimoEngineRestartOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
-	return watsonxData.CreatePrestissimoEngineRestartWithContext(context.Background(), createPrestissimoEngineRestartOptions)
+func (watsonxData *WatsonxDataV2) RestartPrestissimoEngine(restartPrestissimoEngineOptions *RestartPrestissimoEngineOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.RestartPrestissimoEngineWithContext(context.Background(), restartPrestissimoEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
-// CreatePrestissimoEngineRestartWithContext is an alternate form of the CreatePrestissimoEngineRestart method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) CreatePrestissimoEngineRestartWithContext(ctx context.Context, createPrestissimoEngineRestartOptions *CreatePrestissimoEngineRestartOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(createPrestissimoEngineRestartOptions, "createPrestissimoEngineRestartOptions cannot be nil")
+// RestartPrestissimoEngineWithContext is an alternate form of the RestartPrestissimoEngine method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) RestartPrestissimoEngineWithContext(ctx context.Context, restartPrestissimoEngineOptions *RestartPrestissimoEngineOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(restartPrestissimoEngineOptions, "restartPrestissimoEngineOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(createPrestissimoEngineRestartOptions, "createPrestissimoEngineRestartOptions")
+	err = core.ValidateStruct(restartPrestissimoEngineOptions, "restartPrestissimoEngineOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id": *createPrestissimoEngineRestartOptions.EngineID,
+		"engine_id": *restartPrestissimoEngineOptions.EngineID,
 	}
 
 	builder := core.NewRequestBuilder(core.POST)
@@ -2876,35 +2882,40 @@ func (watsonxData *WatsonxDataV2) CreatePrestissimoEngineRestartWithContext(ctx 
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/prestissimo_engines/{engine_id}/restart`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
-	for headerName, headerValue := range createPrestissimoEngineRestartOptions.Headers {
+	for headerName, headerValue := range restartPrestissimoEngineOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreatePrestissimoEngineRestart")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "RestartPrestissimoEngine")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
-	if createPrestissimoEngineRestartOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createPrestissimoEngineRestartOptions.AuthInstanceID))
+	if restartPrestissimoEngineOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*restartPrestissimoEngineOptions.AuthInstanceID))
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "restart_prestissimo_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSuccessResponse)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -2913,25 +2924,29 @@ func (watsonxData *WatsonxDataV2) CreatePrestissimoEngineRestartWithContext(ctx 
 	return
 }
 
-// CreatePrestissimoEngineResume : Resume prestissimo engine
+// ResumePrestissimoEngine : Resume prestissimo engine
 // Resume a paused prestissimo engine.
-func (watsonxData *WatsonxDataV2) CreatePrestissimoEngineResume(createPrestissimoEngineResumeOptions *CreatePrestissimoEngineResumeOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
-	return watsonxData.CreatePrestissimoEngineResumeWithContext(context.Background(), createPrestissimoEngineResumeOptions)
+func (watsonxData *WatsonxDataV2) ResumePrestissimoEngine(resumePrestissimoEngineOptions *ResumePrestissimoEngineOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.ResumePrestissimoEngineWithContext(context.Background(), resumePrestissimoEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
-// CreatePrestissimoEngineResumeWithContext is an alternate form of the CreatePrestissimoEngineResume method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) CreatePrestissimoEngineResumeWithContext(ctx context.Context, createPrestissimoEngineResumeOptions *CreatePrestissimoEngineResumeOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(createPrestissimoEngineResumeOptions, "createPrestissimoEngineResumeOptions cannot be nil")
+// ResumePrestissimoEngineWithContext is an alternate form of the ResumePrestissimoEngine method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) ResumePrestissimoEngineWithContext(ctx context.Context, resumePrestissimoEngineOptions *ResumePrestissimoEngineOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(resumePrestissimoEngineOptions, "resumePrestissimoEngineOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(createPrestissimoEngineResumeOptions, "createPrestissimoEngineResumeOptions")
+	err = core.ValidateStruct(resumePrestissimoEngineOptions, "resumePrestissimoEngineOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id": *createPrestissimoEngineResumeOptions.EngineID,
+		"engine_id": *resumePrestissimoEngineOptions.EngineID,
 	}
 
 	builder := core.NewRequestBuilder(core.POST)
@@ -2939,35 +2954,40 @@ func (watsonxData *WatsonxDataV2) CreatePrestissimoEngineResumeWithContext(ctx c
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/prestissimo_engines/{engine_id}/resume`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
-	for headerName, headerValue := range createPrestissimoEngineResumeOptions.Headers {
+	for headerName, headerValue := range resumePrestissimoEngineOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreatePrestissimoEngineResume")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "ResumePrestissimoEngine")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
-	if createPrestissimoEngineResumeOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createPrestissimoEngineResumeOptions.AuthInstanceID))
+	if resumePrestissimoEngineOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*resumePrestissimoEngineOptions.AuthInstanceID))
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "resume_prestissimo_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSuccessResponse)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -2976,25 +2996,29 @@ func (watsonxData *WatsonxDataV2) CreatePrestissimoEngineResumeWithContext(ctx c
 	return
 }
 
-// CreatePrestissimoEngineScale : Scale a prestissimo engine
+// ScalePrestissimoEngine : Scale a prestissimo engine
 // Scale an existing prestissimo engine.
-func (watsonxData *WatsonxDataV2) CreatePrestissimoEngineScale(createPrestissimoEngineScaleOptions *CreatePrestissimoEngineScaleOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
-	return watsonxData.CreatePrestissimoEngineScaleWithContext(context.Background(), createPrestissimoEngineScaleOptions)
+func (watsonxData *WatsonxDataV2) ScalePrestissimoEngine(scalePrestissimoEngineOptions *ScalePrestissimoEngineOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.ScalePrestissimoEngineWithContext(context.Background(), scalePrestissimoEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
-// CreatePrestissimoEngineScaleWithContext is an alternate form of the CreatePrestissimoEngineScale method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) CreatePrestissimoEngineScaleWithContext(ctx context.Context, createPrestissimoEngineScaleOptions *CreatePrestissimoEngineScaleOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(createPrestissimoEngineScaleOptions, "createPrestissimoEngineScaleOptions cannot be nil")
+// ScalePrestissimoEngineWithContext is an alternate form of the ScalePrestissimoEngine method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) ScalePrestissimoEngineWithContext(ctx context.Context, scalePrestissimoEngineOptions *ScalePrestissimoEngineOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(scalePrestissimoEngineOptions, "scalePrestissimoEngineOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(createPrestissimoEngineScaleOptions, "createPrestissimoEngineScaleOptions")
+	err = core.ValidateStruct(scalePrestissimoEngineOptions, "scalePrestissimoEngineOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id": *createPrestissimoEngineScaleOptions.EngineID,
+		"engine_id": *scalePrestissimoEngineOptions.EngineID,
 	}
 
 	builder := core.NewRequestBuilder(core.POST)
@@ -3002,48 +3026,54 @@ func (watsonxData *WatsonxDataV2) CreatePrestissimoEngineScaleWithContext(ctx co
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/prestissimo_engines/{engine_id}/scale`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
-	for headerName, headerValue := range createPrestissimoEngineScaleOptions.Headers {
+	for headerName, headerValue := range scalePrestissimoEngineOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreatePrestissimoEngineScale")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "ScalePrestissimoEngine")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
 	builder.AddHeader("Content-Type", "application/json")
-	if createPrestissimoEngineScaleOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createPrestissimoEngineScaleOptions.AuthInstanceID))
+	if scalePrestissimoEngineOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*scalePrestissimoEngineOptions.AuthInstanceID))
 	}
 
 	body := make(map[string]interface{})
-	if createPrestissimoEngineScaleOptions.Coordinator != nil {
-		body["coordinator"] = createPrestissimoEngineScaleOptions.Coordinator
+	if scalePrestissimoEngineOptions.Coordinator != nil {
+		body["coordinator"] = scalePrestissimoEngineOptions.Coordinator
 	}
-	if createPrestissimoEngineScaleOptions.Worker != nil {
-		body["worker"] = createPrestissimoEngineScaleOptions.Worker
+	if scalePrestissimoEngineOptions.Worker != nil {
+		body["worker"] = scalePrestissimoEngineOptions.Worker
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "scale_prestissimo_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSuccessResponse)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -3055,13 +3085,16 @@ func (watsonxData *WatsonxDataV2) CreatePrestissimoEngineScaleWithContext(ctx co
 // ListPrestoEngines : Get list of presto engines
 // Get list of all presto engines.
 func (watsonxData *WatsonxDataV2) ListPrestoEngines(listPrestoEnginesOptions *ListPrestoEnginesOptions) (result *PrestoEngineCollection, response *core.DetailedResponse, err error) {
-	return watsonxData.ListPrestoEnginesWithContext(context.Background(), listPrestoEnginesOptions)
+	result, response, err = watsonxData.ListPrestoEnginesWithContext(context.Background(), listPrestoEnginesOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // ListPrestoEnginesWithContext is an alternate form of the ListPrestoEngines method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) ListPrestoEnginesWithContext(ctx context.Context, listPrestoEnginesOptions *ListPrestoEnginesOptions) (result *PrestoEngineCollection, response *core.DetailedResponse, err error) {
 	err = core.ValidateStruct(listPrestoEnginesOptions, "listPrestoEnginesOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -3070,6 +3103,7 @@ func (watsonxData *WatsonxDataV2) ListPrestoEnginesWithContext(ctx context.Conte
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/presto_engines`, nil)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -3088,17 +3122,21 @@ func (watsonxData *WatsonxDataV2) ListPrestoEnginesWithContext(ctx context.Conte
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "list_presto_engines", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalPrestoEngineCollection)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -3110,17 +3148,21 @@ func (watsonxData *WatsonxDataV2) ListPrestoEnginesWithContext(ctx context.Conte
 // CreatePrestoEngine : Create presto engine
 // Create a new presto engine.
 func (watsonxData *WatsonxDataV2) CreatePrestoEngine(createPrestoEngineOptions *CreatePrestoEngineOptions) (result *PrestoEngine, response *core.DetailedResponse, err error) {
-	return watsonxData.CreatePrestoEngineWithContext(context.Background(), createPrestoEngineOptions)
+	result, response, err = watsonxData.CreatePrestoEngineWithContext(context.Background(), createPrestoEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // CreatePrestoEngineWithContext is an alternate form of the CreatePrestoEngine method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) CreatePrestoEngineWithContext(ctx context.Context, createPrestoEngineOptions *CreatePrestoEngineOptions) (result *PrestoEngine, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(createPrestoEngineOptions, "createPrestoEngineOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(createPrestoEngineOptions, "createPrestoEngineOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -3129,6 +3171,7 @@ func (watsonxData *WatsonxDataV2) CreatePrestoEngineWithContext(ctx context.Cont
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/presto_engines`, nil)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -3149,9 +3192,6 @@ func (watsonxData *WatsonxDataV2) CreatePrestoEngineWithContext(ctx context.Cont
 	body := make(map[string]interface{})
 	if createPrestoEngineOptions.Origin != nil {
 		body["origin"] = createPrestoEngineOptions.Origin
-	}
-	if createPrestoEngineOptions.Type != nil {
-		body["type"] = createPrestoEngineOptions.Type
 	}
 	if createPrestoEngineOptions.AssociatedCatalogs != nil {
 		body["associated_catalogs"] = createPrestoEngineOptions.AssociatedCatalogs
@@ -3176,22 +3216,27 @@ func (watsonxData *WatsonxDataV2) CreatePrestoEngineWithContext(ctx context.Cont
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "create_presto_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalPrestoEngine)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -3203,17 +3248,21 @@ func (watsonxData *WatsonxDataV2) CreatePrestoEngineWithContext(ctx context.Cont
 // GetPrestoEngine : Get presto engine
 // Get details of one presto engine.
 func (watsonxData *WatsonxDataV2) GetPrestoEngine(getPrestoEngineOptions *GetPrestoEngineOptions) (result *PrestoEngine, response *core.DetailedResponse, err error) {
-	return watsonxData.GetPrestoEngineWithContext(context.Background(), getPrestoEngineOptions)
+	result, response, err = watsonxData.GetPrestoEngineWithContext(context.Background(), getPrestoEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // GetPrestoEngineWithContext is an alternate form of the GetPrestoEngine method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) GetPrestoEngineWithContext(ctx context.Context, getPrestoEngineOptions *GetPrestoEngineOptions) (result *PrestoEngine, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(getPrestoEngineOptions, "getPrestoEngineOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(getPrestoEngineOptions, "getPrestoEngineOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -3226,6 +3275,7 @@ func (watsonxData *WatsonxDataV2) GetPrestoEngineWithContext(ctx context.Context
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/presto_engines/{engine_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -3244,17 +3294,21 @@ func (watsonxData *WatsonxDataV2) GetPrestoEngineWithContext(ctx context.Context
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "get_presto_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalPrestoEngine)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -3266,17 +3320,21 @@ func (watsonxData *WatsonxDataV2) GetPrestoEngineWithContext(ctx context.Context
 // DeleteEngine : Delete presto engine
 // Delete a presto engine.
 func (watsonxData *WatsonxDataV2) DeleteEngine(deleteEngineOptions *DeleteEngineOptions) (response *core.DetailedResponse, err error) {
-	return watsonxData.DeleteEngineWithContext(context.Background(), deleteEngineOptions)
+	response, err = watsonxData.DeleteEngineWithContext(context.Background(), deleteEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // DeleteEngineWithContext is an alternate form of the DeleteEngine method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) DeleteEngineWithContext(ctx context.Context, deleteEngineOptions *DeleteEngineOptions) (response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(deleteEngineOptions, "deleteEngineOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(deleteEngineOptions, "deleteEngineOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -3289,6 +3347,7 @@ func (watsonxData *WatsonxDataV2) DeleteEngineWithContext(ctx context.Context, d
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/presto_engines/{engine_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -3306,10 +3365,16 @@ func (watsonxData *WatsonxDataV2) DeleteEngineWithContext(ctx context.Context, d
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
 
 	return
 }
@@ -3317,17 +3382,21 @@ func (watsonxData *WatsonxDataV2) DeleteEngineWithContext(ctx context.Context, d
 // UpdatePrestoEngine : Update presto engine
 // Update details of presto engine.
 func (watsonxData *WatsonxDataV2) UpdatePrestoEngine(updatePrestoEngineOptions *UpdatePrestoEngineOptions) (result *PrestoEngine, response *core.DetailedResponse, err error) {
-	return watsonxData.UpdatePrestoEngineWithContext(context.Background(), updatePrestoEngineOptions)
+	result, response, err = watsonxData.UpdatePrestoEngineWithContext(context.Background(), updatePrestoEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // UpdatePrestoEngineWithContext is an alternate form of the UpdatePrestoEngine method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) UpdatePrestoEngineWithContext(ctx context.Context, updatePrestoEngineOptions *UpdatePrestoEngineOptions) (result *PrestoEngine, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(updatePrestoEngineOptions, "updatePrestoEngineOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(updatePrestoEngineOptions, "updatePrestoEngineOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -3340,6 +3409,7 @@ func (watsonxData *WatsonxDataV2) UpdatePrestoEngineWithContext(ctx context.Cont
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/presto_engines/{engine_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -3352,29 +3422,34 @@ func (watsonxData *WatsonxDataV2) UpdatePrestoEngineWithContext(ctx context.Cont
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
-	builder.AddHeader("Content-Type", "application/json-patch+json")
+	builder.AddHeader("Content-Type", "application/merge-patch+json")
 	if updatePrestoEngineOptions.AuthInstanceID != nil {
 		builder.AddHeader("AuthInstanceId", fmt.Sprint(*updatePrestoEngineOptions.AuthInstanceID))
 	}
 
 	_, err = builder.SetBodyContentJSON(updatePrestoEngineOptions.Body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "update_presto_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalPrestoEngine)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -3386,17 +3461,21 @@ func (watsonxData *WatsonxDataV2) UpdatePrestoEngineWithContext(ctx context.Cont
 // ListPrestoEngineCatalogs : Get presto engine catalogs
 // Get list of all catalogs attached to a presto engine.
 func (watsonxData *WatsonxDataV2) ListPrestoEngineCatalogs(listPrestoEngineCatalogsOptions *ListPrestoEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
-	return watsonxData.ListPrestoEngineCatalogsWithContext(context.Background(), listPrestoEngineCatalogsOptions)
+	result, response, err = watsonxData.ListPrestoEngineCatalogsWithContext(context.Background(), listPrestoEngineCatalogsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // ListPrestoEngineCatalogsWithContext is an alternate form of the ListPrestoEngineCatalogs method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) ListPrestoEngineCatalogsWithContext(ctx context.Context, listPrestoEngineCatalogsOptions *ListPrestoEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(listPrestoEngineCatalogsOptions, "listPrestoEngineCatalogsOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(listPrestoEngineCatalogsOptions, "listPrestoEngineCatalogsOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -3409,6 +3488,7 @@ func (watsonxData *WatsonxDataV2) ListPrestoEngineCatalogsWithContext(ctx contex
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/presto_engines/{engine_id}/catalogs`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -3427,17 +3507,21 @@ func (watsonxData *WatsonxDataV2) ListPrestoEngineCatalogsWithContext(ctx contex
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "list_presto_engine_catalogs", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCatalogCollection)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -3446,63 +3530,81 @@ func (watsonxData *WatsonxDataV2) ListPrestoEngineCatalogsWithContext(ctx contex
 	return
 }
 
-// ReplacePrestoEngineCatalogs : Associate catalogs to presto engine
+// AddPrestoEngineCatalogs : Associate catalogs to presto engine
 // Associate one or more catalogs to a presto engine.
-func (watsonxData *WatsonxDataV2) ReplacePrestoEngineCatalogs(replacePrestoEngineCatalogsOptions *ReplacePrestoEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
-	return watsonxData.ReplacePrestoEngineCatalogsWithContext(context.Background(), replacePrestoEngineCatalogsOptions)
+func (watsonxData *WatsonxDataV2) AddPrestoEngineCatalogs(addPrestoEngineCatalogsOptions *AddPrestoEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.AddPrestoEngineCatalogsWithContext(context.Background(), addPrestoEngineCatalogsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
-// ReplacePrestoEngineCatalogsWithContext is an alternate form of the ReplacePrestoEngineCatalogs method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) ReplacePrestoEngineCatalogsWithContext(ctx context.Context, replacePrestoEngineCatalogsOptions *ReplacePrestoEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(replacePrestoEngineCatalogsOptions, "replacePrestoEngineCatalogsOptions cannot be nil")
+// AddPrestoEngineCatalogsWithContext is an alternate form of the AddPrestoEngineCatalogs method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) AddPrestoEngineCatalogsWithContext(ctx context.Context, addPrestoEngineCatalogsOptions *AddPrestoEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(addPrestoEngineCatalogsOptions, "addPrestoEngineCatalogsOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(replacePrestoEngineCatalogsOptions, "replacePrestoEngineCatalogsOptions")
+	err = core.ValidateStruct(addPrestoEngineCatalogsOptions, "addPrestoEngineCatalogsOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id": *replacePrestoEngineCatalogsOptions.EngineID,
+		"engine_id": *addPrestoEngineCatalogsOptions.EngineID,
 	}
 
-	builder := core.NewRequestBuilder(core.PUT)
+	builder := core.NewRequestBuilder(core.POST)
 	builder = builder.WithContext(ctx)
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/presto_engines/{engine_id}/catalogs`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
-	for headerName, headerValue := range replacePrestoEngineCatalogsOptions.Headers {
+	for headerName, headerValue := range addPrestoEngineCatalogsOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "ReplacePrestoEngineCatalogs")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "AddPrestoEngineCatalogs")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
-	if replacePrestoEngineCatalogsOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*replacePrestoEngineCatalogsOptions.AuthInstanceID))
+	builder.AddHeader("Content-Type", "application/json")
+	if addPrestoEngineCatalogsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*addPrestoEngineCatalogsOptions.AuthInstanceID))
 	}
 
-	builder.AddQuery("catalog_names", fmt.Sprint(*replacePrestoEngineCatalogsOptions.CatalogNames))
+	body := make(map[string]interface{})
+	if addPrestoEngineCatalogsOptions.CatalogNames != nil {
+		body["catalog_names"] = addPrestoEngineCatalogsOptions.CatalogNames
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "add_presto_engine_catalogs", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCatalogCollection)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -3514,17 +3616,21 @@ func (watsonxData *WatsonxDataV2) ReplacePrestoEngineCatalogsWithContext(ctx con
 // DeletePrestoEngineCatalogs : Disassociate catalogs from a presto engine
 // Disassociate one or more catalogs from a presto engine.
 func (watsonxData *WatsonxDataV2) DeletePrestoEngineCatalogs(deletePrestoEngineCatalogsOptions *DeletePrestoEngineCatalogsOptions) (response *core.DetailedResponse, err error) {
-	return watsonxData.DeletePrestoEngineCatalogsWithContext(context.Background(), deletePrestoEngineCatalogsOptions)
+	response, err = watsonxData.DeletePrestoEngineCatalogsWithContext(context.Background(), deletePrestoEngineCatalogsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // DeletePrestoEngineCatalogsWithContext is an alternate form of the DeletePrestoEngineCatalogs method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) DeletePrestoEngineCatalogsWithContext(ctx context.Context, deletePrestoEngineCatalogsOptions *DeletePrestoEngineCatalogsOptions) (response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(deletePrestoEngineCatalogsOptions, "deletePrestoEngineCatalogsOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(deletePrestoEngineCatalogsOptions, "deletePrestoEngineCatalogsOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -3537,6 +3643,7 @@ func (watsonxData *WatsonxDataV2) DeletePrestoEngineCatalogsWithContext(ctx cont
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/presto_engines/{engine_id}/catalogs`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -3556,10 +3663,16 @@ func (watsonxData *WatsonxDataV2) DeletePrestoEngineCatalogsWithContext(ctx cont
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_presto_engine_catalogs", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
 
 	return
 }
@@ -3567,17 +3680,21 @@ func (watsonxData *WatsonxDataV2) DeletePrestoEngineCatalogsWithContext(ctx cont
 // GetPrestoEngineCatalog : Get presto engine catalog
 // Get catalog attached to presto engine.
 func (watsonxData *WatsonxDataV2) GetPrestoEngineCatalog(getPrestoEngineCatalogOptions *GetPrestoEngineCatalogOptions) (result *Catalog, response *core.DetailedResponse, err error) {
-	return watsonxData.GetPrestoEngineCatalogWithContext(context.Background(), getPrestoEngineCatalogOptions)
+	result, response, err = watsonxData.GetPrestoEngineCatalogWithContext(context.Background(), getPrestoEngineCatalogOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // GetPrestoEngineCatalogWithContext is an alternate form of the GetPrestoEngineCatalog method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) GetPrestoEngineCatalogWithContext(ctx context.Context, getPrestoEngineCatalogOptions *GetPrestoEngineCatalogOptions) (result *Catalog, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(getPrestoEngineCatalogOptions, "getPrestoEngineCatalogOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(getPrestoEngineCatalogOptions, "getPrestoEngineCatalogOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -3591,6 +3708,7 @@ func (watsonxData *WatsonxDataV2) GetPrestoEngineCatalogWithContext(ctx context.
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/presto_engines/{engine_id}/catalogs/{catalog_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -3609,17 +3727,21 @@ func (watsonxData *WatsonxDataV2) GetPrestoEngineCatalogWithContext(ctx context.
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "get_presto_engine_catalog", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCatalog)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -3628,25 +3750,29 @@ func (watsonxData *WatsonxDataV2) GetPrestoEngineCatalogWithContext(ctx context.
 	return
 }
 
-// CreateEnginePause : Pause presto engine
+// PausePrestoEngine : Pause presto engine
 // Pause a running presto engine.
-func (watsonxData *WatsonxDataV2) CreateEnginePause(createEnginePauseOptions *CreateEnginePauseOptions) (result *CreateEnginePauseCreatedBody, response *core.DetailedResponse, err error) {
-	return watsonxData.CreateEnginePauseWithContext(context.Background(), createEnginePauseOptions)
+func (watsonxData *WatsonxDataV2) PausePrestoEngine(pausePrestoEngineOptions *PausePrestoEngineOptions) (result *CreateEnginePauseCreatedBody, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.PausePrestoEngineWithContext(context.Background(), pausePrestoEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
-// CreateEnginePauseWithContext is an alternate form of the CreateEnginePause method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) CreateEnginePauseWithContext(ctx context.Context, createEnginePauseOptions *CreateEnginePauseOptions) (result *CreateEnginePauseCreatedBody, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(createEnginePauseOptions, "createEnginePauseOptions cannot be nil")
+// PausePrestoEngineWithContext is an alternate form of the PausePrestoEngine method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) PausePrestoEngineWithContext(ctx context.Context, pausePrestoEngineOptions *PausePrestoEngineOptions) (result *CreateEnginePauseCreatedBody, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(pausePrestoEngineOptions, "pausePrestoEngineOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(createEnginePauseOptions, "createEnginePauseOptions")
+	err = core.ValidateStruct(pausePrestoEngineOptions, "pausePrestoEngineOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id": *createEnginePauseOptions.EngineID,
+		"engine_id": *pausePrestoEngineOptions.EngineID,
 	}
 
 	builder := core.NewRequestBuilder(core.POST)
@@ -3654,35 +3780,40 @@ func (watsonxData *WatsonxDataV2) CreateEnginePauseWithContext(ctx context.Conte
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/presto_engines/{engine_id}/pause`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
-	for headerName, headerValue := range createEnginePauseOptions.Headers {
+	for headerName, headerValue := range pausePrestoEngineOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateEnginePause")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "PausePrestoEngine")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
-	if createEnginePauseOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createEnginePauseOptions.AuthInstanceID))
+	if pausePrestoEngineOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*pausePrestoEngineOptions.AuthInstanceID))
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "pause_presto_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCreateEnginePauseCreatedBody)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -3694,17 +3825,21 @@ func (watsonxData *WatsonxDataV2) CreateEnginePauseWithContext(ctx context.Conte
 // RunExplainStatement : Explain presto query
 // Explain a query statement.
 func (watsonxData *WatsonxDataV2) RunExplainStatement(runExplainStatementOptions *RunExplainStatementOptions) (result *RunExplainStatementOKBody, response *core.DetailedResponse, err error) {
-	return watsonxData.RunExplainStatementWithContext(context.Background(), runExplainStatementOptions)
+	result, response, err = watsonxData.RunExplainStatementWithContext(context.Background(), runExplainStatementOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // RunExplainStatementWithContext is an alternate form of the RunExplainStatement method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) RunExplainStatementWithContext(ctx context.Context, runExplainStatementOptions *RunExplainStatementOptions) (result *RunExplainStatementOKBody, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(runExplainStatementOptions, "runExplainStatementOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(runExplainStatementOptions, "runExplainStatementOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -3717,6 +3852,7 @@ func (watsonxData *WatsonxDataV2) RunExplainStatementWithContext(ctx context.Con
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/presto_engines/{engine_id}/query_explain`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -3746,22 +3882,27 @@ func (watsonxData *WatsonxDataV2) RunExplainStatementWithContext(ctx context.Con
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "run_explain_statement", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalRunExplainStatementOKBody)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -3773,17 +3914,21 @@ func (watsonxData *WatsonxDataV2) RunExplainStatementWithContext(ctx context.Con
 // RunExplainAnalyzeStatement : Explain presto analyze
 // Return query metrics after query is complete.
 func (watsonxData *WatsonxDataV2) RunExplainAnalyzeStatement(runExplainAnalyzeStatementOptions *RunExplainAnalyzeStatementOptions) (result *RunExplainAnalyzeStatementOKBody, response *core.DetailedResponse, err error) {
-	return watsonxData.RunExplainAnalyzeStatementWithContext(context.Background(), runExplainAnalyzeStatementOptions)
+	result, response, err = watsonxData.RunExplainAnalyzeStatementWithContext(context.Background(), runExplainAnalyzeStatementOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // RunExplainAnalyzeStatementWithContext is an alternate form of the RunExplainAnalyzeStatement method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) RunExplainAnalyzeStatementWithContext(ctx context.Context, runExplainAnalyzeStatementOptions *RunExplainAnalyzeStatementOptions) (result *RunExplainAnalyzeStatementOKBody, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(runExplainAnalyzeStatementOptions, "runExplainAnalyzeStatementOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(runExplainAnalyzeStatementOptions, "runExplainAnalyzeStatementOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -3796,6 +3941,7 @@ func (watsonxData *WatsonxDataV2) RunExplainAnalyzeStatementWithContext(ctx cont
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/presto_engines/{engine_id}/query_explain_analyze`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -3822,22 +3968,27 @@ func (watsonxData *WatsonxDataV2) RunExplainAnalyzeStatementWithContext(ctx cont
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "run_explain_analyze_statement", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalRunExplainAnalyzeStatementOKBody)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -3846,25 +3997,29 @@ func (watsonxData *WatsonxDataV2) RunExplainAnalyzeStatementWithContext(ctx cont
 	return
 }
 
-// CreateEngineRestart : Restart a presto engine
+// RestartPrestoEngine : Restart a presto engine
 // Restart an existing presto engine.
-func (watsonxData *WatsonxDataV2) CreateEngineRestart(createEngineRestartOptions *CreateEngineRestartOptions) (result *CreateEngineRestartCreatedBody, response *core.DetailedResponse, err error) {
-	return watsonxData.CreateEngineRestartWithContext(context.Background(), createEngineRestartOptions)
+func (watsonxData *WatsonxDataV2) RestartPrestoEngine(restartPrestoEngineOptions *RestartPrestoEngineOptions) (result *CreateEngineRestartCreatedBody, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.RestartPrestoEngineWithContext(context.Background(), restartPrestoEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
-// CreateEngineRestartWithContext is an alternate form of the CreateEngineRestart method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) CreateEngineRestartWithContext(ctx context.Context, createEngineRestartOptions *CreateEngineRestartOptions) (result *CreateEngineRestartCreatedBody, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(createEngineRestartOptions, "createEngineRestartOptions cannot be nil")
+// RestartPrestoEngineWithContext is an alternate form of the RestartPrestoEngine method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) RestartPrestoEngineWithContext(ctx context.Context, restartPrestoEngineOptions *RestartPrestoEngineOptions) (result *CreateEngineRestartCreatedBody, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(restartPrestoEngineOptions, "restartPrestoEngineOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(createEngineRestartOptions, "createEngineRestartOptions")
+	err = core.ValidateStruct(restartPrestoEngineOptions, "restartPrestoEngineOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id": *createEngineRestartOptions.EngineID,
+		"engine_id": *restartPrestoEngineOptions.EngineID,
 	}
 
 	builder := core.NewRequestBuilder(core.POST)
@@ -3872,35 +4027,40 @@ func (watsonxData *WatsonxDataV2) CreateEngineRestartWithContext(ctx context.Con
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/presto_engines/{engine_id}/restart`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
-	for headerName, headerValue := range createEngineRestartOptions.Headers {
+	for headerName, headerValue := range restartPrestoEngineOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateEngineRestart")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "RestartPrestoEngine")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
-	if createEngineRestartOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createEngineRestartOptions.AuthInstanceID))
+	if restartPrestoEngineOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*restartPrestoEngineOptions.AuthInstanceID))
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "restart_presto_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCreateEngineRestartCreatedBody)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -3909,25 +4069,29 @@ func (watsonxData *WatsonxDataV2) CreateEngineRestartWithContext(ctx context.Con
 	return
 }
 
-// CreateEngineResume : Resume presto engine
+// ResumePrestoEngine : Resume presto engine
 // Resume a paused presto engine.
-func (watsonxData *WatsonxDataV2) CreateEngineResume(createEngineResumeOptions *CreateEngineResumeOptions) (result *CreateEngineResumeCreatedBody, response *core.DetailedResponse, err error) {
-	return watsonxData.CreateEngineResumeWithContext(context.Background(), createEngineResumeOptions)
+func (watsonxData *WatsonxDataV2) ResumePrestoEngine(resumePrestoEngineOptions *ResumePrestoEngineOptions) (result *CreateEngineResumeCreatedBody, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.ResumePrestoEngineWithContext(context.Background(), resumePrestoEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
-// CreateEngineResumeWithContext is an alternate form of the CreateEngineResume method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) CreateEngineResumeWithContext(ctx context.Context, createEngineResumeOptions *CreateEngineResumeOptions) (result *CreateEngineResumeCreatedBody, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(createEngineResumeOptions, "createEngineResumeOptions cannot be nil")
+// ResumePrestoEngineWithContext is an alternate form of the ResumePrestoEngine method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) ResumePrestoEngineWithContext(ctx context.Context, resumePrestoEngineOptions *ResumePrestoEngineOptions) (result *CreateEngineResumeCreatedBody, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(resumePrestoEngineOptions, "resumePrestoEngineOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(createEngineResumeOptions, "createEngineResumeOptions")
+	err = core.ValidateStruct(resumePrestoEngineOptions, "resumePrestoEngineOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id": *createEngineResumeOptions.EngineID,
+		"engine_id": *resumePrestoEngineOptions.EngineID,
 	}
 
 	builder := core.NewRequestBuilder(core.POST)
@@ -3935,35 +4099,40 @@ func (watsonxData *WatsonxDataV2) CreateEngineResumeWithContext(ctx context.Cont
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/presto_engines/{engine_id}/resume`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
-	for headerName, headerValue := range createEngineResumeOptions.Headers {
+	for headerName, headerValue := range resumePrestoEngineOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateEngineResume")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "ResumePrestoEngine")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
-	if createEngineResumeOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createEngineResumeOptions.AuthInstanceID))
+	if resumePrestoEngineOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*resumePrestoEngineOptions.AuthInstanceID))
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "resume_presto_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCreateEngineResumeCreatedBody)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -3972,25 +4141,29 @@ func (watsonxData *WatsonxDataV2) CreateEngineResumeWithContext(ctx context.Cont
 	return
 }
 
-// CreateEngineScale : Scale a presto engine
+// ScalePrestoEngine : Scale a presto engine
 // Scale an existing presto engine.
-func (watsonxData *WatsonxDataV2) CreateEngineScale(createEngineScaleOptions *CreateEngineScaleOptions) (result *CreateEngineScaleCreatedBody, response *core.DetailedResponse, err error) {
-	return watsonxData.CreateEngineScaleWithContext(context.Background(), createEngineScaleOptions)
+func (watsonxData *WatsonxDataV2) ScalePrestoEngine(scalePrestoEngineOptions *ScalePrestoEngineOptions) (result *CreateEngineScaleCreatedBody, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.ScalePrestoEngineWithContext(context.Background(), scalePrestoEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
-// CreateEngineScaleWithContext is an alternate form of the CreateEngineScale method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) CreateEngineScaleWithContext(ctx context.Context, createEngineScaleOptions *CreateEngineScaleOptions) (result *CreateEngineScaleCreatedBody, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(createEngineScaleOptions, "createEngineScaleOptions cannot be nil")
+// ScalePrestoEngineWithContext is an alternate form of the ScalePrestoEngine method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) ScalePrestoEngineWithContext(ctx context.Context, scalePrestoEngineOptions *ScalePrestoEngineOptions) (result *CreateEngineScaleCreatedBody, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(scalePrestoEngineOptions, "scalePrestoEngineOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(createEngineScaleOptions, "createEngineScaleOptions")
+	err = core.ValidateStruct(scalePrestoEngineOptions, "scalePrestoEngineOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id": *createEngineScaleOptions.EngineID,
+		"engine_id": *scalePrestoEngineOptions.EngineID,
 	}
 
 	builder := core.NewRequestBuilder(core.POST)
@@ -3998,48 +4171,54 @@ func (watsonxData *WatsonxDataV2) CreateEngineScaleWithContext(ctx context.Conte
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/presto_engines/{engine_id}/scale`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
-	for headerName, headerValue := range createEngineScaleOptions.Headers {
+	for headerName, headerValue := range scalePrestoEngineOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateEngineScale")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "ScalePrestoEngine")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
 	builder.AddHeader("Content-Type", "application/json")
-	if createEngineScaleOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createEngineScaleOptions.AuthInstanceID))
+	if scalePrestoEngineOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*scalePrestoEngineOptions.AuthInstanceID))
 	}
 
 	body := make(map[string]interface{})
-	if createEngineScaleOptions.Coordinator != nil {
-		body["coordinator"] = createEngineScaleOptions.Coordinator
+	if scalePrestoEngineOptions.Coordinator != nil {
+		body["coordinator"] = scalePrestoEngineOptions.Coordinator
 	}
-	if createEngineScaleOptions.Worker != nil {
-		body["worker"] = createEngineScaleOptions.Worker
+	if scalePrestoEngineOptions.Worker != nil {
+		body["worker"] = scalePrestoEngineOptions.Worker
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "scale_presto_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCreateEngineScaleCreatedBody)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -4051,13 +4230,16 @@ func (watsonxData *WatsonxDataV2) CreateEngineScaleWithContext(ctx context.Conte
 // ListSparkEngines : List all spark engines
 // List all spark engines.
 func (watsonxData *WatsonxDataV2) ListSparkEngines(listSparkEnginesOptions *ListSparkEnginesOptions) (result *SparkEngineCollection, response *core.DetailedResponse, err error) {
-	return watsonxData.ListSparkEnginesWithContext(context.Background(), listSparkEnginesOptions)
+	result, response, err = watsonxData.ListSparkEnginesWithContext(context.Background(), listSparkEnginesOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // ListSparkEnginesWithContext is an alternate form of the ListSparkEngines method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) ListSparkEnginesWithContext(ctx context.Context, listSparkEnginesOptions *ListSparkEnginesOptions) (result *SparkEngineCollection, response *core.DetailedResponse, err error) {
 	err = core.ValidateStruct(listSparkEnginesOptions, "listSparkEnginesOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4066,6 +4248,7 @@ func (watsonxData *WatsonxDataV2) ListSparkEnginesWithContext(ctx context.Contex
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/spark_engines`, nil)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4084,17 +4267,21 @@ func (watsonxData *WatsonxDataV2) ListSparkEnginesWithContext(ctx context.Contex
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "list_spark_engines", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSparkEngineCollection)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -4106,17 +4293,21 @@ func (watsonxData *WatsonxDataV2) ListSparkEnginesWithContext(ctx context.Contex
 // CreateSparkEngine : Create spark engine
 // Create a new spark  engine.
 func (watsonxData *WatsonxDataV2) CreateSparkEngine(createSparkEngineOptions *CreateSparkEngineOptions) (result *SparkEngine, response *core.DetailedResponse, err error) {
-	return watsonxData.CreateSparkEngineWithContext(context.Background(), createSparkEngineOptions)
+	result, response, err = watsonxData.CreateSparkEngineWithContext(context.Background(), createSparkEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // CreateSparkEngineWithContext is an alternate form of the CreateSparkEngine method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) CreateSparkEngineWithContext(ctx context.Context, createSparkEngineOptions *CreateSparkEngineOptions) (result *SparkEngine, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(createSparkEngineOptions, "createSparkEngineOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(createSparkEngineOptions, "createSparkEngineOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4125,6 +4316,7 @@ func (watsonxData *WatsonxDataV2) CreateSparkEngineWithContext(ctx context.Conte
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/spark_engines`, nil)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4146,8 +4338,8 @@ func (watsonxData *WatsonxDataV2) CreateSparkEngineWithContext(ctx context.Conte
 	if createSparkEngineOptions.Origin != nil {
 		body["origin"] = createSparkEngineOptions.Origin
 	}
-	if createSparkEngineOptions.Type != nil {
-		body["type"] = createSparkEngineOptions.Type
+	if createSparkEngineOptions.AssociatedCatalogs != nil {
+		body["associated_catalogs"] = createSparkEngineOptions.AssociatedCatalogs
 	}
 	if createSparkEngineOptions.Description != nil {
 		body["description"] = createSparkEngineOptions.Description
@@ -4158,27 +4350,107 @@ func (watsonxData *WatsonxDataV2) CreateSparkEngineWithContext(ctx context.Conte
 	if createSparkEngineOptions.EngineDisplayName != nil {
 		body["engine_display_name"] = createSparkEngineOptions.EngineDisplayName
 	}
+	if createSparkEngineOptions.Status != nil {
+		body["status"] = createSparkEngineOptions.Status
+	}
 	if createSparkEngineOptions.Tags != nil {
 		body["tags"] = createSparkEngineOptions.Tags
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "create_spark_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSparkEngine)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// GetSparkEngine : Get spark engine
+// Get spark engine by ID.
+func (watsonxData *WatsonxDataV2) GetSparkEngine(getSparkEngineOptions *GetSparkEngineOptions) (result *SparkEngine, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.GetSparkEngineWithContext(context.Background(), getSparkEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetSparkEngineWithContext is an alternate form of the GetSparkEngine method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) GetSparkEngineWithContext(ctx context.Context, getSparkEngineOptions *GetSparkEngineOptions) (result *SparkEngine, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(getSparkEngineOptions, "getSparkEngineOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(getSparkEngineOptions, "getSparkEngineOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"engine_id": *getSparkEngineOptions.EngineID,
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/spark_engines/{engine_id}`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range getSparkEngineOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "GetSparkEngine")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if getSparkEngineOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*getSparkEngineOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "get_spark_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSparkEngine)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -4190,17 +4462,21 @@ func (watsonxData *WatsonxDataV2) CreateSparkEngineWithContext(ctx context.Conte
 // DeleteSparkEngine : Delete spark engine
 // Delete a spark engine.
 func (watsonxData *WatsonxDataV2) DeleteSparkEngine(deleteSparkEngineOptions *DeleteSparkEngineOptions) (response *core.DetailedResponse, err error) {
-	return watsonxData.DeleteSparkEngineWithContext(context.Background(), deleteSparkEngineOptions)
+	response, err = watsonxData.DeleteSparkEngineWithContext(context.Background(), deleteSparkEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // DeleteSparkEngineWithContext is an alternate form of the DeleteSparkEngine method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) DeleteSparkEngineWithContext(ctx context.Context, deleteSparkEngineOptions *DeleteSparkEngineOptions) (response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(deleteSparkEngineOptions, "deleteSparkEngineOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(deleteSparkEngineOptions, "deleteSparkEngineOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4213,6 +4489,7 @@ func (watsonxData *WatsonxDataV2) DeleteSparkEngineWithContext(ctx context.Conte
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/spark_engines/{engine_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4230,10 +4507,16 @@ func (watsonxData *WatsonxDataV2) DeleteSparkEngineWithContext(ctx context.Conte
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_spark_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
 
 	return
 }
@@ -4241,17 +4524,21 @@ func (watsonxData *WatsonxDataV2) DeleteSparkEngineWithContext(ctx context.Conte
 // UpdateSparkEngine : Update spark engine
 // Update details of spark engine.
 func (watsonxData *WatsonxDataV2) UpdateSparkEngine(updateSparkEngineOptions *UpdateSparkEngineOptions) (result *SparkEngine, response *core.DetailedResponse, err error) {
-	return watsonxData.UpdateSparkEngineWithContext(context.Background(), updateSparkEngineOptions)
+	result, response, err = watsonxData.UpdateSparkEngineWithContext(context.Background(), updateSparkEngineOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // UpdateSparkEngineWithContext is an alternate form of the UpdateSparkEngine method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) UpdateSparkEngineWithContext(ctx context.Context, updateSparkEngineOptions *UpdateSparkEngineOptions) (result *SparkEngine, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(updateSparkEngineOptions, "updateSparkEngineOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(updateSparkEngineOptions, "updateSparkEngineOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4264,6 +4551,7 @@ func (watsonxData *WatsonxDataV2) UpdateSparkEngineWithContext(ctx context.Conte
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/spark_engines/{engine_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4276,29 +4564,34 @@ func (watsonxData *WatsonxDataV2) UpdateSparkEngineWithContext(ctx context.Conte
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
-	builder.AddHeader("Content-Type", "application/json-patch+json")
+	builder.AddHeader("Content-Type", "application/merge-patch+json")
 	if updateSparkEngineOptions.AuthInstanceID != nil {
 		builder.AddHeader("AuthInstanceId", fmt.Sprint(*updateSparkEngineOptions.AuthInstanceID))
 	}
 
 	_, err = builder.SetBodyContentJSON(updateSparkEngineOptions.Body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "update_spark_engine", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSparkEngine)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -4310,17 +4603,21 @@ func (watsonxData *WatsonxDataV2) UpdateSparkEngineWithContext(ctx context.Conte
 // ListSparkEngineApplications : List all applications in a spark engine
 // List all applications in a spark engine.
 func (watsonxData *WatsonxDataV2) ListSparkEngineApplications(listSparkEngineApplicationsOptions *ListSparkEngineApplicationsOptions) (result *SparkEngineApplicationStatusCollection, response *core.DetailedResponse, err error) {
-	return watsonxData.ListSparkEngineApplicationsWithContext(context.Background(), listSparkEngineApplicationsOptions)
+	result, response, err = watsonxData.ListSparkEngineApplicationsWithContext(context.Background(), listSparkEngineApplicationsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // ListSparkEngineApplicationsWithContext is an alternate form of the ListSparkEngineApplications method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) ListSparkEngineApplicationsWithContext(ctx context.Context, listSparkEngineApplicationsOptions *ListSparkEngineApplicationsOptions) (result *SparkEngineApplicationStatusCollection, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(listSparkEngineApplicationsOptions, "listSparkEngineApplicationsOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(listSparkEngineApplicationsOptions, "listSparkEngineApplicationsOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4333,6 +4630,7 @@ func (watsonxData *WatsonxDataV2) ListSparkEngineApplicationsWithContext(ctx con
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/spark_engines/{engine_id}/applications`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4349,19 +4647,27 @@ func (watsonxData *WatsonxDataV2) ListSparkEngineApplicationsWithContext(ctx con
 		builder.AddHeader("AuthInstanceId", fmt.Sprint(*listSparkEngineApplicationsOptions.AuthInstanceID))
 	}
 
+	if listSparkEngineApplicationsOptions.State != nil {
+		builder.AddQuery("state", strings.Join(listSparkEngineApplicationsOptions.State, ","))
+	}
+
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "list_spark_engine_applications", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSparkEngineApplicationStatusCollection)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -4373,17 +4679,21 @@ func (watsonxData *WatsonxDataV2) ListSparkEngineApplicationsWithContext(ctx con
 // CreateSparkEngineApplication : Submit engine applications
 // Submit engine applications.
 func (watsonxData *WatsonxDataV2) CreateSparkEngineApplication(createSparkEngineApplicationOptions *CreateSparkEngineApplicationOptions) (result *SparkEngineApplicationStatus, response *core.DetailedResponse, err error) {
-	return watsonxData.CreateSparkEngineApplicationWithContext(context.Background(), createSparkEngineApplicationOptions)
+	result, response, err = watsonxData.CreateSparkEngineApplicationWithContext(context.Background(), createSparkEngineApplicationOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // CreateSparkEngineApplicationWithContext is an alternate form of the CreateSparkEngineApplication method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) CreateSparkEngineApplicationWithContext(ctx context.Context, createSparkEngineApplicationOptions *CreateSparkEngineApplicationOptions) (result *SparkEngineApplicationStatus, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(createSparkEngineApplicationOptions, "createSparkEngineApplicationOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(createSparkEngineApplicationOptions, "createSparkEngineApplicationOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4396,6 +4706,7 @@ func (watsonxData *WatsonxDataV2) CreateSparkEngineApplicationWithContext(ctx co
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/spark_engines/{engine_id}/applications`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4413,6 +4724,10 @@ func (watsonxData *WatsonxDataV2) CreateSparkEngineApplicationWithContext(ctx co
 		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createSparkEngineApplicationOptions.AuthInstanceID))
 	}
 
+	if createSparkEngineApplicationOptions.State != nil {
+		builder.AddQuery("state", strings.Join(createSparkEngineApplicationOptions.State, ","))
+	}
+
 	body := make(map[string]interface{})
 	if createSparkEngineApplicationOptions.ApplicationDetails != nil {
 		body["application_details"] = createSparkEngineApplicationOptions.ApplicationDetails
@@ -4426,24 +4741,32 @@ func (watsonxData *WatsonxDataV2) CreateSparkEngineApplicationWithContext(ctx co
 	if createSparkEngineApplicationOptions.Type != nil {
 		body["type"] = createSparkEngineApplicationOptions.Type
 	}
+	if createSparkEngineApplicationOptions.Volumes != nil {
+		body["volumes"] = createSparkEngineApplicationOptions.Volumes
+	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "create_spark_engine_application", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSparkEngineApplicationStatus)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -4455,17 +4778,21 @@ func (watsonxData *WatsonxDataV2) CreateSparkEngineApplicationWithContext(ctx co
 // DeleteSparkEngineApplications : Stop Spark Applications
 // Stop a running spark application.
 func (watsonxData *WatsonxDataV2) DeleteSparkEngineApplications(deleteSparkEngineApplicationsOptions *DeleteSparkEngineApplicationsOptions) (response *core.DetailedResponse, err error) {
-	return watsonxData.DeleteSparkEngineApplicationsWithContext(context.Background(), deleteSparkEngineApplicationsOptions)
+	response, err = watsonxData.DeleteSparkEngineApplicationsWithContext(context.Background(), deleteSparkEngineApplicationsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // DeleteSparkEngineApplicationsWithContext is an alternate form of the DeleteSparkEngineApplications method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) DeleteSparkEngineApplicationsWithContext(ctx context.Context, deleteSparkEngineApplicationsOptions *DeleteSparkEngineApplicationsOptions) (response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(deleteSparkEngineApplicationsOptions, "deleteSparkEngineApplicationsOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(deleteSparkEngineApplicationsOptions, "deleteSparkEngineApplicationsOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4478,6 +4805,7 @@ func (watsonxData *WatsonxDataV2) DeleteSparkEngineApplicationsWithContext(ctx c
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/spark_engines/{engine_id}/applications`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4494,13 +4822,22 @@ func (watsonxData *WatsonxDataV2) DeleteSparkEngineApplicationsWithContext(ctx c
 	}
 
 	builder.AddQuery("application_id", fmt.Sprint(*deleteSparkEngineApplicationsOptions.ApplicationID))
+	if deleteSparkEngineApplicationsOptions.State != nil {
+		builder.AddQuery("state", strings.Join(deleteSparkEngineApplicationsOptions.State, ","))
+	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_spark_engine_applications", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
 
 	return
 }
@@ -4508,17 +4845,21 @@ func (watsonxData *WatsonxDataV2) DeleteSparkEngineApplicationsWithContext(ctx c
 // GetSparkEngineApplicationStatus : Get spark application
 // Get status of spark application.
 func (watsonxData *WatsonxDataV2) GetSparkEngineApplicationStatus(getSparkEngineApplicationStatusOptions *GetSparkEngineApplicationStatusOptions) (result *SparkEngineApplicationStatus, response *core.DetailedResponse, err error) {
-	return watsonxData.GetSparkEngineApplicationStatusWithContext(context.Background(), getSparkEngineApplicationStatusOptions)
+	result, response, err = watsonxData.GetSparkEngineApplicationStatusWithContext(context.Background(), getSparkEngineApplicationStatusOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // GetSparkEngineApplicationStatusWithContext is an alternate form of the GetSparkEngineApplicationStatus method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) GetSparkEngineApplicationStatusWithContext(ctx context.Context, getSparkEngineApplicationStatusOptions *GetSparkEngineApplicationStatusOptions) (result *SparkEngineApplicationStatus, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(getSparkEngineApplicationStatusOptions, "getSparkEngineApplicationStatusOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(getSparkEngineApplicationStatusOptions, "getSparkEngineApplicationStatusOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4532,6 +4873,7 @@ func (watsonxData *WatsonxDataV2) GetSparkEngineApplicationStatusWithContext(ctx
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/spark_engines/{engine_id}/applications/{application_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4550,17 +4892,21 @@ func (watsonxData *WatsonxDataV2) GetSparkEngineApplicationStatusWithContext(ctx
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "get_spark_engine_application_status", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSparkEngineApplicationStatus)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -4569,50 +4915,800 @@ func (watsonxData *WatsonxDataV2) GetSparkEngineApplicationStatusWithContext(ctx
 	return
 }
 
-// TestLHConsole : Readiness API
-// Verify lhconsole server is up and running.
-func (watsonxData *WatsonxDataV2) TestLHConsole(testLHConsoleOptions *TestLHConsoleOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
-	return watsonxData.TestLHConsoleWithContext(context.Background(), testLHConsoleOptions)
+// ListSparkEngineCatalogs : Get spark engine catalogs
+// Get list of all catalogs attached to a spark engine.
+func (watsonxData *WatsonxDataV2) ListSparkEngineCatalogs(listSparkEngineCatalogsOptions *ListSparkEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.ListSparkEngineCatalogsWithContext(context.Background(), listSparkEngineCatalogsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
-// TestLHConsoleWithContext is an alternate form of the TestLHConsole method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) TestLHConsoleWithContext(ctx context.Context, testLHConsoleOptions *TestLHConsoleOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
-	err = core.ValidateStruct(testLHConsoleOptions, "testLHConsoleOptions")
+// ListSparkEngineCatalogsWithContext is an alternate form of the ListSparkEngineCatalogs method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) ListSparkEngineCatalogsWithContext(ctx context.Context, listSparkEngineCatalogsOptions *ListSparkEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(listSparkEngineCatalogsOptions, "listSparkEngineCatalogsOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
+	}
+	err = core.ValidateStruct(listSparkEngineCatalogsOptions, "listSparkEngineCatalogsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"engine_id": *listSparkEngineCatalogsOptions.EngineID,
 	}
 
 	builder := core.NewRequestBuilder(core.GET)
 	builder = builder.WithContext(ctx)
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/ready`, nil)
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/spark_engines/{engine_id}/catalogs`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
-	for headerName, headerValue := range testLHConsoleOptions.Headers {
+	for headerName, headerValue := range listSparkEngineCatalogsOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "TestLHConsole")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "ListSparkEngineCatalogs")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
+	if listSparkEngineCatalogsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*listSparkEngineCatalogsOptions.AuthInstanceID))
+	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "list_spark_engine_catalogs", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCatalogCollection)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// AddSparkEngineCatalogs : Associate catalogs to spark engine
+// Associate one or more catalogs to a spark engine.
+func (watsonxData *WatsonxDataV2) AddSparkEngineCatalogs(addSparkEngineCatalogsOptions *AddSparkEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.AddSparkEngineCatalogsWithContext(context.Background(), addSparkEngineCatalogsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// AddSparkEngineCatalogsWithContext is an alternate form of the AddSparkEngineCatalogs method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) AddSparkEngineCatalogsWithContext(ctx context.Context, addSparkEngineCatalogsOptions *AddSparkEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(addSparkEngineCatalogsOptions, "addSparkEngineCatalogsOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(addSparkEngineCatalogsOptions, "addSparkEngineCatalogsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"engine_id": *addSparkEngineCatalogsOptions.EngineID,
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/spark_engines/{engine_id}/catalogs`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range addSparkEngineCatalogsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "AddSparkEngineCatalogs")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+	if addSparkEngineCatalogsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*addSparkEngineCatalogsOptions.AuthInstanceID))
+	}
+
+	body := make(map[string]interface{})
+	if addSparkEngineCatalogsOptions.CatalogNames != nil {
+		body["catalog_names"] = addSparkEngineCatalogsOptions.CatalogNames
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "add_spark_engine_catalogs", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCatalogCollection)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// DeleteSparkEngineCatalogs : Disassociate catalogs from a spark engine
+// Disassociate one or more catalogs from a spark engine.
+func (watsonxData *WatsonxDataV2) DeleteSparkEngineCatalogs(deleteSparkEngineCatalogsOptions *DeleteSparkEngineCatalogsOptions) (response *core.DetailedResponse, err error) {
+	response, err = watsonxData.DeleteSparkEngineCatalogsWithContext(context.Background(), deleteSparkEngineCatalogsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// DeleteSparkEngineCatalogsWithContext is an alternate form of the DeleteSparkEngineCatalogs method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) DeleteSparkEngineCatalogsWithContext(ctx context.Context, deleteSparkEngineCatalogsOptions *DeleteSparkEngineCatalogsOptions) (response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(deleteSparkEngineCatalogsOptions, "deleteSparkEngineCatalogsOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(deleteSparkEngineCatalogsOptions, "deleteSparkEngineCatalogsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"engine_id": *deleteSparkEngineCatalogsOptions.EngineID,
+	}
+
+	builder := core.NewRequestBuilder(core.DELETE)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/spark_engines/{engine_id}/catalogs`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range deleteSparkEngineCatalogsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "DeleteSparkEngineCatalogs")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	if deleteSparkEngineCatalogsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*deleteSparkEngineCatalogsOptions.AuthInstanceID))
+	}
+
+	builder.AddQuery("catalog_names", fmt.Sprint(*deleteSparkEngineCatalogsOptions.CatalogNames))
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_spark_engine_catalogs", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+
+	return
+}
+
+// GetSparkEngineCatalog : Get spark engine catalog
+// Get catalog attached to spark engine.
+func (watsonxData *WatsonxDataV2) GetSparkEngineCatalog(getSparkEngineCatalogOptions *GetSparkEngineCatalogOptions) (result *Catalog, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.GetSparkEngineCatalogWithContext(context.Background(), getSparkEngineCatalogOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetSparkEngineCatalogWithContext is an alternate form of the GetSparkEngineCatalog method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) GetSparkEngineCatalogWithContext(ctx context.Context, getSparkEngineCatalogOptions *GetSparkEngineCatalogOptions) (result *Catalog, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(getSparkEngineCatalogOptions, "getSparkEngineCatalogOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(getSparkEngineCatalogOptions, "getSparkEngineCatalogOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"engine_id": *getSparkEngineCatalogOptions.EngineID,
+		"catalog_id": *getSparkEngineCatalogOptions.CatalogID,
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/spark_engines/{engine_id}/catalogs/{catalog_id}`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range getSparkEngineCatalogOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "GetSparkEngineCatalog")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if getSparkEngineCatalogOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*getSparkEngineCatalogOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "get_spark_engine_catalog", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCatalog)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// GetSparkEngineHistoryServer : Get spark history server
+// Get spark history server.
+func (watsonxData *WatsonxDataV2) GetSparkEngineHistoryServer(getSparkEngineHistoryServerOptions *GetSparkEngineHistoryServerOptions) (result *SparkHistoryServer, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.GetSparkEngineHistoryServerWithContext(context.Background(), getSparkEngineHistoryServerOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetSparkEngineHistoryServerWithContext is an alternate form of the GetSparkEngineHistoryServer method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) GetSparkEngineHistoryServerWithContext(ctx context.Context, getSparkEngineHistoryServerOptions *GetSparkEngineHistoryServerOptions) (result *SparkHistoryServer, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(getSparkEngineHistoryServerOptions, "getSparkEngineHistoryServerOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(getSparkEngineHistoryServerOptions, "getSparkEngineHistoryServerOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"engine_id": *getSparkEngineHistoryServerOptions.EngineID,
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/spark_engines/{engine_id}/history_server`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range getSparkEngineHistoryServerOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "GetSparkEngineHistoryServer")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if getSparkEngineHistoryServerOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*getSparkEngineHistoryServerOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "get_spark_engine_history_server", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSparkHistoryServer)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// StartSparkEngineHistoryServer : Start spark history server
+// Start spark history server.
+func (watsonxData *WatsonxDataV2) StartSparkEngineHistoryServer(startSparkEngineHistoryServerOptions *StartSparkEngineHistoryServerOptions) (result *SparkHistoryServer, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.StartSparkEngineHistoryServerWithContext(context.Background(), startSparkEngineHistoryServerOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// StartSparkEngineHistoryServerWithContext is an alternate form of the StartSparkEngineHistoryServer method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) StartSparkEngineHistoryServerWithContext(ctx context.Context, startSparkEngineHistoryServerOptions *StartSparkEngineHistoryServerOptions) (result *SparkHistoryServer, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(startSparkEngineHistoryServerOptions, "startSparkEngineHistoryServerOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(startSparkEngineHistoryServerOptions, "startSparkEngineHistoryServerOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"engine_id": *startSparkEngineHistoryServerOptions.EngineID,
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/spark_engines/{engine_id}/history_server`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range startSparkEngineHistoryServerOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "StartSparkEngineHistoryServer")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+	if startSparkEngineHistoryServerOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*startSparkEngineHistoryServerOptions.AuthInstanceID))
+	}
+
+	body := make(map[string]interface{})
+	if startSparkEngineHistoryServerOptions.Cores != nil {
+		body["cores"] = startSparkEngineHistoryServerOptions.Cores
+	}
+	if startSparkEngineHistoryServerOptions.Memory != nil {
+		body["memory"] = startSparkEngineHistoryServerOptions.Memory
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "start_spark_engine_history_server", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSparkHistoryServer)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// DeleteSparkEngineHistoryServer : Stop spark history server
+// Stop spark history server.
+func (watsonxData *WatsonxDataV2) DeleteSparkEngineHistoryServer(deleteSparkEngineHistoryServerOptions *DeleteSparkEngineHistoryServerOptions) (response *core.DetailedResponse, err error) {
+	response, err = watsonxData.DeleteSparkEngineHistoryServerWithContext(context.Background(), deleteSparkEngineHistoryServerOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// DeleteSparkEngineHistoryServerWithContext is an alternate form of the DeleteSparkEngineHistoryServer method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) DeleteSparkEngineHistoryServerWithContext(ctx context.Context, deleteSparkEngineHistoryServerOptions *DeleteSparkEngineHistoryServerOptions) (response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(deleteSparkEngineHistoryServerOptions, "deleteSparkEngineHistoryServerOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(deleteSparkEngineHistoryServerOptions, "deleteSparkEngineHistoryServerOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"engine_id": *deleteSparkEngineHistoryServerOptions.EngineID,
+	}
+
+	builder := core.NewRequestBuilder(core.DELETE)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/spark_engines/{engine_id}/history_server`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range deleteSparkEngineHistoryServerOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "DeleteSparkEngineHistoryServer")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	if deleteSparkEngineHistoryServerOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*deleteSparkEngineHistoryServerOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_spark_engine_history_server", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+
+	return
+}
+
+// CreateSparkEnginePause : Pause engine
+// Pause engine.
+func (watsonxData *WatsonxDataV2) CreateSparkEnginePause(createSparkEnginePauseOptions *CreateSparkEnginePauseOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.CreateSparkEnginePauseWithContext(context.Background(), createSparkEnginePauseOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreateSparkEnginePauseWithContext is an alternate form of the CreateSparkEnginePause method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreateSparkEnginePauseWithContext(ctx context.Context, createSparkEnginePauseOptions *CreateSparkEnginePauseOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createSparkEnginePauseOptions, "createSparkEnginePauseOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createSparkEnginePauseOptions, "createSparkEnginePauseOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"engine_id": *createSparkEnginePauseOptions.EngineID,
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/spark_engines/{engine_id}/pause`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range createSparkEnginePauseOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateSparkEnginePause")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if createSparkEnginePauseOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createSparkEnginePauseOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_spark_engine_pause", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSuccessResponse)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// CreateSparkEngineResume : Resume engine
+// Resume engine.
+func (watsonxData *WatsonxDataV2) CreateSparkEngineResume(createSparkEngineResumeOptions *CreateSparkEngineResumeOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.CreateSparkEngineResumeWithContext(context.Background(), createSparkEngineResumeOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreateSparkEngineResumeWithContext is an alternate form of the CreateSparkEngineResume method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreateSparkEngineResumeWithContext(ctx context.Context, createSparkEngineResumeOptions *CreateSparkEngineResumeOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createSparkEngineResumeOptions, "createSparkEngineResumeOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createSparkEngineResumeOptions, "createSparkEngineResumeOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"engine_id": *createSparkEngineResumeOptions.EngineID,
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/spark_engines/{engine_id}/resume`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range createSparkEngineResumeOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateSparkEngineResume")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if createSparkEngineResumeOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createSparkEngineResumeOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_spark_engine_resume", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSuccessResponse)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// CreateSparkEngineScale : Scale Spark engine
+// Scale Saprk engine.
+func (watsonxData *WatsonxDataV2) CreateSparkEngineScale(createSparkEngineScaleOptions *CreateSparkEngineScaleOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.CreateSparkEngineScaleWithContext(context.Background(), createSparkEngineScaleOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreateSparkEngineScaleWithContext is an alternate form of the CreateSparkEngineScale method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreateSparkEngineScaleWithContext(ctx context.Context, createSparkEngineScaleOptions *CreateSparkEngineScaleOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createSparkEngineScaleOptions, "createSparkEngineScaleOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createSparkEngineScaleOptions, "createSparkEngineScaleOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"engine_id": *createSparkEngineScaleOptions.EngineID,
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/spark_engines/{engine_id}/scale`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range createSparkEngineScaleOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateSparkEngineScale")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+	if createSparkEngineScaleOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createSparkEngineScaleOptions.AuthInstanceID))
+	}
+
+	body := make(map[string]interface{})
+	if createSparkEngineScaleOptions.NumberOfNodes != nil {
+		body["number_of_nodes"] = createSparkEngineScaleOptions.NumberOfNodes
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_spark_engine_scale", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSuccessResponse)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// ListSparkVersions : List spark version
+// List spark version.
+func (watsonxData *WatsonxDataV2) ListSparkVersions(listSparkVersionsOptions *ListSparkVersionsOptions) (result *ListSparkVersionsOKBody, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.ListSparkVersionsWithContext(context.Background(), listSparkVersionsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// ListSparkVersionsWithContext is an alternate form of the ListSparkVersions method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) ListSparkVersionsWithContext(ctx context.Context, listSparkVersionsOptions *ListSparkVersionsOptions) (result *ListSparkVersionsOKBody, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(listSparkVersionsOptions, "listSparkVersionsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/spark_versions`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range listSparkVersionsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "ListSparkVersions")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if listSparkVersionsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*listSparkVersionsOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "list_spark_versions", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalListSparkVersionsOKBody)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -4624,13 +5720,16 @@ func (watsonxData *WatsonxDataV2) TestLHConsoleWithContext(ctx context.Context, 
 // ListCatalogs : List all registered catalogs
 // List all registered catalogs.
 func (watsonxData *WatsonxDataV2) ListCatalogs(listCatalogsOptions *ListCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
-	return watsonxData.ListCatalogsWithContext(context.Background(), listCatalogsOptions)
+	result, response, err = watsonxData.ListCatalogsWithContext(context.Background(), listCatalogsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // ListCatalogsWithContext is an alternate form of the ListCatalogs method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) ListCatalogsWithContext(ctx context.Context, listCatalogsOptions *ListCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
 	err = core.ValidateStruct(listCatalogsOptions, "listCatalogsOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4639,6 +5738,7 @@ func (watsonxData *WatsonxDataV2) ListCatalogsWithContext(ctx context.Context, l
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/catalogs`, nil)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4657,17 +5757,21 @@ func (watsonxData *WatsonxDataV2) ListCatalogsWithContext(ctx context.Context, l
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "list_catalogs", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCatalogCollection)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -4679,17 +5783,21 @@ func (watsonxData *WatsonxDataV2) ListCatalogsWithContext(ctx context.Context, l
 // GetCatalog : Get catalog properties by catalog_id
 // Get catalog properties of a catalog identified by catalog_id.
 func (watsonxData *WatsonxDataV2) GetCatalog(getCatalogOptions *GetCatalogOptions) (result *Catalog, response *core.DetailedResponse, err error) {
-	return watsonxData.GetCatalogWithContext(context.Background(), getCatalogOptions)
+	result, response, err = watsonxData.GetCatalogWithContext(context.Background(), getCatalogOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // GetCatalogWithContext is an alternate form of the GetCatalog method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) GetCatalogWithContext(ctx context.Context, getCatalogOptions *GetCatalogOptions) (result *Catalog, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(getCatalogOptions, "getCatalogOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(getCatalogOptions, "getCatalogOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4702,6 +5810,7 @@ func (watsonxData *WatsonxDataV2) GetCatalogWithContext(ctx context.Context, get
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/catalogs/{catalog_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4720,17 +5829,21 @@ func (watsonxData *WatsonxDataV2) GetCatalogWithContext(ctx context.Context, get
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "get_catalog", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCatalog)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -4742,17 +5855,21 @@ func (watsonxData *WatsonxDataV2) GetCatalogWithContext(ctx context.Context, get
 // ListSchemas : List all schemas
 // List all schemas in catalog.
 func (watsonxData *WatsonxDataV2) ListSchemas(listSchemasOptions *ListSchemasOptions) (result *ListSchemasOKBody, response *core.DetailedResponse, err error) {
-	return watsonxData.ListSchemasWithContext(context.Background(), listSchemasOptions)
+	result, response, err = watsonxData.ListSchemasWithContext(context.Background(), listSchemasOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // ListSchemasWithContext is an alternate form of the ListSchemas method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) ListSchemasWithContext(ctx context.Context, listSchemasOptions *ListSchemasOptions) (result *ListSchemasOKBody, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(listSchemasOptions, "listSchemasOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(listSchemasOptions, "listSchemasOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4765,6 +5882,7 @@ func (watsonxData *WatsonxDataV2) ListSchemasWithContext(ctx context.Context, li
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/catalogs/{catalog_id}/schemas`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4785,17 +5903,21 @@ func (watsonxData *WatsonxDataV2) ListSchemasWithContext(ctx context.Context, li
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "list_schemas", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalListSchemasOKBody)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -4807,17 +5929,21 @@ func (watsonxData *WatsonxDataV2) ListSchemasWithContext(ctx context.Context, li
 // CreateSchema : Create schema
 // Create a new schema.
 func (watsonxData *WatsonxDataV2) CreateSchema(createSchemaOptions *CreateSchemaOptions) (result *CreateSchemaCreatedBody, response *core.DetailedResponse, err error) {
-	return watsonxData.CreateSchemaWithContext(context.Background(), createSchemaOptions)
+	result, response, err = watsonxData.CreateSchemaWithContext(context.Background(), createSchemaOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // CreateSchemaWithContext is an alternate form of the CreateSchema method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) CreateSchemaWithContext(ctx context.Context, createSchemaOptions *CreateSchemaOptions) (result *CreateSchemaCreatedBody, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(createSchemaOptions, "createSchemaOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(createSchemaOptions, "createSchemaOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4830,6 +5956,7 @@ func (watsonxData *WatsonxDataV2) CreateSchemaWithContext(ctx context.Context, c
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/catalogs/{catalog_id}/schemas`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4861,22 +5988,27 @@ func (watsonxData *WatsonxDataV2) CreateSchemaWithContext(ctx context.Context, c
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "create_schema", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCreateSchemaCreatedBody)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -4888,17 +6020,21 @@ func (watsonxData *WatsonxDataV2) CreateSchemaWithContext(ctx context.Context, c
 // DeleteSchema : Delete schema
 // Delete a schema.
 func (watsonxData *WatsonxDataV2) DeleteSchema(deleteSchemaOptions *DeleteSchemaOptions) (response *core.DetailedResponse, err error) {
-	return watsonxData.DeleteSchemaWithContext(context.Background(), deleteSchemaOptions)
+	response, err = watsonxData.DeleteSchemaWithContext(context.Background(), deleteSchemaOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // DeleteSchemaWithContext is an alternate form of the DeleteSchema method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) DeleteSchemaWithContext(ctx context.Context, deleteSchemaOptions *DeleteSchemaOptions) (response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(deleteSchemaOptions, "deleteSchemaOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(deleteSchemaOptions, "deleteSchemaOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4912,6 +6048,7 @@ func (watsonxData *WatsonxDataV2) DeleteSchemaWithContext(ctx context.Context, d
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/catalogs/{catalog_id}/schemas/{schema_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4931,10 +6068,16 @@ func (watsonxData *WatsonxDataV2) DeleteSchemaWithContext(ctx context.Context, d
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_schema", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
 
 	return
 }
@@ -4942,17 +6085,21 @@ func (watsonxData *WatsonxDataV2) DeleteSchemaWithContext(ctx context.Context, d
 // ListTables : List all tables
 // List all tables in a schema in a catalog for a given engine.
 func (watsonxData *WatsonxDataV2) ListTables(listTablesOptions *ListTablesOptions) (result *TableCollection, response *core.DetailedResponse, err error) {
-	return watsonxData.ListTablesWithContext(context.Background(), listTablesOptions)
+	result, response, err = watsonxData.ListTablesWithContext(context.Background(), listTablesOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // ListTablesWithContext is an alternate form of the ListTables method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) ListTablesWithContext(ctx context.Context, listTablesOptions *ListTablesOptions) (result *TableCollection, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(listTablesOptions, "listTablesOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(listTablesOptions, "listTablesOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4966,6 +6113,7 @@ func (watsonxData *WatsonxDataV2) ListTablesWithContext(ctx context.Context, lis
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/catalogs/{catalog_id}/schemas/{schema_id}/tables`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -4986,17 +6134,21 @@ func (watsonxData *WatsonxDataV2) ListTablesWithContext(ctx context.Context, lis
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "list_tables", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalTableCollection)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -5008,17 +6160,21 @@ func (watsonxData *WatsonxDataV2) ListTablesWithContext(ctx context.Context, lis
 // GetTable : Get table details
 // Get details of a given table in a catalog and schema.
 func (watsonxData *WatsonxDataV2) GetTable(getTableOptions *GetTableOptions) (result *Table, response *core.DetailedResponse, err error) {
-	return watsonxData.GetTableWithContext(context.Background(), getTableOptions)
+	result, response, err = watsonxData.GetTableWithContext(context.Background(), getTableOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // GetTableWithContext is an alternate form of the GetTable method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) GetTableWithContext(ctx context.Context, getTableOptions *GetTableOptions) (result *Table, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(getTableOptions, "getTableOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(getTableOptions, "getTableOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5033,6 +6189,7 @@ func (watsonxData *WatsonxDataV2) GetTableWithContext(ctx context.Context, getTa
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/catalogs/{catalog_id}/schemas/{schema_id}/tables/{table_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5053,17 +6210,21 @@ func (watsonxData *WatsonxDataV2) GetTableWithContext(ctx context.Context, getTa
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "get_table", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalTable)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -5075,17 +6236,21 @@ func (watsonxData *WatsonxDataV2) GetTableWithContext(ctx context.Context, getTa
 // DeleteTable : Delete table
 // Delete table for a given schema and catalog.
 func (watsonxData *WatsonxDataV2) DeleteTable(deleteTableOptions *DeleteTableOptions) (response *core.DetailedResponse, err error) {
-	return watsonxData.DeleteTableWithContext(context.Background(), deleteTableOptions)
+	response, err = watsonxData.DeleteTableWithContext(context.Background(), deleteTableOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // DeleteTableWithContext is an alternate form of the DeleteTable method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) DeleteTableWithContext(ctx context.Context, deleteTableOptions *DeleteTableOptions) (response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(deleteTableOptions, "deleteTableOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(deleteTableOptions, "deleteTableOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5100,6 +6265,7 @@ func (watsonxData *WatsonxDataV2) DeleteTableWithContext(ctx context.Context, de
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/catalogs/{catalog_id}/schemas/{schema_id}/tables/{table_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5119,35 +6285,45 @@ func (watsonxData *WatsonxDataV2) DeleteTableWithContext(ctx context.Context, de
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_table", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
 
 	return
 }
 
-// UpdateTable : Alter table
+// RenameTable : Rename table
 // Rename table.
-func (watsonxData *WatsonxDataV2) UpdateTable(updateTableOptions *UpdateTableOptions) (result *Table, response *core.DetailedResponse, err error) {
-	return watsonxData.UpdateTableWithContext(context.Background(), updateTableOptions)
+func (watsonxData *WatsonxDataV2) RenameTable(renameTableOptions *RenameTableOptions) (result *Table, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.RenameTableWithContext(context.Background(), renameTableOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
-// UpdateTableWithContext is an alternate form of the UpdateTable method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) UpdateTableWithContext(ctx context.Context, updateTableOptions *UpdateTableOptions) (result *Table, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(updateTableOptions, "updateTableOptions cannot be nil")
+// RenameTableWithContext is an alternate form of the RenameTable method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) RenameTableWithContext(ctx context.Context, renameTableOptions *RenameTableOptions) (result *Table, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(renameTableOptions, "renameTableOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(updateTableOptions, "updateTableOptions")
+	err = core.ValidateStruct(renameTableOptions, "renameTableOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"catalog_id": *updateTableOptions.CatalogID,
-		"schema_id": *updateTableOptions.SchemaID,
-		"table_id": *updateTableOptions.TableID,
+		"catalog_id": *renameTableOptions.CatalogID,
+		"schema_id": *renameTableOptions.SchemaID,
+		"table_id": *renameTableOptions.TableID,
 	}
 
 	builder := core.NewRequestBuilder(core.PATCH)
@@ -5155,43 +6331,49 @@ func (watsonxData *WatsonxDataV2) UpdateTableWithContext(ctx context.Context, up
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/catalogs/{catalog_id}/schemas/{schema_id}/tables/{table_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
-	for headerName, headerValue := range updateTableOptions.Headers {
+	for headerName, headerValue := range renameTableOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "UpdateTable")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "RenameTable")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
-	builder.AddHeader("Content-Type", "application/json-patch+json")
-	if updateTableOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*updateTableOptions.AuthInstanceID))
+	builder.AddHeader("Content-Type", "application/merge-patch+json")
+	if renameTableOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*renameTableOptions.AuthInstanceID))
 	}
 
-	builder.AddQuery("engine_id", fmt.Sprint(*updateTableOptions.EngineID))
+	builder.AddQuery("engine_id", fmt.Sprint(*renameTableOptions.EngineID))
 
-	_, err = builder.SetBodyContentJSON(updateTableOptions.Body)
+	_, err = builder.SetBodyContentJSON(renameTableOptions.Body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "rename_table", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalTable)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -5203,17 +6385,21 @@ func (watsonxData *WatsonxDataV2) UpdateTableWithContext(ctx context.Context, up
 // ListColumns : List all columns of a table
 // List all columns of a table in a given a schema for a given catalog.
 func (watsonxData *WatsonxDataV2) ListColumns(listColumnsOptions *ListColumnsOptions) (result *ColumnCollection, response *core.DetailedResponse, err error) {
-	return watsonxData.ListColumnsWithContext(context.Background(), listColumnsOptions)
+	result, response, err = watsonxData.ListColumnsWithContext(context.Background(), listColumnsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // ListColumnsWithContext is an alternate form of the ListColumns method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) ListColumnsWithContext(ctx context.Context, listColumnsOptions *ListColumnsOptions) (result *ColumnCollection, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(listColumnsOptions, "listColumnsOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(listColumnsOptions, "listColumnsOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5228,6 +6414,7 @@ func (watsonxData *WatsonxDataV2) ListColumnsWithContext(ctx context.Context, li
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/catalogs/{catalog_id}/schemas/{schema_id}/tables/{table_id}/columns`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5248,17 +6435,21 @@ func (watsonxData *WatsonxDataV2) ListColumnsWithContext(ctx context.Context, li
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "list_columns", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalColumnCollection)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -5270,17 +6461,21 @@ func (watsonxData *WatsonxDataV2) ListColumnsWithContext(ctx context.Context, li
 // CreateColumns : Add column(s)
 // Add one or multiple columns to a table in a schema for a given catalog.
 func (watsonxData *WatsonxDataV2) CreateColumns(createColumnsOptions *CreateColumnsOptions) (result *ColumnCollection, response *core.DetailedResponse, err error) {
-	return watsonxData.CreateColumnsWithContext(context.Background(), createColumnsOptions)
+	result, response, err = watsonxData.CreateColumnsWithContext(context.Background(), createColumnsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // CreateColumnsWithContext is an alternate form of the CreateColumns method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) CreateColumnsWithContext(ctx context.Context, createColumnsOptions *CreateColumnsOptions) (result *ColumnCollection, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(createColumnsOptions, "createColumnsOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(createColumnsOptions, "createColumnsOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5295,6 +6490,7 @@ func (watsonxData *WatsonxDataV2) CreateColumnsWithContext(ctx context.Context, 
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/catalogs/{catalog_id}/schemas/{schema_id}/tables/{table_id}/columns`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5320,22 +6516,27 @@ func (watsonxData *WatsonxDataV2) CreateColumnsWithContext(ctx context.Context, 
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "create_columns", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalColumnCollection)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -5347,17 +6548,21 @@ func (watsonxData *WatsonxDataV2) CreateColumnsWithContext(ctx context.Context, 
 // DeleteColumn : Delete column
 // Delete column in a table for a given schema and catalog.
 func (watsonxData *WatsonxDataV2) DeleteColumn(deleteColumnOptions *DeleteColumnOptions) (response *core.DetailedResponse, err error) {
-	return watsonxData.DeleteColumnWithContext(context.Background(), deleteColumnOptions)
+	response, err = watsonxData.DeleteColumnWithContext(context.Background(), deleteColumnOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // DeleteColumnWithContext is an alternate form of the DeleteColumn method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) DeleteColumnWithContext(ctx context.Context, deleteColumnOptions *DeleteColumnOptions) (response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(deleteColumnOptions, "deleteColumnOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(deleteColumnOptions, "deleteColumnOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5373,6 +6578,7 @@ func (watsonxData *WatsonxDataV2) DeleteColumnWithContext(ctx context.Context, d
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/catalogs/{catalog_id}/schemas/{schema_id}/tables/{table_id}/columns/{column_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5392,10 +6598,16 @@ func (watsonxData *WatsonxDataV2) DeleteColumnWithContext(ctx context.Context, d
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_column", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
 
 	return
 }
@@ -5403,17 +6615,21 @@ func (watsonxData *WatsonxDataV2) DeleteColumnWithContext(ctx context.Context, d
 // UpdateColumn : Alter column
 // Update the given column - rename column.
 func (watsonxData *WatsonxDataV2) UpdateColumn(updateColumnOptions *UpdateColumnOptions) (result *Column, response *core.DetailedResponse, err error) {
-	return watsonxData.UpdateColumnWithContext(context.Background(), updateColumnOptions)
+	result, response, err = watsonxData.UpdateColumnWithContext(context.Background(), updateColumnOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // UpdateColumnWithContext is an alternate form of the UpdateColumn method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) UpdateColumnWithContext(ctx context.Context, updateColumnOptions *UpdateColumnOptions) (result *Column, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(updateColumnOptions, "updateColumnOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(updateColumnOptions, "updateColumnOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5429,6 +6645,7 @@ func (watsonxData *WatsonxDataV2) UpdateColumnWithContext(ctx context.Context, u
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/catalogs/{catalog_id}/schemas/{schema_id}/tables/{table_id}/columns/{column_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5441,7 +6658,7 @@ func (watsonxData *WatsonxDataV2) UpdateColumnWithContext(ctx context.Context, u
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
-	builder.AddHeader("Content-Type", "application/json-patch+json")
+	builder.AddHeader("Content-Type", "application/merge-patch+json")
 	if updateColumnOptions.AuthInstanceID != nil {
 		builder.AddHeader("AuthInstanceId", fmt.Sprint(*updateColumnOptions.AuthInstanceID))
 	}
@@ -5450,22 +6667,27 @@ func (watsonxData *WatsonxDataV2) UpdateColumnWithContext(ctx context.Context, u
 
 	_, err = builder.SetBodyContentJSON(updateColumnOptions.Body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "update_column", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalColumn)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -5477,17 +6699,21 @@ func (watsonxData *WatsonxDataV2) UpdateColumnWithContext(ctx context.Context, u
 // ListTableSnapshots : Get table snapshots
 // List all table snapshots.
 func (watsonxData *WatsonxDataV2) ListTableSnapshots(listTableSnapshotsOptions *ListTableSnapshotsOptions) (result *TableSnapshotCollection, response *core.DetailedResponse, err error) {
-	return watsonxData.ListTableSnapshotsWithContext(context.Background(), listTableSnapshotsOptions)
+	result, response, err = watsonxData.ListTableSnapshotsWithContext(context.Background(), listTableSnapshotsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // ListTableSnapshotsWithContext is an alternate form of the ListTableSnapshots method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) ListTableSnapshotsWithContext(ctx context.Context, listTableSnapshotsOptions *ListTableSnapshotsOptions) (result *TableSnapshotCollection, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(listTableSnapshotsOptions, "listTableSnapshotsOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(listTableSnapshotsOptions, "listTableSnapshotsOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5502,6 +6728,7 @@ func (watsonxData *WatsonxDataV2) ListTableSnapshotsWithContext(ctx context.Cont
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/catalogs/{catalog_id}/schemas/{schema_id}/tables/{table_id}/snapshots`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5522,17 +6749,21 @@ func (watsonxData *WatsonxDataV2) ListTableSnapshotsWithContext(ctx context.Cont
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "list_table_snapshots", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalTableSnapshotCollection)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -5541,66 +6772,85 @@ func (watsonxData *WatsonxDataV2) ListTableSnapshotsWithContext(ctx context.Cont
 	return
 }
 
-// ReplaceSnapshot : Rollback snapshot
-// Rollback to a table snapshot.
-func (watsonxData *WatsonxDataV2) ReplaceSnapshot(replaceSnapshotOptions *ReplaceSnapshotOptions) (result *ReplaceSnapshotCreatedBody, response *core.DetailedResponse, err error) {
-	return watsonxData.ReplaceSnapshotWithContext(context.Background(), replaceSnapshotOptions)
+// RollbackTable : Rollback table to snapshot
+// Rollback table to a snapshot.
+func (watsonxData *WatsonxDataV2) RollbackTable(rollbackTableOptions *RollbackTableOptions) (result *ReplaceSnapshotCreatedBody, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.RollbackTableWithContext(context.Background(), rollbackTableOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
-// ReplaceSnapshotWithContext is an alternate form of the ReplaceSnapshot method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) ReplaceSnapshotWithContext(ctx context.Context, replaceSnapshotOptions *ReplaceSnapshotOptions) (result *ReplaceSnapshotCreatedBody, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(replaceSnapshotOptions, "replaceSnapshotOptions cannot be nil")
+// RollbackTableWithContext is an alternate form of the RollbackTable method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) RollbackTableWithContext(ctx context.Context, rollbackTableOptions *RollbackTableOptions) (result *ReplaceSnapshotCreatedBody, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(rollbackTableOptions, "rollbackTableOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(replaceSnapshotOptions, "replaceSnapshotOptions")
+	err = core.ValidateStruct(rollbackTableOptions, "rollbackTableOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"catalog_id": *replaceSnapshotOptions.CatalogID,
-		"schema_id": *replaceSnapshotOptions.SchemaID,
-		"table_id": *replaceSnapshotOptions.TableID,
-		"snapshot_id": *replaceSnapshotOptions.SnapshotID,
+		"catalog_id": *rollbackTableOptions.CatalogID,
+		"schema_id": *rollbackTableOptions.SchemaID,
+		"table_id": *rollbackTableOptions.TableID,
 	}
 
-	builder := core.NewRequestBuilder(core.PUT)
+	builder := core.NewRequestBuilder(core.POST)
 	builder = builder.WithContext(ctx)
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/catalogs/{catalog_id}/schemas/{schema_id}/tables/{table_id}/snapshots/{snapshot_id}`, pathParamsMap)
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/catalogs/{catalog_id}/schemas/{schema_id}/tables/{table_id}/rollback`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
-	for headerName, headerValue := range replaceSnapshotOptions.Headers {
+	for headerName, headerValue := range rollbackTableOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "ReplaceSnapshot")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "RollbackTable")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
-	if replaceSnapshotOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*replaceSnapshotOptions.AuthInstanceID))
+	builder.AddHeader("Content-Type", "application/json")
+	if rollbackTableOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*rollbackTableOptions.AuthInstanceID))
 	}
 
-	builder.AddQuery("engine_id", fmt.Sprint(*replaceSnapshotOptions.EngineID))
+	builder.AddQuery("engine_id", fmt.Sprint(*rollbackTableOptions.EngineID))
+
+	body := make(map[string]interface{})
+	if rollbackTableOptions.SnapshotID != nil {
+		body["snapshot_id"] = rollbackTableOptions.SnapshotID
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "rollback_table", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalReplaceSnapshotCreatedBody)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -5612,17 +6862,21 @@ func (watsonxData *WatsonxDataV2) ReplaceSnapshotWithContext(ctx context.Context
 // UpdateSyncCatalog : External Iceberg table registration
 // Synchronize the external Iceberg table registration for a catalog identified by catalog_id.
 func (watsonxData *WatsonxDataV2) UpdateSyncCatalog(updateSyncCatalogOptions *UpdateSyncCatalogOptions) (result *UpdateSyncCatalogOKBody, response *core.DetailedResponse, err error) {
-	return watsonxData.UpdateSyncCatalogWithContext(context.Background(), updateSyncCatalogOptions)
+	result, response, err = watsonxData.UpdateSyncCatalogWithContext(context.Background(), updateSyncCatalogOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // UpdateSyncCatalogWithContext is an alternate form of the UpdateSyncCatalog method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) UpdateSyncCatalogWithContext(ctx context.Context, updateSyncCatalogOptions *UpdateSyncCatalogOptions) (result *UpdateSyncCatalogOKBody, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(updateSyncCatalogOptions, "updateSyncCatalogOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(updateSyncCatalogOptions, "updateSyncCatalogOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5635,6 +6889,7 @@ func (watsonxData *WatsonxDataV2) UpdateSyncCatalogWithContext(ctx context.Conte
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/catalogs/{catalog_id}/sync`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5647,29 +6902,34 @@ func (watsonxData *WatsonxDataV2) UpdateSyncCatalogWithContext(ctx context.Conte
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
-	builder.AddHeader("Content-Type", "application/json-patch+json")
+	builder.AddHeader("Content-Type", "application/merge-patch+json")
 	if updateSyncCatalogOptions.AuthInstanceID != nil {
 		builder.AddHeader("AuthInstanceId", fmt.Sprint(*updateSyncCatalogOptions.AuthInstanceID))
 	}
 
 	_, err = builder.SetBodyContentJSON(updateSyncCatalogOptions.Body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "update_sync_catalog", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalUpdateSyncCatalogOKBody)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -5681,13 +6941,16 @@ func (watsonxData *WatsonxDataV2) UpdateSyncCatalogWithContext(ctx context.Conte
 // ListMilvusServices : Get list of milvus services
 // Get list milvus services.
 func (watsonxData *WatsonxDataV2) ListMilvusServices(listMilvusServicesOptions *ListMilvusServicesOptions) (result *MilvusServiceCollection, response *core.DetailedResponse, err error) {
-	return watsonxData.ListMilvusServicesWithContext(context.Background(), listMilvusServicesOptions)
+	result, response, err = watsonxData.ListMilvusServicesWithContext(context.Background(), listMilvusServicesOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // ListMilvusServicesWithContext is an alternate form of the ListMilvusServices method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) ListMilvusServicesWithContext(ctx context.Context, listMilvusServicesOptions *ListMilvusServicesOptions) (result *MilvusServiceCollection, response *core.DetailedResponse, err error) {
 	err = core.ValidateStruct(listMilvusServicesOptions, "listMilvusServicesOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5696,6 +6959,7 @@ func (watsonxData *WatsonxDataV2) ListMilvusServicesWithContext(ctx context.Cont
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/milvus_services`, nil)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5714,17 +6978,21 @@ func (watsonxData *WatsonxDataV2) ListMilvusServicesWithContext(ctx context.Cont
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "list_milvus_services", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalMilvusServiceCollection)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -5736,17 +7004,21 @@ func (watsonxData *WatsonxDataV2) ListMilvusServicesWithContext(ctx context.Cont
 // CreateMilvusService : Create milvus service
 // Create milvus service.
 func (watsonxData *WatsonxDataV2) CreateMilvusService(createMilvusServiceOptions *CreateMilvusServiceOptions) (result *MilvusService, response *core.DetailedResponse, err error) {
-	return watsonxData.CreateMilvusServiceWithContext(context.Background(), createMilvusServiceOptions)
+	result, response, err = watsonxData.CreateMilvusServiceWithContext(context.Background(), createMilvusServiceOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // CreateMilvusServiceWithContext is an alternate form of the CreateMilvusService method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) CreateMilvusServiceWithContext(ctx context.Context, createMilvusServiceOptions *CreateMilvusServiceOptions) (result *MilvusService, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(createMilvusServiceOptions, "createMilvusServiceOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(createMilvusServiceOptions, "createMilvusServiceOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5755,6 +7027,7 @@ func (watsonxData *WatsonxDataV2) CreateMilvusServiceWithContext(ctx context.Con
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/milvus_services`, nil)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5776,9 +7049,6 @@ func (watsonxData *WatsonxDataV2) CreateMilvusServiceWithContext(ctx context.Con
 	if createMilvusServiceOptions.Origin != nil {
 		body["origin"] = createMilvusServiceOptions.Origin
 	}
-	if createMilvusServiceOptions.Type != nil {
-		body["type"] = createMilvusServiceOptions.Type
-	}
 	if createMilvusServiceOptions.Description != nil {
 		body["description"] = createMilvusServiceOptions.Description
 	}
@@ -5790,22 +7060,27 @@ func (watsonxData *WatsonxDataV2) CreateMilvusServiceWithContext(ctx context.Con
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "create_milvus_service", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalMilvusService)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -5817,17 +7092,21 @@ func (watsonxData *WatsonxDataV2) CreateMilvusServiceWithContext(ctx context.Con
 // GetMilvusService : Get milvus service
 // Get milvus service.
 func (watsonxData *WatsonxDataV2) GetMilvusService(getMilvusServiceOptions *GetMilvusServiceOptions) (result *MilvusService, response *core.DetailedResponse, err error) {
-	return watsonxData.GetMilvusServiceWithContext(context.Background(), getMilvusServiceOptions)
+	result, response, err = watsonxData.GetMilvusServiceWithContext(context.Background(), getMilvusServiceOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // GetMilvusServiceWithContext is an alternate form of the GetMilvusService method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) GetMilvusServiceWithContext(ctx context.Context, getMilvusServiceOptions *GetMilvusServiceOptions) (result *MilvusService, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(getMilvusServiceOptions, "getMilvusServiceOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(getMilvusServiceOptions, "getMilvusServiceOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5840,6 +7119,7 @@ func (watsonxData *WatsonxDataV2) GetMilvusServiceWithContext(ctx context.Contex
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/milvus_services/{service_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5858,17 +7138,21 @@ func (watsonxData *WatsonxDataV2) GetMilvusServiceWithContext(ctx context.Contex
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "get_milvus_service", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalMilvusService)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
@@ -5880,17 +7164,21 @@ func (watsonxData *WatsonxDataV2) GetMilvusServiceWithContext(ctx context.Contex
 // DeleteMilvusService : Delete milvus service
 // Delete milvus service.
 func (watsonxData *WatsonxDataV2) DeleteMilvusService(deleteMilvusServiceOptions *DeleteMilvusServiceOptions) (response *core.DetailedResponse, err error) {
-	return watsonxData.DeleteMilvusServiceWithContext(context.Background(), deleteMilvusServiceOptions)
+	response, err = watsonxData.DeleteMilvusServiceWithContext(context.Background(), deleteMilvusServiceOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // DeleteMilvusServiceWithContext is an alternate form of the DeleteMilvusService method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) DeleteMilvusServiceWithContext(ctx context.Context, deleteMilvusServiceOptions *DeleteMilvusServiceOptions) (response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(deleteMilvusServiceOptions, "deleteMilvusServiceOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(deleteMilvusServiceOptions, "deleteMilvusServiceOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5903,6 +7191,7 @@ func (watsonxData *WatsonxDataV2) DeleteMilvusServiceWithContext(ctx context.Con
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/milvus_services/{service_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5920,10 +7209,16 @@ func (watsonxData *WatsonxDataV2) DeleteMilvusServiceWithContext(ctx context.Con
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_milvus_service", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
 
 	return
 }
@@ -5931,17 +7226,21 @@ func (watsonxData *WatsonxDataV2) DeleteMilvusServiceWithContext(ctx context.Con
 // UpdateMilvusService : Update milvus service
 // Update details of milvus service.
 func (watsonxData *WatsonxDataV2) UpdateMilvusService(updateMilvusServiceOptions *UpdateMilvusServiceOptions) (result *MilvusService, response *core.DetailedResponse, err error) {
-	return watsonxData.UpdateMilvusServiceWithContext(context.Background(), updateMilvusServiceOptions)
+	result, response, err = watsonxData.UpdateMilvusServiceWithContext(context.Background(), updateMilvusServiceOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
 // UpdateMilvusServiceWithContext is an alternate form of the UpdateMilvusService method which supports a Context parameter
 func (watsonxData *WatsonxDataV2) UpdateMilvusServiceWithContext(ctx context.Context, updateMilvusServiceOptions *UpdateMilvusServiceOptions) (result *MilvusService, response *core.DetailedResponse, err error) {
 	err = core.ValidateNotNil(updateMilvusServiceOptions, "updateMilvusServiceOptions cannot be nil")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
 	err = core.ValidateStruct(updateMilvusServiceOptions, "updateMilvusServiceOptions")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5954,6 +7253,7 @@ func (watsonxData *WatsonxDataV2) UpdateMilvusServiceWithContext(ctx context.Con
 	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
 	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/milvus_services/{service_id}`, pathParamsMap)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
 		return
 	}
 
@@ -5966,35 +7266,256 @@ func (watsonxData *WatsonxDataV2) UpdateMilvusServiceWithContext(ctx context.Con
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
-	builder.AddHeader("Content-Type", "application/json-patch+json")
+	builder.AddHeader("Content-Type", "application/merge-patch+json")
 	if updateMilvusServiceOptions.AuthInstanceID != nil {
 		builder.AddHeader("AuthInstanceId", fmt.Sprint(*updateMilvusServiceOptions.AuthInstanceID))
 	}
 
 	_, err = builder.SetBodyContentJSON(updateMilvusServiceOptions.Body)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
 	}
 
 	request, err := builder.Build()
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
 		return
 	}
 
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
+		core.EnrichHTTPProblem(err, "update_milvus_service", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalMilvusService)
 		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
 		}
 		response.Result = result
 	}
 
 	return
+}
+
+// ListIngestionJobs : Get ingestion jobs
+// Get list of ingestion jobs.
+func (watsonxData *WatsonxDataV2) ListIngestionJobs(listIngestionJobsOptions *ListIngestionJobsOptions) (result *IngestionJobCollection, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.ListIngestionJobsWithContext(context.Background(), listIngestionJobsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// ListIngestionJobsWithContext is an alternate form of the ListIngestionJobs method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) ListIngestionJobsWithContext(ctx context.Context, listIngestionJobsOptions *ListIngestionJobsOptions) (result *IngestionJobCollection, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(listIngestionJobsOptions, "listIngestionJobsOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(listIngestionJobsOptions, "listIngestionJobsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/ingestion_jobs`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range listIngestionJobsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "ListIngestionJobs")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if listIngestionJobsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*listIngestionJobsOptions.AuthInstanceID))
+	}
+
+	if listIngestionJobsOptions.Start != nil {
+		builder.AddQuery("start", fmt.Sprint(*listIngestionJobsOptions.Start))
+	}
+	if listIngestionJobsOptions.JobsPerPage != nil {
+		builder.AddQuery("jobs_per_page", fmt.Sprint(*listIngestionJobsOptions.JobsPerPage))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "list_ingestion_jobs", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalIngestionJobCollection)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+func getServiceComponentInfo() *core.ProblemComponent {
+	return core.NewProblemComponent(DefaultServiceName, "2.0.0")
+}
+
+// AddPrestissimoEngineCatalogsOptions : The AddPrestissimoEngineCatalogs options.
+type AddPrestissimoEngineCatalogsOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// catalog names.
+	CatalogNames *string `json:"catalog_names,omitempty"`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewAddPrestissimoEngineCatalogsOptions : Instantiate AddPrestissimoEngineCatalogsOptions
+func (*WatsonxDataV2) NewAddPrestissimoEngineCatalogsOptions(engineID string) *AddPrestissimoEngineCatalogsOptions {
+	return &AddPrestissimoEngineCatalogsOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *AddPrestissimoEngineCatalogsOptions) SetEngineID(engineID string) *AddPrestissimoEngineCatalogsOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetCatalogNames : Allow user to set CatalogNames
+func (_options *AddPrestissimoEngineCatalogsOptions) SetCatalogNames(catalogNames string) *AddPrestissimoEngineCatalogsOptions {
+	_options.CatalogNames = core.StringPtr(catalogNames)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *AddPrestissimoEngineCatalogsOptions) SetAuthInstanceID(authInstanceID string) *AddPrestissimoEngineCatalogsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *AddPrestissimoEngineCatalogsOptions) SetHeaders(param map[string]string) *AddPrestissimoEngineCatalogsOptions {
+	options.Headers = param
+	return options
+}
+
+// AddPrestoEngineCatalogsOptions : The AddPrestoEngineCatalogs options.
+type AddPrestoEngineCatalogsOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// catalog names.
+	CatalogNames *string `json:"catalog_names,omitempty"`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewAddPrestoEngineCatalogsOptions : Instantiate AddPrestoEngineCatalogsOptions
+func (*WatsonxDataV2) NewAddPrestoEngineCatalogsOptions(engineID string) *AddPrestoEngineCatalogsOptions {
+	return &AddPrestoEngineCatalogsOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *AddPrestoEngineCatalogsOptions) SetEngineID(engineID string) *AddPrestoEngineCatalogsOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetCatalogNames : Allow user to set CatalogNames
+func (_options *AddPrestoEngineCatalogsOptions) SetCatalogNames(catalogNames string) *AddPrestoEngineCatalogsOptions {
+	_options.CatalogNames = core.StringPtr(catalogNames)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *AddPrestoEngineCatalogsOptions) SetAuthInstanceID(authInstanceID string) *AddPrestoEngineCatalogsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *AddPrestoEngineCatalogsOptions) SetHeaders(param map[string]string) *AddPrestoEngineCatalogsOptions {
+	options.Headers = param
+	return options
+}
+
+// AddSparkEngineCatalogsOptions : The AddSparkEngineCatalogs options.
+type AddSparkEngineCatalogsOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// catalog names.
+	CatalogNames *string `json:"catalog_names,omitempty"`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewAddSparkEngineCatalogsOptions : Instantiate AddSparkEngineCatalogsOptions
+func (*WatsonxDataV2) NewAddSparkEngineCatalogsOptions(engineID string) *AddSparkEngineCatalogsOptions {
+	return &AddSparkEngineCatalogsOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *AddSparkEngineCatalogsOptions) SetEngineID(engineID string) *AddSparkEngineCatalogsOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetCatalogNames : Allow user to set CatalogNames
+func (_options *AddSparkEngineCatalogsOptions) SetCatalogNames(catalogNames string) *AddSparkEngineCatalogsOptions {
+	_options.CatalogNames = core.StringPtr(catalogNames)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *AddSparkEngineCatalogsOptions) SetAuthInstanceID(authInstanceID string) *AddSparkEngineCatalogsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *AddSparkEngineCatalogsOptions) SetHeaders(param map[string]string) *AddSparkEngineCatalogsOptions {
+	options.Headers = param
+	return options
 }
 
 // BucketCatalog : bucket catalog.
@@ -6014,14 +7535,17 @@ func UnmarshalBucketCatalog(m map[string]json.RawMessage, result interface{}) (e
 	obj := new(BucketCatalog)
 	err = core.UnmarshalPrimitive(m, "catalog_name", &obj.CatalogName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "catalog_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "catalog_tags", &obj.CatalogTags)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "catalog_tags-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "catalog_type", &obj.CatalogType)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "catalog_type-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -6049,6 +7573,9 @@ func (*WatsonxDataV2) NewBucketDetails(bucketName string) (_model *BucketDetails
 		BucketName: core.StringPtr(bucketName),
 	}
 	err = core.ValidateStruct(_model, "required parameters")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "model-missing-required", common.GetComponentInfo())
+	}
 	return
 }
 
@@ -6057,21 +7584,44 @@ func UnmarshalBucketDetails(m map[string]json.RawMessage, result interface{}) (e
 	obj := new(BucketDetails)
 	err = core.UnmarshalPrimitive(m, "access_key", &obj.AccessKey)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "access_key-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "bucket_name", &obj.BucketName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "bucket_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "endpoint", &obj.Endpoint)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "endpoint-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "secret_key", &obj.SecretKey)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "secret_key-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the BucketDetails
+func (bucketDetails *BucketDetails) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(bucketDetails.AccessKey) {
+		_patch["access_key"] = bucketDetails.AccessKey
+	}
+	if !core.IsNil(bucketDetails.BucketName) {
+		_patch["bucket_name"] = bucketDetails.BucketName
+	}
+	if !core.IsNil(bucketDetails.Endpoint) {
+		_patch["endpoint"] = bucketDetails.Endpoint
+	}
+	if !core.IsNil(bucketDetails.SecretKey) {
+		_patch["secret_key"] = bucketDetails.SecretKey
+	}
+
 	return
 }
 
@@ -6146,152 +7696,70 @@ func UnmarshalBucketRegistration(m map[string]json.RawMessage, result interface{
 	obj := new(BucketRegistration)
 	err = core.UnmarshalPrimitive(m, "actions", &obj.Actions)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "actions-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "associated_catalog", &obj.AssociatedCatalog, UnmarshalBucketCatalog)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "associated_catalog-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "bucket_details", &obj.BucketDetails, UnmarshalBucketDetails)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "bucket_details-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "bucket_display_name", &obj.BucketDisplayName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "bucket_display_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "bucket_id", &obj.BucketID)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "bucket_id-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "bucket_type", &obj.BucketType)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "bucket_type-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "created_by", &obj.CreatedBy)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "created_by-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "created_on", &obj.CreatedOn)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "created_on-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "description", &obj.Description)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "description-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "managed_by", &obj.ManagedBy)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "managed_by-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "region", &obj.Region)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "region-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "state", &obj.State)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "state-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "tags", &obj.Tags)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
-	return
-}
-
-func (*WatsonxDataV2) NewBucketRegistrationPatch(bucketRegistration *BucketRegistration) (_patch []JSONPatchOperation) {
-	if (bucketRegistration.Actions != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/actions"),
-			Value: bucketRegistration.Actions,
-		})
-	}
-	if (bucketRegistration.AssociatedCatalog != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/associated_catalog"),
-			Value: bucketRegistration.AssociatedCatalog,
-		})
-	}
-	if (bucketRegistration.BucketDetails != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/bucket_details"),
-			Value: bucketRegistration.BucketDetails,
-		})
-	}
-	if (bucketRegistration.BucketDisplayName != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/bucket_display_name"),
-			Value: bucketRegistration.BucketDisplayName,
-		})
-	}
-	if (bucketRegistration.BucketID != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/bucket_id"),
-			Value: bucketRegistration.BucketID,
-		})
-	}
-	if (bucketRegistration.BucketType != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/bucket_type"),
-			Value: bucketRegistration.BucketType,
-		})
-	}
-	if (bucketRegistration.CreatedBy != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/created_by"),
-			Value: bucketRegistration.CreatedBy,
-		})
-	}
-	if (bucketRegistration.CreatedOn != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/created_on"),
-			Value: bucketRegistration.CreatedOn,
-		})
-	}
-	if (bucketRegistration.Description != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/description"),
-			Value: bucketRegistration.Description,
-		})
-	}
-	if (bucketRegistration.ManagedBy != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/managed_by"),
-			Value: bucketRegistration.ManagedBy,
-		})
-	}
-	if (bucketRegistration.Region != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/region"),
-			Value: bucketRegistration.Region,
-		})
-	}
-	if (bucketRegistration.State != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/state"),
-			Value: bucketRegistration.State,
-		})
-	}
-	if (bucketRegistration.Tags != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/tags"),
-			Value: bucketRegistration.Tags,
-		})
-	}
 	return
 }
 
@@ -6306,6 +7774,7 @@ func UnmarshalBucketRegistrationCollection(m map[string]json.RawMessage, result 
 	obj := new(BucketRegistrationCollection)
 	err = core.UnmarshalModel(m, "bucket_registrations", &obj.BucketRegistrations, UnmarshalBucketRegistration)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "bucket_registrations-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -6323,33 +7792,71 @@ func UnmarshalBucketRegistrationObjectCollection(m map[string]json.RawMessage, r
 	obj := new(BucketRegistrationObjectCollection)
 	err = core.UnmarshalPrimitive(m, "objects", &obj.Objects)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "objects-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
 
-// BucketStatusResponse : object defining the response of checking if the credentials of a bucket are valid.
-type BucketStatusResponse struct {
-	// bucket credentials are valid or not.
-	State *bool `json:"state" validate:"required"`
+// BucketRegistrationPatch : Update bucket parameters.
+type BucketRegistrationPatch struct {
+	// bucket details.
+	BucketDetails *BucketDetails `json:"bucket_details,omitempty"`
 
-	// message response as per the credentials validated.
-	StateMessage *string `json:"state_message" validate:"required"`
+	// bucket display name.
+	BucketDisplayName *string `json:"bucket_display_name,omitempty"`
+
+	// modified description.
+	Description *string `json:"description,omitempty"`
+
+	// Tags.
+	Tags []string `json:"tags,omitempty"`
 }
 
-// UnmarshalBucketStatusResponse unmarshals an instance of BucketStatusResponse from the specified map of raw messages.
-func UnmarshalBucketStatusResponse(m map[string]json.RawMessage, result interface{}) (err error) {
-	obj := new(BucketStatusResponse)
-	err = core.UnmarshalPrimitive(m, "state", &obj.State)
+// UnmarshalBucketRegistrationPatch unmarshals an instance of BucketRegistrationPatch from the specified map of raw messages.
+func UnmarshalBucketRegistrationPatch(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(BucketRegistrationPatch)
+	err = core.UnmarshalModel(m, "bucket_details", &obj.BucketDetails, UnmarshalBucketDetails)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "bucket_details-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalPrimitive(m, "state_message", &obj.StateMessage)
+	err = core.UnmarshalPrimitive(m, "bucket_display_name", &obj.BucketDisplayName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "bucket_display_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "description", &obj.Description)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "description-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "tags", &obj.Tags)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// AsPatch returns a generic map representation of the BucketRegistrationPatch
+func (bucketRegistrationPatch *BucketRegistrationPatch) AsPatch() (_patch map[string]interface{}, err error) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(bucketRegistrationPatch.BucketDetails) {
+		_patch["bucket_details"] = bucketRegistrationPatch.BucketDetails.asPatch()
+	}
+	if !core.IsNil(bucketRegistrationPatch.BucketDisplayName) {
+		_patch["bucket_display_name"] = bucketRegistrationPatch.BucketDisplayName
+	}
+	if !core.IsNil(bucketRegistrationPatch.Description) {
+		_patch["description"] = bucketRegistrationPatch.Description
+	}
+	if !core.IsNil(bucketRegistrationPatch.Tags) {
+		_patch["tags"] = bucketRegistrationPatch.Tags
+	}
+
 	return
 }
 
@@ -6428,82 +7935,102 @@ func UnmarshalCatalog(m map[string]json.RawMessage, result interface{}) (err err
 	obj := new(Catalog)
 	err = core.UnmarshalPrimitive(m, "actions", &obj.Actions)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "actions-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "associated_buckets", &obj.AssociatedBuckets)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "associated_buckets-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "associated_databases", &obj.AssociatedDatabases)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "associated_databases-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "associated_engines", &obj.AssociatedEngines)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "associated_engines-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "catalog_name", &obj.CatalogName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "catalog_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "catalog_type", &obj.CatalogType)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "catalog_type-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "created_by", &obj.CreatedBy)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "created_by-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "created_on", &obj.CreatedOn)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "created_on-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "description", &obj.Description)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "description-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "hostname", &obj.Hostname)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "hostname-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "last_sync_at", &obj.LastSyncAt)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "last_sync_at-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "managed_by", &obj.ManagedBy)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "managed_by-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "metastore", &obj.Metastore)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "metastore-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "port", &obj.Port)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "port-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "status", &obj.Status)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "status-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "sync_description", &obj.SyncDescription)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "sync_description-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "sync_exception", &obj.SyncException)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "sync_exception-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "sync_status", &obj.SyncStatus)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "sync_status-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "tags", &obj.Tags)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "thrift_uri", &obj.ThriftURI)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "thrift_uri-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -6521,6 +8048,7 @@ func UnmarshalCatalogCollection(m map[string]json.RawMessage, result interface{}
 	obj := new(CatalogCollection)
 	err = core.UnmarshalModel(m, "catalogs", &obj.Catalogs, UnmarshalCatalog)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "catalogs-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -6553,75 +8081,35 @@ func UnmarshalColumn(m map[string]json.RawMessage, result interface{}) (err erro
 	obj := new(Column)
 	err = core.UnmarshalPrimitive(m, "column_name", &obj.ColumnName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "column_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "comment", &obj.Comment)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "comment-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "extra", &obj.Extra)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "extra-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "length", &obj.Length)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "length-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "scale", &obj.Scale)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "scale-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "type", &obj.Type)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "type-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
-	return
-}
-
-func (*WatsonxDataV2) NewColumnPatch(column *Column) (_patch []JSONPatchOperation) {
-	if (column.ColumnName != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/column_name"),
-			Value: column.ColumnName,
-		})
-	}
-	if (column.Comment != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/comment"),
-			Value: column.Comment,
-		})
-	}
-	if (column.Extra != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/extra"),
-			Value: column.Extra,
-		})
-	}
-	if (column.Length != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/length"),
-			Value: column.Length,
-		})
-	}
-	if (column.Scale != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/scale"),
-			Value: column.Scale,
-		})
-	}
-	if (column.Type != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/type"),
-			Value: column.Type,
-		})
-	}
 	return
 }
 
@@ -6636,33 +8124,38 @@ func UnmarshalColumnCollection(m map[string]json.RawMessage, result interface{})
 	obj := new(ColumnCollection)
 	err = core.UnmarshalModel(m, "columns", &obj.Columns, UnmarshalColumn)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "columns-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
 
-// ConnectionResponse : check connection response details are valid or not.
-type ConnectionResponse struct {
-	// Whether the connection details are valid or not.
-	State *bool `json:"state,omitempty"`
-
-	// Connection message received by connector libraries for failed connection.
-	StateMessage *string `json:"state_message,omitempty"`
+// ColumnPatch : list of columns to be added to a table.
+type ColumnPatch struct {
+	// Column name.
+	ColumnName *string `json:"column_name,omitempty"`
 }
 
-// UnmarshalConnectionResponse unmarshals an instance of ConnectionResponse from the specified map of raw messages.
-func UnmarshalConnectionResponse(m map[string]json.RawMessage, result interface{}) (err error) {
-	obj := new(ConnectionResponse)
-	err = core.UnmarshalPrimitive(m, "state", &obj.State)
+// UnmarshalColumnPatch unmarshals an instance of ColumnPatch from the specified map of raw messages.
+func UnmarshalColumnPatch(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(ColumnPatch)
+	err = core.UnmarshalPrimitive(m, "column_name", &obj.ColumnName)
 	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "state_message", &obj.StateMessage)
-	if err != nil {
+		err = core.SDKErrorf(err, "", "column_name-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// AsPatch returns a generic map representation of the ColumnPatch
+func (columnPatch *ColumnPatch) AsPatch() (_patch map[string]interface{}, err error) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(columnPatch.ColumnName) {
+		_patch["column_name"] = columnPatch.ColumnName
+	}
+
 	return
 }
 
@@ -6677,6 +8170,7 @@ func UnmarshalCreateActivateBucketCreatedBody(m map[string]json.RawMessage, resu
 	obj := new(CreateActivateBucketCreatedBody)
 	err = core.UnmarshalModel(m, "response", &obj.Response, UnmarshalSuccessResponse)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "response-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -6688,10 +8182,10 @@ type CreateActivateBucketOptions struct {
 	// bucket id.
 	BucketID *string `json:"bucket_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -6746,10 +8240,10 @@ type CreateBucketRegistrationOptions struct {
 	// tags.
 	Tags []string `json:"tags,omitempty"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -6856,10 +8350,10 @@ type CreateColumnsOptions struct {
 	// List of the tables present in the schema.
 	Columns []Column `json:"columns,omitempty"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -6941,10 +8435,10 @@ type CreateDatabaseRegistrationOptions struct {
 	// tags.
 	Tags []string `json:"tags,omitempty"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -7021,9 +8515,6 @@ type CreateDb2EngineOptions struct {
 	// Origin - created or registered.
 	Origin *string `json:"origin" validate:"required"`
 
-	// Engine type.
-	Type *string `json:"type" validate:"required"`
-
 	// Engine description.
 	Description *string `json:"description,omitempty"`
 
@@ -7036,10 +8527,10 @@ type CreateDb2EngineOptions struct {
 	// Tags.
 	Tags []string `json:"tags,omitempty"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -7052,22 +8543,15 @@ const (
 )
 
 // NewCreateDb2EngineOptions : Instantiate CreateDb2EngineOptions
-func (*WatsonxDataV2) NewCreateDb2EngineOptions(origin string, typeVar string) *CreateDb2EngineOptions {
+func (*WatsonxDataV2) NewCreateDb2EngineOptions(origin string) *CreateDb2EngineOptions {
 	return &CreateDb2EngineOptions{
 		Origin: core.StringPtr(origin),
-		Type: core.StringPtr(typeVar),
 	}
 }
 
 // SetOrigin : Allow user to set Origin
 func (_options *CreateDb2EngineOptions) SetOrigin(origin string) *CreateDb2EngineOptions {
 	_options.Origin = core.StringPtr(origin)
-	return _options
-}
-
-// SetType : Allow user to set Type
-func (_options *CreateDb2EngineOptions) SetType(typeVar string) *CreateDb2EngineOptions {
-	_options.Type = core.StringPtr(typeVar)
 	return _options
 }
 
@@ -7107,187 +8591,6 @@ func (options *CreateDb2EngineOptions) SetHeaders(param map[string]string) *Crea
 	return options
 }
 
-// CreateDriverDatabaseCatalogOptions : The CreateDriverDatabaseCatalog options.
-type CreateDriverDatabaseCatalogOptions struct {
-	// Driver file to upload.
-	Driver io.ReadCloser `json:"driver" validate:"required"`
-
-	// Name of the driver file.
-	DriverFileName *string `json:"driver_file_name" validate:"required"`
-
-	// Database display name.
-	DatabaseDisplayName *string `json:"database_display_name" validate:"required"`
-
-	// Connector type.
-	DatabaseType *string `json:"database_type" validate:"required"`
-
-	// Catalog name.
-	CatalogName *string `json:"catalog_name" validate:"required"`
-
-	// Host name.
-	Hostname *string `json:"hostname" validate:"required"`
-
-	// Port.
-	Port *string `json:"port" validate:"required"`
-
-	// Username.
-	Username *string `json:"username" validate:"required"`
-
-	// Psssword.
-	Password *string `json:"password" validate:"required"`
-
-	// Database name.
-	DatabaseName *string `json:"database_name" validate:"required"`
-
-	// The content type of driver.
-	DriverContentType *string `json:"driver_content_type,omitempty"`
-
-	// contents of a pem/crt file.
-	Certificate *string `json:"certificate,omitempty"`
-
-	// extension of the certificate file.
-	CertificateExtension *string `json:"certificate_extension,omitempty"`
-
-	// SSL Mode.
-	Ssl *string `json:"ssl,omitempty"`
-
-	// Database description.
-	Description *string `json:"description,omitempty"`
-
-	// Created on.
-	CreatedOn *string `json:"created_on,omitempty"`
-
-	// Instance ID.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests
-	Headers map[string]string
-}
-
-// NewCreateDriverDatabaseCatalogOptions : Instantiate CreateDriverDatabaseCatalogOptions
-func (*WatsonxDataV2) NewCreateDriverDatabaseCatalogOptions(driver io.ReadCloser, driverFileName string, databaseDisplayName string, databaseType string, catalogName string, hostname string, port string, username string, password string, databaseName string) *CreateDriverDatabaseCatalogOptions {
-	return &CreateDriverDatabaseCatalogOptions{
-		Driver: driver,
-		DriverFileName: core.StringPtr(driverFileName),
-		DatabaseDisplayName: core.StringPtr(databaseDisplayName),
-		DatabaseType: core.StringPtr(databaseType),
-		CatalogName: core.StringPtr(catalogName),
-		Hostname: core.StringPtr(hostname),
-		Port: core.StringPtr(port),
-		Username: core.StringPtr(username),
-		Password: core.StringPtr(password),
-		DatabaseName: core.StringPtr(databaseName),
-	}
-}
-
-// SetDriver : Allow user to set Driver
-func (_options *CreateDriverDatabaseCatalogOptions) SetDriver(driver io.ReadCloser) *CreateDriverDatabaseCatalogOptions {
-	_options.Driver = driver
-	return _options
-}
-
-// SetDriverFileName : Allow user to set DriverFileName
-func (_options *CreateDriverDatabaseCatalogOptions) SetDriverFileName(driverFileName string) *CreateDriverDatabaseCatalogOptions {
-	_options.DriverFileName = core.StringPtr(driverFileName)
-	return _options
-}
-
-// SetDatabaseDisplayName : Allow user to set DatabaseDisplayName
-func (_options *CreateDriverDatabaseCatalogOptions) SetDatabaseDisplayName(databaseDisplayName string) *CreateDriverDatabaseCatalogOptions {
-	_options.DatabaseDisplayName = core.StringPtr(databaseDisplayName)
-	return _options
-}
-
-// SetDatabaseType : Allow user to set DatabaseType
-func (_options *CreateDriverDatabaseCatalogOptions) SetDatabaseType(databaseType string) *CreateDriverDatabaseCatalogOptions {
-	_options.DatabaseType = core.StringPtr(databaseType)
-	return _options
-}
-
-// SetCatalogName : Allow user to set CatalogName
-func (_options *CreateDriverDatabaseCatalogOptions) SetCatalogName(catalogName string) *CreateDriverDatabaseCatalogOptions {
-	_options.CatalogName = core.StringPtr(catalogName)
-	return _options
-}
-
-// SetHostname : Allow user to set Hostname
-func (_options *CreateDriverDatabaseCatalogOptions) SetHostname(hostname string) *CreateDriverDatabaseCatalogOptions {
-	_options.Hostname = core.StringPtr(hostname)
-	return _options
-}
-
-// SetPort : Allow user to set Port
-func (_options *CreateDriverDatabaseCatalogOptions) SetPort(port string) *CreateDriverDatabaseCatalogOptions {
-	_options.Port = core.StringPtr(port)
-	return _options
-}
-
-// SetUsername : Allow user to set Username
-func (_options *CreateDriverDatabaseCatalogOptions) SetUsername(username string) *CreateDriverDatabaseCatalogOptions {
-	_options.Username = core.StringPtr(username)
-	return _options
-}
-
-// SetPassword : Allow user to set Password
-func (_options *CreateDriverDatabaseCatalogOptions) SetPassword(password string) *CreateDriverDatabaseCatalogOptions {
-	_options.Password = core.StringPtr(password)
-	return _options
-}
-
-// SetDatabaseName : Allow user to set DatabaseName
-func (_options *CreateDriverDatabaseCatalogOptions) SetDatabaseName(databaseName string) *CreateDriverDatabaseCatalogOptions {
-	_options.DatabaseName = core.StringPtr(databaseName)
-	return _options
-}
-
-// SetDriverContentType : Allow user to set DriverContentType
-func (_options *CreateDriverDatabaseCatalogOptions) SetDriverContentType(driverContentType string) *CreateDriverDatabaseCatalogOptions {
-	_options.DriverContentType = core.StringPtr(driverContentType)
-	return _options
-}
-
-// SetCertificate : Allow user to set Certificate
-func (_options *CreateDriverDatabaseCatalogOptions) SetCertificate(certificate string) *CreateDriverDatabaseCatalogOptions {
-	_options.Certificate = core.StringPtr(certificate)
-	return _options
-}
-
-// SetCertificateExtension : Allow user to set CertificateExtension
-func (_options *CreateDriverDatabaseCatalogOptions) SetCertificateExtension(certificateExtension string) *CreateDriverDatabaseCatalogOptions {
-	_options.CertificateExtension = core.StringPtr(certificateExtension)
-	return _options
-}
-
-// SetSsl : Allow user to set Ssl
-func (_options *CreateDriverDatabaseCatalogOptions) SetSsl(ssl string) *CreateDriverDatabaseCatalogOptions {
-	_options.Ssl = core.StringPtr(ssl)
-	return _options
-}
-
-// SetDescription : Allow user to set Description
-func (_options *CreateDriverDatabaseCatalogOptions) SetDescription(description string) *CreateDriverDatabaseCatalogOptions {
-	_options.Description = core.StringPtr(description)
-	return _options
-}
-
-// SetCreatedOn : Allow user to set CreatedOn
-func (_options *CreateDriverDatabaseCatalogOptions) SetCreatedOn(createdOn string) *CreateDriverDatabaseCatalogOptions {
-	_options.CreatedOn = core.StringPtr(createdOn)
-	return _options
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *CreateDriverDatabaseCatalogOptions) SetAuthInstanceID(authInstanceID string) *CreateDriverDatabaseCatalogOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *CreateDriverDatabaseCatalogOptions) SetHeaders(param map[string]string) *CreateDriverDatabaseCatalogOptions {
-	options.Headers = param
-	return options
-}
-
 // CreateEnginePauseCreatedBody : Pause.
 type CreateEnginePauseCreatedBody struct {
 	// Response of success.
@@ -7299,47 +8602,11 @@ func UnmarshalCreateEnginePauseCreatedBody(m map[string]json.RawMessage, result 
 	obj := new(CreateEnginePauseCreatedBody)
 	err = core.UnmarshalModel(m, "response", &obj.Response, UnmarshalSuccessResponse)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "response-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
-}
-
-// CreateEnginePauseOptions : The CreateEnginePause options.
-type CreateEnginePauseOptions struct {
-	// engine id.
-	EngineID *string `json:"engine_id" validate:"required,ne="`
-
-	// Instance ID.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests
-	Headers map[string]string
-}
-
-// NewCreateEnginePauseOptions : Instantiate CreateEnginePauseOptions
-func (*WatsonxDataV2) NewCreateEnginePauseOptions(engineID string) *CreateEnginePauseOptions {
-	return &CreateEnginePauseOptions{
-		EngineID: core.StringPtr(engineID),
-	}
-}
-
-// SetEngineID : Allow user to set EngineID
-func (_options *CreateEnginePauseOptions) SetEngineID(engineID string) *CreateEnginePauseOptions {
-	_options.EngineID = core.StringPtr(engineID)
-	return _options
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *CreateEnginePauseOptions) SetAuthInstanceID(authInstanceID string) *CreateEnginePauseOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *CreateEnginePauseOptions) SetHeaders(param map[string]string) *CreateEnginePauseOptions {
-	options.Headers = param
-	return options
 }
 
 // CreateEngineRestartCreatedBody : restart engine.
@@ -7353,47 +8620,11 @@ func UnmarshalCreateEngineRestartCreatedBody(m map[string]json.RawMessage, resul
 	obj := new(CreateEngineRestartCreatedBody)
 	err = core.UnmarshalModel(m, "response", &obj.Response, UnmarshalSuccessResponse)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "response-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
-}
-
-// CreateEngineRestartOptions : The CreateEngineRestart options.
-type CreateEngineRestartOptions struct {
-	// engine id.
-	EngineID *string `json:"engine_id" validate:"required,ne="`
-
-	// Instance ID.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests
-	Headers map[string]string
-}
-
-// NewCreateEngineRestartOptions : Instantiate CreateEngineRestartOptions
-func (*WatsonxDataV2) NewCreateEngineRestartOptions(engineID string) *CreateEngineRestartOptions {
-	return &CreateEngineRestartOptions{
-		EngineID: core.StringPtr(engineID),
-	}
-}
-
-// SetEngineID : Allow user to set EngineID
-func (_options *CreateEngineRestartOptions) SetEngineID(engineID string) *CreateEngineRestartOptions {
-	_options.EngineID = core.StringPtr(engineID)
-	return _options
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *CreateEngineRestartOptions) SetAuthInstanceID(authInstanceID string) *CreateEngineRestartOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *CreateEngineRestartOptions) SetHeaders(param map[string]string) *CreateEngineRestartOptions {
-	options.Headers = param
-	return options
 }
 
 // CreateEngineResumeCreatedBody : resume.
@@ -7407,47 +8638,11 @@ func UnmarshalCreateEngineResumeCreatedBody(m map[string]json.RawMessage, result
 	obj := new(CreateEngineResumeCreatedBody)
 	err = core.UnmarshalModel(m, "response", &obj.Response, UnmarshalSuccessResponse)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "response-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
-}
-
-// CreateEngineResumeOptions : The CreateEngineResume options.
-type CreateEngineResumeOptions struct {
-	// engine id.
-	EngineID *string `json:"engine_id" validate:"required,ne="`
-
-	// Instance ID.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests
-	Headers map[string]string
-}
-
-// NewCreateEngineResumeOptions : Instantiate CreateEngineResumeOptions
-func (*WatsonxDataV2) NewCreateEngineResumeOptions(engineID string) *CreateEngineResumeOptions {
-	return &CreateEngineResumeOptions{
-		EngineID: core.StringPtr(engineID),
-	}
-}
-
-// SetEngineID : Allow user to set EngineID
-func (_options *CreateEngineResumeOptions) SetEngineID(engineID string) *CreateEngineResumeOptions {
-	_options.EngineID = core.StringPtr(engineID)
-	return _options
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *CreateEngineResumeOptions) SetAuthInstanceID(authInstanceID string) *CreateEngineResumeOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *CreateEngineResumeOptions) SetHeaders(param map[string]string) *CreateEngineResumeOptions {
-	options.Headers = param
-	return options
 }
 
 // CreateEngineScaleCreatedBody : scale engine.
@@ -7461,74 +8656,17 @@ func UnmarshalCreateEngineScaleCreatedBody(m map[string]json.RawMessage, result 
 	obj := new(CreateEngineScaleCreatedBody)
 	err = core.UnmarshalModel(m, "response", &obj.Response, UnmarshalSuccessResponse)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "response-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
 
-// CreateEngineScaleOptions : The CreateEngineScale options.
-type CreateEngineScaleOptions struct {
-	// engine id.
-	EngineID *string `json:"engine_id" validate:"required,ne="`
-
-	// NodeDescription.
-	Coordinator *NodeDescription `json:"coordinator,omitempty"`
-
-	// NodeDescription.
-	Worker *NodeDescription `json:"worker,omitempty"`
-
-	// Instance ID.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests
-	Headers map[string]string
-}
-
-// NewCreateEngineScaleOptions : Instantiate CreateEngineScaleOptions
-func (*WatsonxDataV2) NewCreateEngineScaleOptions(engineID string) *CreateEngineScaleOptions {
-	return &CreateEngineScaleOptions{
-		EngineID: core.StringPtr(engineID),
-	}
-}
-
-// SetEngineID : Allow user to set EngineID
-func (_options *CreateEngineScaleOptions) SetEngineID(engineID string) *CreateEngineScaleOptions {
-	_options.EngineID = core.StringPtr(engineID)
-	return _options
-}
-
-// SetCoordinator : Allow user to set Coordinator
-func (_options *CreateEngineScaleOptions) SetCoordinator(coordinator *NodeDescription) *CreateEngineScaleOptions {
-	_options.Coordinator = coordinator
-	return _options
-}
-
-// SetWorker : Allow user to set Worker
-func (_options *CreateEngineScaleOptions) SetWorker(worker *NodeDescription) *CreateEngineScaleOptions {
-	_options.Worker = worker
-	return _options
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *CreateEngineScaleOptions) SetAuthInstanceID(authInstanceID string) *CreateEngineScaleOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *CreateEngineScaleOptions) SetHeaders(param map[string]string) *CreateEngineScaleOptions {
-	options.Headers = param
-	return options
-}
-
 // CreateMilvusServiceOptions : The CreateMilvusService options.
 type CreateMilvusServiceOptions struct {
 	// Origin - place holder.
 	Origin *string `json:"origin" validate:"required"`
-
-	// service type.
-	Type *string `json:"type" validate:"required"`
 
 	// Service description.
 	Description *string `json:"description,omitempty"`
@@ -7539,30 +8677,23 @@ type CreateMilvusServiceOptions struct {
 	// Tags.
 	Tags []string `json:"tags,omitempty"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
 // NewCreateMilvusServiceOptions : Instantiate CreateMilvusServiceOptions
-func (*WatsonxDataV2) NewCreateMilvusServiceOptions(origin string, typeVar string) *CreateMilvusServiceOptions {
+func (*WatsonxDataV2) NewCreateMilvusServiceOptions(origin string) *CreateMilvusServiceOptions {
 	return &CreateMilvusServiceOptions{
 		Origin: core.StringPtr(origin),
-		Type: core.StringPtr(typeVar),
 	}
 }
 
 // SetOrigin : Allow user to set Origin
 func (_options *CreateMilvusServiceOptions) SetOrigin(origin string) *CreateMilvusServiceOptions {
 	_options.Origin = core.StringPtr(origin)
-	return _options
-}
-
-// SetType : Allow user to set Type
-func (_options *CreateMilvusServiceOptions) SetType(typeVar string) *CreateMilvusServiceOptions {
-	_options.Type = core.StringPtr(typeVar)
 	return _options
 }
 
@@ -7601,9 +8732,6 @@ type CreateNetezzaEngineOptions struct {
 	// Origin - created or registered.
 	Origin *string `json:"origin" validate:"required"`
 
-	// Engine type.
-	Type *string `json:"type" validate:"required"`
-
 	// Engine description.
 	Description *string `json:"description,omitempty"`
 
@@ -7616,10 +8744,10 @@ type CreateNetezzaEngineOptions struct {
 	// Tags.
 	Tags []string `json:"tags,omitempty"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -7632,22 +8760,15 @@ const (
 )
 
 // NewCreateNetezzaEngineOptions : Instantiate CreateNetezzaEngineOptions
-func (*WatsonxDataV2) NewCreateNetezzaEngineOptions(origin string, typeVar string) *CreateNetezzaEngineOptions {
+func (*WatsonxDataV2) NewCreateNetezzaEngineOptions(origin string) *CreateNetezzaEngineOptions {
 	return &CreateNetezzaEngineOptions{
 		Origin: core.StringPtr(origin),
-		Type: core.StringPtr(typeVar),
 	}
 }
 
 // SetOrigin : Allow user to set Origin
 func (_options *CreateNetezzaEngineOptions) SetOrigin(origin string) *CreateNetezzaEngineOptions {
 	_options.Origin = core.StringPtr(origin)
-	return _options
-}
-
-// SetType : Allow user to set Type
-func (_options *CreateNetezzaEngineOptions) SetType(typeVar string) *CreateNetezzaEngineOptions {
-	_options.Type = core.StringPtr(typeVar)
 	return _options
 }
 
@@ -7707,10 +8828,10 @@ type CreateOtherEngineOptions struct {
 	// Engine type.
 	Type *string `json:"type,omitempty"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -7783,9 +8904,6 @@ type CreatePrestissimoEngineOptions struct {
 	// Origin - created or registered.
 	Origin *string `json:"origin" validate:"required"`
 
-	// Engine type prestissimo, others like netezza.
-	Type *string `json:"type" validate:"required"`
-
 	// Associated catalogs.
 	AssociatedCatalogs []string `json:"associated_catalogs,omitempty"`
 
@@ -7807,10 +8925,10 @@ type CreatePrestissimoEngineOptions struct {
 	// Version like 0.278 for prestissimo or else.
 	Version *string `json:"version,omitempty"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -7823,22 +8941,15 @@ const (
 )
 
 // NewCreatePrestissimoEngineOptions : Instantiate CreatePrestissimoEngineOptions
-func (*WatsonxDataV2) NewCreatePrestissimoEngineOptions(origin string, typeVar string) *CreatePrestissimoEngineOptions {
+func (*WatsonxDataV2) NewCreatePrestissimoEngineOptions(origin string) *CreatePrestissimoEngineOptions {
 	return &CreatePrestissimoEngineOptions{
 		Origin: core.StringPtr(origin),
-		Type: core.StringPtr(typeVar),
 	}
 }
 
 // SetOrigin : Allow user to set Origin
 func (_options *CreatePrestissimoEngineOptions) SetOrigin(origin string) *CreatePrestissimoEngineOptions {
 	_options.Origin = core.StringPtr(origin)
-	return _options
-}
-
-// SetType : Allow user to set Type
-func (_options *CreatePrestissimoEngineOptions) SetType(typeVar string) *CreatePrestissimoEngineOptions {
-	_options.Type = core.StringPtr(typeVar)
 	return _options
 }
 
@@ -7896,179 +9007,10 @@ func (options *CreatePrestissimoEngineOptions) SetHeaders(param map[string]strin
 	return options
 }
 
-// CreatePrestissimoEnginePauseOptions : The CreatePrestissimoEnginePause options.
-type CreatePrestissimoEnginePauseOptions struct {
-	// engine id.
-	EngineID *string `json:"engine_id" validate:"required,ne="`
-
-	// Instance ID.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests
-	Headers map[string]string
-}
-
-// NewCreatePrestissimoEnginePauseOptions : Instantiate CreatePrestissimoEnginePauseOptions
-func (*WatsonxDataV2) NewCreatePrestissimoEnginePauseOptions(engineID string) *CreatePrestissimoEnginePauseOptions {
-	return &CreatePrestissimoEnginePauseOptions{
-		EngineID: core.StringPtr(engineID),
-	}
-}
-
-// SetEngineID : Allow user to set EngineID
-func (_options *CreatePrestissimoEnginePauseOptions) SetEngineID(engineID string) *CreatePrestissimoEnginePauseOptions {
-	_options.EngineID = core.StringPtr(engineID)
-	return _options
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *CreatePrestissimoEnginePauseOptions) SetAuthInstanceID(authInstanceID string) *CreatePrestissimoEnginePauseOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *CreatePrestissimoEnginePauseOptions) SetHeaders(param map[string]string) *CreatePrestissimoEnginePauseOptions {
-	options.Headers = param
-	return options
-}
-
-// CreatePrestissimoEngineRestartOptions : The CreatePrestissimoEngineRestart options.
-type CreatePrestissimoEngineRestartOptions struct {
-	// engine id.
-	EngineID *string `json:"engine_id" validate:"required,ne="`
-
-	// Instance ID.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests
-	Headers map[string]string
-}
-
-// NewCreatePrestissimoEngineRestartOptions : Instantiate CreatePrestissimoEngineRestartOptions
-func (*WatsonxDataV2) NewCreatePrestissimoEngineRestartOptions(engineID string) *CreatePrestissimoEngineRestartOptions {
-	return &CreatePrestissimoEngineRestartOptions{
-		EngineID: core.StringPtr(engineID),
-	}
-}
-
-// SetEngineID : Allow user to set EngineID
-func (_options *CreatePrestissimoEngineRestartOptions) SetEngineID(engineID string) *CreatePrestissimoEngineRestartOptions {
-	_options.EngineID = core.StringPtr(engineID)
-	return _options
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *CreatePrestissimoEngineRestartOptions) SetAuthInstanceID(authInstanceID string) *CreatePrestissimoEngineRestartOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *CreatePrestissimoEngineRestartOptions) SetHeaders(param map[string]string) *CreatePrestissimoEngineRestartOptions {
-	options.Headers = param
-	return options
-}
-
-// CreatePrestissimoEngineResumeOptions : The CreatePrestissimoEngineResume options.
-type CreatePrestissimoEngineResumeOptions struct {
-	// engine id.
-	EngineID *string `json:"engine_id" validate:"required,ne="`
-
-	// Instance ID.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests
-	Headers map[string]string
-}
-
-// NewCreatePrestissimoEngineResumeOptions : Instantiate CreatePrestissimoEngineResumeOptions
-func (*WatsonxDataV2) NewCreatePrestissimoEngineResumeOptions(engineID string) *CreatePrestissimoEngineResumeOptions {
-	return &CreatePrestissimoEngineResumeOptions{
-		EngineID: core.StringPtr(engineID),
-	}
-}
-
-// SetEngineID : Allow user to set EngineID
-func (_options *CreatePrestissimoEngineResumeOptions) SetEngineID(engineID string) *CreatePrestissimoEngineResumeOptions {
-	_options.EngineID = core.StringPtr(engineID)
-	return _options
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *CreatePrestissimoEngineResumeOptions) SetAuthInstanceID(authInstanceID string) *CreatePrestissimoEngineResumeOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *CreatePrestissimoEngineResumeOptions) SetHeaders(param map[string]string) *CreatePrestissimoEngineResumeOptions {
-	options.Headers = param
-	return options
-}
-
-// CreatePrestissimoEngineScaleOptions : The CreatePrestissimoEngineScale options.
-type CreatePrestissimoEngineScaleOptions struct {
-	// engine id.
-	EngineID *string `json:"engine_id" validate:"required,ne="`
-
-	// Node details.
-	Coordinator *PrestissimoNodeDescriptionBody `json:"coordinator,omitempty"`
-
-	// Node details.
-	Worker *PrestissimoNodeDescriptionBody `json:"worker,omitempty"`
-
-	// Instance ID.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests
-	Headers map[string]string
-}
-
-// NewCreatePrestissimoEngineScaleOptions : Instantiate CreatePrestissimoEngineScaleOptions
-func (*WatsonxDataV2) NewCreatePrestissimoEngineScaleOptions(engineID string) *CreatePrestissimoEngineScaleOptions {
-	return &CreatePrestissimoEngineScaleOptions{
-		EngineID: core.StringPtr(engineID),
-	}
-}
-
-// SetEngineID : Allow user to set EngineID
-func (_options *CreatePrestissimoEngineScaleOptions) SetEngineID(engineID string) *CreatePrestissimoEngineScaleOptions {
-	_options.EngineID = core.StringPtr(engineID)
-	return _options
-}
-
-// SetCoordinator : Allow user to set Coordinator
-func (_options *CreatePrestissimoEngineScaleOptions) SetCoordinator(coordinator *PrestissimoNodeDescriptionBody) *CreatePrestissimoEngineScaleOptions {
-	_options.Coordinator = coordinator
-	return _options
-}
-
-// SetWorker : Allow user to set Worker
-func (_options *CreatePrestissimoEngineScaleOptions) SetWorker(worker *PrestissimoNodeDescriptionBody) *CreatePrestissimoEngineScaleOptions {
-	_options.Worker = worker
-	return _options
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *CreatePrestissimoEngineScaleOptions) SetAuthInstanceID(authInstanceID string) *CreatePrestissimoEngineScaleOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *CreatePrestissimoEngineScaleOptions) SetHeaders(param map[string]string) *CreatePrestissimoEngineScaleOptions {
-	options.Headers = param
-	return options
-}
-
 // CreatePrestoEngineOptions : The CreatePrestoEngine options.
 type CreatePrestoEngineOptions struct {
 	// Origin - created or registered.
 	Origin *string `json:"origin" validate:"required"`
-
-	// Engine type presto.
-	Type *string `json:"type" validate:"required"`
 
 	// Associated catalogs.
 	AssociatedCatalogs []string `json:"associated_catalogs,omitempty"`
@@ -8091,10 +9033,10 @@ type CreatePrestoEngineOptions struct {
 	// Version like 0.278 for presto or else.
 	Version *string `json:"version,omitempty"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -8107,22 +9049,15 @@ const (
 )
 
 // NewCreatePrestoEngineOptions : Instantiate CreatePrestoEngineOptions
-func (*WatsonxDataV2) NewCreatePrestoEngineOptions(origin string, typeVar string) *CreatePrestoEngineOptions {
+func (*WatsonxDataV2) NewCreatePrestoEngineOptions(origin string) *CreatePrestoEngineOptions {
 	return &CreatePrestoEngineOptions{
 		Origin: core.StringPtr(origin),
-		Type: core.StringPtr(typeVar),
 	}
 }
 
 // SetOrigin : Allow user to set Origin
 func (_options *CreatePrestoEngineOptions) SetOrigin(origin string) *CreatePrestoEngineOptions {
 	_options.Origin = core.StringPtr(origin)
-	return _options
-}
-
-// SetType : Allow user to set Type
-func (_options *CreatePrestoEngineOptions) SetType(typeVar string) *CreatePrestoEngineOptions {
-	_options.Type = core.StringPtr(typeVar)
 	return _options
 }
 
@@ -8191,6 +9126,7 @@ func UnmarshalCreateSchemaCreatedBody(m map[string]json.RawMessage, result inter
 	obj := new(CreateSchemaCreatedBody)
 	err = core.UnmarshalModel(m, "response", &obj.Response, UnmarshalSuccessResponse)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "response-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -8214,10 +9150,10 @@ type CreateSchemaOptions struct {
 	// Bucket associated to metastore where schema will be added.
 	BucketName *string `json:"bucket_name,omitempty"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -8290,10 +9226,16 @@ type CreateSparkEngineApplicationOptions struct {
 	// Engine Type.
 	Type *string `json:"type,omitempty"`
 
-	// Instance ID.
+	// Spark application volumes to mount.
+	Volumes []SparkVolumeDetails `json:"volumes,omitempty"`
+
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// state.
+	State []string `json:"state,omitempty"`
+
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -8342,9 +9284,21 @@ func (_options *CreateSparkEngineApplicationOptions) SetType(typeVar string) *Cr
 	return _options
 }
 
+// SetVolumes : Allow user to set Volumes
+func (_options *CreateSparkEngineApplicationOptions) SetVolumes(volumes []SparkVolumeDetails) *CreateSparkEngineApplicationOptions {
+	_options.Volumes = volumes
+	return _options
+}
+
 // SetAuthInstanceID : Allow user to set AuthInstanceID
 func (_options *CreateSparkEngineApplicationOptions) SetAuthInstanceID(authInstanceID string) *CreateSparkEngineApplicationOptions {
 	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetState : Allow user to set State
+func (_options *CreateSparkEngineApplicationOptions) SetState(state []string) *CreateSparkEngineApplicationOptions {
+	_options.State = state
 	return _options
 }
 
@@ -8359,8 +9313,8 @@ type CreateSparkEngineOptions struct {
 	// Origin - created or registered.
 	Origin *string `json:"origin" validate:"required"`
 
-	// Engine type spark, others like netezza.
-	Type *string `json:"type" validate:"required"`
+	// Associated catalogs.
+	AssociatedCatalogs []string `json:"associated_catalogs,omitempty"`
 
 	// Engine description.
 	Description *string `json:"description,omitempty"`
@@ -8371,13 +9325,16 @@ type CreateSparkEngineOptions struct {
 	// Engine display name.
 	EngineDisplayName *string `json:"engine_display_name,omitempty"`
 
+	// Engine status.
+	Status *string `json:"status,omitempty"`
+
 	// Tags.
 	Tags []string `json:"tags,omitempty"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -8386,13 +9343,13 @@ type CreateSparkEngineOptions struct {
 const (
 	CreateSparkEngineOptions_Origin_Discover = "discover"
 	CreateSparkEngineOptions_Origin_External = "external"
+	CreateSparkEngineOptions_Origin_Native = "native"
 )
 
 // NewCreateSparkEngineOptions : Instantiate CreateSparkEngineOptions
-func (*WatsonxDataV2) NewCreateSparkEngineOptions(origin string, typeVar string) *CreateSparkEngineOptions {
+func (*WatsonxDataV2) NewCreateSparkEngineOptions(origin string) *CreateSparkEngineOptions {
 	return &CreateSparkEngineOptions{
 		Origin: core.StringPtr(origin),
-		Type: core.StringPtr(typeVar),
 	}
 }
 
@@ -8402,9 +9359,9 @@ func (_options *CreateSparkEngineOptions) SetOrigin(origin string) *CreateSparkE
 	return _options
 }
 
-// SetType : Allow user to set Type
-func (_options *CreateSparkEngineOptions) SetType(typeVar string) *CreateSparkEngineOptions {
-	_options.Type = core.StringPtr(typeVar)
+// SetAssociatedCatalogs : Allow user to set AssociatedCatalogs
+func (_options *CreateSparkEngineOptions) SetAssociatedCatalogs(associatedCatalogs []string) *CreateSparkEngineOptions {
+	_options.AssociatedCatalogs = associatedCatalogs
 	return _options
 }
 
@@ -8426,6 +9383,12 @@ func (_options *CreateSparkEngineOptions) SetEngineDisplayName(engineDisplayName
 	return _options
 }
 
+// SetStatus : Allow user to set Status
+func (_options *CreateSparkEngineOptions) SetStatus(status string) *CreateSparkEngineOptions {
+	_options.Status = core.StringPtr(status)
+	return _options
+}
+
 // SetTags : Allow user to set Tags
 func (_options *CreateSparkEngineOptions) SetTags(tags []string) *CreateSparkEngineOptions {
 	_options.Tags = tags
@@ -8440,6 +9403,126 @@ func (_options *CreateSparkEngineOptions) SetAuthInstanceID(authInstanceID strin
 
 // SetHeaders : Allow user to set Headers
 func (options *CreateSparkEngineOptions) SetHeaders(param map[string]string) *CreateSparkEngineOptions {
+	options.Headers = param
+	return options
+}
+
+// CreateSparkEnginePauseOptions : The CreateSparkEnginePause options.
+type CreateSparkEnginePauseOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCreateSparkEnginePauseOptions : Instantiate CreateSparkEnginePauseOptions
+func (*WatsonxDataV2) NewCreateSparkEnginePauseOptions(engineID string) *CreateSparkEnginePauseOptions {
+	return &CreateSparkEnginePauseOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *CreateSparkEnginePauseOptions) SetEngineID(engineID string) *CreateSparkEnginePauseOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *CreateSparkEnginePauseOptions) SetAuthInstanceID(authInstanceID string) *CreateSparkEnginePauseOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreateSparkEnginePauseOptions) SetHeaders(param map[string]string) *CreateSparkEnginePauseOptions {
+	options.Headers = param
+	return options
+}
+
+// CreateSparkEngineResumeOptions : The CreateSparkEngineResume options.
+type CreateSparkEngineResumeOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCreateSparkEngineResumeOptions : Instantiate CreateSparkEngineResumeOptions
+func (*WatsonxDataV2) NewCreateSparkEngineResumeOptions(engineID string) *CreateSparkEngineResumeOptions {
+	return &CreateSparkEngineResumeOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *CreateSparkEngineResumeOptions) SetEngineID(engineID string) *CreateSparkEngineResumeOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *CreateSparkEngineResumeOptions) SetAuthInstanceID(authInstanceID string) *CreateSparkEngineResumeOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreateSparkEngineResumeOptions) SetHeaders(param map[string]string) *CreateSparkEngineResumeOptions {
+	options.Headers = param
+	return options
+}
+
+// CreateSparkEngineScaleOptions : The CreateSparkEngineScale options.
+type CreateSparkEngineScaleOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// Node count.
+	NumberOfNodes *int64 `json:"number_of_nodes,omitempty"`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCreateSparkEngineScaleOptions : Instantiate CreateSparkEngineScaleOptions
+func (*WatsonxDataV2) NewCreateSparkEngineScaleOptions(engineID string) *CreateSparkEngineScaleOptions {
+	return &CreateSparkEngineScaleOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *CreateSparkEngineScaleOptions) SetEngineID(engineID string) *CreateSparkEngineScaleOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetNumberOfNodes : Allow user to set NumberOfNodes
+func (_options *CreateSparkEngineScaleOptions) SetNumberOfNodes(numberOfNodes int64) *CreateSparkEngineScaleOptions {
+	_options.NumberOfNodes = core.Int64Ptr(numberOfNodes)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *CreateSparkEngineScaleOptions) SetAuthInstanceID(authInstanceID string) *CreateSparkEngineScaleOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreateSparkEngineScaleOptions) SetHeaders(param map[string]string) *CreateSparkEngineScaleOptions {
 	options.Headers = param
 	return options
 }
@@ -8461,14 +9544,17 @@ func UnmarshalDatabaseCatalog(m map[string]json.RawMessage, result interface{}) 
 	obj := new(DatabaseCatalog)
 	err = core.UnmarshalPrimitive(m, "catalog_name", &obj.CatalogName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "catalog_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "catalog_tags", &obj.CatalogTags)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "catalog_tags-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "catalog_type", &obj.CatalogType)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "catalog_type-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -8524,6 +9610,9 @@ func (*WatsonxDataV2) NewDatabaseDetails(hostname string, port int64) (_model *D
 		Port: core.Int64Ptr(port),
 	}
 	err = core.ValidateStruct(_model, "required parameters")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "model-missing-required", common.GetComponentInfo())
+	}
 	return
 }
 
@@ -8532,54 +9621,67 @@ func UnmarshalDatabaseDetails(m map[string]json.RawMessage, result interface{}) 
 	obj := new(DatabaseDetails)
 	err = core.UnmarshalPrimitive(m, "certificate", &obj.Certificate)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "certificate-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "certificate_extension", &obj.CertificateExtension)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "certificate_extension-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "database_name", &obj.DatabaseName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "database_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "hostname", &obj.Hostname)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "hostname-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "hostname_in_certificate", &obj.HostnameInCertificate)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "hostname_in_certificate-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "hosts", &obj.Hosts)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "hosts-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "password", &obj.Password)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "password-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "port", &obj.Port)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "port-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "sasl", &obj.Sasl)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "sasl-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "ssl", &obj.Ssl)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "ssl-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "tables", &obj.Tables)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "tables-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "username", &obj.Username)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "username-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "validate_server_certificate", &obj.ValidateServerCertificate)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "validate_server_certificate-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -8630,141 +9732,65 @@ func UnmarshalDatabaseRegistration(m map[string]json.RawMessage, result interfac
 	obj := new(DatabaseRegistration)
 	err = core.UnmarshalPrimitive(m, "actions", &obj.Actions)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "actions-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "associated_catalog", &obj.AssociatedCatalog, UnmarshalDatabaseCatalog)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "associated_catalog-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "catalog_name", &obj.CatalogName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "catalog_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "created_by", &obj.CreatedBy)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "created_by-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "created_on", &obj.CreatedOn)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "created_on-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "database_details", &obj.DatabaseDetails, UnmarshalDatabaseDetails)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "database_details-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "database_display_name", &obj.DatabaseDisplayName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "database_display_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "database_id", &obj.DatabaseID)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "database_id-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "database_properties", &obj.DatabaseProperties, UnmarshalDatabaseRegistrationDatabasePropertiesItems)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "database_properties-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "database_type", &obj.DatabaseType)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "database_type-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "description", &obj.Description)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "description-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "tags", &obj.Tags)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
-	return
-}
-
-func (*WatsonxDataV2) NewDatabaseRegistrationPatch(databaseRegistration *DatabaseRegistration) (_patch []JSONPatchOperation) {
-	if (databaseRegistration.Actions != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/actions"),
-			Value: databaseRegistration.Actions,
-		})
-	}
-	if (databaseRegistration.AssociatedCatalog != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/associated_catalog"),
-			Value: databaseRegistration.AssociatedCatalog,
-		})
-	}
-	if (databaseRegistration.CatalogName != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/catalog_name"),
-			Value: databaseRegistration.CatalogName,
-		})
-	}
-	if (databaseRegistration.CreatedBy != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/created_by"),
-			Value: databaseRegistration.CreatedBy,
-		})
-	}
-	if (databaseRegistration.CreatedOn != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/created_on"),
-			Value: databaseRegistration.CreatedOn,
-		})
-	}
-	if (databaseRegistration.DatabaseDetails != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/database_details"),
-			Value: databaseRegistration.DatabaseDetails,
-		})
-	}
-	if (databaseRegistration.DatabaseDisplayName != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/database_display_name"),
-			Value: databaseRegistration.DatabaseDisplayName,
-		})
-	}
-	if (databaseRegistration.DatabaseID != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/database_id"),
-			Value: databaseRegistration.DatabaseID,
-		})
-	}
-	if (databaseRegistration.DatabaseProperties != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/database_properties"),
-			Value: databaseRegistration.DatabaseProperties,
-		})
-	}
-	if (databaseRegistration.DatabaseType != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/database_type"),
-			Value: databaseRegistration.DatabaseType,
-		})
-	}
-	if (databaseRegistration.Description != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/description"),
-			Value: databaseRegistration.Description,
-		})
-	}
-	if (databaseRegistration.Tags != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/tags"),
-			Value: databaseRegistration.Tags,
-		})
-	}
 	return
 }
 
@@ -8779,6 +9805,7 @@ func UnmarshalDatabaseRegistrationCollection(m map[string]json.RawMessage, resul
 	obj := new(DatabaseRegistrationCollection)
 	err = core.UnmarshalModel(m, "database_registrations", &obj.DatabaseRegistrations, UnmarshalDatabaseRegistration)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "database_registrations-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -8802,17 +9829,120 @@ func UnmarshalDatabaseRegistrationDatabasePropertiesItems(m map[string]json.RawM
 	obj := new(DatabaseRegistrationDatabasePropertiesItems)
 	err = core.UnmarshalPrimitive(m, "encrypt", &obj.Encrypt)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "encrypt-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "key", &obj.Key)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "key-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "value", &obj.Value)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "value-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// DatabaseRegistrationPatch : update db body.
+type DatabaseRegistrationPatch struct {
+	// New database details.
+	DatabaseDetails *DatabaseRegistrationPatchDatabaseDetails `json:"database_details,omitempty"`
+
+	// New database display name.
+	DatabaseDisplayName *string `json:"database_display_name,omitempty"`
+
+	// New database description.
+	Description *string `json:"description,omitempty"`
+
+	// New tags.
+	Tags []string `json:"tags,omitempty"`
+}
+
+// UnmarshalDatabaseRegistrationPatch unmarshals an instance of DatabaseRegistrationPatch from the specified map of raw messages.
+func UnmarshalDatabaseRegistrationPatch(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(DatabaseRegistrationPatch)
+	err = core.UnmarshalModel(m, "database_details", &obj.DatabaseDetails, UnmarshalDatabaseRegistrationPatchDatabaseDetails)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "database_details-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "database_display_name", &obj.DatabaseDisplayName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "database_display_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "description", &obj.Description)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "description-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "tags", &obj.Tags)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// AsPatch returns a generic map representation of the DatabaseRegistrationPatch
+func (databaseRegistrationPatch *DatabaseRegistrationPatch) AsPatch() (_patch map[string]interface{}, err error) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(databaseRegistrationPatch.DatabaseDetails) {
+		_patch["database_details"] = databaseRegistrationPatch.DatabaseDetails.asPatch()
+	}
+	if !core.IsNil(databaseRegistrationPatch.DatabaseDisplayName) {
+		_patch["database_display_name"] = databaseRegistrationPatch.DatabaseDisplayName
+	}
+	if !core.IsNil(databaseRegistrationPatch.Description) {
+		_patch["description"] = databaseRegistrationPatch.Description
+	}
+	if !core.IsNil(databaseRegistrationPatch.Tags) {
+		_patch["tags"] = databaseRegistrationPatch.Tags
+	}
+
+	return
+}
+
+// DatabaseRegistrationPatchDatabaseDetails : New database details.
+type DatabaseRegistrationPatchDatabaseDetails struct {
+	// New password.
+	Password *string `json:"password,omitempty"`
+
+	// New username.
+	Username *string `json:"username,omitempty"`
+}
+
+// UnmarshalDatabaseRegistrationPatchDatabaseDetails unmarshals an instance of DatabaseRegistrationPatchDatabaseDetails from the specified map of raw messages.
+func UnmarshalDatabaseRegistrationPatchDatabaseDetails(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(DatabaseRegistrationPatchDatabaseDetails)
+	err = core.UnmarshalPrimitive(m, "password", &obj.Password)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "password-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "username", &obj.Username)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "username-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the DatabaseRegistrationPatchDatabaseDetails
+func (databaseRegistrationPatchDatabaseDetails *DatabaseRegistrationPatchDatabaseDetails) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(databaseRegistrationPatchDatabaseDetails.Password) {
+		_patch["password"] = databaseRegistrationPatchDatabaseDetails.Password
+	}
+	if !core.IsNil(databaseRegistrationPatchDatabaseDetails.Username) {
+		_patch["username"] = databaseRegistrationPatchDatabaseDetails.Username
+	}
+
 	return
 }
 
@@ -8836,6 +9966,9 @@ func (*WatsonxDataV2) NewDatabaseRegistrationPrototypeDatabasePropertiesItems(en
 		Value: core.StringPtr(value),
 	}
 	err = core.ValidateStruct(_model, "required parameters")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "model-missing-required", common.GetComponentInfo())
+	}
 	return
 }
 
@@ -8844,14 +9977,17 @@ func UnmarshalDatabaseRegistrationPrototypeDatabasePropertiesItems(m map[string]
 	obj := new(DatabaseRegistrationPrototypeDatabasePropertiesItems)
 	err = core.UnmarshalPrimitive(m, "encrypt", &obj.Encrypt)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "encrypt-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "key", &obj.Key)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "key-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "value", &obj.Value)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "value-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -8908,163 +10044,75 @@ func UnmarshalDb2Engine(m map[string]json.RawMessage, result interface{}) (err e
 	obj := new(Db2Engine)
 	err = core.UnmarshalPrimitive(m, "actions", &obj.Actions)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "actions-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "build_version", &obj.BuildVersion)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build_version-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "created_by", &obj.CreatedBy)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "created_by-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "created_on", &obj.CreatedOn)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "created_on-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "description", &obj.Description)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "description-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "engine_details", &obj.EngineDetails, UnmarshalDb2EngineDetails)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_details-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "engine_display_name", &obj.EngineDisplayName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_display_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "engine_id", &obj.EngineID)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_id-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "host_name", &obj.HostName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "host_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "origin", &obj.Origin)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "origin-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "port", &obj.Port)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "port-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "status", &obj.Status)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "status-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "tags", &obj.Tags)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "type", &obj.Type)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "type-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
-	return
-}
-
-func (*WatsonxDataV2) NewDb2EnginePatch(db2Engine *Db2Engine) (_patch []JSONPatchOperation) {
-	if (db2Engine.Actions != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/actions"),
-			Value: db2Engine.Actions,
-		})
-	}
-	if (db2Engine.BuildVersion != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/build_version"),
-			Value: db2Engine.BuildVersion,
-		})
-	}
-	if (db2Engine.CreatedBy != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/created_by"),
-			Value: db2Engine.CreatedBy,
-		})
-	}
-	if (db2Engine.CreatedOn != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/created_on"),
-			Value: db2Engine.CreatedOn,
-		})
-	}
-	if (db2Engine.Description != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/description"),
-			Value: db2Engine.Description,
-		})
-	}
-	if (db2Engine.EngineDetails != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/engine_details"),
-			Value: db2Engine.EngineDetails,
-		})
-	}
-	if (db2Engine.EngineDisplayName != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/engine_display_name"),
-			Value: db2Engine.EngineDisplayName,
-		})
-	}
-	if (db2Engine.EngineID != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/engine_id"),
-			Value: db2Engine.EngineID,
-		})
-	}
-	if (db2Engine.HostName != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/host_name"),
-			Value: db2Engine.HostName,
-		})
-	}
-	if (db2Engine.Origin != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/origin"),
-			Value: db2Engine.Origin,
-		})
-	}
-	if (db2Engine.Port != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/port"),
-			Value: db2Engine.Port,
-		})
-	}
-	if (db2Engine.Status != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/status"),
-			Value: db2Engine.Status,
-		})
-	}
-	if (db2Engine.Tags != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/tags"),
-			Value: db2Engine.Tags,
-		})
-	}
-	if (db2Engine.Type != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/type"),
-			Value: db2Engine.Type,
-		})
-	}
 	return
 }
 
@@ -9079,6 +10127,7 @@ func UnmarshalDb2EngineCollection(m map[string]json.RawMessage, result interface
 	obj := new(Db2EngineCollection)
 	err = core.UnmarshalModel(m, "db2_engines", &obj.Db2Engines, UnmarshalDb2Engine)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "db2_engines-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -9099,10 +10148,12 @@ func UnmarshalDb2EngineDetails(m map[string]json.RawMessage, result interface{})
 	obj := new(Db2EngineDetails)
 	err = core.UnmarshalPrimitive(m, "connection_string", &obj.ConnectionString)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "connection_string-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "metastore_host", &obj.MetastoreHost)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "metastore_host-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -9120,47 +10171,61 @@ func UnmarshalDb2EngineDetailsBody(m map[string]json.RawMessage, result interfac
 	obj := new(Db2EngineDetailsBody)
 	err = core.UnmarshalPrimitive(m, "connection_string", &obj.ConnectionString)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "connection_string-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
 
-// DeleteBucketRegistrationOptions : The DeleteBucketRegistration options.
-type DeleteBucketRegistrationOptions struct {
-	// bucket id.
-	BucketID *string `json:"bucket_id" validate:"required,ne="`
+// Db2EnginePatch : UpdateEngine body.
+type Db2EnginePatch struct {
+	// Modified description.
+	Description *string `json:"description,omitempty"`
 
-	// Instance ID.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+	// Engine display name.
+	EngineDisplayName *string `json:"engine_display_name,omitempty"`
 
-	// Allows users to set headers on API requests
-	Headers map[string]string
+	// Tags.
+	Tags []string `json:"tags,omitempty"`
 }
 
-// NewDeleteBucketRegistrationOptions : Instantiate DeleteBucketRegistrationOptions
-func (*WatsonxDataV2) NewDeleteBucketRegistrationOptions(bucketID string) *DeleteBucketRegistrationOptions {
-	return &DeleteBucketRegistrationOptions{
-		BucketID: core.StringPtr(bucketID),
+// UnmarshalDb2EnginePatch unmarshals an instance of Db2EnginePatch from the specified map of raw messages.
+func UnmarshalDb2EnginePatch(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(Db2EnginePatch)
+	err = core.UnmarshalPrimitive(m, "description", &obj.Description)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "description-error", common.GetComponentInfo())
+		return
 	}
+	err = core.UnmarshalPrimitive(m, "engine_display_name", &obj.EngineDisplayName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_display_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "tags", &obj.Tags)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
 }
 
-// SetBucketID : Allow user to set BucketID
-func (_options *DeleteBucketRegistrationOptions) SetBucketID(bucketID string) *DeleteBucketRegistrationOptions {
-	_options.BucketID = core.StringPtr(bucketID)
-	return _options
-}
+// AsPatch returns a generic map representation of the Db2EnginePatch
+func (db2EnginePatch *Db2EnginePatch) AsPatch() (_patch map[string]interface{}, err error) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(db2EnginePatch.Description) {
+		_patch["description"] = db2EnginePatch.Description
+	}
+	if !core.IsNil(db2EnginePatch.EngineDisplayName) {
+		_patch["engine_display_name"] = db2EnginePatch.EngineDisplayName
+	}
+	if !core.IsNil(db2EnginePatch.Tags) {
+		_patch["tags"] = db2EnginePatch.Tags
+	}
 
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *DeleteBucketRegistrationOptions) SetAuthInstanceID(authInstanceID string) *DeleteBucketRegistrationOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *DeleteBucketRegistrationOptions) SetHeaders(param map[string]string) *DeleteBucketRegistrationOptions {
-	options.Headers = param
-	return options
+	return
 }
 
 // DeleteColumnOptions : The DeleteColumn options.
@@ -9180,10 +10245,10 @@ type DeleteColumnOptions struct {
 	// URL encoded schema name.
 	ColumnID *string `json:"column_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -9245,10 +10310,10 @@ type DeleteDatabaseCatalogOptions struct {
 	// database id.
 	DatabaseID *string `json:"database_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -9282,10 +10347,10 @@ type DeleteDb2EngineOptions struct {
 	// engine id.
 	EngineID *string `json:"engine_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -9319,10 +10384,10 @@ type DeleteDeactivateBucketOptions struct {
 	// bucket id.
 	BucketID *string `json:"bucket_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -9356,10 +10421,10 @@ type DeleteEngineOptions struct {
 	// engine id.
 	EngineID *string `json:"engine_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -9393,10 +10458,10 @@ type DeleteMilvusServiceOptions struct {
 	// service id.
 	ServiceID *string `json:"service_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -9430,10 +10495,10 @@ type DeleteNetezzaEngineOptions struct {
 	// engine id.
 	EngineID *string `json:"engine_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -9467,10 +10532,10 @@ type DeleteOtherEngineOptions struct {
 	// engine id.
 	EngineID *string `json:"engine_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -9507,10 +10572,10 @@ type DeletePrestissimoEngineCatalogsOptions struct {
 	// Catalog id(s) to be stopped, comma separated.
 	CatalogNames *string `json:"catalog_names" validate:"required"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -9551,10 +10616,10 @@ type DeletePrestissimoEngineOptions struct {
 	// engine id.
 	EngineID *string `json:"engine_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -9591,10 +10656,10 @@ type DeletePrestoEngineCatalogsOptions struct {
 	// Catalog id(s) to be stopped, comma separated.
 	CatalogNames *string `json:"catalog_names" validate:"required"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -9641,10 +10706,10 @@ type DeleteSchemaOptions struct {
 	// URL encoded Schema name.
 	SchemaID *string `json:"schema_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -9695,10 +10760,13 @@ type DeleteSparkEngineApplicationsOptions struct {
 	// Application id(s) to be stopped, comma separated.
 	ApplicationID *string `json:"application_id" validate:"required"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// state.
+	State []string `json:"state,omitempty"`
+
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -9728,8 +10796,98 @@ func (_options *DeleteSparkEngineApplicationsOptions) SetAuthInstanceID(authInst
 	return _options
 }
 
+// SetState : Allow user to set State
+func (_options *DeleteSparkEngineApplicationsOptions) SetState(state []string) *DeleteSparkEngineApplicationsOptions {
+	_options.State = state
+	return _options
+}
+
 // SetHeaders : Allow user to set Headers
 func (options *DeleteSparkEngineApplicationsOptions) SetHeaders(param map[string]string) *DeleteSparkEngineApplicationsOptions {
+	options.Headers = param
+	return options
+}
+
+// DeleteSparkEngineCatalogsOptions : The DeleteSparkEngineCatalogs options.
+type DeleteSparkEngineCatalogsOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// Catalog id(s) to be stopped, comma separated.
+	CatalogNames *string `json:"catalog_names" validate:"required"`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewDeleteSparkEngineCatalogsOptions : Instantiate DeleteSparkEngineCatalogsOptions
+func (*WatsonxDataV2) NewDeleteSparkEngineCatalogsOptions(engineID string, catalogNames string) *DeleteSparkEngineCatalogsOptions {
+	return &DeleteSparkEngineCatalogsOptions{
+		EngineID: core.StringPtr(engineID),
+		CatalogNames: core.StringPtr(catalogNames),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *DeleteSparkEngineCatalogsOptions) SetEngineID(engineID string) *DeleteSparkEngineCatalogsOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetCatalogNames : Allow user to set CatalogNames
+func (_options *DeleteSparkEngineCatalogsOptions) SetCatalogNames(catalogNames string) *DeleteSparkEngineCatalogsOptions {
+	_options.CatalogNames = core.StringPtr(catalogNames)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *DeleteSparkEngineCatalogsOptions) SetAuthInstanceID(authInstanceID string) *DeleteSparkEngineCatalogsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *DeleteSparkEngineCatalogsOptions) SetHeaders(param map[string]string) *DeleteSparkEngineCatalogsOptions {
+	options.Headers = param
+	return options
+}
+
+// DeleteSparkEngineHistoryServerOptions : The DeleteSparkEngineHistoryServer options.
+type DeleteSparkEngineHistoryServerOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewDeleteSparkEngineHistoryServerOptions : Instantiate DeleteSparkEngineHistoryServerOptions
+func (*WatsonxDataV2) NewDeleteSparkEngineHistoryServerOptions(engineID string) *DeleteSparkEngineHistoryServerOptions {
+	return &DeleteSparkEngineHistoryServerOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *DeleteSparkEngineHistoryServerOptions) SetEngineID(engineID string) *DeleteSparkEngineHistoryServerOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *DeleteSparkEngineHistoryServerOptions) SetAuthInstanceID(authInstanceID string) *DeleteSparkEngineHistoryServerOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *DeleteSparkEngineHistoryServerOptions) SetHeaders(param map[string]string) *DeleteSparkEngineHistoryServerOptions {
 	options.Headers = param
 	return options
 }
@@ -9739,10 +10897,10 @@ type DeleteSparkEngineOptions struct {
 	// engine id.
 	EngineID *string `json:"engine_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -9785,10 +10943,10 @@ type DeleteTableOptions struct {
 	// engine id.
 	EngineID *string `json:"engine_id" validate:"required"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -9838,194 +10996,97 @@ func (options *DeleteTableOptions) SetHeaders(param map[string]string) *DeleteTa
 	return options
 }
 
-// Deployment : Deployment.
-type Deployment struct {
-	// Cloud type.
-	CloudType *string `json:"cloud_type,omitempty"`
+// DeregisterBucketOptions : The DeregisterBucket options.
+type DeregisterBucketOptions struct {
+	// bucket id.
+	BucketID *string `json:"bucket_id" validate:"required,ne="`
 
-	// Enable private endpoints.
-	EnablePrivateEndpoints *bool `json:"enable_private_endpoints,omitempty"`
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Enable public endpoints.
-	EnablePublicEndpoints *bool `json:"enable_public_endpoints,omitempty"`
-
-	// Parameter for UI to validate if console is used for the first time.
-	FirstTimeUse *bool `json:"first_time_use" validate:"required"`
-
-	// Formation id.
-	FormationID *string `json:"formation_id,omitempty"`
-
-	// Id.
-	ID *string `json:"id,omitempty"`
-
-	// Plan id.
-	PlanID *string `json:"plan_id,omitempty"`
-
-	// Platform options.
-	PlatformOptions *DeploymentPlatformOptions `json:"platform_options,omitempty"`
-
-	// Region.
-	Region *string `json:"region,omitempty"`
-
-	// Resource group crn for the formation.
-	ResourceGroupCrn *string `json:"resource_group_crn,omitempty"`
-
-	// Type.
-	Type *string `json:"type,omitempty"`
-
-	// Version.
-	Version *string `json:"version,omitempty"`
+	// Allows users to set headers on API requests.
+	Headers map[string]string
 }
 
-// UnmarshalDeployment unmarshals an instance of Deployment from the specified map of raw messages.
-func UnmarshalDeployment(m map[string]json.RawMessage, result interface{}) (err error) {
-	obj := new(Deployment)
-	err = core.UnmarshalPrimitive(m, "cloud_type", &obj.CloudType)
-	if err != nil {
-		return
+// NewDeregisterBucketOptions : Instantiate DeregisterBucketOptions
+func (*WatsonxDataV2) NewDeregisterBucketOptions(bucketID string) *DeregisterBucketOptions {
+	return &DeregisterBucketOptions{
+		BucketID: core.StringPtr(bucketID),
 	}
-	err = core.UnmarshalPrimitive(m, "enable_private_endpoints", &obj.EnablePrivateEndpoints)
+}
+
+// SetBucketID : Allow user to set BucketID
+func (_options *DeregisterBucketOptions) SetBucketID(bucketID string) *DeregisterBucketOptions {
+	_options.BucketID = core.StringPtr(bucketID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *DeregisterBucketOptions) SetAuthInstanceID(authInstanceID string) *DeregisterBucketOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *DeregisterBucketOptions) SetHeaders(param map[string]string) *DeregisterBucketOptions {
+	options.Headers = param
+	return options
+}
+
+// DisplayNameInfoResponse : DisplayNameInfoResponse.
+type DisplayNameInfoResponse struct {
+	// Display name.
+	DisplayName *string `json:"display_name" validate:"required"`
+}
+
+// UnmarshalDisplayNameInfoResponse unmarshals an instance of DisplayNameInfoResponse from the specified map of raw messages.
+func UnmarshalDisplayNameInfoResponse(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(DisplayNameInfoResponse)
+	err = core.UnmarshalPrimitive(m, "display_name", &obj.DisplayName)
 	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "enable_public_endpoints", &obj.EnablePublicEndpoints)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "first_time_use", &obj.FirstTimeUse)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "formation_id", &obj.FormationID)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "id", &obj.ID)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "plan_id", &obj.PlanID)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalModel(m, "platform_options", &obj.PlatformOptions, UnmarshalDeploymentPlatformOptions)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "region", &obj.Region)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "resource_group_crn", &obj.ResourceGroupCrn)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "type", &obj.Type)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "version", &obj.Version)
-	if err != nil {
+		err = core.SDKErrorf(err, "", "display_name-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
 
-// DeploymentPlatformOptions : Platform options.
-type DeploymentPlatformOptions struct {
-	// Backup encryption key crn.
-	BackupEncryptionKeyCrn *string `json:"backup_encryption_key_crn,omitempty"`
+// Driver : Driver struct
+type Driver struct {
+	// Connection type.
+	ConnectionType *string `json:"connection_type,omitempty"`
 
-	// Disk encryption key crn.
-	DiskEncryptionKeyCrn *string `json:"disk_encryption_key_crn,omitempty"`
+	// Driver name.
+	DriverID *string `json:"driver_id,omitempty"`
 
-	// Key protect key id.
-	KeyProtectKeyID *string `json:"key_protect_key_id,omitempty"`
+	// Driver name.
+	DriverName *string `json:"driver_name,omitempty"`
+
+	// Driver version.
+	DriverVersion *string `json:"driver_version,omitempty"`
 }
 
-// UnmarshalDeploymentPlatformOptions unmarshals an instance of DeploymentPlatformOptions from the specified map of raw messages.
-func UnmarshalDeploymentPlatformOptions(m map[string]json.RawMessage, result interface{}) (err error) {
-	obj := new(DeploymentPlatformOptions)
-	err = core.UnmarshalPrimitive(m, "backup_encryption_key_crn", &obj.BackupEncryptionKeyCrn)
+// UnmarshalDriver unmarshals an instance of Driver from the specified map of raw messages.
+func UnmarshalDriver(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(Driver)
+	err = core.UnmarshalPrimitive(m, "connection_type", &obj.ConnectionType)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "connection_type-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalPrimitive(m, "disk_encryption_key_crn", &obj.DiskEncryptionKeyCrn)
+	err = core.UnmarshalPrimitive(m, "driver_id", &obj.DriverID)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "driver_id-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalPrimitive(m, "key_protect_key_id", &obj.KeyProtectKeyID)
+	err = core.UnmarshalPrimitive(m, "driver_name", &obj.DriverName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "driver_name-error", common.GetComponentInfo())
 		return
 	}
-	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
-	return
-}
-
-// DeploymentsResponse : DeploymentsResponse.
-type DeploymentsResponse struct {
-	// Deployment.
-	Deployment *Deployment `json:"deployment,omitempty"`
-}
-
-// UnmarshalDeploymentsResponse unmarshals an instance of DeploymentsResponse from the specified map of raw messages.
-func UnmarshalDeploymentsResponse(m map[string]json.RawMessage, result interface{}) (err error) {
-	obj := new(DeploymentsResponse)
-	err = core.UnmarshalModel(m, "deployment", &obj.Deployment, UnmarshalDeployment)
+	err = core.UnmarshalPrimitive(m, "driver_version", &obj.DriverVersion)
 	if err != nil {
-		return
-	}
-	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
-	return
-}
-
-// Engine : All engine details.
-type Engine struct {
-	// list of db2 engines.
-	Db2Engines []Db2Engine `json:"db2_engines,omitempty"`
-
-	// list of milvus engines.
-	MilvusServices []MilvusService `json:"milvus_services,omitempty"`
-
-	// list of netezza engines.
-	NetezzaEngines []NetezzaEngine `json:"netezza_engines,omitempty"`
-
-	// list of prestissimo engines.
-	PrestissimoEngines []PrestissimoEngine `json:"prestissimo_engines,omitempty"`
-
-	// list of presto engines.
-	PrestoEngines []PrestoEngine `json:"presto_engines,omitempty"`
-
-	// list of spark engines.
-	SparkEngines []SparkEngine `json:"spark_engines,omitempty"`
-}
-
-// UnmarshalEngine unmarshals an instance of Engine from the specified map of raw messages.
-func UnmarshalEngine(m map[string]json.RawMessage, result interface{}) (err error) {
-	obj := new(Engine)
-	err = core.UnmarshalModel(m, "db2_engines", &obj.Db2Engines, UnmarshalDb2Engine)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalModel(m, "milvus_services", &obj.MilvusServices, UnmarshalMilvusService)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalModel(m, "netezza_engines", &obj.NetezzaEngines, UnmarshalNetezzaEngine)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalModel(m, "prestissimo_engines", &obj.PrestissimoEngines, UnmarshalPrestissimoEngine)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalModel(m, "presto_engines", &obj.PrestoEngines, UnmarshalPrestoEngine)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalModel(m, "spark_engines", &obj.SparkEngines, UnmarshalSparkEngine)
-	if err != nil {
+		err = core.SDKErrorf(err, "", "driver_version-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -10040,7 +11101,7 @@ type EngineDetailsBody struct {
 	// External engine connection string.
 	ConnectionString *string `json:"connection_string,omitempty"`
 
-	// Node details.
+	// coordinator/worker property settings.
 	Coordinator *NodeDescriptionBody `json:"coordinator,omitempty"`
 
 	// Instance to access the instance.
@@ -10052,7 +11113,7 @@ type EngineDetailsBody struct {
 	// Size config.
 	SizeConfig *string `json:"size_config,omitempty"`
 
-	// Node details.
+	// coordinator/worker property settings.
 	Worker *NodeDescriptionBody `json:"worker,omitempty"`
 }
 
@@ -10073,50 +11134,157 @@ func UnmarshalEngineDetailsBody(m map[string]json.RawMessage, result interface{}
 	obj := new(EngineDetailsBody)
 	err = core.UnmarshalPrimitive(m, "api_key", &obj.ApiKey)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "api_key-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "connection_string", &obj.ConnectionString)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "connection_string-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "coordinator", &obj.Coordinator, UnmarshalNodeDescriptionBody)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "coordinator-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "instance_id", &obj.InstanceID)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "instance_id-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "managed_by", &obj.ManagedBy)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "managed_by-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "size_config", &obj.SizeConfig)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "size_config-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "worker", &obj.Worker, UnmarshalNodeDescriptionBody)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "worker-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
 
-// Engines : List all engines.
-type Engines struct {
-	// All engine details.
-	Engines *Engine `json:"engines,omitempty"`
+// EnginePropertiesOaiGen1Configuration : Configuration settings.
+type EnginePropertiesOaiGen1Configuration struct {
+	// coordinator/worker property settings.
+	Coordinator *NodeDescriptionBody `json:"coordinator,omitempty"`
+
+	// coordinator/worker property settings.
+	Worker *NodeDescriptionBody `json:"worker,omitempty"`
 }
 
-// UnmarshalEngines unmarshals an instance of Engines from the specified map of raw messages.
-func UnmarshalEngines(m map[string]json.RawMessage, result interface{}) (err error) {
-	obj := new(Engines)
-	err = core.UnmarshalModel(m, "engines", &obj.Engines, UnmarshalEngine)
+// UnmarshalEnginePropertiesOaiGen1Configuration unmarshals an instance of EnginePropertiesOaiGen1Configuration from the specified map of raw messages.
+func UnmarshalEnginePropertiesOaiGen1Configuration(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(EnginePropertiesOaiGen1Configuration)
+	err = core.UnmarshalModel(m, "coordinator", &obj.Coordinator, UnmarshalNodeDescriptionBody)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "coordinator-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "worker", &obj.Worker, UnmarshalNodeDescriptionBody)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "worker-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the EnginePropertiesOaiGen1Configuration
+func (enginePropertiesOaiGen1Configuration *EnginePropertiesOaiGen1Configuration) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(enginePropertiesOaiGen1Configuration.Coordinator) {
+		_patch["coordinator"] = enginePropertiesOaiGen1Configuration.Coordinator.asPatch()
+	}
+	if !core.IsNil(enginePropertiesOaiGen1Configuration.Worker) {
+		_patch["worker"] = enginePropertiesOaiGen1Configuration.Worker.asPatch()
+	}
+
+	return
+}
+
+// EnginePropertiesOaiGen1Jvm : JVM settings.
+type EnginePropertiesOaiGen1Jvm struct {
+	// coordinator/worker property settings.
+	Coordinator *NodeDescriptionBody `json:"coordinator,omitempty"`
+
+	// coordinator/worker property settings.
+	Worker *NodeDescriptionBody `json:"worker,omitempty"`
+}
+
+// UnmarshalEnginePropertiesOaiGen1Jvm unmarshals an instance of EnginePropertiesOaiGen1Jvm from the specified map of raw messages.
+func UnmarshalEnginePropertiesOaiGen1Jvm(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(EnginePropertiesOaiGen1Jvm)
+	err = core.UnmarshalModel(m, "coordinator", &obj.Coordinator, UnmarshalNodeDescriptionBody)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "coordinator-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "worker", &obj.Worker, UnmarshalNodeDescriptionBody)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "worker-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the EnginePropertiesOaiGen1Jvm
+func (enginePropertiesOaiGen1Jvm *EnginePropertiesOaiGen1Jvm) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(enginePropertiesOaiGen1Jvm.Coordinator) {
+		_patch["coordinator"] = enginePropertiesOaiGen1Jvm.Coordinator.asPatch()
+	}
+	if !core.IsNil(enginePropertiesOaiGen1Jvm.Worker) {
+		_patch["worker"] = enginePropertiesOaiGen1Jvm.Worker.asPatch()
+	}
+
+	return
+}
+
+// EnginePropertiesOaiGenConfiguration : Configuration settings for the engine properties.
+type EnginePropertiesOaiGenConfiguration struct {
+	// Node details.
+	Coordinator *PrestissimoNodeDescriptionBody `json:"coordinator,omitempty"`
+
+	// Node details.
+	Worker *PrestissimoNodeDescriptionBody `json:"worker,omitempty"`
+}
+
+// UnmarshalEnginePropertiesOaiGenConfiguration unmarshals an instance of EnginePropertiesOaiGenConfiguration from the specified map of raw messages.
+func UnmarshalEnginePropertiesOaiGenConfiguration(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(EnginePropertiesOaiGenConfiguration)
+	err = core.UnmarshalModel(m, "coordinator", &obj.Coordinator, UnmarshalPrestissimoNodeDescriptionBody)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "coordinator-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "worker", &obj.Worker, UnmarshalPrestissimoNodeDescriptionBody)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "worker-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the EnginePropertiesOaiGenConfiguration
+func (enginePropertiesOaiGenConfiguration *EnginePropertiesOaiGenConfiguration) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(enginePropertiesOaiGenConfiguration.Coordinator) {
+		_patch["coordinator"] = enginePropertiesOaiGenConfiguration.Coordinator.asPatch()
+	}
+	if !core.IsNil(enginePropertiesOaiGenConfiguration.Worker) {
+		_patch["worker"] = enginePropertiesOaiGenConfiguration.Worker.asPatch()
+	}
+
 	return
 }
 
@@ -10125,10 +11293,10 @@ type GetBucketRegistrationOptions struct {
 	// bucket id.
 	BucketID *string `json:"bucket_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -10162,10 +11330,10 @@ type GetCatalogOptions struct {
 	// catalog ID.
 	CatalogID *string `json:"catalog_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -10199,10 +11367,10 @@ type GetDatabaseOptions struct {
 	// database id.
 	DatabaseID *string `json:"database_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -10231,91 +11399,15 @@ func (options *GetDatabaseOptions) SetHeaders(param map[string]string) *GetDatab
 	return options
 }
 
-// GetDeploymentsOKBody : Response body structure for get deployments.
-type GetDeploymentsOKBody struct {
-	// DeploymentsResponse.
-	Deploymentresponse *DeploymentsResponse `json:"deploymentresponse" validate:"required"`
-
-	// Response of success.
-	Response *SuccessResponse `json:"response" validate:"required"`
-}
-
-// UnmarshalGetDeploymentsOKBody unmarshals an instance of GetDeploymentsOKBody from the specified map of raw messages.
-func UnmarshalGetDeploymentsOKBody(m map[string]json.RawMessage, result interface{}) (err error) {
-	obj := new(GetDeploymentsOKBody)
-	err = core.UnmarshalModel(m, "deploymentresponse", &obj.Deploymentresponse, UnmarshalDeploymentsResponse)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalModel(m, "response", &obj.Response, UnmarshalSuccessResponse)
-	if err != nil {
-		return
-	}
-	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
-	return
-}
-
-// GetDeploymentsOptions : The GetDeployments options.
-type GetDeploymentsOptions struct {
-	// Instance ID.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests
-	Headers map[string]string
-}
-
-// NewGetDeploymentsOptions : Instantiate GetDeploymentsOptions
-func (*WatsonxDataV2) NewGetDeploymentsOptions() *GetDeploymentsOptions {
-	return &GetDeploymentsOptions{}
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *GetDeploymentsOptions) SetAuthInstanceID(authInstanceID string) *GetDeploymentsOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *GetDeploymentsOptions) SetHeaders(param map[string]string) *GetDeploymentsOptions {
-	options.Headers = param
-	return options
-}
-
-// GetEnginesOptions : The GetEngines options.
-type GetEnginesOptions struct {
-	// Instance ID.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests
-	Headers map[string]string
-}
-
-// NewGetEnginesOptions : Instantiate GetEnginesOptions
-func (*WatsonxDataV2) NewGetEnginesOptions() *GetEnginesOptions {
-	return &GetEnginesOptions{}
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *GetEnginesOptions) SetAuthInstanceID(authInstanceID string) *GetEnginesOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *GetEnginesOptions) SetHeaders(param map[string]string) *GetEnginesOptions {
-	options.Headers = param
-	return options
-}
-
 // GetMilvusServiceOptions : The GetMilvusService options.
 type GetMilvusServiceOptions struct {
 	// service id.
 	ServiceID *string `json:"service_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -10352,10 +11444,10 @@ type GetPrestissimoEngineCatalogOptions struct {
 	// catalog id.
 	CatalogID *string `json:"catalog_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -10396,10 +11488,10 @@ type GetPrestissimoEngineOptions struct {
 	// engine id.
 	EngineID *string `json:"engine_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -10436,10 +11528,10 @@ type GetPrestoEngineCatalogOptions struct {
 	// catalog id.
 	CatalogID *string `json:"catalog_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -10480,10 +11572,10 @@ type GetPrestoEngineOptions struct {
 	// engine id.
 	EngineID *string `json:"engine_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -10520,10 +11612,10 @@ type GetSparkEngineApplicationStatusOptions struct {
 	// Application id.
 	ApplicationID *string `json:"application_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -10559,6 +11651,127 @@ func (options *GetSparkEngineApplicationStatusOptions) SetHeaders(param map[stri
 	return options
 }
 
+// GetSparkEngineCatalogOptions : The GetSparkEngineCatalog options.
+type GetSparkEngineCatalogOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// catalog id.
+	CatalogID *string `json:"catalog_id" validate:"required,ne="`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewGetSparkEngineCatalogOptions : Instantiate GetSparkEngineCatalogOptions
+func (*WatsonxDataV2) NewGetSparkEngineCatalogOptions(engineID string, catalogID string) *GetSparkEngineCatalogOptions {
+	return &GetSparkEngineCatalogOptions{
+		EngineID: core.StringPtr(engineID),
+		CatalogID: core.StringPtr(catalogID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *GetSparkEngineCatalogOptions) SetEngineID(engineID string) *GetSparkEngineCatalogOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetCatalogID : Allow user to set CatalogID
+func (_options *GetSparkEngineCatalogOptions) SetCatalogID(catalogID string) *GetSparkEngineCatalogOptions {
+	_options.CatalogID = core.StringPtr(catalogID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *GetSparkEngineCatalogOptions) SetAuthInstanceID(authInstanceID string) *GetSparkEngineCatalogOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *GetSparkEngineCatalogOptions) SetHeaders(param map[string]string) *GetSparkEngineCatalogOptions {
+	options.Headers = param
+	return options
+}
+
+// GetSparkEngineHistoryServerOptions : The GetSparkEngineHistoryServer options.
+type GetSparkEngineHistoryServerOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewGetSparkEngineHistoryServerOptions : Instantiate GetSparkEngineHistoryServerOptions
+func (*WatsonxDataV2) NewGetSparkEngineHistoryServerOptions(engineID string) *GetSparkEngineHistoryServerOptions {
+	return &GetSparkEngineHistoryServerOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *GetSparkEngineHistoryServerOptions) SetEngineID(engineID string) *GetSparkEngineHistoryServerOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *GetSparkEngineHistoryServerOptions) SetAuthInstanceID(authInstanceID string) *GetSparkEngineHistoryServerOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *GetSparkEngineHistoryServerOptions) SetHeaders(param map[string]string) *GetSparkEngineHistoryServerOptions {
+	options.Headers = param
+	return options
+}
+
+// GetSparkEngineOptions : The GetSparkEngine options.
+type GetSparkEngineOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewGetSparkEngineOptions : Instantiate GetSparkEngineOptions
+func (*WatsonxDataV2) NewGetSparkEngineOptions(engineID string) *GetSparkEngineOptions {
+	return &GetSparkEngineOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *GetSparkEngineOptions) SetEngineID(engineID string) *GetSparkEngineOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *GetSparkEngineOptions) SetAuthInstanceID(authInstanceID string) *GetSparkEngineOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *GetSparkEngineOptions) SetHeaders(param map[string]string) *GetSparkEngineOptions {
+	options.Headers = param
+	return options
+}
+
 // GetTableOptions : The GetTable options.
 type GetTableOptions struct {
 	// catalog id.
@@ -10573,10 +11786,10 @@ type GetTableOptions struct {
 	// engine id.
 	EngineID *string `json:"engine_id" validate:"required"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -10626,59 +11839,328 @@ func (options *GetTableOptions) SetHeaders(param map[string]string) *GetTableOpt
 	return options
 }
 
-// JSONPatchOperation : This model represents an individual patch operation to be performed on a JSON document, as defined by RFC 6902.
-type JSONPatchOperation struct {
-	// The operation to be performed.
-	Op *string `json:"op" validate:"required"`
+// IngestionJob : Ingestion job.
+type IngestionJob struct {
+	// Create new target table (if True); Insert into pre-existing target table (if False).
+	CreateIfNotExist *bool `json:"create_if_not_exist,omitempty"`
 
-	// The JSON Pointer that identifies the field that is the target of the operation.
-	Path *string `json:"path" validate:"required"`
+	// Ingestion CSV properties.
+	CsvProperty *IngestionJobCsvProperty `json:"csv_property,omitempty"`
 
-	// The JSON Pointer that identifies the field that is the source of the operation.
-	From *string `json:"from,omitempty"`
+	// Error messages of failed ingestion job.
+	Details *string `json:"details,omitempty"`
 
-	// The value to be used within the operation.
-	Value interface{} `json:"value,omitempty"`
+	// Unix timestamp of ingestion job completing.
+	EndTimestamp *string `json:"end_timestamp,omitempty"`
+
+	// ID of the spark engine to be used for ingestion.
+	EngineID *string `json:"engine_id,omitempty"`
+
+	// Name of the spark engine to be used for ingestion.
+	EngineName *string `json:"engine_name,omitempty"`
+
+	// Ingestion engine configuration.
+	ExecuteConfig *IngestionJobExecuteConfig `json:"execute_config,omitempty"`
+
+	// Instance ID of the lakehouse where ingestion job is executed.
+	InstanceID *string `json:"instance_id,omitempty"`
+
+	// Job ID of the ingestion job.
+	JobID *string `json:"job_id,omitempty"`
+
+	// partition by expression of the target table.
+	PartitionBy *string `json:"partition_by,omitempty"`
+
+	// Schema definition of the source table.
+	Schema *string `json:"schema,omitempty"`
+
+	// Source data location of the ingestion job.
+	SourceDataFiles *string `json:"source_data_files,omitempty"`
+
+	// Source file types (parquet or csv).
+	SourceFileType *string `json:"source_file_type,omitempty"`
+
+	// Unix timestamp of ingestion job starting.
+	StartTimestamp *string `json:"start_timestamp,omitempty"`
+
+	// Current state of ingestion job.
+	Status *string `json:"status,omitempty"`
+
+	// Target table name in format catalog.schema.table.
+	TargetTable *string `json:"target_table,omitempty"`
+
+	// Ingestion job user.
+	Username *string `json:"username,omitempty"`
+
+	// Validate CSV header if the target table exist.
+	ValidateCsvHeader *bool `json:"validate_csv_header,omitempty"`
 }
 
-// Constants associated with the JSONPatchOperation.Op property.
-// The operation to be performed.
+// Constants associated with the IngestionJob.SourceFileType property.
+// Source file types (parquet or csv).
 const (
-	JSONPatchOperation_Op_Add = "add"
-	JSONPatchOperation_Op_Copy = "copy"
-	JSONPatchOperation_Op_Move = "move"
-	JSONPatchOperation_Op_Remove = "remove"
-	JSONPatchOperation_Op_Replace = "replace"
-	JSONPatchOperation_Op_Test = "test"
+	IngestionJob_SourceFileType_Csv = "csv"
+	IngestionJob_SourceFileType_Parquet = "parquet"
 )
 
-// NewJSONPatchOperation : Instantiate JSONPatchOperation (Generic Model Constructor)
-func (*WatsonxDataV2) NewJSONPatchOperation(op string, path string) (_model *JSONPatchOperation, err error) {
-	_model = &JSONPatchOperation{
-		Op: core.StringPtr(op),
-		Path: core.StringPtr(path),
+// UnmarshalIngestionJob unmarshals an instance of IngestionJob from the specified map of raw messages.
+func UnmarshalIngestionJob(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(IngestionJob)
+	err = core.UnmarshalPrimitive(m, "create_if_not_exist", &obj.CreateIfNotExist)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "create_if_not_exist-error", common.GetComponentInfo())
+		return
 	}
-	err = core.ValidateStruct(_model, "required parameters")
+	err = core.UnmarshalModel(m, "csv_property", &obj.CsvProperty, UnmarshalIngestionJobCsvProperty)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "csv_property-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "details", &obj.Details)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "details-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "end_timestamp", &obj.EndTimestamp)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "end_timestamp-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_id", &obj.EngineID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_name", &obj.EngineName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "execute_config", &obj.ExecuteConfig, UnmarshalIngestionJobExecuteConfig)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "execute_config-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "instance_id", &obj.InstanceID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "instance_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "job_id", &obj.JobID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "job_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "partition_by", &obj.PartitionBy)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "partition_by-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "schema", &obj.Schema)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "schema-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "source_data_files", &obj.SourceDataFiles)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "source_data_files-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "source_file_type", &obj.SourceFileType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "source_file_type-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "start_timestamp", &obj.StartTimestamp)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "start_timestamp-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "status", &obj.Status)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "status-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "target_table", &obj.TargetTable)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "target_table-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "username", &obj.Username)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "username-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "validate_csv_header", &obj.ValidateCsvHeader)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "validate_csv_header-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
 
-// UnmarshalJSONPatchOperation unmarshals an instance of JSONPatchOperation from the specified map of raw messages.
-func UnmarshalJSONPatchOperation(m map[string]json.RawMessage, result interface{}) (err error) {
-	obj := new(JSONPatchOperation)
-	err = core.UnmarshalPrimitive(m, "op", &obj.Op)
+// IngestionJobCollection : List ingestion jobs.
+type IngestionJobCollection struct {
+	// Ingestion jobs.
+	IngestionJobs []IngestionJob `json:"ingestion_jobs,omitempty"`
+
+	// A page in a pagination collection.
+	First *IngestionJobCollectionPage `json:"first,omitempty"`
+
+	// A page in a pagination collection.
+	Next *IngestionJobCollectionPage `json:"next,omitempty"`
+}
+
+// UnmarshalIngestionJobCollection unmarshals an instance of IngestionJobCollection from the specified map of raw messages.
+func UnmarshalIngestionJobCollection(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(IngestionJobCollection)
+	err = core.UnmarshalModel(m, "ingestion_jobs", &obj.IngestionJobs, UnmarshalIngestionJob)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "ingestion_jobs-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalPrimitive(m, "path", &obj.Path)
+	err = core.UnmarshalModel(m, "first", &obj.First, UnmarshalIngestionJobCollectionPage)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "first-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalPrimitive(m, "from", &obj.From)
+	err = core.UnmarshalModel(m, "next", &obj.Next, UnmarshalIngestionJobCollectionPage)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "next-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalPrimitive(m, "value", &obj.Value)
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// Retrieve the value to be passed to a request to access the next page of results
+func (resp *IngestionJobCollection) GetNextStart() (*string, error) {
+	if core.IsNil(resp.Next) {
+		return nil, nil
+	}
+	start, err := core.GetQueryParam(resp.Next.Href, "start")
 	if err != nil {
+		err = core.SDKErrorf(err, "", "read-query-param-error", common.GetComponentInfo())
+		return nil, err
+	} else if start == nil {
+		return nil, nil
+	}
+	return start, nil
+}
+
+// IngestionJobCollectionPage : A page in a pagination collection.
+type IngestionJobCollectionPage struct {
+	// Link to the a page in the collection.
+	Href *string `json:"href,omitempty"`
+}
+
+// UnmarshalIngestionJobCollectionPage unmarshals an instance of IngestionJobCollectionPage from the specified map of raw messages.
+func UnmarshalIngestionJobCollectionPage(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(IngestionJobCollectionPage)
+	err = core.UnmarshalPrimitive(m, "href", &obj.Href)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "href-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// IngestionJobCsvProperty : Ingestion CSV properties.
+type IngestionJobCsvProperty struct {
+	// Encoding used in CSV file.
+	Encoding *string `json:"encoding,omitempty"`
+
+	// Escape character of CSV file.
+	EscapeCharacter *string `json:"escape_character,omitempty"`
+
+	// Field delimiter of CSV file.
+	FieldDelimiter *string `json:"field_delimiter,omitempty"`
+
+	// Identify if header exists in CSV file.
+	Header *bool `json:"header,omitempty"`
+
+	// Line delimiter of CSV file.
+	LineDelimiter *string `json:"line_delimiter,omitempty"`
+}
+
+// UnmarshalIngestionJobCsvProperty unmarshals an instance of IngestionJobCsvProperty from the specified map of raw messages.
+func UnmarshalIngestionJobCsvProperty(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(IngestionJobCsvProperty)
+	err = core.UnmarshalPrimitive(m, "encoding", &obj.Encoding)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "encoding-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "escape_character", &obj.EscapeCharacter)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "escape_character-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "field_delimiter", &obj.FieldDelimiter)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "field_delimiter-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "header", &obj.Header)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "header-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "line_delimiter", &obj.LineDelimiter)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "line_delimiter-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// IngestionJobExecuteConfig : Ingestion engine configuration.
+type IngestionJobExecuteConfig struct {
+	// Driver core(s) configuration for Spark engine.
+	DriverCores *int64 `json:"driver_cores,omitempty"`
+
+	// Driver memory configuration (in GB) for Spark engine.
+	DriverMemory *string `json:"driver_memory,omitempty"`
+
+	// Executor core(s) configuration for Spark engine.
+	ExecutorCores *int64 `json:"executor_cores,omitempty"`
+
+	// Executor memory configuration (in GB) for Spark engine.
+	ExecutorMemory *string `json:"executor_memory,omitempty"`
+
+	// Number of executors to assign for Spark engine.
+	NumExecutors *int64 `json:"num_executors,omitempty"`
+}
+
+// UnmarshalIngestionJobExecuteConfig unmarshals an instance of IngestionJobExecuteConfig from the specified map of raw messages.
+func UnmarshalIngestionJobExecuteConfig(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(IngestionJobExecuteConfig)
+	err = core.UnmarshalPrimitive(m, "driver_cores", &obj.DriverCores)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "driver_cores-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "driver_memory", &obj.DriverMemory)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "driver_memory-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "executor_cores", &obj.ExecutorCores)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "executor_cores-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "executor_memory", &obj.ExecutorMemory)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "executor_memory-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "num_executors", &obj.NumExecutors)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "num_executors-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -10690,10 +12172,10 @@ type ListBucketObjectsOptions struct {
 	// bucket id.
 	BucketID *string `json:"bucket_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -10724,10 +12206,10 @@ func (options *ListBucketObjectsOptions) SetHeaders(param map[string]string) *Li
 
 // ListBucketRegistrationsOptions : The ListBucketRegistrations options.
 type ListBucketRegistrationsOptions struct {
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -10750,10 +12232,10 @@ func (options *ListBucketRegistrationsOptions) SetHeaders(param map[string]strin
 
 // ListCatalogsOptions : The ListCatalogs options.
 type ListCatalogsOptions struct {
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -10788,10 +12270,10 @@ type ListColumnsOptions struct {
 	// URL encoded schema name.
 	TableID *string `json:"table_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -10843,10 +12325,10 @@ func (options *ListColumnsOptions) SetHeaders(param map[string]string) *ListColu
 
 // ListDatabaseRegistrationsOptions : The ListDatabaseRegistrations options.
 type ListDatabaseRegistrationsOptions struct {
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -10869,10 +12351,10 @@ func (options *ListDatabaseRegistrationsOptions) SetHeaders(param map[string]str
 
 // ListDb2EnginesOptions : The ListDb2Engines options.
 type ListDb2EnginesOptions struct {
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -10893,12 +12375,58 @@ func (options *ListDb2EnginesOptions) SetHeaders(param map[string]string) *ListD
 	return options
 }
 
+// ListIngestionJobsOptions : The ListIngestionJobs options.
+type ListIngestionJobsOptions struct {
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId" validate:"required"`
+
+	// Page number of requested ingestion jobs.
+	Start *string `json:"start,omitempty"`
+
+	// Number of requested ingestion jobs.
+	JobsPerPage *int64 `json:"jobs_per_page,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewListIngestionJobsOptions : Instantiate ListIngestionJobsOptions
+func (*WatsonxDataV2) NewListIngestionJobsOptions(authInstanceID string) *ListIngestionJobsOptions {
+	return &ListIngestionJobsOptions{
+		AuthInstanceID: core.StringPtr(authInstanceID),
+	}
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *ListIngestionJobsOptions) SetAuthInstanceID(authInstanceID string) *ListIngestionJobsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetStart : Allow user to set Start
+func (_options *ListIngestionJobsOptions) SetStart(start string) *ListIngestionJobsOptions {
+	_options.Start = core.StringPtr(start)
+	return _options
+}
+
+// SetJobsPerPage : Allow user to set JobsPerPage
+func (_options *ListIngestionJobsOptions) SetJobsPerPage(jobsPerPage int64) *ListIngestionJobsOptions {
+	_options.JobsPerPage = core.Int64Ptr(jobsPerPage)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *ListIngestionJobsOptions) SetHeaders(param map[string]string) *ListIngestionJobsOptions {
+	options.Headers = param
+	return options
+}
+
 // ListMilvusServicesOptions : The ListMilvusServices options.
 type ListMilvusServicesOptions struct {
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -10921,10 +12449,10 @@ func (options *ListMilvusServicesOptions) SetHeaders(param map[string]string) *L
 
 // ListNetezzaEnginesOptions : The ListNetezzaEngines options.
 type ListNetezzaEnginesOptions struct {
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -10947,10 +12475,10 @@ func (options *ListNetezzaEnginesOptions) SetHeaders(param map[string]string) *L
 
 // ListOtherEnginesOptions : The ListOtherEngines options.
 type ListOtherEnginesOptions struct {
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -10976,10 +12504,10 @@ type ListPrestissimoEngineCatalogsOptions struct {
 	// engine id.
 	EngineID *string `json:"engine_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -11010,10 +12538,10 @@ func (options *ListPrestissimoEngineCatalogsOptions) SetHeaders(param map[string
 
 // ListPrestissimoEnginesOptions : The ListPrestissimoEngines options.
 type ListPrestissimoEnginesOptions struct {
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -11039,10 +12567,10 @@ type ListPrestoEngineCatalogsOptions struct {
 	// engine id.
 	EngineID *string `json:"engine_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -11073,10 +12601,10 @@ func (options *ListPrestoEngineCatalogsOptions) SetHeaders(param map[string]stri
 
 // ListPrestoEnginesOptions : The ListPrestoEngines options.
 type ListPrestoEnginesOptions struct {
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -11111,10 +12639,12 @@ func UnmarshalListSchemasOKBody(m map[string]json.RawMessage, result interface{}
 	obj := new(ListSchemasOKBody)
 	err = core.UnmarshalModel(m, "response", &obj.Response, UnmarshalSuccessResponse)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "response-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "schemas", &obj.Schemas)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "schemas-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -11129,10 +12659,10 @@ type ListSchemasOptions struct {
 	// Catalog name.
 	CatalogID *string `json:"catalog_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -11173,10 +12703,13 @@ type ListSparkEngineApplicationsOptions struct {
 	// engine id.
 	EngineID *string `json:"engine_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// state.
+	State []string `json:"state,omitempty"`
+
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -11199,18 +12732,61 @@ func (_options *ListSparkEngineApplicationsOptions) SetAuthInstanceID(authInstan
 	return _options
 }
 
+// SetState : Allow user to set State
+func (_options *ListSparkEngineApplicationsOptions) SetState(state []string) *ListSparkEngineApplicationsOptions {
+	_options.State = state
+	return _options
+}
+
 // SetHeaders : Allow user to set Headers
 func (options *ListSparkEngineApplicationsOptions) SetHeaders(param map[string]string) *ListSparkEngineApplicationsOptions {
 	options.Headers = param
 	return options
 }
 
-// ListSparkEnginesOptions : The ListSparkEngines options.
-type ListSparkEnginesOptions struct {
-	// Instance ID.
+// ListSparkEngineCatalogsOptions : The ListSparkEngineCatalogs options.
+type ListSparkEngineCatalogsOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewListSparkEngineCatalogsOptions : Instantiate ListSparkEngineCatalogsOptions
+func (*WatsonxDataV2) NewListSparkEngineCatalogsOptions(engineID string) *ListSparkEngineCatalogsOptions {
+	return &ListSparkEngineCatalogsOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *ListSparkEngineCatalogsOptions) SetEngineID(engineID string) *ListSparkEngineCatalogsOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *ListSparkEngineCatalogsOptions) SetAuthInstanceID(authInstanceID string) *ListSparkEngineCatalogsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *ListSparkEngineCatalogsOptions) SetHeaders(param map[string]string) *ListSparkEngineCatalogsOptions {
+	options.Headers = param
+	return options
+}
+
+// ListSparkEnginesOptions : The ListSparkEngines options.
+type ListSparkEnginesOptions struct {
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -11231,6 +12807,58 @@ func (options *ListSparkEnginesOptions) SetHeaders(param map[string]string) *Lis
 	return options
 }
 
+// ListSparkVersionsOKBody : List spark version.
+type ListSparkVersionsOKBody struct {
+	// Response of success.
+	Response *SuccessResponse `json:"response" validate:"required"`
+
+	// Spark versions list.
+	SparkVersions []DisplayNameInfoResponse `json:"spark_versions" validate:"required"`
+}
+
+// UnmarshalListSparkVersionsOKBody unmarshals an instance of ListSparkVersionsOKBody from the specified map of raw messages.
+func UnmarshalListSparkVersionsOKBody(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(ListSparkVersionsOKBody)
+	err = core.UnmarshalModel(m, "response", &obj.Response, UnmarshalSuccessResponse)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "response-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "spark_versions", &obj.SparkVersions, UnmarshalDisplayNameInfoResponse)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "spark_versions-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// ListSparkVersionsOptions : The ListSparkVersions options.
+type ListSparkVersionsOptions struct {
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewListSparkVersionsOptions : Instantiate ListSparkVersionsOptions
+func (*WatsonxDataV2) NewListSparkVersionsOptions() *ListSparkVersionsOptions {
+	return &ListSparkVersionsOptions{}
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *ListSparkVersionsOptions) SetAuthInstanceID(authInstanceID string) *ListSparkVersionsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *ListSparkVersionsOptions) SetHeaders(param map[string]string) *ListSparkVersionsOptions {
+	options.Headers = param
+	return options
+}
+
 // ListTableSnapshotsOptions : The ListTableSnapshots options.
 type ListTableSnapshotsOptions struct {
 	// Engine name.
@@ -11245,10 +12873,10 @@ type ListTableSnapshotsOptions struct {
 	// Table ID.
 	TableID *string `json:"table_id" validate:"required,ne="`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -11309,10 +12937,10 @@ type ListTablesOptions struct {
 	// engine id.
 	EngineID *string `json:"engine_id" validate:"required"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -11419,185 +13047,85 @@ func UnmarshalMilvusService(m map[string]json.RawMessage, result interface{}) (e
 	obj := new(MilvusService)
 	err = core.UnmarshalPrimitive(m, "actions", &obj.Actions)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "actions-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "created_by", &obj.CreatedBy)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "created_by-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "created_on", &obj.CreatedOn)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "created_on-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "description", &obj.Description)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "description-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "grpc_host", &obj.GrpcHost)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "grpc_host-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "grpc_port", &obj.GrpcPort)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "grpc_port-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "host_name", &obj.HostName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "host_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "https_host", &obj.HttpsHost)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "https_host-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "https_port", &obj.HttpsPort)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "https_port-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "origin", &obj.Origin)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "origin-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "service_display_name", &obj.ServiceDisplayName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "service_display_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "service_id", &obj.ServiceID)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "service_id-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "status", &obj.Status)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "status-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "status_code", &obj.StatusCode)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "status_code-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "tags", &obj.Tags)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "type", &obj.Type)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "type-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
-	return
-}
-
-func (*WatsonxDataV2) NewMilvusServicePatch(milvusService *MilvusService) (_patch []JSONPatchOperation) {
-	if (milvusService.Actions != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/actions"),
-			Value: milvusService.Actions,
-		})
-	}
-	if (milvusService.CreatedBy != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/created_by"),
-			Value: milvusService.CreatedBy,
-		})
-	}
-	if (milvusService.CreatedOn != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/created_on"),
-			Value: milvusService.CreatedOn,
-		})
-	}
-	if (milvusService.Description != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/description"),
-			Value: milvusService.Description,
-		})
-	}
-	if (milvusService.GrpcHost != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/grpc_host"),
-			Value: milvusService.GrpcHost,
-		})
-	}
-	if (milvusService.GrpcPort != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/grpc_port"),
-			Value: milvusService.GrpcPort,
-		})
-	}
-	if (milvusService.HostName != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/host_name"),
-			Value: milvusService.HostName,
-		})
-	}
-	if (milvusService.HttpsHost != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/https_host"),
-			Value: milvusService.HttpsHost,
-		})
-	}
-	if (milvusService.HttpsPort != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/https_port"),
-			Value: milvusService.HttpsPort,
-		})
-	}
-	if (milvusService.Origin != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/origin"),
-			Value: milvusService.Origin,
-		})
-	}
-	if (milvusService.ServiceDisplayName != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/service_display_name"),
-			Value: milvusService.ServiceDisplayName,
-		})
-	}
-	if (milvusService.ServiceID != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/service_id"),
-			Value: milvusService.ServiceID,
-		})
-	}
-	if (milvusService.Status != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/status"),
-			Value: milvusService.Status,
-		})
-	}
-	if (milvusService.StatusCode != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/status_code"),
-			Value: milvusService.StatusCode,
-		})
-	}
-	if (milvusService.Tags != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/tags"),
-			Value: milvusService.Tags,
-		})
-	}
-	if (milvusService.Type != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/type"),
-			Value: milvusService.Type,
-		})
-	}
 	return
 }
 
@@ -11612,9 +13140,60 @@ func UnmarshalMilvusServiceCollection(m map[string]json.RawMessage, result inter
 	obj := new(MilvusServiceCollection)
 	err = core.UnmarshalModel(m, "milvus_services", &obj.MilvusServices, UnmarshalMilvusService)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "milvus_services-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// MilvusServicePatch : UpdateService body.
+type MilvusServicePatch struct {
+	// Modified description.
+	Description *string `json:"description,omitempty"`
+
+	// Service display name.
+	ServiceDisplayName *string `json:"service_display_name,omitempty"`
+
+	// Tags.
+	Tags []string `json:"tags,omitempty"`
+}
+
+// UnmarshalMilvusServicePatch unmarshals an instance of MilvusServicePatch from the specified map of raw messages.
+func UnmarshalMilvusServicePatch(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(MilvusServicePatch)
+	err = core.UnmarshalPrimitive(m, "description", &obj.Description)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "description-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "service_display_name", &obj.ServiceDisplayName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "service_display_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "tags", &obj.Tags)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// AsPatch returns a generic map representation of the MilvusServicePatch
+func (milvusServicePatch *MilvusServicePatch) AsPatch() (_patch map[string]interface{}, err error) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(milvusServicePatch.Description) {
+		_patch["description"] = milvusServicePatch.Description
+	}
+	if !core.IsNil(milvusServicePatch.ServiceDisplayName) {
+		_patch["service_display_name"] = milvusServicePatch.ServiceDisplayName
+	}
+	if !core.IsNil(milvusServicePatch.Tags) {
+		_patch["tags"] = milvusServicePatch.Tags
+	}
+
 	return
 }
 
@@ -11668,163 +13247,75 @@ func UnmarshalNetezzaEngine(m map[string]json.RawMessage, result interface{}) (e
 	obj := new(NetezzaEngine)
 	err = core.UnmarshalPrimitive(m, "actions", &obj.Actions)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "actions-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "build_version", &obj.BuildVersion)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build_version-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "created_by", &obj.CreatedBy)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "created_by-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "created_on", &obj.CreatedOn)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "created_on-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "description", &obj.Description)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "description-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "engine_details", &obj.EngineDetails, UnmarshalNetezzaEngineDetails)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_details-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "engine_display_name", &obj.EngineDisplayName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_display_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "engine_id", &obj.EngineID)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_id-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "host_name", &obj.HostName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "host_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "origin", &obj.Origin)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "origin-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "port", &obj.Port)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "port-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "status", &obj.Status)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "status-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "tags", &obj.Tags)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "type", &obj.Type)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "type-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
-	return
-}
-
-func (*WatsonxDataV2) NewNetezzaEnginePatch(netezzaEngine *NetezzaEngine) (_patch []JSONPatchOperation) {
-	if (netezzaEngine.Actions != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/actions"),
-			Value: netezzaEngine.Actions,
-		})
-	}
-	if (netezzaEngine.BuildVersion != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/build_version"),
-			Value: netezzaEngine.BuildVersion,
-		})
-	}
-	if (netezzaEngine.CreatedBy != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/created_by"),
-			Value: netezzaEngine.CreatedBy,
-		})
-	}
-	if (netezzaEngine.CreatedOn != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/created_on"),
-			Value: netezzaEngine.CreatedOn,
-		})
-	}
-	if (netezzaEngine.Description != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/description"),
-			Value: netezzaEngine.Description,
-		})
-	}
-	if (netezzaEngine.EngineDetails != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/engine_details"),
-			Value: netezzaEngine.EngineDetails,
-		})
-	}
-	if (netezzaEngine.EngineDisplayName != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/engine_display_name"),
-			Value: netezzaEngine.EngineDisplayName,
-		})
-	}
-	if (netezzaEngine.EngineID != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/engine_id"),
-			Value: netezzaEngine.EngineID,
-		})
-	}
-	if (netezzaEngine.HostName != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/host_name"),
-			Value: netezzaEngine.HostName,
-		})
-	}
-	if (netezzaEngine.Origin != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/origin"),
-			Value: netezzaEngine.Origin,
-		})
-	}
-	if (netezzaEngine.Port != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/port"),
-			Value: netezzaEngine.Port,
-		})
-	}
-	if (netezzaEngine.Status != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/status"),
-			Value: netezzaEngine.Status,
-		})
-	}
-	if (netezzaEngine.Tags != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/tags"),
-			Value: netezzaEngine.Tags,
-		})
-	}
-	if (netezzaEngine.Type != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/type"),
-			Value: netezzaEngine.Type,
-		})
-	}
 	return
 }
 
@@ -11839,6 +13330,7 @@ func UnmarshalNetezzaEngineCollection(m map[string]json.RawMessage, result inter
 	obj := new(NetezzaEngineCollection)
 	err = core.UnmarshalModel(m, "netezza_engines", &obj.NetezzaEngines, UnmarshalNetezzaEngine)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "netezza_engines-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -11859,10 +13351,12 @@ func UnmarshalNetezzaEngineDetails(m map[string]json.RawMessage, result interfac
 	obj := new(NetezzaEngineDetails)
 	err = core.UnmarshalPrimitive(m, "connection_string", &obj.ConnectionString)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "connection_string-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "metastore_host", &obj.MetastoreHost)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "metastore_host-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -11880,9 +13374,60 @@ func UnmarshalNetezzaEngineDetailsBody(m map[string]json.RawMessage, result inte
 	obj := new(NetezzaEngineDetailsBody)
 	err = core.UnmarshalPrimitive(m, "connection_string", &obj.ConnectionString)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "connection_string-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// NetezzaEnginePatch : UpdateEngine body.
+type NetezzaEnginePatch struct {
+	// Modified description.
+	Description *string `json:"description,omitempty"`
+
+	// Engine display name.
+	EngineDisplayName *string `json:"engine_display_name,omitempty"`
+
+	// Tags.
+	Tags []string `json:"tags,omitempty"`
+}
+
+// UnmarshalNetezzaEnginePatch unmarshals an instance of NetezzaEnginePatch from the specified map of raw messages.
+func UnmarshalNetezzaEnginePatch(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(NetezzaEnginePatch)
+	err = core.UnmarshalPrimitive(m, "description", &obj.Description)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "description-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_display_name", &obj.EngineDisplayName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_display_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "tags", &obj.Tags)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// AsPatch returns a generic map representation of the NetezzaEnginePatch
+func (netezzaEnginePatch *NetezzaEnginePatch) AsPatch() (_patch map[string]interface{}, err error) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(netezzaEnginePatch.Description) {
+		_patch["description"] = netezzaEnginePatch.Description
+	}
+	if !core.IsNil(netezzaEnginePatch.EngineDisplayName) {
+		_patch["engine_display_name"] = netezzaEnginePatch.EngineDisplayName
+	}
+	if !core.IsNil(netezzaEnginePatch.Tags) {
+		_patch["tags"] = netezzaEnginePatch.Tags
+	}
+
 	return
 }
 
@@ -11900,17 +13445,19 @@ func UnmarshalNodeDescription(m map[string]json.RawMessage, result interface{}) 
 	obj := new(NodeDescription)
 	err = core.UnmarshalPrimitive(m, "node_type", &obj.NodeType)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "node_type-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "quantity", &obj.Quantity)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "quantity-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
 
-// NodeDescriptionBody : Node details.
+// NodeDescriptionBody : coordinator/worker property settings.
 type NodeDescriptionBody struct {
 	// Node Type, r5, m, i..
 	NodeType *string `json:"node_type,omitempty"`
@@ -11924,13 +13471,28 @@ func UnmarshalNodeDescriptionBody(m map[string]json.RawMessage, result interface
 	obj := new(NodeDescriptionBody)
 	err = core.UnmarshalPrimitive(m, "node_type", &obj.NodeType)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "node_type-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "quantity", &obj.Quantity)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "quantity-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the NodeDescriptionBody
+func (nodeDescriptionBody *NodeDescriptionBody) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(nodeDescriptionBody.NodeType) {
+		_patch["node_type"] = nodeDescriptionBody.NodeType
+	}
+	if !core.IsNil(nodeDescriptionBody.Quantity) {
+		_patch["quantity"] = nodeDescriptionBody.Quantity
+	}
+
 	return
 }
 
@@ -11981,54 +13543,67 @@ func UnmarshalOtherEngine(m map[string]json.RawMessage, result interface{}) (err
 	obj := new(OtherEngine)
 	err = core.UnmarshalPrimitive(m, "actions", &obj.Actions)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "actions-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "created_by", &obj.CreatedBy)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "created_by-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "created_on", &obj.CreatedOn)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "created_on-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "description", &obj.Description)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "description-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "engine_details", &obj.EngineDetails, UnmarshalOtherEngineDetails)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_details-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "engine_display_name", &obj.EngineDisplayName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_display_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "engine_id", &obj.EngineID)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_id-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "host_name", &obj.HostName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "host_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "origin", &obj.Origin)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "origin-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "port", &obj.Port)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "port-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "status", &obj.Status)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "status-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "tags", &obj.Tags)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "type", &obj.Type)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "type-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -12046,6 +13621,7 @@ func UnmarshalOtherEngineCollection(m map[string]json.RawMessage, result interfa
 	obj := new(OtherEngineCollection)
 	err = core.UnmarshalModel(m, "other_engines", &obj.OtherEngines, UnmarshalOtherEngine)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "other_engines-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -12069,14 +13645,17 @@ func UnmarshalOtherEngineDetails(m map[string]json.RawMessage, result interface{
 	obj := new(OtherEngineDetails)
 	err = core.UnmarshalPrimitive(m, "connection_string", &obj.ConnectionString)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "connection_string-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "engine_type", &obj.EngineType)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_type-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "metastore_host", &obj.MetastoreHost)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "metastore_host-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -12099,6 +13678,9 @@ func (*WatsonxDataV2) NewOtherEngineDetailsBody(connectionString string, engineT
 		EngineType: core.StringPtr(engineType),
 	}
 	err = core.ValidateStruct(_model, "required parameters")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "model-missing-required", common.GetComponentInfo())
+	}
 	return
 }
 
@@ -12107,14 +13689,90 @@ func UnmarshalOtherEngineDetailsBody(m map[string]json.RawMessage, result interf
 	obj := new(OtherEngineDetailsBody)
 	err = core.UnmarshalPrimitive(m, "connection_string", &obj.ConnectionString)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "connection_string-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "engine_type", &obj.EngineType)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_type-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
+}
+
+// PausePrestissimoEngineOptions : The PausePrestissimoEngine options.
+type PausePrestissimoEngineOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewPausePrestissimoEngineOptions : Instantiate PausePrestissimoEngineOptions
+func (*WatsonxDataV2) NewPausePrestissimoEngineOptions(engineID string) *PausePrestissimoEngineOptions {
+	return &PausePrestissimoEngineOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *PausePrestissimoEngineOptions) SetEngineID(engineID string) *PausePrestissimoEngineOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *PausePrestissimoEngineOptions) SetAuthInstanceID(authInstanceID string) *PausePrestissimoEngineOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *PausePrestissimoEngineOptions) SetHeaders(param map[string]string) *PausePrestissimoEngineOptions {
+	options.Headers = param
+	return options
+}
+
+// PausePrestoEngineOptions : The PausePrestoEngine options.
+type PausePrestoEngineOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewPausePrestoEngineOptions : Instantiate PausePrestoEngineOptions
+func (*WatsonxDataV2) NewPausePrestoEngineOptions(engineID string) *PausePrestoEngineOptions {
+	return &PausePrestoEngineOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *PausePrestoEngineOptions) SetEngineID(engineID string) *PausePrestoEngineOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *PausePrestoEngineOptions) SetAuthInstanceID(authInstanceID string) *PausePrestoEngineOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *PausePrestoEngineOptions) SetHeaders(param map[string]string) *PausePrestoEngineOptions {
+	options.Headers = param
+	return options
 }
 
 // PrestissimoEndpoints : Endpoints.
@@ -12146,30 +13804,37 @@ func UnmarshalPrestissimoEndpoints(m map[string]json.RawMessage, result interfac
 	obj := new(PrestissimoEndpoints)
 	err = core.UnmarshalPrimitive(m, "applications_api", &obj.ApplicationsApi)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "applications_api-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "history_server_endpoint", &obj.HistoryServerEndpoint)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "history_server_endpoint-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "spark_access_endpoint", &obj.SparkAccessEndpoint)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "spark_access_endpoint-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "spark_jobs_v4_endpoint", &obj.SparkJobsV4Endpoint)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "spark_jobs_v4_endpoint-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "spark_kernel_endpoint", &obj.SparkKernelEndpoint)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "spark_kernel_endpoint-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "view_history_server", &obj.ViewHistoryServer)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "view_history_server-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "wxd_application_endpoint", &obj.WxdApplicationEndpoint)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "wxd_application_endpoint-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -12208,6 +13873,12 @@ type PrestissimoEngine struct {
 	// Engine programmatic name.
 	EngineID *string `json:"engine_id,omitempty"`
 
+	// Engine properties.
+	EngineProperties *PrestissimoEngineEngineProperties `json:"engine_properties,omitempty"`
+
+	// Triggers engine restart if value is force.
+	EngineRestart *string `json:"engine_restart,omitempty"`
+
 	// Applicable only for OCP based clusters.  This is typically  servicename+route.
 	ExternalHostName *string `json:"external_host_name" validate:"required"`
 
@@ -12225,6 +13896,9 @@ type PrestissimoEngine struct {
 
 	// Region - place holder.
 	Region *string `json:"region,omitempty"`
+
+	// RemoveEngine properties.
+	RemoveEngineProperties *RemoveEngineProperties `json:"remove_engine_properties,omitempty"`
 
 	// Size config.
 	SizeConfig *string `json:"size_config,omitempty"`
@@ -12248,6 +13922,13 @@ type PrestissimoEngine struct {
 	Worker *PrestissimoNodeDescriptionBody `json:"worker,omitempty"`
 }
 
+// Constants associated with the PrestissimoEngine.EngineRestart property.
+// Triggers engine restart if value is force.
+const (
+	PrestissimoEngine_EngineRestart_False = "false"
+	PrestissimoEngine_EngineRestart_Force = "force"
+)
+
 // Constants associated with the PrestissimoEngine.Origin property.
 // Origin - place holder.
 const (
@@ -12269,262 +13950,135 @@ func UnmarshalPrestissimoEngine(m map[string]json.RawMessage, result interface{}
 	obj := new(PrestissimoEngine)
 	err = core.UnmarshalPrimitive(m, "actions", &obj.Actions)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "actions-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "associated_catalogs", &obj.AssociatedCatalogs)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "associated_catalogs-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "build_version", &obj.BuildVersion)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build_version-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "coordinator", &obj.Coordinator, UnmarshalPrestissimoNodeDescriptionBody)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "coordinator-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "created_by", &obj.CreatedBy)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "created_by-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "created_on", &obj.CreatedOn)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "created_on-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "description", &obj.Description)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "description-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "engine_details", &obj.EngineDetails, UnmarshalPrestissimoEngineDetails)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_details-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "engine_display_name", &obj.EngineDisplayName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_display_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "engine_id", &obj.EngineID)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "engine_properties", &obj.EngineProperties, UnmarshalPrestissimoEngineEngineProperties)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_properties-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_restart", &obj.EngineRestart)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_restart-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "external_host_name", &obj.ExternalHostName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "external_host_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "group_id", &obj.GroupID)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "group_id-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "host_name", &obj.HostName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "host_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "origin", &obj.Origin)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "origin-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "port", &obj.Port)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "port-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "region", &obj.Region)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "region-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "remove_engine_properties", &obj.RemoveEngineProperties, UnmarshalRemoveEngineProperties)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "remove_engine_properties-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "size_config", &obj.SizeConfig)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "size_config-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "status", &obj.Status)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "status-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "status_code", &obj.StatusCode)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "status_code-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "tags", &obj.Tags)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "type", &obj.Type)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "type-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "version", &obj.Version)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "version-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "worker", &obj.Worker, UnmarshalPrestissimoNodeDescriptionBody)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "worker-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
-	return
-}
-
-func (*WatsonxDataV2) NewPrestissimoEnginePatch(prestissimoEngine *PrestissimoEngine) (_patch []JSONPatchOperation) {
-	if (prestissimoEngine.Actions != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/actions"),
-			Value: prestissimoEngine.Actions,
-		})
-	}
-	if (prestissimoEngine.AssociatedCatalogs != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/associated_catalogs"),
-			Value: prestissimoEngine.AssociatedCatalogs,
-		})
-	}
-	if (prestissimoEngine.BuildVersion != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/build_version"),
-			Value: prestissimoEngine.BuildVersion,
-		})
-	}
-	if (prestissimoEngine.Coordinator != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/coordinator"),
-			Value: prestissimoEngine.Coordinator,
-		})
-	}
-	if (prestissimoEngine.CreatedBy != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/created_by"),
-			Value: prestissimoEngine.CreatedBy,
-		})
-	}
-	if (prestissimoEngine.CreatedOn != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/created_on"),
-			Value: prestissimoEngine.CreatedOn,
-		})
-	}
-	if (prestissimoEngine.Description != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/description"),
-			Value: prestissimoEngine.Description,
-		})
-	}
-	if (prestissimoEngine.EngineDetails != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/engine_details"),
-			Value: prestissimoEngine.EngineDetails,
-		})
-	}
-	if (prestissimoEngine.EngineDisplayName != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/engine_display_name"),
-			Value: prestissimoEngine.EngineDisplayName,
-		})
-	}
-	if (prestissimoEngine.EngineID != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/engine_id"),
-			Value: prestissimoEngine.EngineID,
-		})
-	}
-	if (prestissimoEngine.ExternalHostName != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/external_host_name"),
-			Value: prestissimoEngine.ExternalHostName,
-		})
-	}
-	if (prestissimoEngine.GroupID != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/group_id"),
-			Value: prestissimoEngine.GroupID,
-		})
-	}
-	if (prestissimoEngine.HostName != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/host_name"),
-			Value: prestissimoEngine.HostName,
-		})
-	}
-	if (prestissimoEngine.Origin != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/origin"),
-			Value: prestissimoEngine.Origin,
-		})
-	}
-	if (prestissimoEngine.Port != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/port"),
-			Value: prestissimoEngine.Port,
-		})
-	}
-	if (prestissimoEngine.Region != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/region"),
-			Value: prestissimoEngine.Region,
-		})
-	}
-	if (prestissimoEngine.SizeConfig != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/size_config"),
-			Value: prestissimoEngine.SizeConfig,
-		})
-	}
-	if (prestissimoEngine.Status != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/status"),
-			Value: prestissimoEngine.Status,
-		})
-	}
-	if (prestissimoEngine.StatusCode != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/status_code"),
-			Value: prestissimoEngine.StatusCode,
-		})
-	}
-	if (prestissimoEngine.Tags != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/tags"),
-			Value: prestissimoEngine.Tags,
-		})
-	}
-	if (prestissimoEngine.Type != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/type"),
-			Value: prestissimoEngine.Type,
-		})
-	}
-	if (prestissimoEngine.Version != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/version"),
-			Value: prestissimoEngine.Version,
-		})
-	}
-	if (prestissimoEngine.Worker != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/worker"),
-			Value: prestissimoEngine.Worker,
-		})
-	}
 	return
 }
 
@@ -12539,6 +14093,7 @@ func UnmarshalPrestissimoEngineCollection(m map[string]json.RawMessage, result i
 	obj := new(PrestissimoEngineCollection)
 	err = core.UnmarshalModel(m, "prestissimo_engines", &obj.PrestissimoEngines, UnmarshalPrestissimoEngine)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "prestissimo_engines-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -12592,41 +14147,285 @@ func UnmarshalPrestissimoEngineDetails(m map[string]json.RawMessage, result inte
 	obj := new(PrestissimoEngineDetails)
 	err = core.UnmarshalPrimitive(m, "api_key", &obj.ApiKey)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "api_key-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "connection_string", &obj.ConnectionString)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "connection_string-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "coordinator", &obj.Coordinator, UnmarshalPrestissimoNodeDescriptionBody)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "coordinator-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "endpoints", &obj.Endpoints, UnmarshalPrestissimoEndpoints)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "endpoints-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "instance_id", &obj.InstanceID)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "instance_id-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "managed_by", &obj.ManagedBy)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "managed_by-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "metastore_host", &obj.MetastoreHost)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "metastore_host-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "size_config", &obj.SizeConfig)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "size_config-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "worker", &obj.Worker, UnmarshalPrestissimoNodeDescriptionBody)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "worker-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// PrestissimoEngineEngineProperties : Engine properties.
+type PrestissimoEngineEngineProperties struct {
+	// catalog properties.
+	Catalog *PrestissimoEnginePropertiesCatalog `json:"catalog,omitempty"`
+
+	// Configuration settings for the engine properties.
+	Configuration *EnginePropertiesOaiGenConfiguration `json:"configuration,omitempty"`
+
+	// velox properties.
+	Velox *PrestissimoEnginePropertiesVelox `json:"velox,omitempty"`
+
+	// JVM settings.
+	Jvm *PrestissimoEnginePropertiesOaiGen1Jvm `json:"jvm,omitempty"`
+}
+
+// UnmarshalPrestissimoEngineEngineProperties unmarshals an instance of PrestissimoEngineEngineProperties from the specified map of raw messages.
+func UnmarshalPrestissimoEngineEngineProperties(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(PrestissimoEngineEngineProperties)
+	err = core.UnmarshalModel(m, "catalog", &obj.Catalog, UnmarshalPrestissimoEnginePropertiesCatalog)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "catalog-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "configuration", &obj.Configuration, UnmarshalEnginePropertiesOaiGenConfiguration)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "configuration-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "velox", &obj.Velox, UnmarshalPrestissimoEnginePropertiesVelox)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "velox-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "jvm", &obj.Jvm, UnmarshalPrestissimoEnginePropertiesOaiGen1Jvm)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "jvm-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the PrestissimoEngineEngineProperties
+func (prestissimoEngineEngineProperties *PrestissimoEngineEngineProperties) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(prestissimoEngineEngineProperties.Catalog) {
+		_patch["catalog"] = prestissimoEngineEngineProperties.Catalog.asPatch()
+	}
+	if !core.IsNil(prestissimoEngineEngineProperties.Configuration) {
+		_patch["configuration"] = prestissimoEngineEngineProperties.Configuration.asPatch()
+	}
+	if !core.IsNil(prestissimoEngineEngineProperties.Velox) {
+		_patch["velox"] = prestissimoEngineEngineProperties.Velox.asPatch()
+	}
+	if !core.IsNil(prestissimoEngineEngineProperties.Jvm) {
+		_patch["jvm"] = prestissimoEngineEngineProperties.Jvm.asPatch()
+	}
+
+	return
+}
+
+// PrestissimoEnginePatch : Update prestissimo engine body.
+type PrestissimoEnginePatch struct {
+	// Modified description.
+	Description *string `json:"description,omitempty"`
+
+	// Engine display name.
+	EngineDisplayName *string `json:"engine_display_name,omitempty"`
+
+	// Engine properties.
+	EngineProperties *PrestissimoEngineEngineProperties `json:"engine_properties,omitempty"`
+
+	// Triggers engine restart if value is force.
+	EngineRestart *string `json:"engine_restart,omitempty"`
+
+	// RemoveEngine properties.
+	RemoveEngineProperties *RemoveEngineProperties `json:"remove_engine_properties,omitempty"`
+
+	// Tags.
+	Tags []string `json:"tags,omitempty"`
+}
+
+// Constants associated with the PrestissimoEnginePatch.EngineRestart property.
+// Triggers engine restart if value is force.
+const (
+	PrestissimoEnginePatch_EngineRestart_False = "false"
+	PrestissimoEnginePatch_EngineRestart_Force = "force"
+)
+
+// UnmarshalPrestissimoEnginePatch unmarshals an instance of PrestissimoEnginePatch from the specified map of raw messages.
+func UnmarshalPrestissimoEnginePatch(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(PrestissimoEnginePatch)
+	err = core.UnmarshalPrimitive(m, "description", &obj.Description)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "description-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_display_name", &obj.EngineDisplayName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_display_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "engine_properties", &obj.EngineProperties, UnmarshalPrestissimoEngineEngineProperties)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_properties-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_restart", &obj.EngineRestart)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_restart-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "remove_engine_properties", &obj.RemoveEngineProperties, UnmarshalRemoveEngineProperties)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "remove_engine_properties-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "tags", &obj.Tags)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// AsPatch returns a generic map representation of the PrestissimoEnginePatch
+func (prestissimoEnginePatch *PrestissimoEnginePatch) AsPatch() (_patch map[string]interface{}, err error) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(prestissimoEnginePatch.Description) {
+		_patch["description"] = prestissimoEnginePatch.Description
+	}
+	if !core.IsNil(prestissimoEnginePatch.EngineDisplayName) {
+		_patch["engine_display_name"] = prestissimoEnginePatch.EngineDisplayName
+	}
+	if !core.IsNil(prestissimoEnginePatch.EngineProperties) {
+		_patch["engine_properties"] = prestissimoEnginePatch.EngineProperties.asPatch()
+	}
+	if !core.IsNil(prestissimoEnginePatch.EngineRestart) {
+		_patch["engine_restart"] = prestissimoEnginePatch.EngineRestart
+	}
+	if !core.IsNil(prestissimoEnginePatch.RemoveEngineProperties) {
+		_patch["remove_engine_properties"] = prestissimoEnginePatch.RemoveEngineProperties.asPatch()
+	}
+	if !core.IsNil(prestissimoEnginePatch.Tags) {
+		_patch["tags"] = prestissimoEnginePatch.Tags
+	}
+
+	return
+}
+
+// PrestissimoEnginePropertiesCatalog : catalog properties.
+type PrestissimoEnginePropertiesCatalog struct {
+	// catalog name.
+	CatalogName []string `json:"catalog_name,omitempty"`
+}
+
+// UnmarshalPrestissimoEnginePropertiesCatalog unmarshals an instance of PrestissimoEnginePropertiesCatalog from the specified map of raw messages.
+func UnmarshalPrestissimoEnginePropertiesCatalog(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(PrestissimoEnginePropertiesCatalog)
+	err = core.UnmarshalPrimitive(m, "catalog_name", &obj.CatalogName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "catalog_name-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the PrestissimoEnginePropertiesCatalog
+func (prestissimoEnginePropertiesCatalog *PrestissimoEnginePropertiesCatalog) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(prestissimoEnginePropertiesCatalog.CatalogName) {
+		_patch["catalog_name"] = prestissimoEnginePropertiesCatalog.CatalogName
+	}
+
+	return
+}
+
+// PrestissimoEnginePropertiesOaiGen1Jvm : JVM settings.
+type PrestissimoEnginePropertiesOaiGen1Jvm struct {
+	// coordinator/worker property settings.
+	Coordinator *NodeDescriptionBody `json:"coordinator,omitempty"`
+}
+
+// UnmarshalPrestissimoEnginePropertiesOaiGen1Jvm unmarshals an instance of PrestissimoEnginePropertiesOaiGen1Jvm from the specified map of raw messages.
+func UnmarshalPrestissimoEnginePropertiesOaiGen1Jvm(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(PrestissimoEnginePropertiesOaiGen1Jvm)
+	err = core.UnmarshalModel(m, "coordinator", &obj.Coordinator, UnmarshalNodeDescriptionBody)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "coordinator-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the PrestissimoEnginePropertiesOaiGen1Jvm
+func (prestissimoEnginePropertiesOaiGen1Jvm *PrestissimoEnginePropertiesOaiGen1Jvm) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(prestissimoEnginePropertiesOaiGen1Jvm.Coordinator) {
+		_patch["coordinator"] = prestissimoEnginePropertiesOaiGen1Jvm.Coordinator.asPatch()
+	}
+
+	return
+}
+
+// PrestissimoEnginePropertiesVelox : velox properties.
+type PrestissimoEnginePropertiesVelox struct {
+	// velox property.
+	VeloxProperty []string `json:"velox_property,omitempty"`
+}
+
+// UnmarshalPrestissimoEnginePropertiesVelox unmarshals an instance of PrestissimoEnginePropertiesVelox from the specified map of raw messages.
+func UnmarshalPrestissimoEnginePropertiesVelox(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(PrestissimoEnginePropertiesVelox)
+	err = core.UnmarshalPrimitive(m, "velox_property", &obj.VeloxProperty)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "velox_property-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the PrestissimoEnginePropertiesVelox
+func (prestissimoEnginePropertiesVelox *PrestissimoEnginePropertiesVelox) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(prestissimoEnginePropertiesVelox.VeloxProperty) {
+		_patch["velox_property"] = prestissimoEnginePropertiesVelox.VeloxProperty
+	}
+
 	return
 }
 
@@ -12644,13 +14443,28 @@ func UnmarshalPrestissimoNodeDescriptionBody(m map[string]json.RawMessage, resul
 	obj := new(PrestissimoNodeDescriptionBody)
 	err = core.UnmarshalPrimitive(m, "node_type", &obj.NodeType)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "node_type-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "quantity", &obj.Quantity)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "quantity-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the PrestissimoNodeDescriptionBody
+func (prestissimoNodeDescriptionBody *PrestissimoNodeDescriptionBody) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(prestissimoNodeDescriptionBody.NodeType) {
+		_patch["node_type"] = prestissimoNodeDescriptionBody.NodeType
+	}
+	if !core.IsNil(prestissimoNodeDescriptionBody.Quantity) {
+		_patch["quantity"] = prestissimoNodeDescriptionBody.Quantity
+	}
+
 	return
 }
 
@@ -12677,6 +14491,9 @@ type PrestoEngine struct {
 	// Engine description.
 	Description *string `json:"description,omitempty"`
 
+	// Driver details.
+	Drivers []Driver `json:"drivers,omitempty"`
+
 	// Node details.
 	EngineDetails *EngineDetailsBody `json:"engine_details,omitempty"`
 
@@ -12685,6 +14502,12 @@ type PrestoEngine struct {
 
 	// Engine programmatic name.
 	EngineID *string `json:"engine_id,omitempty"`
+
+	// Engine properties.
+	EngineProperties *PrestoEngineEngineProperties `json:"engine_properties,omitempty"`
+
+	// Triggers engine restart if value is force.
+	EngineRestart *string `json:"engine_restart,omitempty"`
 
 	// Applicable only for OCP based clusters.  This is typically  servicename+route.
 	ExternalHostName *string `json:"external_host_name" validate:"required"`
@@ -12703,6 +14526,9 @@ type PrestoEngine struct {
 
 	// Region (cloud).
 	Region *string `json:"region,omitempty"`
+
+	// RemoveEngine properties.
+	RemoveEngineProperties *PrestoEnginePatchRemoveEngineProperties `json:"remove_engine_properties,omitempty"`
 
 	// Size config.
 	SizeConfig *string `json:"size_config,omitempty"`
@@ -12726,6 +14552,13 @@ type PrestoEngine struct {
 	Worker *NodeDescription `json:"worker,omitempty"`
 }
 
+// Constants associated with the PrestoEngine.EngineRestart property.
+// Triggers engine restart if value is force.
+const (
+	PrestoEngine_EngineRestart_False = "false"
+	PrestoEngine_EngineRestart_Force = "force"
+)
+
 // Constants associated with the PrestoEngine.Origin property.
 // Origin - created or registered.
 const (
@@ -12747,262 +14580,140 @@ func UnmarshalPrestoEngine(m map[string]json.RawMessage, result interface{}) (er
 	obj := new(PrestoEngine)
 	err = core.UnmarshalPrimitive(m, "actions", &obj.Actions)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "actions-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "associated_catalogs", &obj.AssociatedCatalogs)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "associated_catalogs-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "build_version", &obj.BuildVersion)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build_version-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "coordinator", &obj.Coordinator, UnmarshalNodeDescription)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "coordinator-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "created_by", &obj.CreatedBy)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "created_by-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "created_on", &obj.CreatedOn)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "created_on-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "description", &obj.Description)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "description-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "drivers", &obj.Drivers, UnmarshalDriver)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "drivers-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "engine_details", &obj.EngineDetails, UnmarshalEngineDetailsBody)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_details-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "engine_display_name", &obj.EngineDisplayName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_display_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "engine_id", &obj.EngineID)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "engine_properties", &obj.EngineProperties, UnmarshalPrestoEngineEngineProperties)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_properties-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_restart", &obj.EngineRestart)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_restart-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "external_host_name", &obj.ExternalHostName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "external_host_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "group_id", &obj.GroupID)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "group_id-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "host_name", &obj.HostName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "host_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "origin", &obj.Origin)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "origin-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "port", &obj.Port)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "port-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "region", &obj.Region)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "region-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "remove_engine_properties", &obj.RemoveEngineProperties, UnmarshalPrestoEnginePatchRemoveEngineProperties)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "remove_engine_properties-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "size_config", &obj.SizeConfig)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "size_config-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "status", &obj.Status)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "status-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "status_code", &obj.StatusCode)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "status_code-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "tags", &obj.Tags)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "type", &obj.Type)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "type-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "version", &obj.Version)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "version-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "worker", &obj.Worker, UnmarshalNodeDescription)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "worker-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
-	return
-}
-
-func (*WatsonxDataV2) NewPrestoEnginePatch(prestoEngine *PrestoEngine) (_patch []JSONPatchOperation) {
-	if (prestoEngine.Actions != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/actions"),
-			Value: prestoEngine.Actions,
-		})
-	}
-	if (prestoEngine.AssociatedCatalogs != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/associated_catalogs"),
-			Value: prestoEngine.AssociatedCatalogs,
-		})
-	}
-	if (prestoEngine.BuildVersion != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/build_version"),
-			Value: prestoEngine.BuildVersion,
-		})
-	}
-	if (prestoEngine.Coordinator != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/coordinator"),
-			Value: prestoEngine.Coordinator,
-		})
-	}
-	if (prestoEngine.CreatedBy != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/created_by"),
-			Value: prestoEngine.CreatedBy,
-		})
-	}
-	if (prestoEngine.CreatedOn != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/created_on"),
-			Value: prestoEngine.CreatedOn,
-		})
-	}
-	if (prestoEngine.Description != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/description"),
-			Value: prestoEngine.Description,
-		})
-	}
-	if (prestoEngine.EngineDetails != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/engine_details"),
-			Value: prestoEngine.EngineDetails,
-		})
-	}
-	if (prestoEngine.EngineDisplayName != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/engine_display_name"),
-			Value: prestoEngine.EngineDisplayName,
-		})
-	}
-	if (prestoEngine.EngineID != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/engine_id"),
-			Value: prestoEngine.EngineID,
-		})
-	}
-	if (prestoEngine.ExternalHostName != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/external_host_name"),
-			Value: prestoEngine.ExternalHostName,
-		})
-	}
-	if (prestoEngine.GroupID != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/group_id"),
-			Value: prestoEngine.GroupID,
-		})
-	}
-	if (prestoEngine.HostName != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/host_name"),
-			Value: prestoEngine.HostName,
-		})
-	}
-	if (prestoEngine.Origin != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/origin"),
-			Value: prestoEngine.Origin,
-		})
-	}
-	if (prestoEngine.Port != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/port"),
-			Value: prestoEngine.Port,
-		})
-	}
-	if (prestoEngine.Region != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/region"),
-			Value: prestoEngine.Region,
-		})
-	}
-	if (prestoEngine.SizeConfig != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/size_config"),
-			Value: prestoEngine.SizeConfig,
-		})
-	}
-	if (prestoEngine.Status != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/status"),
-			Value: prestoEngine.Status,
-		})
-	}
-	if (prestoEngine.StatusCode != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/status_code"),
-			Value: prestoEngine.StatusCode,
-		})
-	}
-	if (prestoEngine.Tags != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/tags"),
-			Value: prestoEngine.Tags,
-		})
-	}
-	if (prestoEngine.Type != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/type"),
-			Value: prestoEngine.Type,
-		})
-	}
-	if (prestoEngine.Version != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/version"),
-			Value: prestoEngine.Version,
-		})
-	}
-	if (prestoEngine.Worker != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/worker"),
-			Value: prestoEngine.Worker,
-		})
-	}
 	return
 }
 
@@ -13017,102 +14728,521 @@ func UnmarshalPrestoEngineCollection(m map[string]json.RawMessage, result interf
 	obj := new(PrestoEngineCollection)
 	err = core.UnmarshalModel(m, "presto_engines", &obj.PrestoEngines, UnmarshalPrestoEngine)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "presto_engines-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
 
-// ReplacePrestissimoEngineCatalogsOptions : The ReplacePrestissimoEngineCatalogs options.
-type ReplacePrestissimoEngineCatalogsOptions struct {
+// PrestoEngineEngineProperties : Engine properties.
+type PrestoEngineEngineProperties struct {
+	// Catalog configuration settings.
+	Catalog *PrestoEnginePropertiesCatalog `json:"catalog,omitempty"`
+
+	// Configuration settings.
+	Configuration *EnginePropertiesOaiGen1Configuration `json:"configuration,omitempty"`
+
+	// Global session is to accomodate all the custom properties that can be applicable for both coordinator and worker.
+	Global *PrestoEnginePropertiesGlobal `json:"global,omitempty"`
+
+	// JVM settings.
+	Jvm *EnginePropertiesOaiGen1Jvm `json:"jvm,omitempty"`
+}
+
+// UnmarshalPrestoEngineEngineProperties unmarshals an instance of PrestoEngineEngineProperties from the specified map of raw messages.
+func UnmarshalPrestoEngineEngineProperties(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(PrestoEngineEngineProperties)
+	err = core.UnmarshalModel(m, "catalog", &obj.Catalog, UnmarshalPrestoEnginePropertiesCatalog)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "catalog-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "configuration", &obj.Configuration, UnmarshalEnginePropertiesOaiGen1Configuration)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "configuration-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "global", &obj.Global, UnmarshalPrestoEnginePropertiesGlobal)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "global-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "jvm", &obj.Jvm, UnmarshalEnginePropertiesOaiGen1Jvm)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "jvm-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the PrestoEngineEngineProperties
+func (prestoEngineEngineProperties *PrestoEngineEngineProperties) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(prestoEngineEngineProperties.Catalog) {
+		_patch["catalog"] = prestoEngineEngineProperties.Catalog.asPatch()
+	}
+	if !core.IsNil(prestoEngineEngineProperties.Configuration) {
+		_patch["configuration"] = prestoEngineEngineProperties.Configuration.asPatch()
+	}
+	if !core.IsNil(prestoEngineEngineProperties.Global) {
+		_patch["global"] = prestoEngineEngineProperties.Global.asPatch()
+	}
+	if !core.IsNil(prestoEngineEngineProperties.Jvm) {
+		_patch["jvm"] = prestoEngineEngineProperties.Jvm.asPatch()
+	}
+
+	return
+}
+
+// PrestoEnginePatch : UpdateEngine body.
+type PrestoEnginePatch struct {
+	// Modified description.
+	Description *string `json:"description,omitempty"`
+
+	// Engine display name.
+	EngineDisplayName *string `json:"engine_display_name,omitempty"`
+
+	// Engine properties.
+	EngineProperties *PrestoEngineEngineProperties `json:"engine_properties,omitempty"`
+
+	// Triggers engine restart if value is force.
+	EngineRestart *string `json:"engine_restart,omitempty"`
+
+	// RemoveEngine properties.
+	RemoveEngineProperties *PrestoEnginePatchRemoveEngineProperties `json:"remove_engine_properties,omitempty"`
+
+	// Tags.
+	Tags []string `json:"tags,omitempty"`
+}
+
+// Constants associated with the PrestoEnginePatch.EngineRestart property.
+// Triggers engine restart if value is force.
+const (
+	PrestoEnginePatch_EngineRestart_False = "false"
+	PrestoEnginePatch_EngineRestart_Force = "force"
+)
+
+// UnmarshalPrestoEnginePatch unmarshals an instance of PrestoEnginePatch from the specified map of raw messages.
+func UnmarshalPrestoEnginePatch(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(PrestoEnginePatch)
+	err = core.UnmarshalPrimitive(m, "description", &obj.Description)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "description-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_display_name", &obj.EngineDisplayName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_display_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "engine_properties", &obj.EngineProperties, UnmarshalPrestoEngineEngineProperties)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_properties-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_restart", &obj.EngineRestart)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_restart-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "remove_engine_properties", &obj.RemoveEngineProperties, UnmarshalPrestoEnginePatchRemoveEngineProperties)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "remove_engine_properties-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "tags", &obj.Tags)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// AsPatch returns a generic map representation of the PrestoEnginePatch
+func (prestoEnginePatch *PrestoEnginePatch) AsPatch() (_patch map[string]interface{}, err error) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(prestoEnginePatch.Description) {
+		_patch["description"] = prestoEnginePatch.Description
+	}
+	if !core.IsNil(prestoEnginePatch.EngineDisplayName) {
+		_patch["engine_display_name"] = prestoEnginePatch.EngineDisplayName
+	}
+	if !core.IsNil(prestoEnginePatch.EngineProperties) {
+		_patch["engine_properties"] = prestoEnginePatch.EngineProperties.asPatch()
+	}
+	if !core.IsNil(prestoEnginePatch.EngineRestart) {
+		_patch["engine_restart"] = prestoEnginePatch.EngineRestart
+	}
+	if !core.IsNil(prestoEnginePatch.RemoveEngineProperties) {
+		_patch["remove_engine_properties"] = prestoEnginePatch.RemoveEngineProperties.asPatch()
+	}
+	if !core.IsNil(prestoEnginePatch.Tags) {
+		_patch["tags"] = prestoEnginePatch.Tags
+	}
+
+	return
+}
+
+// PrestoEnginePatchRemoveEngineProperties : RemoveEngine properties.
+type PrestoEnginePatchRemoveEngineProperties struct {
+	// Configuration settings for removing engine properties.
+	Configuration *RemoveEnginePropertiesOaiGenConfiguration `json:"configuration,omitempty"`
+
+	// JVM properties.
+	Jvm *RemoveEnginePropertiesOaiGenJvm `json:"jvm,omitempty"`
+
+	// Catalog configuration settings.
+	Catalog *PrestoEnginePropertiesCatalog `json:"catalog,omitempty"`
+}
+
+// UnmarshalPrestoEnginePatchRemoveEngineProperties unmarshals an instance of PrestoEnginePatchRemoveEngineProperties from the specified map of raw messages.
+func UnmarshalPrestoEnginePatchRemoveEngineProperties(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(PrestoEnginePatchRemoveEngineProperties)
+	err = core.UnmarshalModel(m, "configuration", &obj.Configuration, UnmarshalRemoveEnginePropertiesOaiGenConfiguration)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "configuration-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "jvm", &obj.Jvm, UnmarshalRemoveEnginePropertiesOaiGenJvm)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "jvm-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "catalog", &obj.Catalog, UnmarshalPrestoEnginePropertiesCatalog)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "catalog-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the PrestoEnginePatchRemoveEngineProperties
+func (prestoEnginePatchRemoveEngineProperties *PrestoEnginePatchRemoveEngineProperties) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(prestoEnginePatchRemoveEngineProperties.Configuration) {
+		_patch["configuration"] = prestoEnginePatchRemoveEngineProperties.Configuration.asPatch()
+	}
+	if !core.IsNil(prestoEnginePatchRemoveEngineProperties.Jvm) {
+		_patch["jvm"] = prestoEnginePatchRemoveEngineProperties.Jvm.asPatch()
+	}
+	if !core.IsNil(prestoEnginePatchRemoveEngineProperties.Catalog) {
+		_patch["catalog"] = prestoEnginePatchRemoveEngineProperties.Catalog.asPatch()
+	}
+
+	return
+}
+
+// PrestoEnginePropertiesCatalog : Catalog configuration settings.
+type PrestoEnginePropertiesCatalog struct {
+	// Name of the catalog.
+	CatalogName *string `json:"catalog_name,omitempty"`
+}
+
+// UnmarshalPrestoEnginePropertiesCatalog unmarshals an instance of PrestoEnginePropertiesCatalog from the specified map of raw messages.
+func UnmarshalPrestoEnginePropertiesCatalog(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(PrestoEnginePropertiesCatalog)
+	err = core.UnmarshalPrimitive(m, "catalog_name", &obj.CatalogName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "catalog_name-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the PrestoEnginePropertiesCatalog
+func (prestoEnginePropertiesCatalog *PrestoEnginePropertiesCatalog) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(prestoEnginePropertiesCatalog.CatalogName) {
+		_patch["catalog_name"] = prestoEnginePropertiesCatalog.CatalogName
+	}
+
+	return
+}
+
+// PrestoEnginePropertiesGlobal : Global session is to accomodate all the custom properties that can be applicable for both coordinator and worker.
+type PrestoEnginePropertiesGlobal struct {
+	// Global property settings.
+	GlobalProperty *string `json:"global_property,omitempty"`
+}
+
+// UnmarshalPrestoEnginePropertiesGlobal unmarshals an instance of PrestoEnginePropertiesGlobal from the specified map of raw messages.
+func UnmarshalPrestoEnginePropertiesGlobal(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(PrestoEnginePropertiesGlobal)
+	err = core.UnmarshalPrimitive(m, "global_property", &obj.GlobalProperty)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "global_property-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the PrestoEnginePropertiesGlobal
+func (prestoEnginePropertiesGlobal *PrestoEnginePropertiesGlobal) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(prestoEnginePropertiesGlobal.GlobalProperty) {
+		_patch["global_property"] = prestoEnginePropertiesGlobal.GlobalProperty
+	}
+
+	return
+}
+
+// RemoveEngineProperties : RemoveEngine properties.
+type RemoveEngineProperties struct {
+	// catalog properties.
+	Catalog *PrestissimoEnginePropertiesCatalog `json:"catalog,omitempty"`
+
+	// remove engine properties configuration.
+	Configuration *RemoveEnginePropertiesConfiguration `json:"configuration,omitempty"`
+
+	// remove engine properties configuration.
+	Jvm *RemoveEnginePropertiesConfiguration `json:"jvm,omitempty"`
+
+	// velox description.
+	Velox []string `json:"velox,omitempty"`
+}
+
+// UnmarshalRemoveEngineProperties unmarshals an instance of RemoveEngineProperties from the specified map of raw messages.
+func UnmarshalRemoveEngineProperties(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(RemoveEngineProperties)
+	err = core.UnmarshalModel(m, "catalog", &obj.Catalog, UnmarshalPrestissimoEnginePropertiesCatalog)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "catalog-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "configuration", &obj.Configuration, UnmarshalRemoveEnginePropertiesConfiguration)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "configuration-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "jvm", &obj.Jvm, UnmarshalRemoveEnginePropertiesConfiguration)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "jvm-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "velox", &obj.Velox)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "velox-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the RemoveEngineProperties
+func (removeEngineProperties *RemoveEngineProperties) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(removeEngineProperties.Catalog) {
+		_patch["catalog"] = removeEngineProperties.Catalog.asPatch()
+	}
+	if !core.IsNil(removeEngineProperties.Configuration) {
+		_patch["configuration"] = removeEngineProperties.Configuration.asPatch()
+	}
+	if !core.IsNil(removeEngineProperties.Jvm) {
+		_patch["jvm"] = removeEngineProperties.Jvm.asPatch()
+	}
+	if !core.IsNil(removeEngineProperties.Velox) {
+		_patch["velox"] = removeEngineProperties.Velox
+	}
+
+	return
+}
+
+// RemoveEnginePropertiesConfiguration : remove engine properties configuration.
+type RemoveEnginePropertiesConfiguration struct {
+	// description for coordinator property.
+	Coordinator []string `json:"coordinator,omitempty"`
+
+	// description for worker property.
+	Worker []string `json:"worker,omitempty"`
+}
+
+// UnmarshalRemoveEnginePropertiesConfiguration unmarshals an instance of RemoveEnginePropertiesConfiguration from the specified map of raw messages.
+func UnmarshalRemoveEnginePropertiesConfiguration(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(RemoveEnginePropertiesConfiguration)
+	err = core.UnmarshalPrimitive(m, "coordinator", &obj.Coordinator)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "coordinator-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "worker", &obj.Worker)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "worker-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the RemoveEnginePropertiesConfiguration
+func (removeEnginePropertiesConfiguration *RemoveEnginePropertiesConfiguration) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(removeEnginePropertiesConfiguration.Coordinator) {
+		_patch["coordinator"] = removeEnginePropertiesConfiguration.Coordinator
+	}
+	if !core.IsNil(removeEnginePropertiesConfiguration.Worker) {
+		_patch["worker"] = removeEnginePropertiesConfiguration.Worker
+	}
+
+	return
+}
+
+// RemoveEnginePropertiesOaiGenConfiguration : Configuration settings for removing engine properties.
+type RemoveEnginePropertiesOaiGenConfiguration struct {
+	// List of coordinator properties.
+	Coordinator []string `json:"coordinator,omitempty"`
+
+	// List of worker properties.
+	Worker []string `json:"worker,omitempty"`
+}
+
+// UnmarshalRemoveEnginePropertiesOaiGenConfiguration unmarshals an instance of RemoveEnginePropertiesOaiGenConfiguration from the specified map of raw messages.
+func UnmarshalRemoveEnginePropertiesOaiGenConfiguration(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(RemoveEnginePropertiesOaiGenConfiguration)
+	err = core.UnmarshalPrimitive(m, "coordinator", &obj.Coordinator)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "coordinator-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "worker", &obj.Worker)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "worker-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the RemoveEnginePropertiesOaiGenConfiguration
+func (removeEnginePropertiesOaiGenConfiguration *RemoveEnginePropertiesOaiGenConfiguration) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(removeEnginePropertiesOaiGenConfiguration.Coordinator) {
+		_patch["coordinator"] = removeEnginePropertiesOaiGenConfiguration.Coordinator
+	}
+	if !core.IsNil(removeEnginePropertiesOaiGenConfiguration.Worker) {
+		_patch["worker"] = removeEnginePropertiesOaiGenConfiguration.Worker
+	}
+
+	return
+}
+
+// RemoveEnginePropertiesOaiGenJvm : JVM properties.
+type RemoveEnginePropertiesOaiGenJvm struct {
+	// List of coordinator properties.
+	Coordinator []string `json:"coordinator,omitempty"`
+
+	// List of worker properties.
+	Worker []string `json:"worker,omitempty"`
+}
+
+// UnmarshalRemoveEnginePropertiesOaiGenJvm unmarshals an instance of RemoveEnginePropertiesOaiGenJvm from the specified map of raw messages.
+func UnmarshalRemoveEnginePropertiesOaiGenJvm(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(RemoveEnginePropertiesOaiGenJvm)
+	err = core.UnmarshalPrimitive(m, "coordinator", &obj.Coordinator)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "coordinator-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "worker", &obj.Worker)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "worker-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the RemoveEnginePropertiesOaiGenJvm
+func (removeEnginePropertiesOaiGenJvm *RemoveEnginePropertiesOaiGenJvm) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(removeEnginePropertiesOaiGenJvm.Coordinator) {
+		_patch["coordinator"] = removeEnginePropertiesOaiGenJvm.Coordinator
+	}
+	if !core.IsNil(removeEnginePropertiesOaiGenJvm.Worker) {
+		_patch["worker"] = removeEnginePropertiesOaiGenJvm.Worker
+	}
+
+	return
+}
+
+// RenameTableOptions : The RenameTable options.
+type RenameTableOptions struct {
+	// catalog id.
+	CatalogID *string `json:"catalog_id" validate:"required,ne="`
+
+	// URL encoded schema name.
+	SchemaID *string `json:"schema_id" validate:"required,ne="`
+
+	// URL encoded table name.
+	TableID *string `json:"table_id" validate:"required,ne="`
+
 	// engine id.
-	EngineID *string `json:"engine_id" validate:"required,ne="`
+	EngineID *string `json:"engine_id" validate:"required"`
 
-	// comma separated catalog names.
-	CatalogNames *string `json:"catalog_names" validate:"required"`
+	// Request body.
+	Body map[string]interface{} `json:"body" validate:"required"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
-// NewReplacePrestissimoEngineCatalogsOptions : Instantiate ReplacePrestissimoEngineCatalogsOptions
-func (*WatsonxDataV2) NewReplacePrestissimoEngineCatalogsOptions(engineID string, catalogNames string) *ReplacePrestissimoEngineCatalogsOptions {
-	return &ReplacePrestissimoEngineCatalogsOptions{
+// NewRenameTableOptions : Instantiate RenameTableOptions
+func (*WatsonxDataV2) NewRenameTableOptions(catalogID string, schemaID string, tableID string, engineID string, body map[string]interface{}) *RenameTableOptions {
+	return &RenameTableOptions{
+		CatalogID: core.StringPtr(catalogID),
+		SchemaID: core.StringPtr(schemaID),
+		TableID: core.StringPtr(tableID),
 		EngineID: core.StringPtr(engineID),
-		CatalogNames: core.StringPtr(catalogNames),
+		Body: body,
 	}
 }
 
+// SetCatalogID : Allow user to set CatalogID
+func (_options *RenameTableOptions) SetCatalogID(catalogID string) *RenameTableOptions {
+	_options.CatalogID = core.StringPtr(catalogID)
+	return _options
+}
+
+// SetSchemaID : Allow user to set SchemaID
+func (_options *RenameTableOptions) SetSchemaID(schemaID string) *RenameTableOptions {
+	_options.SchemaID = core.StringPtr(schemaID)
+	return _options
+}
+
+// SetTableID : Allow user to set TableID
+func (_options *RenameTableOptions) SetTableID(tableID string) *RenameTableOptions {
+	_options.TableID = core.StringPtr(tableID)
+	return _options
+}
+
 // SetEngineID : Allow user to set EngineID
-func (_options *ReplacePrestissimoEngineCatalogsOptions) SetEngineID(engineID string) *ReplacePrestissimoEngineCatalogsOptions {
+func (_options *RenameTableOptions) SetEngineID(engineID string) *RenameTableOptions {
 	_options.EngineID = core.StringPtr(engineID)
 	return _options
 }
 
-// SetCatalogNames : Allow user to set CatalogNames
-func (_options *ReplacePrestissimoEngineCatalogsOptions) SetCatalogNames(catalogNames string) *ReplacePrestissimoEngineCatalogsOptions {
-	_options.CatalogNames = core.StringPtr(catalogNames)
+// SetBody : Allow user to set Body
+func (_options *RenameTableOptions) SetBody(body map[string]interface{}) *RenameTableOptions {
+	_options.Body = body
 	return _options
 }
 
 // SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *ReplacePrestissimoEngineCatalogsOptions) SetAuthInstanceID(authInstanceID string) *ReplacePrestissimoEngineCatalogsOptions {
+func (_options *RenameTableOptions) SetAuthInstanceID(authInstanceID string) *RenameTableOptions {
 	_options.AuthInstanceID = core.StringPtr(authInstanceID)
 	return _options
 }
 
 // SetHeaders : Allow user to set Headers
-func (options *ReplacePrestissimoEngineCatalogsOptions) SetHeaders(param map[string]string) *ReplacePrestissimoEngineCatalogsOptions {
-	options.Headers = param
-	return options
-}
-
-// ReplacePrestoEngineCatalogsOptions : The ReplacePrestoEngineCatalogs options.
-type ReplacePrestoEngineCatalogsOptions struct {
-	// engine id.
-	EngineID *string `json:"engine_id" validate:"required,ne="`
-
-	// comma separated catalog names.
-	CatalogNames *string `json:"catalog_names" validate:"required"`
-
-	// Instance ID.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests
-	Headers map[string]string
-}
-
-// NewReplacePrestoEngineCatalogsOptions : Instantiate ReplacePrestoEngineCatalogsOptions
-func (*WatsonxDataV2) NewReplacePrestoEngineCatalogsOptions(engineID string, catalogNames string) *ReplacePrestoEngineCatalogsOptions {
-	return &ReplacePrestoEngineCatalogsOptions{
-		EngineID: core.StringPtr(engineID),
-		CatalogNames: core.StringPtr(catalogNames),
-	}
-}
-
-// SetEngineID : Allow user to set EngineID
-func (_options *ReplacePrestoEngineCatalogsOptions) SetEngineID(engineID string) *ReplacePrestoEngineCatalogsOptions {
-	_options.EngineID = core.StringPtr(engineID)
-	return _options
-}
-
-// SetCatalogNames : Allow user to set CatalogNames
-func (_options *ReplacePrestoEngineCatalogsOptions) SetCatalogNames(catalogNames string) *ReplacePrestoEngineCatalogsOptions {
-	_options.CatalogNames = core.StringPtr(catalogNames)
-	return _options
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *ReplacePrestoEngineCatalogsOptions) SetAuthInstanceID(authInstanceID string) *ReplacePrestoEngineCatalogsOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *ReplacePrestoEngineCatalogsOptions) SetHeaders(param map[string]string) *ReplacePrestoEngineCatalogsOptions {
+func (options *RenameTableOptions) SetHeaders(param map[string]string) *RenameTableOptions {
 	options.Headers = param
 	return options
 }
@@ -13128,85 +15258,83 @@ func UnmarshalReplaceSnapshotCreatedBody(m map[string]json.RawMessage, result in
 	obj := new(ReplaceSnapshotCreatedBody)
 	err = core.UnmarshalModel(m, "response", &obj.Response, UnmarshalSuccessResponse)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "response-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
 
-// ReplaceSnapshotOptions : The ReplaceSnapshot options.
-type ReplaceSnapshotOptions struct {
-	// Engine name.
-	EngineID *string `json:"engine_id" validate:"required"`
+// RestartPrestissimoEngineOptions : The RestartPrestissimoEngine options.
+type RestartPrestissimoEngineOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
 
-	// Catalog ID.
-	CatalogID *string `json:"catalog_id" validate:"required,ne="`
-
-	// Schema ID.
-	SchemaID *string `json:"schema_id" validate:"required,ne="`
-
-	// Table ID.
-	TableID *string `json:"table_id" validate:"required,ne="`
-
-	// Snapshot ID.
-	SnapshotID *string `json:"snapshot_id" validate:"required,ne="`
-
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
-// NewReplaceSnapshotOptions : Instantiate ReplaceSnapshotOptions
-func (*WatsonxDataV2) NewReplaceSnapshotOptions(engineID string, catalogID string, schemaID string, tableID string, snapshotID string) *ReplaceSnapshotOptions {
-	return &ReplaceSnapshotOptions{
+// NewRestartPrestissimoEngineOptions : Instantiate RestartPrestissimoEngineOptions
+func (*WatsonxDataV2) NewRestartPrestissimoEngineOptions(engineID string) *RestartPrestissimoEngineOptions {
+	return &RestartPrestissimoEngineOptions{
 		EngineID: core.StringPtr(engineID),
-		CatalogID: core.StringPtr(catalogID),
-		SchemaID: core.StringPtr(schemaID),
-		TableID: core.StringPtr(tableID),
-		SnapshotID: core.StringPtr(snapshotID),
 	}
 }
 
 // SetEngineID : Allow user to set EngineID
-func (_options *ReplaceSnapshotOptions) SetEngineID(engineID string) *ReplaceSnapshotOptions {
+func (_options *RestartPrestissimoEngineOptions) SetEngineID(engineID string) *RestartPrestissimoEngineOptions {
 	_options.EngineID = core.StringPtr(engineID)
 	return _options
 }
 
-// SetCatalogID : Allow user to set CatalogID
-func (_options *ReplaceSnapshotOptions) SetCatalogID(catalogID string) *ReplaceSnapshotOptions {
-	_options.CatalogID = core.StringPtr(catalogID)
-	return _options
-}
-
-// SetSchemaID : Allow user to set SchemaID
-func (_options *ReplaceSnapshotOptions) SetSchemaID(schemaID string) *ReplaceSnapshotOptions {
-	_options.SchemaID = core.StringPtr(schemaID)
-	return _options
-}
-
-// SetTableID : Allow user to set TableID
-func (_options *ReplaceSnapshotOptions) SetTableID(tableID string) *ReplaceSnapshotOptions {
-	_options.TableID = core.StringPtr(tableID)
-	return _options
-}
-
-// SetSnapshotID : Allow user to set SnapshotID
-func (_options *ReplaceSnapshotOptions) SetSnapshotID(snapshotID string) *ReplaceSnapshotOptions {
-	_options.SnapshotID = core.StringPtr(snapshotID)
-	return _options
-}
-
 // SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *ReplaceSnapshotOptions) SetAuthInstanceID(authInstanceID string) *ReplaceSnapshotOptions {
+func (_options *RestartPrestissimoEngineOptions) SetAuthInstanceID(authInstanceID string) *RestartPrestissimoEngineOptions {
 	_options.AuthInstanceID = core.StringPtr(authInstanceID)
 	return _options
 }
 
 // SetHeaders : Allow user to set Headers
-func (options *ReplaceSnapshotOptions) SetHeaders(param map[string]string) *ReplaceSnapshotOptions {
+func (options *RestartPrestissimoEngineOptions) SetHeaders(param map[string]string) *RestartPrestissimoEngineOptions {
+	options.Headers = param
+	return options
+}
+
+// RestartPrestoEngineOptions : The RestartPrestoEngine options.
+type RestartPrestoEngineOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewRestartPrestoEngineOptions : Instantiate RestartPrestoEngineOptions
+func (*WatsonxDataV2) NewRestartPrestoEngineOptions(engineID string) *RestartPrestoEngineOptions {
+	return &RestartPrestoEngineOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *RestartPrestoEngineOptions) SetEngineID(engineID string) *RestartPrestoEngineOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *RestartPrestoEngineOptions) SetAuthInstanceID(authInstanceID string) *RestartPrestoEngineOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *RestartPrestoEngineOptions) SetHeaders(param map[string]string) *RestartPrestoEngineOptions {
 	options.Headers = param
 	return options
 }
@@ -13222,6 +15350,7 @@ func UnmarshalResultPrestissimoExplainStatement(m map[string]json.RawMessage, re
 	obj := new(ResultPrestissimoExplainStatement)
 	err = core.UnmarshalPrimitive(m, "result", &obj.Result)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "result-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -13239,10 +15368,161 @@ func UnmarshalResultRunPrestissimoExplainAnalyzeStatement(m map[string]json.RawM
 	obj := new(ResultRunPrestissimoExplainAnalyzeStatement)
 	err = core.UnmarshalPrimitive(m, "result", &obj.Result)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "result-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
+}
+
+// ResumePrestissimoEngineOptions : The ResumePrestissimoEngine options.
+type ResumePrestissimoEngineOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewResumePrestissimoEngineOptions : Instantiate ResumePrestissimoEngineOptions
+func (*WatsonxDataV2) NewResumePrestissimoEngineOptions(engineID string) *ResumePrestissimoEngineOptions {
+	return &ResumePrestissimoEngineOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *ResumePrestissimoEngineOptions) SetEngineID(engineID string) *ResumePrestissimoEngineOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *ResumePrestissimoEngineOptions) SetAuthInstanceID(authInstanceID string) *ResumePrestissimoEngineOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *ResumePrestissimoEngineOptions) SetHeaders(param map[string]string) *ResumePrestissimoEngineOptions {
+	options.Headers = param
+	return options
+}
+
+// ResumePrestoEngineOptions : The ResumePrestoEngine options.
+type ResumePrestoEngineOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewResumePrestoEngineOptions : Instantiate ResumePrestoEngineOptions
+func (*WatsonxDataV2) NewResumePrestoEngineOptions(engineID string) *ResumePrestoEngineOptions {
+	return &ResumePrestoEngineOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *ResumePrestoEngineOptions) SetEngineID(engineID string) *ResumePrestoEngineOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *ResumePrestoEngineOptions) SetAuthInstanceID(authInstanceID string) *ResumePrestoEngineOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *ResumePrestoEngineOptions) SetHeaders(param map[string]string) *ResumePrestoEngineOptions {
+	options.Headers = param
+	return options
+}
+
+// RollbackTableOptions : The RollbackTable options.
+type RollbackTableOptions struct {
+	// Engine name.
+	EngineID *string `json:"engine_id" validate:"required"`
+
+	// Catalog ID.
+	CatalogID *string `json:"catalog_id" validate:"required,ne="`
+
+	// Schema ID.
+	SchemaID *string `json:"schema_id" validate:"required,ne="`
+
+	// Table ID.
+	TableID *string `json:"table_id" validate:"required,ne="`
+
+	// Snapshot Id.
+	SnapshotID *string `json:"snapshot_id,omitempty"`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewRollbackTableOptions : Instantiate RollbackTableOptions
+func (*WatsonxDataV2) NewRollbackTableOptions(engineID string, catalogID string, schemaID string, tableID string) *RollbackTableOptions {
+	return &RollbackTableOptions{
+		EngineID: core.StringPtr(engineID),
+		CatalogID: core.StringPtr(catalogID),
+		SchemaID: core.StringPtr(schemaID),
+		TableID: core.StringPtr(tableID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *RollbackTableOptions) SetEngineID(engineID string) *RollbackTableOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetCatalogID : Allow user to set CatalogID
+func (_options *RollbackTableOptions) SetCatalogID(catalogID string) *RollbackTableOptions {
+	_options.CatalogID = core.StringPtr(catalogID)
+	return _options
+}
+
+// SetSchemaID : Allow user to set SchemaID
+func (_options *RollbackTableOptions) SetSchemaID(schemaID string) *RollbackTableOptions {
+	_options.SchemaID = core.StringPtr(schemaID)
+	return _options
+}
+
+// SetTableID : Allow user to set TableID
+func (_options *RollbackTableOptions) SetTableID(tableID string) *RollbackTableOptions {
+	_options.TableID = core.StringPtr(tableID)
+	return _options
+}
+
+// SetSnapshotID : Allow user to set SnapshotID
+func (_options *RollbackTableOptions) SetSnapshotID(snapshotID string) *RollbackTableOptions {
+	_options.SnapshotID = core.StringPtr(snapshotID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *RollbackTableOptions) SetAuthInstanceID(authInstanceID string) *RollbackTableOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *RollbackTableOptions) SetHeaders(param map[string]string) *RollbackTableOptions {
+	options.Headers = param
+	return options
 }
 
 // RunExplainAnalyzeStatementOKBody : explainAnalyzeStatement OK.
@@ -13259,10 +15539,12 @@ func UnmarshalRunExplainAnalyzeStatementOKBody(m map[string]json.RawMessage, res
 	obj := new(RunExplainAnalyzeStatementOKBody)
 	err = core.UnmarshalModel(m, "response", &obj.Response, UnmarshalSuccessResponse)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "response-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "result", &obj.Result)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "result-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -13280,10 +15562,10 @@ type RunExplainAnalyzeStatementOptions struct {
 	// Verbose.
 	Verbose *bool `json:"verbose,omitempty"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -13339,10 +15621,12 @@ func UnmarshalRunExplainStatementOKBody(m map[string]json.RawMessage, result int
 	obj := new(RunExplainStatementOKBody)
 	err = core.UnmarshalModel(m, "response", &obj.Response, UnmarshalSuccessResponse)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "response-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "result", &obj.Result)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "result-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -13363,10 +15647,10 @@ type RunExplainStatementOptions struct {
 	// Type.
 	Type *string `json:"type,omitempty"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -13442,10 +15726,10 @@ type RunPrestissimoExplainAnalyzeStatementOptions struct {
 	// Verbose.
 	Verbose *bool `json:"verbose,omitempty"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -13501,10 +15785,10 @@ type RunPrestissimoExplainStatementOptions struct {
 	// Type.
 	Type *string `json:"type,omitempty"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -13569,34 +15853,168 @@ func (options *RunPrestissimoExplainStatementOptions) SetHeaders(param map[strin
 	return options
 }
 
+// ScalePrestissimoEngineOptions : The ScalePrestissimoEngine options.
+type ScalePrestissimoEngineOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// Node details.
+	Coordinator *PrestissimoNodeDescriptionBody `json:"coordinator,omitempty"`
+
+	// Node details.
+	Worker *PrestissimoNodeDescriptionBody `json:"worker,omitempty"`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewScalePrestissimoEngineOptions : Instantiate ScalePrestissimoEngineOptions
+func (*WatsonxDataV2) NewScalePrestissimoEngineOptions(engineID string) *ScalePrestissimoEngineOptions {
+	return &ScalePrestissimoEngineOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *ScalePrestissimoEngineOptions) SetEngineID(engineID string) *ScalePrestissimoEngineOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetCoordinator : Allow user to set Coordinator
+func (_options *ScalePrestissimoEngineOptions) SetCoordinator(coordinator *PrestissimoNodeDescriptionBody) *ScalePrestissimoEngineOptions {
+	_options.Coordinator = coordinator
+	return _options
+}
+
+// SetWorker : Allow user to set Worker
+func (_options *ScalePrestissimoEngineOptions) SetWorker(worker *PrestissimoNodeDescriptionBody) *ScalePrestissimoEngineOptions {
+	_options.Worker = worker
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *ScalePrestissimoEngineOptions) SetAuthInstanceID(authInstanceID string) *ScalePrestissimoEngineOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *ScalePrestissimoEngineOptions) SetHeaders(param map[string]string) *ScalePrestissimoEngineOptions {
+	options.Headers = param
+	return options
+}
+
+// ScalePrestoEngineOptions : The ScalePrestoEngine options.
+type ScalePrestoEngineOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// NodeDescription.
+	Coordinator *NodeDescription `json:"coordinator,omitempty"`
+
+	// NodeDescription.
+	Worker *NodeDescription `json:"worker,omitempty"`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewScalePrestoEngineOptions : Instantiate ScalePrestoEngineOptions
+func (*WatsonxDataV2) NewScalePrestoEngineOptions(engineID string) *ScalePrestoEngineOptions {
+	return &ScalePrestoEngineOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *ScalePrestoEngineOptions) SetEngineID(engineID string) *ScalePrestoEngineOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetCoordinator : Allow user to set Coordinator
+func (_options *ScalePrestoEngineOptions) SetCoordinator(coordinator *NodeDescription) *ScalePrestoEngineOptions {
+	_options.Coordinator = coordinator
+	return _options
+}
+
+// SetWorker : Allow user to set Worker
+func (_options *ScalePrestoEngineOptions) SetWorker(worker *NodeDescription) *ScalePrestoEngineOptions {
+	_options.Worker = worker
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *ScalePrestoEngineOptions) SetAuthInstanceID(authInstanceID string) *ScalePrestoEngineOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *ScalePrestoEngineOptions) SetHeaders(param map[string]string) *ScalePrestoEngineOptions {
+	options.Headers = param
+	return options
+}
+
+// SparkApplicationConfig : Spark applications details configuration.
+type SparkApplicationConfig struct {
+	// spark_sample_config_properpty.
+	SparkSampleConfigProperpty *string `json:"spark_sample_config_properpty,omitempty"`
+}
+
+// UnmarshalSparkApplicationConfig unmarshals an instance of SparkApplicationConfig from the specified map of raw messages.
+func UnmarshalSparkApplicationConfig(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SparkApplicationConfig)
+	err = core.UnmarshalPrimitive(m, "spark_sample_config_properpty", &obj.SparkSampleConfigProperpty)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "spark_sample_config_properpty-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
 // SparkApplicationDetails : Application details.
 type SparkApplicationDetails struct {
 	// Application.
-	Application *string `json:"application" validate:"required"`
+	Application *string `json:"application,omitempty"`
 
 	// List of arguments.
-	Arguments []string `json:"arguments" validate:"required"`
+	Arguments []string `json:"arguments,omitempty"`
 
-	// Application.
-	Conf *SparkApplicationDetailsConf `json:"conf" validate:"required"`
+	// Class.
+	Class *string `json:"class,omitempty"`
 
-	// Application.
-	Env map[string]interface{} `json:"env" validate:"required"`
+	// Spark applications details configuration.
+	Conf *SparkApplicationConfig `json:"conf,omitempty"`
+
+	// Spark applications details env samples.
+	Env *SparkApplicationEnv `json:"env,omitempty"`
+
+	// Files.
+	Files *string `json:"files,omitempty"`
+
+	// Jars.
+	Jars *string `json:"jars,omitempty"`
 
 	// Display name of the spark application.
 	Name *string `json:"name,omitempty"`
-}
 
-// NewSparkApplicationDetails : Instantiate SparkApplicationDetails (Generic Model Constructor)
-func (*WatsonxDataV2) NewSparkApplicationDetails(application string, arguments []string, conf *SparkApplicationDetailsConf, env map[string]interface{}) (_model *SparkApplicationDetails, err error) {
-	_model = &SparkApplicationDetails{
-		Application: core.StringPtr(application),
-		Arguments: arguments,
-		Conf: conf,
-		Env: env,
-	}
-	err = core.ValidateStruct(_model, "required parameters")
-	return
+	// Packages.
+	Packages *string `json:"packages,omitempty"`
+
+	// Repositories.
+	Repositories *string `json:"repositories,omitempty"`
+
+	// Spark Version.
+	SparkVersion *string `json:"spark_version,omitempty"`
 }
 
 // UnmarshalSparkApplicationDetails unmarshals an instance of SparkApplicationDetails from the specified map of raw messages.
@@ -13604,130 +16022,101 @@ func UnmarshalSparkApplicationDetails(m map[string]json.RawMessage, result inter
 	obj := new(SparkApplicationDetails)
 	err = core.UnmarshalPrimitive(m, "application", &obj.Application)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "application-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "arguments", &obj.Arguments)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "arguments-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalModel(m, "conf", &obj.Conf, UnmarshalSparkApplicationDetailsConf)
+	err = core.UnmarshalPrimitive(m, "class", &obj.Class)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "class-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalPrimitive(m, "env", &obj.Env)
+	err = core.UnmarshalModel(m, "conf", &obj.Conf, UnmarshalSparkApplicationConfig)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "conf-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "env", &obj.Env, UnmarshalSparkApplicationEnv)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "env-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "files", &obj.Files)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "files-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "jars", &obj.Jars)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "jars-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "name", &obj.Name)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "packages", &obj.Packages)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "packages-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "repositories", &obj.Repositories)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "repositories-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "spark_version", &obj.SparkVersion)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "spark_version-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
 
-// SparkApplicationDetailsConf : Application.
-type SparkApplicationDetailsConf struct {
-	// Spark application name.
-	SparkAppName *string `json:"spark_app_name,omitempty"`
-
-	// Hive Metastore authentication mode.
-	SparkHiveMetastoreClientAuthMode *string `json:"spark_hive_metastore_client_auth_mode,omitempty"`
-
-	// Hive Metastore plain password.
-	SparkHiveMetastoreClientPlainPassword *string `json:"spark_hive_metastore_client_plain_password,omitempty"`
-
-	// Hive Metastore plain username.
-	SparkHiveMetastoreClientPlainUsername *string `json:"spark_hive_metastore_client_plain_username,omitempty"`
-
-	// Truststore password.
-	SparkHiveMetastoreTruststorePassword *string `json:"spark_hive_metastore_truststore_password,omitempty"`
-
-	// Truststore path.
-	SparkHiveMetastoreTruststorePath *string `json:"spark_hive_metastore_truststore_path,omitempty"`
-
-	// Truststore type.
-	SparkHiveMetastoreTruststoreType *string `json:"spark_hive_metastore_truststore_type,omitempty"`
-
-	// Enable or disable SSL for Hive Metastore.
-	SparkHiveMetastoreUseSsl *string `json:"spark_hive_metastore_use_ssl,omitempty"`
-
-	// SQL catalog implementation.
-	SparkSqlCatalogImplementation *string `json:"spark_sql_catalog_implementation,omitempty"`
-
-	// Lakehouse catalog name.
-	SparkSqlCatalogLakehouse *string `json:"spark_sql_catalog_lakehouse,omitempty"`
-
-	// Lakehouse catalog type.
-	SparkSqlCatalogLakehouseType *string `json:"spark_sql_catalog_lakehouse_type,omitempty"`
-
-	// Lakehouse catalog URI.
-	SparkSqlCatalogLakehouseURI *string `json:"spark_sql_catalog_lakehouse_uri,omitempty"`
-
-	// SQL extensions.
-	SparkSqlExtensions *string `json:"spark_sql_extensions,omitempty"`
-
-	// Enable or disable Iceberg vectorization.
-	SparkSqlIcebergVectorizationEnabled *string `json:"spark_sql_iceberg_vectorization_enabled,omitempty"`
+// SparkApplicationEnv : Spark applications details env samples.
+type SparkApplicationEnv struct {
+	// sample.
+	SampleEnvKey *string `json:"sample_env_key,omitempty"`
 }
 
-// UnmarshalSparkApplicationDetailsConf unmarshals an instance of SparkApplicationDetailsConf from the specified map of raw messages.
-func UnmarshalSparkApplicationDetailsConf(m map[string]json.RawMessage, result interface{}) (err error) {
-	obj := new(SparkApplicationDetailsConf)
-	err = core.UnmarshalPrimitive(m, "spark_app_name", &obj.SparkAppName)
+// UnmarshalSparkApplicationEnv unmarshals an instance of SparkApplicationEnv from the specified map of raw messages.
+func UnmarshalSparkApplicationEnv(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SparkApplicationEnv)
+	err = core.UnmarshalPrimitive(m, "sample_env_key", &obj.SampleEnvKey)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "sample_env_key-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalPrimitive(m, "spark_hive_metastore_client_auth_mode", &obj.SparkHiveMetastoreClientAuthMode)
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SparkDefaultConfig : Spark Default Config details.
+type SparkDefaultConfig struct {
+	// config1.
+	Config1 *string `json:"config1,omitempty"`
+
+	// config2.
+	Config2 *string `json:"config2,omitempty"`
+}
+
+// UnmarshalSparkDefaultConfig unmarshals an instance of SparkDefaultConfig from the specified map of raw messages.
+func UnmarshalSparkDefaultConfig(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SparkDefaultConfig)
+	err = core.UnmarshalPrimitive(m, "config1", &obj.Config1)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "config1-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalPrimitive(m, "spark_hive_metastore_client_plain_password", &obj.SparkHiveMetastoreClientPlainPassword)
+	err = core.UnmarshalPrimitive(m, "config2", &obj.Config2)
 	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_hive_metastore_client_plain_username", &obj.SparkHiveMetastoreClientPlainUsername)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_hive_metastore_truststore_password", &obj.SparkHiveMetastoreTruststorePassword)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_hive_metastore_truststore_path", &obj.SparkHiveMetastoreTruststorePath)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_hive_metastore_truststore_type", &obj.SparkHiveMetastoreTruststoreType)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_hive_metastore_use_ssl", &obj.SparkHiveMetastoreUseSsl)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_sql_catalog_implementation", &obj.SparkSqlCatalogImplementation)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_sql_catalog_lakehouse", &obj.SparkSqlCatalogLakehouse)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_sql_catalog_lakehouse_type", &obj.SparkSqlCatalogLakehouseType)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_sql_catalog_lakehouse_uri", &obj.SparkSqlCatalogLakehouseURI)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_sql_extensions", &obj.SparkSqlExtensions)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_sql_iceberg_vectorization_enabled", &obj.SparkSqlIcebergVectorizationEnabled)
-	if err != nil {
+		err = core.SDKErrorf(err, "", "config2-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -13756,6 +16145,15 @@ type SparkEndpoints struct {
 
 	// Wxd application endpoint.
 	WxdApplicationEndpoint *string `json:"wxd_application_endpoint,omitempty"`
+
+	// Wxd engine endpoint.
+	WxdEngineEndpoint *string `json:"wxd_engine_endpoint,omitempty"`
+
+	// Wxd history_server endpoint.
+	WxdHistoryServerEndpoint *string `json:"wxd_history_server_endpoint,omitempty"`
+
+	// Wxd history_server endpoint.
+	WxdHistoryServerUiEndpoint *string `json:"wxd_history_server_ui_endpoint,omitempty"`
 }
 
 // UnmarshalSparkEndpoints unmarshals an instance of SparkEndpoints from the specified map of raw messages.
@@ -13763,30 +16161,52 @@ func UnmarshalSparkEndpoints(m map[string]json.RawMessage, result interface{}) (
 	obj := new(SparkEndpoints)
 	err = core.UnmarshalPrimitive(m, "applications_api", &obj.ApplicationsApi)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "applications_api-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "history_server_endpoint", &obj.HistoryServerEndpoint)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "history_server_endpoint-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "spark_access_endpoint", &obj.SparkAccessEndpoint)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "spark_access_endpoint-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "spark_jobs_v4_endpoint", &obj.SparkJobsV4Endpoint)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "spark_jobs_v4_endpoint-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "spark_kernel_endpoint", &obj.SparkKernelEndpoint)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "spark_kernel_endpoint-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "view_history_server", &obj.ViewHistoryServer)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "view_history_server-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "wxd_application_endpoint", &obj.WxdApplicationEndpoint)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "wxd_application_endpoint-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "wxd_engine_endpoint", &obj.WxdEngineEndpoint)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "wxd_engine_endpoint-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "wxd_history_server_endpoint", &obj.WxdHistoryServerEndpoint)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "wxd_history_server_endpoint-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "wxd_history_server_ui_endpoint", &obj.WxdHistoryServerUiEndpoint)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "wxd_history_server_ui_endpoint-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -13797,6 +16217,9 @@ func UnmarshalSparkEndpoints(m map[string]json.RawMessage, result interface{}) (
 type SparkEngine struct {
 	// Actions.
 	Actions []string `json:"actions,omitempty"`
+
+	// Associated catalogs.
+	AssociatedCatalogs []string `json:"associated_catalogs,omitempty"`
 
 	// watsonx.data build version.
 	BuildVersion *string `json:"build_version,omitempty"`
@@ -13819,7 +16242,7 @@ type SparkEngine struct {
 	// Engine programmatic name.
 	EngineID *string `json:"engine_id,omitempty"`
 
-	// Origin - place holder.
+	// Origin - created or registered.
 	Origin *string `json:"origin,omitempty"`
 
 	// Engine status.
@@ -13832,153 +16255,96 @@ type SparkEngine struct {
 	Type *string `json:"type,omitempty"`
 }
 
+// Constants associated with the SparkEngine.Origin property.
+// Origin - created or registered.
+const (
+	SparkEngine_Origin_Discover = "discover"
+	SparkEngine_Origin_External = "external"
+	SparkEngine_Origin_Native = "native"
+)
+
+// Constants associated with the SparkEngine.Type property.
+// Type like spark, netezza,..
+const (
+	SparkEngine_Type_Spark = "spark"
+)
+
 // UnmarshalSparkEngine unmarshals an instance of SparkEngine from the specified map of raw messages.
 func UnmarshalSparkEngine(m map[string]json.RawMessage, result interface{}) (err error) {
 	obj := new(SparkEngine)
 	err = core.UnmarshalPrimitive(m, "actions", &obj.Actions)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "actions-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "associated_catalogs", &obj.AssociatedCatalogs)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "associated_catalogs-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "build_version", &obj.BuildVersion)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "build_version-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "created_by", &obj.CreatedBy)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "created_by-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "created_on", &obj.CreatedOn)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "created_on-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "description", &obj.Description)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "description-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "engine_details", &obj.EngineDetails, UnmarshalSparkEngineDetails)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_details-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "engine_display_name", &obj.EngineDisplayName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_display_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "engine_id", &obj.EngineID)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_id-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "origin", &obj.Origin)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "origin-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "status", &obj.Status)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "status-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "tags", &obj.Tags)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "type", &obj.Type)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "type-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
 
-func (*WatsonxDataV2) NewSparkEnginePatch(sparkEngine *SparkEngine) (_patch []JSONPatchOperation) {
-	if (sparkEngine.Actions != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/actions"),
-			Value: sparkEngine.Actions,
-		})
-	}
-	if (sparkEngine.BuildVersion != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/build_version"),
-			Value: sparkEngine.BuildVersion,
-		})
-	}
-	if (sparkEngine.CreatedBy != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/created_by"),
-			Value: sparkEngine.CreatedBy,
-		})
-	}
-	if (sparkEngine.CreatedOn != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/created_on"),
-			Value: sparkEngine.CreatedOn,
-		})
-	}
-	if (sparkEngine.Description != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/description"),
-			Value: sparkEngine.Description,
-		})
-	}
-	if (sparkEngine.EngineDetails != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/engine_details"),
-			Value: sparkEngine.EngineDetails,
-		})
-	}
-	if (sparkEngine.EngineDisplayName != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/engine_display_name"),
-			Value: sparkEngine.EngineDisplayName,
-		})
-	}
-	if (sparkEngine.EngineID != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/engine_id"),
-			Value: sparkEngine.EngineID,
-		})
-	}
-	if (sparkEngine.Origin != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/origin"),
-			Value: sparkEngine.Origin,
-		})
-	}
-	if (sparkEngine.Status != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/status"),
-			Value: sparkEngine.Status,
-		})
-	}
-	if (sparkEngine.Tags != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/tags"),
-			Value: sparkEngine.Tags,
-		})
-	}
-	if (sparkEngine.Type != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/type"),
-			Value: sparkEngine.Type,
-		})
-	}
-	return
-}
-
 // SparkEngineApplicationStatus : Engine Application Status.
 type SparkEngineApplicationStatus struct {
-	// Application Details.
-	ApplicationDetails *SparkEngineApplicationStatusApplicationDetails `json:"application_details,omitempty"`
+	// Application details.
+	ApplicationDetails *SparkApplicationDetails `json:"application_details,omitempty"`
 
 	// Application ID.
 	ApplicationID *string `json:"application_id,omitempty"`
@@ -14022,6 +16388,9 @@ type SparkEngineApplicationStatus struct {
 	// Spark application name.
 	SparkApplicationName *string `json:"spark_application_name,omitempty"`
 
+	// Spark Version.
+	SparkVersion *string `json:"spark_version,omitempty"`
+
 	// Start time.
 	StartTime *string `json:"start_time,omitempty"`
 
@@ -14039,6 +16408,12 @@ type SparkEngineApplicationStatus struct {
 
 	// Engine Type.
 	Type *string `json:"type,omitempty"`
+
+	// Spark application volumes to mount.
+	Volumes []SparkVolumeDetails `json:"volumes,omitempty"`
+
+	// Wxd history_server endpoint.
+	WxdApplicationUiEndpoint *string `json:"wxd_application_ui_endpoint,omitempty"`
 }
 
 // Constants associated with the SparkEngineApplicationStatus.Type property.
@@ -14051,241 +16426,124 @@ const (
 // UnmarshalSparkEngineApplicationStatus unmarshals an instance of SparkEngineApplicationStatus from the specified map of raw messages.
 func UnmarshalSparkEngineApplicationStatus(m map[string]json.RawMessage, result interface{}) (err error) {
 	obj := new(SparkEngineApplicationStatus)
-	err = core.UnmarshalModel(m, "application_details", &obj.ApplicationDetails, UnmarshalSparkEngineApplicationStatusApplicationDetails)
+	err = core.UnmarshalModel(m, "application_details", &obj.ApplicationDetails, UnmarshalSparkApplicationDetails)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "application_details-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "application_id", &obj.ApplicationID)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "application_id-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "auto_termination_time", &obj.AutoTerminationTime)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "auto_termination_time-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "creation_time", &obj.CreationTime)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "creation_time-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "deploy_mode", &obj.DeployMode)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "deploy_mode-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "end_time", &obj.EndTime)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "end_time-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "failed_time", &obj.FailedTime)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "failed_time-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "finish_time", &obj.FinishTime)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "finish_time-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "id", &obj.ID)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "id-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "job_endpoint", &obj.JobEndpoint)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "job_endpoint-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "return_code", &obj.ReturnCode)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "return_code-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "runtime", &obj.Runtime, UnmarshalSparkEngineApplicationStatusRuntime)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "runtime-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "service_instance_id", &obj.ServiceInstanceID)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "service_instance_id-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "spark_application_id", &obj.SparkApplicationID)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "spark_application_id-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "spark_application_name", &obj.SparkApplicationName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "spark_application_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "spark_version", &obj.SparkVersion)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "spark_version-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "start_time", &obj.StartTime)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "start_time-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "state", &obj.State)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "state-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "state_details", &obj.StateDetails, UnmarshalSparkEngineApplicationStatusStateDetailsItems)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "state_details-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "submission_time", &obj.SubmissionTime)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "submission_time-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "template_id", &obj.TemplateID)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "template_id-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "type", &obj.Type)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "type-error", common.GetComponentInfo())
 		return
 	}
-	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
-	return
-}
-
-// SparkEngineApplicationStatusApplicationDetails : Application Details.
-type SparkEngineApplicationStatusApplicationDetails struct {
-	// Application.
-	Application *string `json:"application,omitempty"`
-
-	// List of arguments.
-	Arguments []string `json:"arguments,omitempty"`
-
-	// Application.
-	Conf *SparkEngineApplicationStatusApplicationDetailsConf `json:"conf,omitempty"`
-
-	// Application.
-	Env map[string]interface{} `json:"env,omitempty"`
-
-	// Display name of the spark application.
-	Name *string `json:"name,omitempty"`
-}
-
-// UnmarshalSparkEngineApplicationStatusApplicationDetails unmarshals an instance of SparkEngineApplicationStatusApplicationDetails from the specified map of raw messages.
-func UnmarshalSparkEngineApplicationStatusApplicationDetails(m map[string]json.RawMessage, result interface{}) (err error) {
-	obj := new(SparkEngineApplicationStatusApplicationDetails)
-	err = core.UnmarshalPrimitive(m, "application", &obj.Application)
+	err = core.UnmarshalModel(m, "volumes", &obj.Volumes, UnmarshalSparkVolumeDetails)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "volumes-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalPrimitive(m, "arguments", &obj.Arguments)
+	err = core.UnmarshalPrimitive(m, "wxd_application_ui_endpoint", &obj.WxdApplicationUiEndpoint)
 	if err != nil {
-		return
-	}
-	err = core.UnmarshalModel(m, "conf", &obj.Conf, UnmarshalSparkEngineApplicationStatusApplicationDetailsConf)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "env", &obj.Env)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "name", &obj.Name)
-	if err != nil {
-		return
-	}
-	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
-	return
-}
-
-// SparkEngineApplicationStatusApplicationDetailsConf : Application.
-type SparkEngineApplicationStatusApplicationDetailsConf struct {
-	// Spark application name.
-	SparkAppName *string `json:"spark_app_name,omitempty"`
-
-	// Hive Metastore authentication mode.
-	SparkHiveMetastoreClientAuthMode *string `json:"spark_hive_metastore_client_auth_mode,omitempty"`
-
-	// Hive Metastore plain password.
-	SparkHiveMetastoreClientPlainPassword *string `json:"spark_hive_metastore_client_plain_password,omitempty"`
-
-	// Hive Metastore plain username.
-	SparkHiveMetastoreClientPlainUsername *string `json:"spark_hive_metastore_client_plain_username,omitempty"`
-
-	// Truststore password.
-	SparkHiveMetastoreTruststorePassword *string `json:"spark_hive_metastore_truststore_password,omitempty"`
-
-	// Truststore path.
-	SparkHiveMetastoreTruststorePath *string `json:"spark_hive_metastore_truststore_path,omitempty"`
-
-	// Truststore type.
-	SparkHiveMetastoreTruststoreType *string `json:"spark_hive_metastore_truststore_type,omitempty"`
-
-	// Enable or disable SSL for Hive Metastore.
-	SparkHiveMetastoreUseSsl *string `json:"spark_hive_metastore_use_ssl,omitempty"`
-
-	// SQL catalog implementation.
-	SparkSqlCatalogImplementation *string `json:"spark_sql_catalog_implementation,omitempty"`
-
-	// Lakehouse catalog name.
-	SparkSqlCatalogLakehouse *string `json:"spark_sql_catalog_lakehouse,omitempty"`
-
-	// Lakehouse catalog type.
-	SparkSqlCatalogLakehouseType *string `json:"spark_sql_catalog_lakehouse_type,omitempty"`
-
-	// Lakehouse catalog URI.
-	SparkSqlCatalogLakehouseURI *string `json:"spark_sql_catalog_lakehouse_uri,omitempty"`
-
-	// SQL extensions.
-	SparkSqlExtensions *string `json:"spark_sql_extensions,omitempty"`
-
-	// Enable or disable Iceberg vectorization.
-	SparkSqlIcebergVectorizationEnabled *string `json:"spark_sql_iceberg_vectorization_enabled,omitempty"`
-}
-
-// UnmarshalSparkEngineApplicationStatusApplicationDetailsConf unmarshals an instance of SparkEngineApplicationStatusApplicationDetailsConf from the specified map of raw messages.
-func UnmarshalSparkEngineApplicationStatusApplicationDetailsConf(m map[string]json.RawMessage, result interface{}) (err error) {
-	obj := new(SparkEngineApplicationStatusApplicationDetailsConf)
-	err = core.UnmarshalPrimitive(m, "spark_app_name", &obj.SparkAppName)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_hive_metastore_client_auth_mode", &obj.SparkHiveMetastoreClientAuthMode)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_hive_metastore_client_plain_password", &obj.SparkHiveMetastoreClientPlainPassword)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_hive_metastore_client_plain_username", &obj.SparkHiveMetastoreClientPlainUsername)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_hive_metastore_truststore_password", &obj.SparkHiveMetastoreTruststorePassword)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_hive_metastore_truststore_path", &obj.SparkHiveMetastoreTruststorePath)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_hive_metastore_truststore_type", &obj.SparkHiveMetastoreTruststoreType)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_hive_metastore_use_ssl", &obj.SparkHiveMetastoreUseSsl)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_sql_catalog_implementation", &obj.SparkSqlCatalogImplementation)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_sql_catalog_lakehouse", &obj.SparkSqlCatalogLakehouse)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_sql_catalog_lakehouse_type", &obj.SparkSqlCatalogLakehouseType)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_sql_catalog_lakehouse_uri", &obj.SparkSqlCatalogLakehouseURI)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_sql_extensions", &obj.SparkSqlExtensions)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "spark_sql_iceberg_vectorization_enabled", &obj.SparkSqlIcebergVectorizationEnabled)
-	if err != nil {
+		err = core.SDKErrorf(err, "", "wxd_application_ui_endpoint-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -14303,6 +16561,7 @@ func UnmarshalSparkEngineApplicationStatusCollection(m map[string]json.RawMessag
 	obj := new(SparkEngineApplicationStatusCollection)
 	err = core.UnmarshalModel(m, "applications", &obj.Applications, UnmarshalSparkEngineApplicationStatus)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "applications-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -14320,6 +16579,7 @@ func UnmarshalSparkEngineApplicationStatusRuntime(m map[string]json.RawMessage, 
 	obj := new(SparkEngineApplicationStatusRuntime)
 	err = core.UnmarshalPrimitive(m, "spark_version", &obj.SparkVersion)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "spark_version-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -14343,14 +16603,17 @@ func UnmarshalSparkEngineApplicationStatusStateDetailsItems(m map[string]json.Ra
 	obj := new(SparkEngineApplicationStatusStateDetailsItems)
 	err = core.UnmarshalPrimitive(m, "code", &obj.Code)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "code-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "message", &obj.Message)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "message-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "type", &obj.Type)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "type-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -14368,6 +16631,7 @@ func UnmarshalSparkEngineCollection(m map[string]json.RawMessage, result interfa
 	obj := new(SparkEngineCollection)
 	err = core.UnmarshalModel(m, "spark_engines", &obj.SparkEngines, UnmarshalSparkEngine)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "spark_engines-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -14376,22 +16640,136 @@ func UnmarshalSparkEngineCollection(m map[string]json.RawMessage, result interfa
 
 // SparkEngineDetails : External engine details.
 type SparkEngineDetails struct {
+	// api key to work with the saas IAE instance.
+	ApiKey *string `json:"api_key,omitempty"`
+
 	// External engine connection string.
 	ConnectionString *string `json:"connection_string,omitempty"`
 
+	// Spark Default Config details.
+	DefaultConfig *SparkDefaultConfig `json:"default_config,omitempty"`
+
+	// The default spark version for the native engine.
+	DefaultVersion *string `json:"default_version,omitempty"`
+
 	// Application Endpoints.
 	Endpoints *SparkEndpoints `json:"endpoints,omitempty"`
+
+	// Default bucket for spark.
+	EngineHomeBucketDisplayName *string `json:"engine_home_bucket_display_name,omitempty"`
+
+	// Default bucket for spark.
+	EngineHomeBucketName *string `json:"engine_home_bucket_name,omitempty"`
+
+	// Path for spark.
+	EngineHomePath *string `json:"engine_home_path,omitempty"`
+
+	// Default volume for spark.
+	EngineHomeVolume *string `json:"engine_home_volume,omitempty"`
+
+	// Default volume for spark.
+	EngineHomeVolumeID *string `json:"engine_home_volume_id,omitempty"`
+
+	// Name of the volume.
+	EngineHomeVolumeName *string `json:"engine_home_volume_name,omitempty"`
+
+	// Storage class of the volume.
+	EngineHomeVolumeStorageClass *string `json:"engine_home_volume_storage_class,omitempty"`
+
+	// Storage size of the volume.
+	EngineHomeVolumeStorageSize *string `json:"engine_home_volume_storage_size,omitempty"`
+
+	// Instance to access the instance.
+	InstanceID *string `json:"instance_id,omitempty"`
+
+	// How is the spark instance managed.
+	ManagedBy *string `json:"managed_by,omitempty"`
+
+	// Spark instance scale configuration.
+	ScaleConfig *SparkScaleConfig `json:"scale_config,omitempty"`
 }
 
 // UnmarshalSparkEngineDetails unmarshals an instance of SparkEngineDetails from the specified map of raw messages.
 func UnmarshalSparkEngineDetails(m map[string]json.RawMessage, result interface{}) (err error) {
 	obj := new(SparkEngineDetails)
+	err = core.UnmarshalPrimitive(m, "api_key", &obj.ApiKey)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "api_key-error", common.GetComponentInfo())
+		return
+	}
 	err = core.UnmarshalPrimitive(m, "connection_string", &obj.ConnectionString)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "connection_string-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "default_config", &obj.DefaultConfig, UnmarshalSparkDefaultConfig)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "default_config-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "default_version", &obj.DefaultVersion)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "default_version-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalModel(m, "endpoints", &obj.Endpoints, UnmarshalSparkEndpoints)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "endpoints-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_home_bucket_display_name", &obj.EngineHomeBucketDisplayName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_home_bucket_display_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_home_bucket_name", &obj.EngineHomeBucketName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_home_bucket_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_home_path", &obj.EngineHomePath)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_home_path-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_home_volume", &obj.EngineHomeVolume)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_home_volume-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_home_volume_id", &obj.EngineHomeVolumeID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_home_volume_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_home_volume_name", &obj.EngineHomeVolumeName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_home_volume_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_home_volume_storage_class", &obj.EngineHomeVolumeStorageClass)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_home_volume_storage_class-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_home_volume_storage_size", &obj.EngineHomeVolumeStorageSize)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_home_volume_storage_size-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "instance_id", &obj.InstanceID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "instance_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "managed_by", &obj.ManagedBy)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "managed_by-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "scale_config", &obj.ScaleConfig, UnmarshalSparkScaleConfig)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "scale_config-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -14406,11 +16784,41 @@ type SparkEngineDetailsPrototype struct {
 	// External engine connection string.
 	ConnectionString *string `json:"connection_string,omitempty"`
 
+	// Spark Default Config details.
+	DefaultConfig *SparkDefaultConfig `json:"default_config,omitempty"`
+
+	// The default spark version for the native engine.
+	DefaultVersion *string `json:"default_version,omitempty"`
+
+	// Default bucket name for spark.
+	EngineHomeBucketDisplayName *string `json:"engine_home_bucket_display_name,omitempty"`
+
+	// Default bucket for spark.
+	EngineHomeBucketName *string `json:"engine_home_bucket_name,omitempty"`
+
+	// Path for spark.
+	EngineHomePath *string `json:"engine_home_path,omitempty"`
+
+	// Default volume for spark.
+	EngineHomeVolumeID *string `json:"engine_home_volume_id,omitempty"`
+
+	// Name of the volume.
+	EngineHomeVolumeName *string `json:"engine_home_volume_name,omitempty"`
+
+	// Storage class of the volume.
+	EngineHomeVolumeStorageClass *string `json:"engine_home_volume_storage_class,omitempty"`
+
+	// Storage size of the volume.
+	EngineHomeVolumeStorageSize *string `json:"engine_home_volume_storage_size,omitempty"`
+
 	// Instance to access the instance.
 	InstanceID *string `json:"instance_id,omitempty"`
 
 	// How is the spark instance managed.
 	ManagedBy *string `json:"managed_by,omitempty"`
+
+	// Spark instance scale configuration.
+	ScaleConfig *SparkScaleConfig `json:"scale_config,omitempty"`
 }
 
 // UnmarshalSparkEngineDetailsPrototype unmarshals an instance of SparkEngineDetailsPrototype from the specified map of raw messages.
@@ -14418,22 +16826,281 @@ func UnmarshalSparkEngineDetailsPrototype(m map[string]json.RawMessage, result i
 	obj := new(SparkEngineDetailsPrototype)
 	err = core.UnmarshalPrimitive(m, "api_key", &obj.ApiKey)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "api_key-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "connection_string", &obj.ConnectionString)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "connection_string-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "default_config", &obj.DefaultConfig, UnmarshalSparkDefaultConfig)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "default_config-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "default_version", &obj.DefaultVersion)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "default_version-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_home_bucket_display_name", &obj.EngineHomeBucketDisplayName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_home_bucket_display_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_home_bucket_name", &obj.EngineHomeBucketName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_home_bucket_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_home_path", &obj.EngineHomePath)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_home_path-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_home_volume_id", &obj.EngineHomeVolumeID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_home_volume_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_home_volume_name", &obj.EngineHomeVolumeName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_home_volume_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_home_volume_storage_class", &obj.EngineHomeVolumeStorageClass)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_home_volume_storage_class-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_home_volume_storage_size", &obj.EngineHomeVolumeStorageSize)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_home_volume_storage_size-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "instance_id", &obj.InstanceID)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "instance_id-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "managed_by", &obj.ManagedBy)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "managed_by-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "scale_config", &obj.ScaleConfig, UnmarshalSparkScaleConfig)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "scale_config-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
+}
+
+// SparkHistoryServer : Native spark history server.
+type SparkHistoryServer struct {
+	// History server start time.
+	AutoTerminationTime *string `json:"auto_termination_time,omitempty"`
+
+	// History server cores.
+	Cores *string `json:"cores,omitempty"`
+
+	// History server memory.
+	Memory *string `json:"memory,omitempty"`
+
+	// History server start time.
+	StartTime *string `json:"start_time,omitempty"`
+
+	// History server state.
+	State *string `json:"state,omitempty"`
+}
+
+// UnmarshalSparkHistoryServer unmarshals an instance of SparkHistoryServer from the specified map of raw messages.
+func UnmarshalSparkHistoryServer(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SparkHistoryServer)
+	err = core.UnmarshalPrimitive(m, "auto_termination_time", &obj.AutoTerminationTime)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "auto_termination_time-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "cores", &obj.Cores)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "cores-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "memory", &obj.Memory)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "memory-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "start_time", &obj.StartTime)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "start_time-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "state", &obj.State)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "state-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SparkScaleConfig : Spark instance scale configuration.
+type SparkScaleConfig struct {
+	// Enable/disable autoscaling.
+	AutoScaleEnabled *bool `json:"auto_scale_enabled,omitempty"`
+
+	// Current node count.
+	CurrentNumberOfNodes *int64 `json:"current_number_of_nodes,omitempty"`
+
+	// Maximum node count.
+	MaximumNumberOfNodes *int64 `json:"maximum_number_of_nodes,omitempty"`
+
+	// Minimum node count.
+	MinimumNumberOfNodes *int64 `json:"minimum_number_of_nodes,omitempty"`
+
+	// Spark instance node type.
+	NodeType *string `json:"node_type,omitempty"`
+
+	// Node count.
+	NumberOfNodes *int64 `json:"number_of_nodes,omitempty"`
+}
+
+// UnmarshalSparkScaleConfig unmarshals an instance of SparkScaleConfig from the specified map of raw messages.
+func UnmarshalSparkScaleConfig(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SparkScaleConfig)
+	err = core.UnmarshalPrimitive(m, "auto_scale_enabled", &obj.AutoScaleEnabled)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "auto_scale_enabled-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "current_number_of_nodes", &obj.CurrentNumberOfNodes)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "current_number_of_nodes-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "maximum_number_of_nodes", &obj.MaximumNumberOfNodes)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "maximum_number_of_nodes-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "minimum_number_of_nodes", &obj.MinimumNumberOfNodes)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "minimum_number_of_nodes-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "node_type", &obj.NodeType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "node_type-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "number_of_nodes", &obj.NumberOfNodes)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "number_of_nodes-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SparkVolumeDetails : Spark application volume.
+type SparkVolumeDetails struct {
+	// Path in the spark cluster for the mounted volume.
+	MountPath *string `json:"mount_path,omitempty"`
+
+	// volume name.
+	Name *string `json:"name,omitempty"`
+
+	// Read only flag.
+	ReadOnly *bool `json:"read_only,omitempty"`
+
+	// Path in the volume to be mounted.
+	SourceSubPath *string `json:"source_sub_path,omitempty"`
+}
+
+// UnmarshalSparkVolumeDetails unmarshals an instance of SparkVolumeDetails from the specified map of raw messages.
+func UnmarshalSparkVolumeDetails(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SparkVolumeDetails)
+	err = core.UnmarshalPrimitive(m, "mount_path", &obj.MountPath)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "mount_path-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "name", &obj.Name)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "read_only", &obj.ReadOnly)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "read_only-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "source_sub_path", &obj.SourceSubPath)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "source_sub_path-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// StartSparkEngineHistoryServerOptions : The StartSparkEngineHistoryServer options.
+type StartSparkEngineHistoryServerOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// CPU count.
+	Cores *string `json:"cores,omitempty"`
+
+	// Memory in GiB.
+	Memory *string `json:"memory,omitempty"`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewStartSparkEngineHistoryServerOptions : Instantiate StartSparkEngineHistoryServerOptions
+func (*WatsonxDataV2) NewStartSparkEngineHistoryServerOptions(engineID string) *StartSparkEngineHistoryServerOptions {
+	return &StartSparkEngineHistoryServerOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *StartSparkEngineHistoryServerOptions) SetEngineID(engineID string) *StartSparkEngineHistoryServerOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetCores : Allow user to set Cores
+func (_options *StartSparkEngineHistoryServerOptions) SetCores(cores string) *StartSparkEngineHistoryServerOptions {
+	_options.Cores = core.StringPtr(cores)
+	return _options
+}
+
+// SetMemory : Allow user to set Memory
+func (_options *StartSparkEngineHistoryServerOptions) SetMemory(memory string) *StartSparkEngineHistoryServerOptions {
+	_options.Memory = core.StringPtr(memory)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *StartSparkEngineHistoryServerOptions) SetAuthInstanceID(authInstanceID string) *StartSparkEngineHistoryServerOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *StartSparkEngineHistoryServerOptions) SetHeaders(param map[string]string) *StartSparkEngineHistoryServerOptions {
+	options.Headers = param
+	return options
 }
 
 // SuccessResponse : Response of success.
@@ -14450,13 +17117,67 @@ func UnmarshalSuccessResponse(m map[string]json.RawMessage, result interface{}) 
 	obj := new(SuccessResponse)
 	err = core.UnmarshalPrimitive(m, "message", &obj.Message)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "message-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "message_code", &obj.MessageCode)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "message_code-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SyncCatalogs : catalogs definition.
+type SyncCatalogs struct {
+	// Auto add new table.
+	AutoAddNewTables *bool `json:"auto_add_new_tables" validate:"required"`
+
+	// Sync iceberg metadata.
+	SyncIcebergMd *bool `json:"sync_iceberg_md" validate:"required"`
+}
+
+// NewSyncCatalogs : Instantiate SyncCatalogs (Generic Model Constructor)
+func (*WatsonxDataV2) NewSyncCatalogs(autoAddNewTables bool, syncIcebergMd bool) (_model *SyncCatalogs, err error) {
+	_model = &SyncCatalogs{
+		AutoAddNewTables: core.BoolPtr(autoAddNewTables),
+		SyncIcebergMd: core.BoolPtr(syncIcebergMd),
+	}
+	err = core.ValidateStruct(_model, "required parameters")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "model-missing-required", common.GetComponentInfo())
+	}
+	return
+}
+
+// UnmarshalSyncCatalogs unmarshals an instance of SyncCatalogs from the specified map of raw messages.
+func UnmarshalSyncCatalogs(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SyncCatalogs)
+	err = core.UnmarshalPrimitive(m, "auto_add_new_tables", &obj.AutoAddNewTables)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "auto_add_new_tables-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "sync_iceberg_md", &obj.SyncIcebergMd)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "sync_iceberg_md-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// AsPatch returns a generic map representation of the SyncCatalogs
+func (syncCatalogs *SyncCatalogs) AsPatch() (_patch map[string]interface{}, err error) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(syncCatalogs.AutoAddNewTables) {
+		_patch["auto_add_new_tables"] = syncCatalogs.AutoAddNewTables
+	}
+	if !core.IsNil(syncCatalogs.SyncIcebergMd) {
+		_patch["sync_iceberg_md"] = syncCatalogs.SyncIcebergMd
+	}
+
 	return
 }
 
@@ -14474,31 +17195,15 @@ func UnmarshalTable(m map[string]json.RawMessage, result interface{}) (err error
 	obj := new(Table)
 	err = core.UnmarshalModel(m, "columns", &obj.Columns, UnmarshalColumn)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "columns-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "table_name", &obj.TableName)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "table_name-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
-	return
-}
-
-func (*WatsonxDataV2) NewTablePatch(table *Table) (_patch []JSONPatchOperation) {
-	if (table.Columns != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/columns"),
-			Value: table.Columns,
-		})
-	}
-	if (table.TableName != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/table_name"),
-			Value: table.TableName,
-		})
-	}
 	return
 }
 
@@ -14513,9 +17218,38 @@ func UnmarshalTableCollection(m map[string]json.RawMessage, result interface{}) 
 	obj := new(TableCollection)
 	err = core.UnmarshalPrimitive(m, "tables", &obj.Tables)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "tables-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// TablePatch : UpdateTable body.
+type TablePatch struct {
+	// New table name.
+	TableName *string `json:"table_name,omitempty"`
+}
+
+// UnmarshalTablePatch unmarshals an instance of TablePatch from the specified map of raw messages.
+func UnmarshalTablePatch(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(TablePatch)
+	err = core.UnmarshalPrimitive(m, "table_name", &obj.TableName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "table_name-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// AsPatch returns a generic map representation of the TablePatch
+func (tablePatch *TablePatch) AsPatch() (_patch map[string]interface{}, err error) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(tablePatch.TableName) {
+		_patch["table_name"] = tablePatch.TableName
+	}
+
 	return
 }
 
@@ -14531,7 +17265,7 @@ type TableSnapshot struct {
 	SnapshotID *string `json:"snapshot_id,omitempty"`
 
 	// Summary.
-	Summary map[string]interface{} `json:"summary,omitempty"`
+	Summary *string `json:"summary,omitempty"`
 }
 
 // UnmarshalTableSnapshot unmarshals an instance of TableSnapshot from the specified map of raw messages.
@@ -14539,18 +17273,22 @@ func UnmarshalTableSnapshot(m map[string]json.RawMessage, result interface{}) (e
 	obj := new(TableSnapshot)
 	err = core.UnmarshalPrimitive(m, "committed_at", &obj.CommittedAt)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "committed_at-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "operation", &obj.Operation)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "operation-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "snapshot_id", &obj.SnapshotID)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "snapshot_id-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "summary", &obj.Summary)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "summary-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -14568,166 +17306,11 @@ func UnmarshalTableSnapshotCollection(m map[string]json.RawMessage, result inter
 	obj := new(TableSnapshotCollection)
 	err = core.UnmarshalModel(m, "snapshots", &obj.Snapshots, UnmarshalTableSnapshot)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "snapshots-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
-}
-
-// TestBucketConnectionOKBody : ValidateBucketRegistrationCredentials OK.
-type TestBucketConnectionOKBody struct {
-	// object defining the response of checking if the credentials of a bucket are valid.
-	BucketStatus *BucketStatusResponse `json:"bucket_status" validate:"required"`
-
-	// Response of success.
-	Response *SuccessResponse `json:"response" validate:"required"`
-}
-
-// UnmarshalTestBucketConnectionOKBody unmarshals an instance of TestBucketConnectionOKBody from the specified map of raw messages.
-func UnmarshalTestBucketConnectionOKBody(m map[string]json.RawMessage, result interface{}) (err error) {
-	obj := new(TestBucketConnectionOKBody)
-	err = core.UnmarshalModel(m, "bucket_status", &obj.BucketStatus, UnmarshalBucketStatusResponse)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalModel(m, "response", &obj.Response, UnmarshalSuccessResponse)
-	if err != nil {
-		return
-	}
-	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
-	return
-}
-
-// TestBucketConnectionOptions : The TestBucketConnection options.
-type TestBucketConnectionOptions struct {
-	// access key to access the bucket.
-	AccessKey *string `json:"access_key" validate:"required"`
-
-	// name of the bucket to be checked.
-	BucketName *string `json:"bucket_name" validate:"required"`
-
-	// type of bucket that is selected.
-	BucketType *string `json:"bucket_type" validate:"required"`
-
-	// endpoint to reach the bucket.
-	Endpoint *string `json:"endpoint" validate:"required"`
-
-	// bucket region.
-	Region *string `json:"region" validate:"required"`
-
-	// secret key to access the bucket.
-	SecretKey *string `json:"secret_key" validate:"required"`
-
-	// Instance ID.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests
-	Headers map[string]string
-}
-
-// Constants associated with the TestBucketConnectionOptions.BucketType property.
-// type of bucket that is selected.
-const (
-	TestBucketConnectionOptions_BucketType_AmazonS3 = "amazon_s3"
-	TestBucketConnectionOptions_BucketType_AwsS3 = "aws_s3"
-	TestBucketConnectionOptions_BucketType_IbmCeph = "ibm_ceph"
-	TestBucketConnectionOptions_BucketType_IbmCos = "ibm_cos"
-	TestBucketConnectionOptions_BucketType_Minio = "minio"
-)
-
-// NewTestBucketConnectionOptions : Instantiate TestBucketConnectionOptions
-func (*WatsonxDataV2) NewTestBucketConnectionOptions(accessKey string, bucketName string, bucketType string, endpoint string, region string, secretKey string) *TestBucketConnectionOptions {
-	return &TestBucketConnectionOptions{
-		AccessKey: core.StringPtr(accessKey),
-		BucketName: core.StringPtr(bucketName),
-		BucketType: core.StringPtr(bucketType),
-		Endpoint: core.StringPtr(endpoint),
-		Region: core.StringPtr(region),
-		SecretKey: core.StringPtr(secretKey),
-	}
-}
-
-// SetAccessKey : Allow user to set AccessKey
-func (_options *TestBucketConnectionOptions) SetAccessKey(accessKey string) *TestBucketConnectionOptions {
-	_options.AccessKey = core.StringPtr(accessKey)
-	return _options
-}
-
-// SetBucketName : Allow user to set BucketName
-func (_options *TestBucketConnectionOptions) SetBucketName(bucketName string) *TestBucketConnectionOptions {
-	_options.BucketName = core.StringPtr(bucketName)
-	return _options
-}
-
-// SetBucketType : Allow user to set BucketType
-func (_options *TestBucketConnectionOptions) SetBucketType(bucketType string) *TestBucketConnectionOptions {
-	_options.BucketType = core.StringPtr(bucketType)
-	return _options
-}
-
-// SetEndpoint : Allow user to set Endpoint
-func (_options *TestBucketConnectionOptions) SetEndpoint(endpoint string) *TestBucketConnectionOptions {
-	_options.Endpoint = core.StringPtr(endpoint)
-	return _options
-}
-
-// SetRegion : Allow user to set Region
-func (_options *TestBucketConnectionOptions) SetRegion(region string) *TestBucketConnectionOptions {
-	_options.Region = core.StringPtr(region)
-	return _options
-}
-
-// SetSecretKey : Allow user to set SecretKey
-func (_options *TestBucketConnectionOptions) SetSecretKey(secretKey string) *TestBucketConnectionOptions {
-	_options.SecretKey = core.StringPtr(secretKey)
-	return _options
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *TestBucketConnectionOptions) SetAuthInstanceID(authInstanceID string) *TestBucketConnectionOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *TestBucketConnectionOptions) SetHeaders(param map[string]string) *TestBucketConnectionOptions {
-	options.Headers = param
-	return options
-}
-
-// TestDatabaseConnectionResponse : Success response.
-type TestDatabaseConnectionResponse struct {
-	// check connection response details are valid or not.
-	ConnectionResponse *ConnectionResponse `json:"connection_response,omitempty"`
-}
-
-// UnmarshalTestDatabaseConnectionResponse unmarshals an instance of TestDatabaseConnectionResponse from the specified map of raw messages.
-func UnmarshalTestDatabaseConnectionResponse(m map[string]json.RawMessage, result interface{}) (err error) {
-	obj := new(TestDatabaseConnectionResponse)
-	err = core.UnmarshalModel(m, "connection_response", &obj.ConnectionResponse, UnmarshalConnectionResponse)
-	if err != nil {
-		return
-	}
-	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
-	return
-}
-
-// TestLHConsoleOptions : The TestLHConsole options.
-type TestLHConsoleOptions struct {
-
-	// Allows users to set headers on API requests
-	Headers map[string]string
-}
-
-// NewTestLHConsoleOptions : Instantiate TestLHConsoleOptions
-func (*WatsonxDataV2) NewTestLHConsoleOptions() *TestLHConsoleOptions {
-	return &TestLHConsoleOptions{}
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *TestLHConsoleOptions) SetHeaders(param map[string]string) *TestLHConsoleOptions {
-	options.Headers = param
-	return options
 }
 
 // UpdateBucketRegistrationOptions : The UpdateBucketRegistration options.
@@ -14736,17 +17319,17 @@ type UpdateBucketRegistrationOptions struct {
 	BucketID *string `json:"bucket_id" validate:"required,ne="`
 
 	// Request body.
-	Body []JSONPatchOperation `json:"body" validate:"required"`
+	Body map[string]interface{} `json:"body" validate:"required"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
 // NewUpdateBucketRegistrationOptions : Instantiate UpdateBucketRegistrationOptions
-func (*WatsonxDataV2) NewUpdateBucketRegistrationOptions(bucketID string, body []JSONPatchOperation) *UpdateBucketRegistrationOptions {
+func (*WatsonxDataV2) NewUpdateBucketRegistrationOptions(bucketID string, body map[string]interface{}) *UpdateBucketRegistrationOptions {
 	return &UpdateBucketRegistrationOptions{
 		BucketID: core.StringPtr(bucketID),
 		Body: body,
@@ -14760,7 +17343,7 @@ func (_options *UpdateBucketRegistrationOptions) SetBucketID(bucketID string) *U
 }
 
 // SetBody : Allow user to set Body
-func (_options *UpdateBucketRegistrationOptions) SetBody(body []JSONPatchOperation) *UpdateBucketRegistrationOptions {
+func (_options *UpdateBucketRegistrationOptions) SetBody(body map[string]interface{}) *UpdateBucketRegistrationOptions {
 	_options.Body = body
 	return _options
 }
@@ -14795,17 +17378,17 @@ type UpdateColumnOptions struct {
 	ColumnID *string `json:"column_id" validate:"required,ne="`
 
 	// Request body.
-	Body []JSONPatchOperation `json:"body" validate:"required"`
+	Body map[string]interface{} `json:"body" validate:"required"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
 // NewUpdateColumnOptions : Instantiate UpdateColumnOptions
-func (*WatsonxDataV2) NewUpdateColumnOptions(engineID string, catalogID string, schemaID string, tableID string, columnID string, body []JSONPatchOperation) *UpdateColumnOptions {
+func (*WatsonxDataV2) NewUpdateColumnOptions(engineID string, catalogID string, schemaID string, tableID string, columnID string, body map[string]interface{}) *UpdateColumnOptions {
 	return &UpdateColumnOptions{
 		EngineID: core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
@@ -14847,7 +17430,7 @@ func (_options *UpdateColumnOptions) SetColumnID(columnID string) *UpdateColumnO
 }
 
 // SetBody : Allow user to set Body
-func (_options *UpdateColumnOptions) SetBody(body []JSONPatchOperation) *UpdateColumnOptions {
+func (_options *UpdateColumnOptions) SetBody(body map[string]interface{}) *UpdateColumnOptions {
 	_options.Body = body
 	return _options
 }
@@ -14870,17 +17453,17 @@ type UpdateDatabaseOptions struct {
 	DatabaseID *string `json:"database_id" validate:"required,ne="`
 
 	// Request body.
-	Body []JSONPatchOperation `json:"body" validate:"required"`
+	Body map[string]interface{} `json:"body" validate:"required"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
 // NewUpdateDatabaseOptions : Instantiate UpdateDatabaseOptions
-func (*WatsonxDataV2) NewUpdateDatabaseOptions(databaseID string, body []JSONPatchOperation) *UpdateDatabaseOptions {
+func (*WatsonxDataV2) NewUpdateDatabaseOptions(databaseID string, body map[string]interface{}) *UpdateDatabaseOptions {
 	return &UpdateDatabaseOptions{
 		DatabaseID: core.StringPtr(databaseID),
 		Body: body,
@@ -14894,7 +17477,7 @@ func (_options *UpdateDatabaseOptions) SetDatabaseID(databaseID string) *UpdateD
 }
 
 // SetBody : Allow user to set Body
-func (_options *UpdateDatabaseOptions) SetBody(body []JSONPatchOperation) *UpdateDatabaseOptions {
+func (_options *UpdateDatabaseOptions) SetBody(body map[string]interface{}) *UpdateDatabaseOptions {
 	_options.Body = body
 	return _options
 }
@@ -14917,17 +17500,17 @@ type UpdateDb2EngineOptions struct {
 	EngineID *string `json:"engine_id" validate:"required,ne="`
 
 	// Update Engine Body.
-	Body []JSONPatchOperation `json:"body" validate:"required"`
+	Body map[string]interface{} `json:"body" validate:"required"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
 // NewUpdateDb2EngineOptions : Instantiate UpdateDb2EngineOptions
-func (*WatsonxDataV2) NewUpdateDb2EngineOptions(engineID string, body []JSONPatchOperation) *UpdateDb2EngineOptions {
+func (*WatsonxDataV2) NewUpdateDb2EngineOptions(engineID string, body map[string]interface{}) *UpdateDb2EngineOptions {
 	return &UpdateDb2EngineOptions{
 		EngineID: core.StringPtr(engineID),
 		Body: body,
@@ -14941,7 +17524,7 @@ func (_options *UpdateDb2EngineOptions) SetEngineID(engineID string) *UpdateDb2E
 }
 
 // SetBody : Allow user to set Body
-func (_options *UpdateDb2EngineOptions) SetBody(body []JSONPatchOperation) *UpdateDb2EngineOptions {
+func (_options *UpdateDb2EngineOptions) SetBody(body map[string]interface{}) *UpdateDb2EngineOptions {
 	_options.Body = body
 	return _options
 }
@@ -14964,17 +17547,17 @@ type UpdateMilvusServiceOptions struct {
 	ServiceID *string `json:"service_id" validate:"required,ne="`
 
 	// Update milvus service.
-	Body []JSONPatchOperation `json:"body" validate:"required"`
+	Body map[string]interface{} `json:"body" validate:"required"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
 // NewUpdateMilvusServiceOptions : Instantiate UpdateMilvusServiceOptions
-func (*WatsonxDataV2) NewUpdateMilvusServiceOptions(serviceID string, body []JSONPatchOperation) *UpdateMilvusServiceOptions {
+func (*WatsonxDataV2) NewUpdateMilvusServiceOptions(serviceID string, body map[string]interface{}) *UpdateMilvusServiceOptions {
 	return &UpdateMilvusServiceOptions{
 		ServiceID: core.StringPtr(serviceID),
 		Body: body,
@@ -14988,7 +17571,7 @@ func (_options *UpdateMilvusServiceOptions) SetServiceID(serviceID string) *Upda
 }
 
 // SetBody : Allow user to set Body
-func (_options *UpdateMilvusServiceOptions) SetBody(body []JSONPatchOperation) *UpdateMilvusServiceOptions {
+func (_options *UpdateMilvusServiceOptions) SetBody(body map[string]interface{}) *UpdateMilvusServiceOptions {
 	_options.Body = body
 	return _options
 }
@@ -15011,17 +17594,17 @@ type UpdateNetezzaEngineOptions struct {
 	EngineID *string `json:"engine_id" validate:"required,ne="`
 
 	// Update Engine Body.
-	Body []JSONPatchOperation `json:"body" validate:"required"`
+	Body map[string]interface{} `json:"body" validate:"required"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
 // NewUpdateNetezzaEngineOptions : Instantiate UpdateNetezzaEngineOptions
-func (*WatsonxDataV2) NewUpdateNetezzaEngineOptions(engineID string, body []JSONPatchOperation) *UpdateNetezzaEngineOptions {
+func (*WatsonxDataV2) NewUpdateNetezzaEngineOptions(engineID string, body map[string]interface{}) *UpdateNetezzaEngineOptions {
 	return &UpdateNetezzaEngineOptions{
 		EngineID: core.StringPtr(engineID),
 		Body: body,
@@ -15035,7 +17618,7 @@ func (_options *UpdateNetezzaEngineOptions) SetEngineID(engineID string) *Update
 }
 
 // SetBody : Allow user to set Body
-func (_options *UpdateNetezzaEngineOptions) SetBody(body []JSONPatchOperation) *UpdateNetezzaEngineOptions {
+func (_options *UpdateNetezzaEngineOptions) SetBody(body map[string]interface{}) *UpdateNetezzaEngineOptions {
 	_options.Body = body
 	return _options
 }
@@ -15058,17 +17641,17 @@ type UpdatePrestissimoEngineOptions struct {
 	EngineID *string `json:"engine_id" validate:"required,ne="`
 
 	// Update prestissimo engine body.
-	Body []JSONPatchOperation `json:"body" validate:"required"`
+	Body map[string]interface{} `json:"body" validate:"required"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
 // NewUpdatePrestissimoEngineOptions : Instantiate UpdatePrestissimoEngineOptions
-func (*WatsonxDataV2) NewUpdatePrestissimoEngineOptions(engineID string, body []JSONPatchOperation) *UpdatePrestissimoEngineOptions {
+func (*WatsonxDataV2) NewUpdatePrestissimoEngineOptions(engineID string, body map[string]interface{}) *UpdatePrestissimoEngineOptions {
 	return &UpdatePrestissimoEngineOptions{
 		EngineID: core.StringPtr(engineID),
 		Body: body,
@@ -15082,7 +17665,7 @@ func (_options *UpdatePrestissimoEngineOptions) SetEngineID(engineID string) *Up
 }
 
 // SetBody : Allow user to set Body
-func (_options *UpdatePrestissimoEngineOptions) SetBody(body []JSONPatchOperation) *UpdatePrestissimoEngineOptions {
+func (_options *UpdatePrestissimoEngineOptions) SetBody(body map[string]interface{}) *UpdatePrestissimoEngineOptions {
 	_options.Body = body
 	return _options
 }
@@ -15105,17 +17688,17 @@ type UpdatePrestoEngineOptions struct {
 	EngineID *string `json:"engine_id" validate:"required,ne="`
 
 	// Update Engine Body.
-	Body []JSONPatchOperation `json:"body" validate:"required"`
+	Body map[string]interface{} `json:"body" validate:"required"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
 // NewUpdatePrestoEngineOptions : Instantiate UpdatePrestoEngineOptions
-func (*WatsonxDataV2) NewUpdatePrestoEngineOptions(engineID string, body []JSONPatchOperation) *UpdatePrestoEngineOptions {
+func (*WatsonxDataV2) NewUpdatePrestoEngineOptions(engineID string, body map[string]interface{}) *UpdatePrestoEngineOptions {
 	return &UpdatePrestoEngineOptions{
 		EngineID: core.StringPtr(engineID),
 		Body: body,
@@ -15129,7 +17712,7 @@ func (_options *UpdatePrestoEngineOptions) SetEngineID(engineID string) *UpdateP
 }
 
 // SetBody : Allow user to set Body
-func (_options *UpdatePrestoEngineOptions) SetBody(body []JSONPatchOperation) *UpdatePrestoEngineOptions {
+func (_options *UpdatePrestoEngineOptions) SetBody(body map[string]interface{}) *UpdatePrestoEngineOptions {
 	_options.Body = body
 	return _options
 }
@@ -15146,23 +17729,123 @@ func (options *UpdatePrestoEngineOptions) SetHeaders(param map[string]string) *U
 	return options
 }
 
+// UpdateSparkEngineBody : UpdateEngine body.
+type UpdateSparkEngineBody struct {
+	// Modified description.
+	Description *string `json:"description,omitempty"`
+
+	// Engine details.
+	EngineDetails *UpdateSparkEngineBodyEngineDetails `json:"engine_details,omitempty"`
+
+	// Engine display name.
+	EngineDisplayName *string `json:"engine_display_name,omitempty"`
+
+	// Tags.
+	Tags []string `json:"tags,omitempty"`
+}
+
+// UnmarshalUpdateSparkEngineBody unmarshals an instance of UpdateSparkEngineBody from the specified map of raw messages.
+func UnmarshalUpdateSparkEngineBody(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(UpdateSparkEngineBody)
+	err = core.UnmarshalPrimitive(m, "description", &obj.Description)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "description-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "engine_details", &obj.EngineDetails, UnmarshalUpdateSparkEngineBodyEngineDetails)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_details-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_display_name", &obj.EngineDisplayName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_display_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "tags", &obj.Tags)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// AsPatch returns a generic map representation of the UpdateSparkEngineBody
+func (updateSparkEngineBody *UpdateSparkEngineBody) AsPatch() (_patch map[string]interface{}, err error) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(updateSparkEngineBody.Description) {
+		_patch["description"] = updateSparkEngineBody.Description
+	}
+	if !core.IsNil(updateSparkEngineBody.EngineDetails) {
+		_patch["engine_details"] = updateSparkEngineBody.EngineDetails.asPatch()
+	}
+	if !core.IsNil(updateSparkEngineBody.EngineDisplayName) {
+		_patch["engine_display_name"] = updateSparkEngineBody.EngineDisplayName
+	}
+	if !core.IsNil(updateSparkEngineBody.Tags) {
+		_patch["tags"] = updateSparkEngineBody.Tags
+	}
+
+	return
+}
+
+// UpdateSparkEngineBodyEngineDetails : Engine details.
+type UpdateSparkEngineBodyEngineDetails struct {
+	// Dynamic dict.
+	DefaultConfig map[string]string `json:"default_config,omitempty"`
+
+	// The default spark version for the native engine.
+	DefaultVersion *string `json:"default_version,omitempty"`
+}
+
+// UnmarshalUpdateSparkEngineBodyEngineDetails unmarshals an instance of UpdateSparkEngineBodyEngineDetails from the specified map of raw messages.
+func UnmarshalUpdateSparkEngineBodyEngineDetails(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(UpdateSparkEngineBodyEngineDetails)
+	err = core.UnmarshalPrimitive(m, "default_config", &obj.DefaultConfig)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "default_config-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "default_version", &obj.DefaultVersion)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "default_version-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the UpdateSparkEngineBodyEngineDetails
+func (updateSparkEngineBodyEngineDetails *UpdateSparkEngineBodyEngineDetails) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(updateSparkEngineBodyEngineDetails.DefaultConfig) {
+		_patch["default_config"] = updateSparkEngineBodyEngineDetails.DefaultConfig
+	}
+	if !core.IsNil(updateSparkEngineBodyEngineDetails.DefaultVersion) {
+		_patch["default_version"] = updateSparkEngineBodyEngineDetails.DefaultVersion
+	}
+
+	return
+}
+
 // UpdateSparkEngineOptions : The UpdateSparkEngine options.
 type UpdateSparkEngineOptions struct {
 	// engine id.
 	EngineID *string `json:"engine_id" validate:"required,ne="`
 
 	// Update Engine Body.
-	Body []JSONPatchOperation `json:"body" validate:"required"`
+	Body map[string]interface{} `json:"body" validate:"required"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
 // NewUpdateSparkEngineOptions : Instantiate UpdateSparkEngineOptions
-func (*WatsonxDataV2) NewUpdateSparkEngineOptions(engineID string, body []JSONPatchOperation) *UpdateSparkEngineOptions {
+func (*WatsonxDataV2) NewUpdateSparkEngineOptions(engineID string, body map[string]interface{}) *UpdateSparkEngineOptions {
 	return &UpdateSparkEngineOptions{
 		EngineID: core.StringPtr(engineID),
 		Body: body,
@@ -15176,7 +17859,7 @@ func (_options *UpdateSparkEngineOptions) SetEngineID(engineID string) *UpdateSp
 }
 
 // SetBody : Allow user to set Body
-func (_options *UpdateSparkEngineOptions) SetBody(body []JSONPatchOperation) *UpdateSparkEngineOptions {
+func (_options *UpdateSparkEngineOptions) SetBody(body map[string]interface{}) *UpdateSparkEngineOptions {
 	_options.Body = body
 	return _options
 }
@@ -15204,20 +17887,10 @@ func UnmarshalUpdateSyncCatalogOKBody(m map[string]json.RawMessage, result inter
 	obj := new(UpdateSyncCatalogOKBody)
 	err = core.UnmarshalModel(m, "response", &obj.Response, UnmarshalSuccessResponse)
 	if err != nil {
+		err = core.SDKErrorf(err, "", "response-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
-	return
-}
-
-func (*WatsonxDataV2) NewUpdateSyncCatalogOKBodyPatch(updateSyncCatalogOKBody *UpdateSyncCatalogOKBody) (_patch []JSONPatchOperation) {
-	if (updateSyncCatalogOKBody.Response != nil) {
-		_patch = append(_patch, JSONPatchOperation{
-			Op: core.StringPtr(JSONPatchOperation_Op_Add),
-			Path: core.StringPtr("/response"),
-			Value: updateSyncCatalogOKBody.Response,
-		})
-	}
 	return
 }
 
@@ -15227,17 +17900,17 @@ type UpdateSyncCatalogOptions struct {
 	CatalogID *string `json:"catalog_id" validate:"required,ne="`
 
 	// Request body.
-	Body []JSONPatchOperation `json:"body" validate:"required"`
+	Body map[string]interface{} `json:"body" validate:"required"`
 
-	// Instance ID.
+	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
 // NewUpdateSyncCatalogOptions : Instantiate UpdateSyncCatalogOptions
-func (*WatsonxDataV2) NewUpdateSyncCatalogOptions(catalogID string, body []JSONPatchOperation) *UpdateSyncCatalogOptions {
+func (*WatsonxDataV2) NewUpdateSyncCatalogOptions(catalogID string, body map[string]interface{}) *UpdateSyncCatalogOptions {
 	return &UpdateSyncCatalogOptions{
 		CatalogID: core.StringPtr(catalogID),
 		Body: body,
@@ -15251,7 +17924,7 @@ func (_options *UpdateSyncCatalogOptions) SetCatalogID(catalogID string) *Update
 }
 
 // SetBody : Allow user to set Body
-func (_options *UpdateSyncCatalogOptions) SetBody(body []JSONPatchOperation) *UpdateSyncCatalogOptions {
+func (_options *UpdateSyncCatalogOptions) SetBody(body map[string]interface{}) *UpdateSyncCatalogOptions {
 	_options.Body = body
 	return _options
 }
@@ -15268,231 +17941,96 @@ func (options *UpdateSyncCatalogOptions) SetHeaders(param map[string]string) *Up
 	return options
 }
 
-// UpdateTableOptions : The UpdateTable options.
-type UpdateTableOptions struct {
-	// catalog id.
-	CatalogID *string `json:"catalog_id" validate:"required,ne="`
-
-	// URL encoded schema name.
-	SchemaID *string `json:"schema_id" validate:"required,ne="`
-
-	// URL encoded table name.
-	TableID *string `json:"table_id" validate:"required,ne="`
-
-	// engine id.
-	EngineID *string `json:"engine_id" validate:"required"`
-
-	// Request body.
-	Body []JSONPatchOperation `json:"body" validate:"required"`
-
-	// Instance ID.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests
-	Headers map[string]string
-}
-
-// NewUpdateTableOptions : Instantiate UpdateTableOptions
-func (*WatsonxDataV2) NewUpdateTableOptions(catalogID string, schemaID string, tableID string, engineID string, body []JSONPatchOperation) *UpdateTableOptions {
-	return &UpdateTableOptions{
-		CatalogID: core.StringPtr(catalogID),
-		SchemaID: core.StringPtr(schemaID),
-		TableID: core.StringPtr(tableID),
-		EngineID: core.StringPtr(engineID),
-		Body: body,
+//
+// IngestionJobsPager can be used to simplify the use of the "ListIngestionJobs" method.
+//
+type IngestionJobsPager struct {
+	hasNext bool
+	options *ListIngestionJobsOptions
+	client  *WatsonxDataV2
+	pageContext struct {
+		next *string
 	}
 }
 
-// SetCatalogID : Allow user to set CatalogID
-func (_options *UpdateTableOptions) SetCatalogID(catalogID string) *UpdateTableOptions {
-	_options.CatalogID = core.StringPtr(catalogID)
-	return _options
-}
-
-// SetSchemaID : Allow user to set SchemaID
-func (_options *UpdateTableOptions) SetSchemaID(schemaID string) *UpdateTableOptions {
-	_options.SchemaID = core.StringPtr(schemaID)
-	return _options
-}
-
-// SetTableID : Allow user to set TableID
-func (_options *UpdateTableOptions) SetTableID(tableID string) *UpdateTableOptions {
-	_options.TableID = core.StringPtr(tableID)
-	return _options
-}
-
-// SetEngineID : Allow user to set EngineID
-func (_options *UpdateTableOptions) SetEngineID(engineID string) *UpdateTableOptions {
-	_options.EngineID = core.StringPtr(engineID)
-	return _options
-}
-
-// SetBody : Allow user to set Body
-func (_options *UpdateTableOptions) SetBody(body []JSONPatchOperation) *UpdateTableOptions {
-	_options.Body = body
-	return _options
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *UpdateTableOptions) SetAuthInstanceID(authInstanceID string) *UpdateTableOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *UpdateTableOptions) SetHeaders(param map[string]string) *UpdateTableOptions {
-	options.Headers = param
-	return options
-}
-
-// ValidateDatabaseBodyDatabaseDetails : database details.
-type ValidateDatabaseBodyDatabaseDetails struct {
-	// db name.
-	DatabaseName *string `json:"database_name,omitempty"`
-
-	// Host name.
-	Hostname *string `json:"hostname" validate:"required"`
-
-	// Psssword.
-	Password *string `json:"password,omitempty"`
-
-	// Port.
-	Port *int64 `json:"port" validate:"required"`
-
-	// SASL Mode.
-	Sasl *bool `json:"sasl,omitempty"`
-
-	// SSL Mode.
-	Ssl *bool `json:"ssl,omitempty"`
-
-	// Only for Kafka - Add kafka tables.
-	Tables *string `json:"tables,omitempty"`
-
-	// Username.
-	Username *string `json:"username,omitempty"`
-
-	// Verify certificate.
-	ValidateServerCertificate *bool `json:"validate_server_certificate,omitempty"`
-}
-
-// NewValidateDatabaseBodyDatabaseDetails : Instantiate ValidateDatabaseBodyDatabaseDetails (Generic Model Constructor)
-func (*WatsonxDataV2) NewValidateDatabaseBodyDatabaseDetails(hostname string, port int64) (_model *ValidateDatabaseBodyDatabaseDetails, err error) {
-	_model = &ValidateDatabaseBodyDatabaseDetails{
-		Hostname: core.StringPtr(hostname),
-		Port: core.Int64Ptr(port),
+// NewIngestionJobsPager returns a new IngestionJobsPager instance.
+func (watsonxData *WatsonxDataV2) NewIngestionJobsPager(options *ListIngestionJobsOptions) (pager *IngestionJobsPager, err error) {
+	if options.Start != nil && *options.Start != "" {
+		err = core.SDKErrorf(nil, "the 'options.Start' field should not be set", "no-query-setting", common.GetComponentInfo())
+		return
 	}
-	err = core.ValidateStruct(_model, "required parameters")
+
+	var optionsCopy ListIngestionJobsOptions = *options
+	pager = &IngestionJobsPager{
+		hasNext: true,
+		options: &optionsCopy,
+		client:  watsonxData,
+	}
 	return
 }
 
-// UnmarshalValidateDatabaseBodyDatabaseDetails unmarshals an instance of ValidateDatabaseBodyDatabaseDetails from the specified map of raw messages.
-func UnmarshalValidateDatabaseBodyDatabaseDetails(m map[string]json.RawMessage, result interface{}) (err error) {
-	obj := new(ValidateDatabaseBodyDatabaseDetails)
-	err = core.UnmarshalPrimitive(m, "database_name", &obj.DatabaseName)
+// HasNext returns true if there are potentially more results to be retrieved.
+func (pager *IngestionJobsPager) HasNext() bool {
+	return pager.hasNext
+}
+
+// GetNextWithContext returns the next page of results using the specified Context.
+func (pager *IngestionJobsPager) GetNextWithContext(ctx context.Context) (page []IngestionJob, err error) {
+	if !pager.HasNext() {
+		return nil, fmt.Errorf("no more results available")
+	}
+
+	pager.options.Start = pager.pageContext.next
+
+	result, _, err := pager.client.ListIngestionJobsWithContext(ctx, pager.options)
 	if err != nil {
+		err = core.RepurposeSDKProblem(err, "error-getting-next-page")
 		return
 	}
-	err = core.UnmarshalPrimitive(m, "hostname", &obj.Hostname)
-	if err != nil {
-		return
+
+	var next *string
+	if result.Next != nil {
+		var start *string
+		start, err = core.GetQueryParam(result.Next.Href, "start")
+		if err != nil {
+			errMsg := fmt.Sprintf("error retrieving 'start' query parameter from URL '%s': %s", *result.Next.Href, err.Error())
+			err = core.SDKErrorf(err, errMsg, "get-query-error", common.GetComponentInfo())
+			return
+		}
+		next = start
 	}
-	err = core.UnmarshalPrimitive(m, "password", &obj.Password)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "port", &obj.Port)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "sasl", &obj.Sasl)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "ssl", &obj.Ssl)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "tables", &obj.Tables)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "username", &obj.Username)
-	if err != nil {
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "validate_server_certificate", &obj.ValidateServerCertificate)
-	if err != nil {
-		return
-	}
-	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	pager.pageContext.next = next
+	pager.hasNext = (pager.pageContext.next != nil)
+	page = result.IngestionJobs
+
 	return
 }
 
-// ValidateDatabaseConnectionOptions : The ValidateDatabaseConnection options.
-type ValidateDatabaseConnectionOptions struct {
-	// database details.
-	DatabaseDetails *ValidateDatabaseBodyDatabaseDetails `json:"database_details" validate:"required"`
-
-	// Type of db connection.
-	DatabaseType *string `json:"database_type" validate:"required"`
-
-	// contents of a pem/crt file.
-	Certificate *string `json:"certificate,omitempty"`
-
-	// Instance ID.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests
-	Headers map[string]string
-}
-
-// Constants associated with the ValidateDatabaseConnectionOptions.DatabaseType property.
-// Type of db connection.
-const (
-	ValidateDatabaseConnectionOptions_DatabaseType_Db2 = "db2"
-	ValidateDatabaseConnectionOptions_DatabaseType_Kafka = "kafka"
-	ValidateDatabaseConnectionOptions_DatabaseType_Mongodb = "mongodb"
-	ValidateDatabaseConnectionOptions_DatabaseType_Mycustomdb = "mycustomdb"
-	ValidateDatabaseConnectionOptions_DatabaseType_Mysql = "mysql"
-	ValidateDatabaseConnectionOptions_DatabaseType_Netezza = "netezza"
-	ValidateDatabaseConnectionOptions_DatabaseType_Postgresql = "postgresql"
-	ValidateDatabaseConnectionOptions_DatabaseType_Sqlserver = "sqlserver"
-)
-
-// NewValidateDatabaseConnectionOptions : Instantiate ValidateDatabaseConnectionOptions
-func (*WatsonxDataV2) NewValidateDatabaseConnectionOptions(databaseDetails *ValidateDatabaseBodyDatabaseDetails, databaseType string) *ValidateDatabaseConnectionOptions {
-	return &ValidateDatabaseConnectionOptions{
-		DatabaseDetails: databaseDetails,
-		DatabaseType: core.StringPtr(databaseType),
+// GetAllWithContext returns all results by invoking GetNextWithContext() repeatedly
+// until all pages of results have been retrieved.
+func (pager *IngestionJobsPager) GetAllWithContext(ctx context.Context) (allItems []IngestionJob, err error) {
+	for pager.HasNext() {
+		var nextPage []IngestionJob
+		nextPage, err = pager.GetNextWithContext(ctx)
+		if err != nil {
+			err = core.RepurposeSDKProblem(err, "error-getting-next-page")
+			return
+		}
+		allItems = append(allItems, nextPage...)
 	}
+	return
 }
 
-// SetDatabaseDetails : Allow user to set DatabaseDetails
-func (_options *ValidateDatabaseConnectionOptions) SetDatabaseDetails(databaseDetails *ValidateDatabaseBodyDatabaseDetails) *ValidateDatabaseConnectionOptions {
-	_options.DatabaseDetails = databaseDetails
-	return _options
+// GetNext invokes GetNextWithContext() using context.Background() as the Context parameter.
+func (pager *IngestionJobsPager) GetNext() (page []IngestionJob, err error) {
+	page, err = pager.GetNextWithContext(context.Background())
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
 
-// SetDatabaseType : Allow user to set DatabaseType
-func (_options *ValidateDatabaseConnectionOptions) SetDatabaseType(databaseType string) *ValidateDatabaseConnectionOptions {
-	_options.DatabaseType = core.StringPtr(databaseType)
-	return _options
-}
-
-// SetCertificate : Allow user to set Certificate
-func (_options *ValidateDatabaseConnectionOptions) SetCertificate(certificate string) *ValidateDatabaseConnectionOptions {
-	_options.Certificate = core.StringPtr(certificate)
-	return _options
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *ValidateDatabaseConnectionOptions) SetAuthInstanceID(authInstanceID string) *ValidateDatabaseConnectionOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *ValidateDatabaseConnectionOptions) SetHeaders(param map[string]string) *ValidateDatabaseConnectionOptions {
-	options.Headers = param
-	return options
+// GetAll invokes GetAllWithContext() using context.Background() as the Context parameter.
+func (pager *IngestionJobsPager) GetAll() (allItems []IngestionJob, err error) {
+	allItems, err = pager.GetAllWithContext(context.Background())
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }
