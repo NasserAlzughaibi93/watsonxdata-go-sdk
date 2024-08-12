@@ -22192,7 +22192,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					Expect(req.Method).To(Equal("GET"))
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
-					Expect(req.URL.Query()["start"]).To(Equal([]string{"1"}))
+					Expect(req.URL.Query()["page"]).To(Equal([]string{fmt.Sprint(int64(1))}))
 					Expect(req.URL.Query()["jobs_per_page"]).To(Equal([]string{fmt.Sprint(int64(1))}))
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
@@ -22210,7 +22210,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				// Construct an instance of the ListIngestionJobsOptions model
 				listIngestionJobsOptionsModel := new(watsonxdatav2.ListIngestionJobsOptions)
 				listIngestionJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				listIngestionJobsOptionsModel.Start = core.StringPtr("1")
+				listIngestionJobsOptionsModel.Page = core.Int64Ptr(int64(1))
 				listIngestionJobsOptionsModel.JobsPerPage = core.Int64Ptr(int64(1))
 				listIngestionJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Expect response parsing to fail since we are receiving a text/plain response
@@ -22244,7 +22244,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
-					Expect(req.URL.Query()["start"]).To(Equal([]string{"1"}))
+					Expect(req.URL.Query()["page"]).To(Equal([]string{fmt.Sprint(int64(1))}))
 					Expect(req.URL.Query()["jobs_per_page"]).To(Equal([]string{fmt.Sprint(int64(1))}))
 					// Sleep a short time to support a timeout test
 					time.Sleep(100 * time.Millisecond)
@@ -22267,7 +22267,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				// Construct an instance of the ListIngestionJobsOptions model
 				listIngestionJobsOptionsModel := new(watsonxdatav2.ListIngestionJobsOptions)
 				listIngestionJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				listIngestionJobsOptionsModel.Start = core.StringPtr("1")
+				listIngestionJobsOptionsModel.Page = core.Int64Ptr(int64(1))
 				listIngestionJobsOptionsModel.JobsPerPage = core.Int64Ptr(int64(1))
 				listIngestionJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -22307,7 +22307,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
-					Expect(req.URL.Query()["start"]).To(Equal([]string{"1"}))
+					Expect(req.URL.Query()["page"]).To(Equal([]string{fmt.Sprint(int64(1))}))
 					Expect(req.URL.Query()["jobs_per_page"]).To(Equal([]string{fmt.Sprint(int64(1))}))
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
@@ -22332,7 +22332,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				// Construct an instance of the ListIngestionJobsOptions model
 				listIngestionJobsOptionsModel := new(watsonxdatav2.ListIngestionJobsOptions)
 				listIngestionJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				listIngestionJobsOptionsModel.Start = core.StringPtr("1")
+				listIngestionJobsOptionsModel.Page = core.Int64Ptr(int64(1))
 				listIngestionJobsOptionsModel.JobsPerPage = core.Int64Ptr(int64(1))
 				listIngestionJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -22354,7 +22354,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				// Construct an instance of the ListIngestionJobsOptions model
 				listIngestionJobsOptionsModel := new(watsonxdatav2.ListIngestionJobsOptions)
 				listIngestionJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				listIngestionJobsOptionsModel.Start = core.StringPtr("1")
+				listIngestionJobsOptionsModel.Page = core.Int64Ptr(int64(1))
 				listIngestionJobsOptionsModel.JobsPerPage = core.Int64Ptr(int64(1))
 				listIngestionJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
@@ -22397,7 +22397,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				// Construct an instance of the ListIngestionJobsOptions model
 				listIngestionJobsOptionsModel := new(watsonxdatav2.ListIngestionJobsOptions)
 				listIngestionJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				listIngestionJobsOptionsModel.Start = core.StringPtr("1")
+				listIngestionJobsOptionsModel.Page = core.Int64Ptr(int64(1))
 				listIngestionJobsOptionsModel.JobsPerPage = core.Int64Ptr(int64(1))
 				listIngestionJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -22413,85 +22413,798 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				testServer.Close()
 			})
 		})
-		Context(`Test pagination helper method on response`, func() {
-			It(`Invoke GetNextStart successfully`, func() {
-				responseObject := new(watsonxdatav2.IngestionJobCollection)
-				nextObject := new(watsonxdatav2.IngestionJobCollectionPage)
-				nextObject.Href = core.StringPtr("ibm.com?start=abc-123")
-				responseObject.Next = nextObject
-
-				value, err := responseObject.GetNextStart()
-				Expect(err).To(BeNil())
-				Expect(value).To(Equal(core.StringPtr("abc-123")))
-			})
-			It(`Invoke GetNextStart without a "Next" property in the response`, func() {
-				responseObject := new(watsonxdatav2.IngestionJobCollection)
-
-				value, err := responseObject.GetNextStart()
-				Expect(err).To(BeNil())
-				Expect(value).To(BeNil())
-			})
-			It(`Invoke GetNextStart without any query params in the "Next" URL`, func() {
-				responseObject := new(watsonxdatav2.IngestionJobCollection)
-				nextObject := new(watsonxdatav2.IngestionJobCollectionPage)
-				nextObject.Href = core.StringPtr("ibm.com")
-				responseObject.Next = nextObject
-
-				value, err := responseObject.GetNextStart()
-				Expect(err).To(BeNil())
-				Expect(value).To(BeNil())
-			})
-		})
-		Context(`Using mock server endpoint - paginated response`, func() {
+	})
+	Describe(`CreateIngestionJobs(createIngestionJobsOptions *CreateIngestionJobsOptions) - Operation response error`, func() {
+		createIngestionJobsPath := "/ingestion_jobs"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
 			BeforeEach(func() {
-				var requestNumber int = 0
 				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(listIngestionJobsPath))
+					Expect(req.URL.EscapedPath()).To(Equal(createIngestionJobsPath))
+					Expect(req.Method).To(Equal("POST"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(202)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke CreateIngestionJobs with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the IngestionJobPrototypeCsvProperty model
+				ingestionJobPrototypeCsvPropertyModel := new(watsonxdatav2.IngestionJobPrototypeCsvProperty)
+				ingestionJobPrototypeCsvPropertyModel.Encoding = core.StringPtr("utf-8")
+				ingestionJobPrototypeCsvPropertyModel.EscapeCharacter = core.StringPtr("\\\\")
+				ingestionJobPrototypeCsvPropertyModel.FieldDelimiter = core.StringPtr(",")
+				ingestionJobPrototypeCsvPropertyModel.Header = core.BoolPtr(true)
+				ingestionJobPrototypeCsvPropertyModel.LineDelimiter = core.StringPtr("\\n")
+
+				// Construct an instance of the IngestionJobPrototypeExecuteConfig model
+				ingestionJobPrototypeExecuteConfigModel := new(watsonxdatav2.IngestionJobPrototypeExecuteConfig)
+				ingestionJobPrototypeExecuteConfigModel.DriverCores = core.Int64Ptr(int64(1))
+				ingestionJobPrototypeExecuteConfigModel.DriverMemory = core.StringPtr("2G")
+				ingestionJobPrototypeExecuteConfigModel.ExecutorCores = core.Int64Ptr(int64(1))
+				ingestionJobPrototypeExecuteConfigModel.ExecutorMemory = core.StringPtr("2G")
+				ingestionJobPrototypeExecuteConfigModel.NumExecutors = core.Int64Ptr(int64(1))
+
+				// Construct an instance of the CreateIngestionJobsOptions model
+				createIngestionJobsOptionsModel := new(watsonxdatav2.CreateIngestionJobsOptions)
+				createIngestionJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createIngestionJobsOptionsModel.JobID = core.StringPtr("ingestion-1699459946935")
+				createIngestionJobsOptionsModel.SourceDataFiles = core.StringPtr("s3://demobucket/data/yellow_tripdata_2022-01.parquet")
+				createIngestionJobsOptionsModel.TargetTable = core.StringPtr("demodb.test.targettable")
+				createIngestionJobsOptionsModel.Username = core.StringPtr("user1")
+				createIngestionJobsOptionsModel.CreateIfNotExist = core.BoolPtr(false)
+				createIngestionJobsOptionsModel.CsvProperty = ingestionJobPrototypeCsvPropertyModel
+				createIngestionJobsOptionsModel.EngineID = core.StringPtr("spark123")
+				createIngestionJobsOptionsModel.ExecuteConfig = ingestionJobPrototypeExecuteConfigModel
+				createIngestionJobsOptionsModel.PartitionBy = core.StringPtr("col1, col2")
+				createIngestionJobsOptionsModel.Schema = core.StringPtr("{\"type\":\"struct\",\"schema-id\":0,\"fields\":[{\"id\":1,\"name\":\"ID\",\"required\":true,\"type\":\"int\"},{\"id\":2,\"name\":\"Name\",\"required\":true,\"type\":\"string\"}]}")
+				createIngestionJobsOptionsModel.SourceFileType = core.StringPtr("csv")
+				createIngestionJobsOptionsModel.ValidateCsvHeader = core.BoolPtr(false)
+				createIngestionJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.CreateIngestionJobs(createIngestionJobsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.CreateIngestionJobs(createIngestionJobsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateIngestionJobs(createIngestionJobsOptions *CreateIngestionJobsOptions)`, func() {
+		createIngestionJobsPath := "/ingestion_jobs"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createIngestionJobsPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(202)
+					fmt.Fprintf(res, "%s", `{"create_if_not_exist": false, "csv_property": {"encoding": "utf-8", "escape_character": "|", "field_delimiter": ",", "header": true, "line_delimiter": "\n"}, "details": "Path does not exist 'demobucket/data/yellow_tripdata_2022-01.parquet'. Detail: [errno 2] No such file or directory", "end_timestamp": "1685088775", "engine_id": "spark123", "engine_name": "sparkdemo", "execute_config": {"driver_cores": 1, "driver_memory": "2G", "executor_cores": 1, "executor_memory": "2G", "num_executors": 1}, "instance_id": "1684432229673971", "job_id": "ingestion-1699459946935", "partition_by": "col1, col2", "schema": "{\"type\":\"struct\",\"schema-id\":0,\"fields\":[{\"id\":1,\"name\":\"ID\",\"required\":true,\"type\":\"int\"},{\"id\":2,\"name\":\"Name\",\"required\":true,\"type\":\"string\"}]}", "source_data_files": "s3://demobucket/data/yellow_tripdata_2022-01.parquet", "source_file_type": "csv", "start_timestamp": "1685084455", "status": "running", "target_table": "demodb.test.targettable", "username": "ibmlhadmin", "validate_csv_header": false}`)
+				}))
+			})
+			It(`Invoke CreateIngestionJobs successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the IngestionJobPrototypeCsvProperty model
+				ingestionJobPrototypeCsvPropertyModel := new(watsonxdatav2.IngestionJobPrototypeCsvProperty)
+				ingestionJobPrototypeCsvPropertyModel.Encoding = core.StringPtr("utf-8")
+				ingestionJobPrototypeCsvPropertyModel.EscapeCharacter = core.StringPtr("\\\\")
+				ingestionJobPrototypeCsvPropertyModel.FieldDelimiter = core.StringPtr(",")
+				ingestionJobPrototypeCsvPropertyModel.Header = core.BoolPtr(true)
+				ingestionJobPrototypeCsvPropertyModel.LineDelimiter = core.StringPtr("\\n")
+
+				// Construct an instance of the IngestionJobPrototypeExecuteConfig model
+				ingestionJobPrototypeExecuteConfigModel := new(watsonxdatav2.IngestionJobPrototypeExecuteConfig)
+				ingestionJobPrototypeExecuteConfigModel.DriverCores = core.Int64Ptr(int64(1))
+				ingestionJobPrototypeExecuteConfigModel.DriverMemory = core.StringPtr("2G")
+				ingestionJobPrototypeExecuteConfigModel.ExecutorCores = core.Int64Ptr(int64(1))
+				ingestionJobPrototypeExecuteConfigModel.ExecutorMemory = core.StringPtr("2G")
+				ingestionJobPrototypeExecuteConfigModel.NumExecutors = core.Int64Ptr(int64(1))
+
+				// Construct an instance of the CreateIngestionJobsOptions model
+				createIngestionJobsOptionsModel := new(watsonxdatav2.CreateIngestionJobsOptions)
+				createIngestionJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createIngestionJobsOptionsModel.JobID = core.StringPtr("ingestion-1699459946935")
+				createIngestionJobsOptionsModel.SourceDataFiles = core.StringPtr("s3://demobucket/data/yellow_tripdata_2022-01.parquet")
+				createIngestionJobsOptionsModel.TargetTable = core.StringPtr("demodb.test.targettable")
+				createIngestionJobsOptionsModel.Username = core.StringPtr("user1")
+				createIngestionJobsOptionsModel.CreateIfNotExist = core.BoolPtr(false)
+				createIngestionJobsOptionsModel.CsvProperty = ingestionJobPrototypeCsvPropertyModel
+				createIngestionJobsOptionsModel.EngineID = core.StringPtr("spark123")
+				createIngestionJobsOptionsModel.ExecuteConfig = ingestionJobPrototypeExecuteConfigModel
+				createIngestionJobsOptionsModel.PartitionBy = core.StringPtr("col1, col2")
+				createIngestionJobsOptionsModel.Schema = core.StringPtr("{\"type\":\"struct\",\"schema-id\":0,\"fields\":[{\"id\":1,\"name\":\"ID\",\"required\":true,\"type\":\"int\"},{\"id\":2,\"name\":\"Name\",\"required\":true,\"type\":\"string\"}]}")
+				createIngestionJobsOptionsModel.SourceFileType = core.StringPtr("csv")
+				createIngestionJobsOptionsModel.ValidateCsvHeader = core.BoolPtr(false)
+				createIngestionJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.CreateIngestionJobsWithContext(ctx, createIngestionJobsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.CreateIngestionJobs(createIngestionJobsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.CreateIngestionJobsWithContext(ctx, createIngestionJobsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createIngestionJobsPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(202)
+					fmt.Fprintf(res, "%s", `{"create_if_not_exist": false, "csv_property": {"encoding": "utf-8", "escape_character": "|", "field_delimiter": ",", "header": true, "line_delimiter": "\n"}, "details": "Path does not exist 'demobucket/data/yellow_tripdata_2022-01.parquet'. Detail: [errno 2] No such file or directory", "end_timestamp": "1685088775", "engine_id": "spark123", "engine_name": "sparkdemo", "execute_config": {"driver_cores": 1, "driver_memory": "2G", "executor_cores": 1, "executor_memory": "2G", "num_executors": 1}, "instance_id": "1684432229673971", "job_id": "ingestion-1699459946935", "partition_by": "col1, col2", "schema": "{\"type\":\"struct\",\"schema-id\":0,\"fields\":[{\"id\":1,\"name\":\"ID\",\"required\":true,\"type\":\"int\"},{\"id\":2,\"name\":\"Name\",\"required\":true,\"type\":\"string\"}]}", "source_data_files": "s3://demobucket/data/yellow_tripdata_2022-01.parquet", "source_file_type": "csv", "start_timestamp": "1685084455", "status": "running", "target_table": "demodb.test.targettable", "username": "ibmlhadmin", "validate_csv_header": false}`)
+				}))
+			})
+			It(`Invoke CreateIngestionJobs successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.CreateIngestionJobs(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the IngestionJobPrototypeCsvProperty model
+				ingestionJobPrototypeCsvPropertyModel := new(watsonxdatav2.IngestionJobPrototypeCsvProperty)
+				ingestionJobPrototypeCsvPropertyModel.Encoding = core.StringPtr("utf-8")
+				ingestionJobPrototypeCsvPropertyModel.EscapeCharacter = core.StringPtr("\\\\")
+				ingestionJobPrototypeCsvPropertyModel.FieldDelimiter = core.StringPtr(",")
+				ingestionJobPrototypeCsvPropertyModel.Header = core.BoolPtr(true)
+				ingestionJobPrototypeCsvPropertyModel.LineDelimiter = core.StringPtr("\\n")
+
+				// Construct an instance of the IngestionJobPrototypeExecuteConfig model
+				ingestionJobPrototypeExecuteConfigModel := new(watsonxdatav2.IngestionJobPrototypeExecuteConfig)
+				ingestionJobPrototypeExecuteConfigModel.DriverCores = core.Int64Ptr(int64(1))
+				ingestionJobPrototypeExecuteConfigModel.DriverMemory = core.StringPtr("2G")
+				ingestionJobPrototypeExecuteConfigModel.ExecutorCores = core.Int64Ptr(int64(1))
+				ingestionJobPrototypeExecuteConfigModel.ExecutorMemory = core.StringPtr("2G")
+				ingestionJobPrototypeExecuteConfigModel.NumExecutors = core.Int64Ptr(int64(1))
+
+				// Construct an instance of the CreateIngestionJobsOptions model
+				createIngestionJobsOptionsModel := new(watsonxdatav2.CreateIngestionJobsOptions)
+				createIngestionJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createIngestionJobsOptionsModel.JobID = core.StringPtr("ingestion-1699459946935")
+				createIngestionJobsOptionsModel.SourceDataFiles = core.StringPtr("s3://demobucket/data/yellow_tripdata_2022-01.parquet")
+				createIngestionJobsOptionsModel.TargetTable = core.StringPtr("demodb.test.targettable")
+				createIngestionJobsOptionsModel.Username = core.StringPtr("user1")
+				createIngestionJobsOptionsModel.CreateIfNotExist = core.BoolPtr(false)
+				createIngestionJobsOptionsModel.CsvProperty = ingestionJobPrototypeCsvPropertyModel
+				createIngestionJobsOptionsModel.EngineID = core.StringPtr("spark123")
+				createIngestionJobsOptionsModel.ExecuteConfig = ingestionJobPrototypeExecuteConfigModel
+				createIngestionJobsOptionsModel.PartitionBy = core.StringPtr("col1, col2")
+				createIngestionJobsOptionsModel.Schema = core.StringPtr("{\"type\":\"struct\",\"schema-id\":0,\"fields\":[{\"id\":1,\"name\":\"ID\",\"required\":true,\"type\":\"int\"},{\"id\":2,\"name\":\"Name\",\"required\":true,\"type\":\"string\"}]}")
+				createIngestionJobsOptionsModel.SourceFileType = core.StringPtr("csv")
+				createIngestionJobsOptionsModel.ValidateCsvHeader = core.BoolPtr(false)
+				createIngestionJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.CreateIngestionJobs(createIngestionJobsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke CreateIngestionJobs with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the IngestionJobPrototypeCsvProperty model
+				ingestionJobPrototypeCsvPropertyModel := new(watsonxdatav2.IngestionJobPrototypeCsvProperty)
+				ingestionJobPrototypeCsvPropertyModel.Encoding = core.StringPtr("utf-8")
+				ingestionJobPrototypeCsvPropertyModel.EscapeCharacter = core.StringPtr("\\\\")
+				ingestionJobPrototypeCsvPropertyModel.FieldDelimiter = core.StringPtr(",")
+				ingestionJobPrototypeCsvPropertyModel.Header = core.BoolPtr(true)
+				ingestionJobPrototypeCsvPropertyModel.LineDelimiter = core.StringPtr("\\n")
+
+				// Construct an instance of the IngestionJobPrototypeExecuteConfig model
+				ingestionJobPrototypeExecuteConfigModel := new(watsonxdatav2.IngestionJobPrototypeExecuteConfig)
+				ingestionJobPrototypeExecuteConfigModel.DriverCores = core.Int64Ptr(int64(1))
+				ingestionJobPrototypeExecuteConfigModel.DriverMemory = core.StringPtr("2G")
+				ingestionJobPrototypeExecuteConfigModel.ExecutorCores = core.Int64Ptr(int64(1))
+				ingestionJobPrototypeExecuteConfigModel.ExecutorMemory = core.StringPtr("2G")
+				ingestionJobPrototypeExecuteConfigModel.NumExecutors = core.Int64Ptr(int64(1))
+
+				// Construct an instance of the CreateIngestionJobsOptions model
+				createIngestionJobsOptionsModel := new(watsonxdatav2.CreateIngestionJobsOptions)
+				createIngestionJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createIngestionJobsOptionsModel.JobID = core.StringPtr("ingestion-1699459946935")
+				createIngestionJobsOptionsModel.SourceDataFiles = core.StringPtr("s3://demobucket/data/yellow_tripdata_2022-01.parquet")
+				createIngestionJobsOptionsModel.TargetTable = core.StringPtr("demodb.test.targettable")
+				createIngestionJobsOptionsModel.Username = core.StringPtr("user1")
+				createIngestionJobsOptionsModel.CreateIfNotExist = core.BoolPtr(false)
+				createIngestionJobsOptionsModel.CsvProperty = ingestionJobPrototypeCsvPropertyModel
+				createIngestionJobsOptionsModel.EngineID = core.StringPtr("spark123")
+				createIngestionJobsOptionsModel.ExecuteConfig = ingestionJobPrototypeExecuteConfigModel
+				createIngestionJobsOptionsModel.PartitionBy = core.StringPtr("col1, col2")
+				createIngestionJobsOptionsModel.Schema = core.StringPtr("{\"type\":\"struct\",\"schema-id\":0,\"fields\":[{\"id\":1,\"name\":\"ID\",\"required\":true,\"type\":\"int\"},{\"id\":2,\"name\":\"Name\",\"required\":true,\"type\":\"string\"}]}")
+				createIngestionJobsOptionsModel.SourceFileType = core.StringPtr("csv")
+				createIngestionJobsOptionsModel.ValidateCsvHeader = core.BoolPtr(false)
+				createIngestionJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.CreateIngestionJobs(createIngestionJobsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the CreateIngestionJobsOptions model with no property values
+				createIngestionJobsOptionsModelNew := new(watsonxdatav2.CreateIngestionJobsOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = watsonxDataService.CreateIngestionJobs(createIngestionJobsOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(202)
+				}))
+			})
+			It(`Invoke CreateIngestionJobs successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the IngestionJobPrototypeCsvProperty model
+				ingestionJobPrototypeCsvPropertyModel := new(watsonxdatav2.IngestionJobPrototypeCsvProperty)
+				ingestionJobPrototypeCsvPropertyModel.Encoding = core.StringPtr("utf-8")
+				ingestionJobPrototypeCsvPropertyModel.EscapeCharacter = core.StringPtr("\\\\")
+				ingestionJobPrototypeCsvPropertyModel.FieldDelimiter = core.StringPtr(",")
+				ingestionJobPrototypeCsvPropertyModel.Header = core.BoolPtr(true)
+				ingestionJobPrototypeCsvPropertyModel.LineDelimiter = core.StringPtr("\\n")
+
+				// Construct an instance of the IngestionJobPrototypeExecuteConfig model
+				ingestionJobPrototypeExecuteConfigModel := new(watsonxdatav2.IngestionJobPrototypeExecuteConfig)
+				ingestionJobPrototypeExecuteConfigModel.DriverCores = core.Int64Ptr(int64(1))
+				ingestionJobPrototypeExecuteConfigModel.DriverMemory = core.StringPtr("2G")
+				ingestionJobPrototypeExecuteConfigModel.ExecutorCores = core.Int64Ptr(int64(1))
+				ingestionJobPrototypeExecuteConfigModel.ExecutorMemory = core.StringPtr("2G")
+				ingestionJobPrototypeExecuteConfigModel.NumExecutors = core.Int64Ptr(int64(1))
+
+				// Construct an instance of the CreateIngestionJobsOptions model
+				createIngestionJobsOptionsModel := new(watsonxdatav2.CreateIngestionJobsOptions)
+				createIngestionJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createIngestionJobsOptionsModel.JobID = core.StringPtr("ingestion-1699459946935")
+				createIngestionJobsOptionsModel.SourceDataFiles = core.StringPtr("s3://demobucket/data/yellow_tripdata_2022-01.parquet")
+				createIngestionJobsOptionsModel.TargetTable = core.StringPtr("demodb.test.targettable")
+				createIngestionJobsOptionsModel.Username = core.StringPtr("user1")
+				createIngestionJobsOptionsModel.CreateIfNotExist = core.BoolPtr(false)
+				createIngestionJobsOptionsModel.CsvProperty = ingestionJobPrototypeCsvPropertyModel
+				createIngestionJobsOptionsModel.EngineID = core.StringPtr("spark123")
+				createIngestionJobsOptionsModel.ExecuteConfig = ingestionJobPrototypeExecuteConfigModel
+				createIngestionJobsOptionsModel.PartitionBy = core.StringPtr("col1, col2")
+				createIngestionJobsOptionsModel.Schema = core.StringPtr("{\"type\":\"struct\",\"schema-id\":0,\"fields\":[{\"id\":1,\"name\":\"ID\",\"required\":true,\"type\":\"int\"},{\"id\":2,\"name\":\"Name\",\"required\":true,\"type\":\"string\"}]}")
+				createIngestionJobsOptionsModel.SourceFileType = core.StringPtr("csv")
+				createIngestionJobsOptionsModel.ValidateCsvHeader = core.BoolPtr(false)
+				createIngestionJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.CreateIngestionJobs(createIngestionJobsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateIngestionJobsLocalFiles(createIngestionJobsLocalFilesOptions *CreateIngestionJobsLocalFilesOptions) - Operation response error`, func() {
+		createIngestionJobsLocalFilesPath := "/ingestion_jobs_local_files"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createIngestionJobsLocalFilesPath))
+					Expect(req.Method).To(Equal("POST"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(202)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke CreateIngestionJobsLocalFiles with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateIngestionJobsLocalFilesOptions model
+				createIngestionJobsLocalFilesOptionsModel := new(watsonxdatav2.CreateIngestionJobsLocalFilesOptions)
+				createIngestionJobsLocalFilesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.SourceDataFile = CreateMockReader("This is a mock file.")
+				createIngestionJobsLocalFilesOptionsModel.TargetTable = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.JobID = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.Username = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.SourceDataFileContentType = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.SourceFileType = core.StringPtr("csv")
+				createIngestionJobsLocalFilesOptionsModel.CsvProperty = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.CreateIfNotExist = core.BoolPtr(false)
+				createIngestionJobsLocalFilesOptionsModel.ValidateCsvHeader = core.BoolPtr(false)
+				createIngestionJobsLocalFilesOptionsModel.ExecuteConfig = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.EngineID = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.CreateIngestionJobsLocalFiles(createIngestionJobsLocalFilesOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.CreateIngestionJobsLocalFiles(createIngestionJobsLocalFilesOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateIngestionJobsLocalFiles(createIngestionJobsLocalFilesOptions *CreateIngestionJobsLocalFilesOptions)`, func() {
+		createIngestionJobsLocalFilesPath := "/ingestion_jobs_local_files"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createIngestionJobsLocalFilesPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(202)
+					fmt.Fprintf(res, "%s", `{"create_if_not_exist": false, "csv_property": {"encoding": "utf-8", "escape_character": "|", "field_delimiter": ",", "header": true, "line_delimiter": "\n"}, "details": "Path does not exist 'demobucket/data/yellow_tripdata_2022-01.parquet'. Detail: [errno 2] No such file or directory", "end_timestamp": "1685088775", "engine_id": "spark123", "engine_name": "sparkdemo", "execute_config": {"driver_cores": 1, "driver_memory": "2G", "executor_cores": 1, "executor_memory": "2G", "num_executors": 1}, "instance_id": "1684432229673971", "job_id": "ingestion-1699459946935", "partition_by": "col1, col2", "schema": "{\"type\":\"struct\",\"schema-id\":0,\"fields\":[{\"id\":1,\"name\":\"ID\",\"required\":true,\"type\":\"int\"},{\"id\":2,\"name\":\"Name\",\"required\":true,\"type\":\"string\"}]}", "source_data_files": "s3://demobucket/data/yellow_tripdata_2022-01.parquet", "source_file_type": "csv", "start_timestamp": "1685084455", "status": "running", "target_table": "demodb.test.targettable", "username": "ibmlhadmin", "validate_csv_header": false}`)
+				}))
+			})
+			It(`Invoke CreateIngestionJobsLocalFiles successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the CreateIngestionJobsLocalFilesOptions model
+				createIngestionJobsLocalFilesOptionsModel := new(watsonxdatav2.CreateIngestionJobsLocalFilesOptions)
+				createIngestionJobsLocalFilesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.SourceDataFile = CreateMockReader("This is a mock file.")
+				createIngestionJobsLocalFilesOptionsModel.TargetTable = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.JobID = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.Username = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.SourceDataFileContentType = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.SourceFileType = core.StringPtr("csv")
+				createIngestionJobsLocalFilesOptionsModel.CsvProperty = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.CreateIfNotExist = core.BoolPtr(false)
+				createIngestionJobsLocalFilesOptionsModel.ValidateCsvHeader = core.BoolPtr(false)
+				createIngestionJobsLocalFilesOptionsModel.ExecuteConfig = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.EngineID = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.CreateIngestionJobsLocalFilesWithContext(ctx, createIngestionJobsLocalFilesOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.CreateIngestionJobsLocalFiles(createIngestionJobsLocalFilesOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.CreateIngestionJobsLocalFilesWithContext(ctx, createIngestionJobsLocalFilesOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createIngestionJobsLocalFilesPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(202)
+					fmt.Fprintf(res, "%s", `{"create_if_not_exist": false, "csv_property": {"encoding": "utf-8", "escape_character": "|", "field_delimiter": ",", "header": true, "line_delimiter": "\n"}, "details": "Path does not exist 'demobucket/data/yellow_tripdata_2022-01.parquet'. Detail: [errno 2] No such file or directory", "end_timestamp": "1685088775", "engine_id": "spark123", "engine_name": "sparkdemo", "execute_config": {"driver_cores": 1, "driver_memory": "2G", "executor_cores": 1, "executor_memory": "2G", "num_executors": 1}, "instance_id": "1684432229673971", "job_id": "ingestion-1699459946935", "partition_by": "col1, col2", "schema": "{\"type\":\"struct\",\"schema-id\":0,\"fields\":[{\"id\":1,\"name\":\"ID\",\"required\":true,\"type\":\"int\"},{\"id\":2,\"name\":\"Name\",\"required\":true,\"type\":\"string\"}]}", "source_data_files": "s3://demobucket/data/yellow_tripdata_2022-01.parquet", "source_file_type": "csv", "start_timestamp": "1685084455", "status": "running", "target_table": "demodb.test.targettable", "username": "ibmlhadmin", "validate_csv_header": false}`)
+				}))
+			})
+			It(`Invoke CreateIngestionJobsLocalFiles successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.CreateIngestionJobsLocalFiles(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the CreateIngestionJobsLocalFilesOptions model
+				createIngestionJobsLocalFilesOptionsModel := new(watsonxdatav2.CreateIngestionJobsLocalFilesOptions)
+				createIngestionJobsLocalFilesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.SourceDataFile = CreateMockReader("This is a mock file.")
+				createIngestionJobsLocalFilesOptionsModel.TargetTable = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.JobID = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.Username = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.SourceDataFileContentType = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.SourceFileType = core.StringPtr("csv")
+				createIngestionJobsLocalFilesOptionsModel.CsvProperty = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.CreateIfNotExist = core.BoolPtr(false)
+				createIngestionJobsLocalFilesOptionsModel.ValidateCsvHeader = core.BoolPtr(false)
+				createIngestionJobsLocalFilesOptionsModel.ExecuteConfig = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.EngineID = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.CreateIngestionJobsLocalFiles(createIngestionJobsLocalFilesOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke CreateIngestionJobsLocalFiles with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateIngestionJobsLocalFilesOptions model
+				createIngestionJobsLocalFilesOptionsModel := new(watsonxdatav2.CreateIngestionJobsLocalFilesOptions)
+				createIngestionJobsLocalFilesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.SourceDataFile = CreateMockReader("This is a mock file.")
+				createIngestionJobsLocalFilesOptionsModel.TargetTable = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.JobID = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.Username = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.SourceDataFileContentType = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.SourceFileType = core.StringPtr("csv")
+				createIngestionJobsLocalFilesOptionsModel.CsvProperty = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.CreateIfNotExist = core.BoolPtr(false)
+				createIngestionJobsLocalFilesOptionsModel.ValidateCsvHeader = core.BoolPtr(false)
+				createIngestionJobsLocalFilesOptionsModel.ExecuteConfig = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.EngineID = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.CreateIngestionJobsLocalFiles(createIngestionJobsLocalFilesOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the CreateIngestionJobsLocalFilesOptions model with no property values
+				createIngestionJobsLocalFilesOptionsModelNew := new(watsonxdatav2.CreateIngestionJobsLocalFilesOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = watsonxDataService.CreateIngestionJobsLocalFiles(createIngestionJobsLocalFilesOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(202)
+				}))
+			})
+			It(`Invoke CreateIngestionJobsLocalFiles successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateIngestionJobsLocalFilesOptions model
+				createIngestionJobsLocalFilesOptionsModel := new(watsonxdatav2.CreateIngestionJobsLocalFilesOptions)
+				createIngestionJobsLocalFilesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.SourceDataFile = CreateMockReader("This is a mock file.")
+				createIngestionJobsLocalFilesOptionsModel.TargetTable = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.JobID = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.Username = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.SourceDataFileContentType = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.SourceFileType = core.StringPtr("csv")
+				createIngestionJobsLocalFilesOptionsModel.CsvProperty = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.CreateIfNotExist = core.BoolPtr(false)
+				createIngestionJobsLocalFilesOptionsModel.ValidateCsvHeader = core.BoolPtr(false)
+				createIngestionJobsLocalFilesOptionsModel.ExecuteConfig = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.EngineID = core.StringPtr("testString")
+				createIngestionJobsLocalFilesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.CreateIngestionJobsLocalFiles(createIngestionJobsLocalFilesOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetIngestionJob(getIngestionJobOptions *GetIngestionJobOptions) - Operation response error`, func() {
+		getIngestionJobPath := "/ingestion_jobs/testString"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getIngestionJobPath))
 					Expect(req.Method).To(Equal("GET"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke GetIngestionJob with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetIngestionJobOptions model
+				getIngestionJobOptionsModel := new(watsonxdatav2.GetIngestionJobOptions)
+				getIngestionJobOptionsModel.JobID = core.StringPtr("testString")
+				getIngestionJobOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getIngestionJobOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.GetIngestionJob(getIngestionJobOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.GetIngestionJob(getIngestionJobOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetIngestionJob(getIngestionJobOptions *GetIngestionJobOptions)`, func() {
+		getIngestionJobPath := "/ingestion_jobs/testString"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getIngestionJobPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
 
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					requestNumber++
-					if requestNumber == 1 {
-						fmt.Fprintf(res, "%s", `{"next":{"href":"https://myhost.com/somePath?start=1"},"total_count":2,"limit":1,"ingestion_jobs":[{"create_if_not_exist":false,"csv_property":{"encoding":"utf-8","escape_character":"|","field_delimiter":",","header":true,"line_delimiter":"\n"},"details":"Path does not exist 'demobucket/data/yellow_tripdata_2022-01.parquet'. Detail: [errno 2] No such file or directory","end_timestamp":"1685088775","engine_id":"spark123","engine_name":"sparkdemo","execute_config":{"driver_cores":1,"driver_memory":"2G","executor_cores":1,"executor_memory":"2G","num_executors":1},"instance_id":"1684432229673971","job_id":"ingestion-1699459946935","partition_by":"col1, col2","schema":"{\"type\":\"struct\",\"schema-id\":0,\"fields\":[{\"id\":1,\"name\":\"ID\",\"required\":true,\"type\":\"int\"},{\"id\":2,\"name\":\"Name\",\"required\":true,\"type\":\"string\"}]}","source_data_files":"s3://demobucket/data/yellow_tripdata_2022-01.parquet","source_file_type":"csv","start_timestamp":"1685084455","status":"running","target_table":"demodb.test.targettable","username":"ibmlhadmin","validate_csv_header":false}]}`)
-					} else if requestNumber == 2 {
-						fmt.Fprintf(res, "%s", `{"total_count":2,"limit":1,"ingestion_jobs":[{"create_if_not_exist":false,"csv_property":{"encoding":"utf-8","escape_character":"|","field_delimiter":",","header":true,"line_delimiter":"\n"},"details":"Path does not exist 'demobucket/data/yellow_tripdata_2022-01.parquet'. Detail: [errno 2] No such file or directory","end_timestamp":"1685088775","engine_id":"spark123","engine_name":"sparkdemo","execute_config":{"driver_cores":1,"driver_memory":"2G","executor_cores":1,"executor_memory":"2G","num_executors":1},"instance_id":"1684432229673971","job_id":"ingestion-1699459946935","partition_by":"col1, col2","schema":"{\"type\":\"struct\",\"schema-id\":0,\"fields\":[{\"id\":1,\"name\":\"ID\",\"required\":true,\"type\":\"int\"},{\"id\":2,\"name\":\"Name\",\"required\":true,\"type\":\"string\"}]}","source_data_files":"s3://demobucket/data/yellow_tripdata_2022-01.parquet","source_file_type":"csv","start_timestamp":"1685084455","status":"running","target_table":"demodb.test.targettable","username":"ibmlhadmin","validate_csv_header":false}]}`)
-					} else {
-						res.WriteHeader(400)
-					}
+					fmt.Fprintf(res, "%s", `{"create_if_not_exist": false, "csv_property": {"encoding": "utf-8", "escape_character": "|", "field_delimiter": ",", "header": true, "line_delimiter": "\n"}, "details": "Path does not exist 'demobucket/data/yellow_tripdata_2022-01.parquet'. Detail: [errno 2] No such file or directory", "end_timestamp": "1685088775", "engine_id": "spark123", "engine_name": "sparkdemo", "execute_config": {"driver_cores": 1, "driver_memory": "2G", "executor_cores": 1, "executor_memory": "2G", "num_executors": 1}, "instance_id": "1684432229673971", "job_id": "ingestion-1699459946935", "partition_by": "col1, col2", "schema": "{\"type\":\"struct\",\"schema-id\":0,\"fields\":[{\"id\":1,\"name\":\"ID\",\"required\":true,\"type\":\"int\"},{\"id\":2,\"name\":\"Name\",\"required\":true,\"type\":\"string\"}]}", "source_data_files": "s3://demobucket/data/yellow_tripdata_2022-01.parquet", "source_file_type": "csv", "start_timestamp": "1685084455", "status": "running", "target_table": "demodb.test.targettable", "username": "ibmlhadmin", "validate_csv_header": false}`)
 				}))
 			})
-			It(`Use IngestionJobsPager.GetNext successfully`, func() {
+			It(`Invoke GetIngestionJob successfully with retries`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
 				})
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
 
-				listIngestionJobsOptionsModel := &watsonxdatav2.ListIngestionJobsOptions{
-					AuthInstanceID: core.StringPtr("testString"),
-					JobsPerPage: core.Int64Ptr(int64(1)),
-				}
+				// Construct an instance of the GetIngestionJobOptions model
+				getIngestionJobOptionsModel := new(watsonxdatav2.GetIngestionJobOptions)
+				getIngestionJobOptionsModel.JobID = core.StringPtr("testString")
+				getIngestionJobOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getIngestionJobOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
-				pager, err := watsonxDataService.NewIngestionJobsPager(listIngestionJobsOptionsModel)
-				Expect(err).To(BeNil())
-				Expect(pager).ToNot(BeNil())
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.GetIngestionJobWithContext(ctx, getIngestionJobOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
 
-				var allResults []watsonxdatav2.IngestionJob
-				for pager.HasNext() {
-					nextPage, err := pager.GetNext()
-					Expect(err).To(BeNil())
-					Expect(nextPage).ToNot(BeNil())
-					allResults = append(allResults, nextPage...)
-				}
-				Expect(len(allResults)).To(Equal(2))
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.GetIngestionJob(getIngestionJobOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.GetIngestionJobWithContext(ctx, getIngestionJobOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
 			})
-			It(`Use IngestionJobsPager.GetAll successfully`, func() {
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getIngestionJobPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"create_if_not_exist": false, "csv_property": {"encoding": "utf-8", "escape_character": "|", "field_delimiter": ",", "header": true, "line_delimiter": "\n"}, "details": "Path does not exist 'demobucket/data/yellow_tripdata_2022-01.parquet'. Detail: [errno 2] No such file or directory", "end_timestamp": "1685088775", "engine_id": "spark123", "engine_name": "sparkdemo", "execute_config": {"driver_cores": 1, "driver_memory": "2G", "executor_cores": 1, "executor_memory": "2G", "num_executors": 1}, "instance_id": "1684432229673971", "job_id": "ingestion-1699459946935", "partition_by": "col1, col2", "schema": "{\"type\":\"struct\",\"schema-id\":0,\"fields\":[{\"id\":1,\"name\":\"ID\",\"required\":true,\"type\":\"int\"},{\"id\":2,\"name\":\"Name\",\"required\":true,\"type\":\"string\"}]}", "source_data_files": "s3://demobucket/data/yellow_tripdata_2022-01.parquet", "source_file_type": "csv", "start_timestamp": "1685084455", "status": "running", "target_table": "demodb.test.targettable", "username": "ibmlhadmin", "validate_csv_header": false}`)
+				}))
+			})
+			It(`Invoke GetIngestionJob successfully`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -22499,19 +23212,468 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				listIngestionJobsOptionsModel := &watsonxdatav2.ListIngestionJobsOptions{
-					AuthInstanceID: core.StringPtr("testString"),
-					JobsPerPage: core.Int64Ptr(int64(1)),
-				}
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.GetIngestionJob(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
 
-				pager, err := watsonxDataService.NewIngestionJobsPager(listIngestionJobsOptionsModel)
-				Expect(err).To(BeNil())
-				Expect(pager).ToNot(BeNil())
+				// Construct an instance of the GetIngestionJobOptions model
+				getIngestionJobOptionsModel := new(watsonxdatav2.GetIngestionJobOptions)
+				getIngestionJobOptionsModel.JobID = core.StringPtr("testString")
+				getIngestionJobOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getIngestionJobOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
-				allResults, err := pager.GetAll()
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.GetIngestionJob(getIngestionJobOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke GetIngestionJob with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetIngestionJobOptions model
+				getIngestionJobOptionsModel := new(watsonxdatav2.GetIngestionJobOptions)
+				getIngestionJobOptionsModel.JobID = core.StringPtr("testString")
+				getIngestionJobOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getIngestionJobOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
 				Expect(err).To(BeNil())
-				Expect(allResults).ToNot(BeNil())
-				Expect(len(allResults)).To(Equal(2))
+				result, response, operationErr := watsonxDataService.GetIngestionJob(getIngestionJobOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the GetIngestionJobOptions model with no property values
+				getIngestionJobOptionsModelNew := new(watsonxdatav2.GetIngestionJobOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = watsonxDataService.GetIngestionJob(getIngestionJobOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke GetIngestionJob successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetIngestionJobOptions model
+				getIngestionJobOptionsModel := new(watsonxdatav2.GetIngestionJobOptions)
+				getIngestionJobOptionsModel.JobID = core.StringPtr("testString")
+				getIngestionJobOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getIngestionJobOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.GetIngestionJob(getIngestionJobOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`DeleteIngestionJobs(deleteIngestionJobsOptions *DeleteIngestionJobsOptions)`, func() {
+		deleteIngestionJobsPath := "/ingestion_jobs/testString"
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(deleteIngestionJobsPath))
+					Expect(req.Method).To(Equal("DELETE"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.WriteHeader(204)
+				}))
+			})
+			It(`Invoke DeleteIngestionJobs successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				response, operationErr := watsonxDataService.DeleteIngestionJobs(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+
+				// Construct an instance of the DeleteIngestionJobsOptions model
+				deleteIngestionJobsOptionsModel := new(watsonxdatav2.DeleteIngestionJobsOptions)
+				deleteIngestionJobsOptionsModel.JobID = core.StringPtr("testString")
+				deleteIngestionJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				deleteIngestionJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				response, operationErr = watsonxDataService.DeleteIngestionJobs(deleteIngestionJobsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+			})
+			It(`Invoke DeleteIngestionJobs with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the DeleteIngestionJobsOptions model
+				deleteIngestionJobsOptionsModel := new(watsonxdatav2.DeleteIngestionJobsOptions)
+				deleteIngestionJobsOptionsModel.JobID = core.StringPtr("testString")
+				deleteIngestionJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				deleteIngestionJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				response, operationErr := watsonxDataService.DeleteIngestionJobs(deleteIngestionJobsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				// Construct a second instance of the DeleteIngestionJobsOptions model with no property values
+				deleteIngestionJobsOptionsModelNew := new(watsonxdatav2.DeleteIngestionJobsOptions)
+				// Invoke operation with invalid model (negative test)
+				response, operationErr = watsonxDataService.DeleteIngestionJobs(deleteIngestionJobsOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreatePreviewIngestionFile(createPreviewIngestionFileOptions *CreatePreviewIngestionFileOptions) - Operation response error`, func() {
+		createPreviewIngestionFilePath := "/preview_ingestion_file"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createPreviewIngestionFilePath))
+					Expect(req.Method).To(Equal("POST"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke CreatePreviewIngestionFile with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the PreviewIngestionFilePrototypeCsvProperty model
+				previewIngestionFilePrototypeCsvPropertyModel := new(watsonxdatav2.PreviewIngestionFilePrototypeCsvProperty)
+				previewIngestionFilePrototypeCsvPropertyModel.Encoding = core.StringPtr("utf-8")
+				previewIngestionFilePrototypeCsvPropertyModel.EscapeCharacter = core.StringPtr("\\\\")
+				previewIngestionFilePrototypeCsvPropertyModel.FieldDelimiter = core.StringPtr(",")
+				previewIngestionFilePrototypeCsvPropertyModel.Header = core.BoolPtr(true)
+				previewIngestionFilePrototypeCsvPropertyModel.LineDelimiter = core.StringPtr("\\n")
+
+				// Construct an instance of the CreatePreviewIngestionFileOptions model
+				createPreviewIngestionFileOptionsModel := new(watsonxdatav2.CreatePreviewIngestionFileOptions)
+				createPreviewIngestionFileOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createPreviewIngestionFileOptionsModel.SourceDataFiles = core.StringPtr("s3://demobucket/data/yellow_tripdata_2022-01.parquet")
+				createPreviewIngestionFileOptionsModel.CsvProperty = previewIngestionFilePrototypeCsvPropertyModel
+				createPreviewIngestionFileOptionsModel.SourceFileType = core.StringPtr("csv")
+				createPreviewIngestionFileOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.CreatePreviewIngestionFile(createPreviewIngestionFileOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.CreatePreviewIngestionFile(createPreviewIngestionFileOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreatePreviewIngestionFile(createPreviewIngestionFileOptions *CreatePreviewIngestionFileOptions)`, func() {
+		createPreviewIngestionFilePath := "/preview_ingestion_file"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createPreviewIngestionFilePath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"column_names": ["col1"], "column_types": ["int"], "file_name": "s3://demobucket/data/yellow_tripdata_2022-01.parquet", "rows": {"row_eight": ["Jane Doe"], "row_five": ["Jane Doe"], "row_four": ["Jane Doe"], "row_nine": ["Jane Doe"], "row_one": ["Jane Doe"], "row_seven": ["Jane Doe"], "row_six": ["Jane Doe"], "row_ten": ["Jane Doe"], "row_three": ["Jane Doe"], "row_two": ["Jane Doe"]}}`)
+				}))
+			})
+			It(`Invoke CreatePreviewIngestionFile successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the PreviewIngestionFilePrototypeCsvProperty model
+				previewIngestionFilePrototypeCsvPropertyModel := new(watsonxdatav2.PreviewIngestionFilePrototypeCsvProperty)
+				previewIngestionFilePrototypeCsvPropertyModel.Encoding = core.StringPtr("utf-8")
+				previewIngestionFilePrototypeCsvPropertyModel.EscapeCharacter = core.StringPtr("\\\\")
+				previewIngestionFilePrototypeCsvPropertyModel.FieldDelimiter = core.StringPtr(",")
+				previewIngestionFilePrototypeCsvPropertyModel.Header = core.BoolPtr(true)
+				previewIngestionFilePrototypeCsvPropertyModel.LineDelimiter = core.StringPtr("\\n")
+
+				// Construct an instance of the CreatePreviewIngestionFileOptions model
+				createPreviewIngestionFileOptionsModel := new(watsonxdatav2.CreatePreviewIngestionFileOptions)
+				createPreviewIngestionFileOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createPreviewIngestionFileOptionsModel.SourceDataFiles = core.StringPtr("s3://demobucket/data/yellow_tripdata_2022-01.parquet")
+				createPreviewIngestionFileOptionsModel.CsvProperty = previewIngestionFilePrototypeCsvPropertyModel
+				createPreviewIngestionFileOptionsModel.SourceFileType = core.StringPtr("csv")
+				createPreviewIngestionFileOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.CreatePreviewIngestionFileWithContext(ctx, createPreviewIngestionFileOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.CreatePreviewIngestionFile(createPreviewIngestionFileOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.CreatePreviewIngestionFileWithContext(ctx, createPreviewIngestionFileOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createPreviewIngestionFilePath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"column_names": ["col1"], "column_types": ["int"], "file_name": "s3://demobucket/data/yellow_tripdata_2022-01.parquet", "rows": {"row_eight": ["Jane Doe"], "row_five": ["Jane Doe"], "row_four": ["Jane Doe"], "row_nine": ["Jane Doe"], "row_one": ["Jane Doe"], "row_seven": ["Jane Doe"], "row_six": ["Jane Doe"], "row_ten": ["Jane Doe"], "row_three": ["Jane Doe"], "row_two": ["Jane Doe"]}}`)
+				}))
+			})
+			It(`Invoke CreatePreviewIngestionFile successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.CreatePreviewIngestionFile(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the PreviewIngestionFilePrototypeCsvProperty model
+				previewIngestionFilePrototypeCsvPropertyModel := new(watsonxdatav2.PreviewIngestionFilePrototypeCsvProperty)
+				previewIngestionFilePrototypeCsvPropertyModel.Encoding = core.StringPtr("utf-8")
+				previewIngestionFilePrototypeCsvPropertyModel.EscapeCharacter = core.StringPtr("\\\\")
+				previewIngestionFilePrototypeCsvPropertyModel.FieldDelimiter = core.StringPtr(",")
+				previewIngestionFilePrototypeCsvPropertyModel.Header = core.BoolPtr(true)
+				previewIngestionFilePrototypeCsvPropertyModel.LineDelimiter = core.StringPtr("\\n")
+
+				// Construct an instance of the CreatePreviewIngestionFileOptions model
+				createPreviewIngestionFileOptionsModel := new(watsonxdatav2.CreatePreviewIngestionFileOptions)
+				createPreviewIngestionFileOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createPreviewIngestionFileOptionsModel.SourceDataFiles = core.StringPtr("s3://demobucket/data/yellow_tripdata_2022-01.parquet")
+				createPreviewIngestionFileOptionsModel.CsvProperty = previewIngestionFilePrototypeCsvPropertyModel
+				createPreviewIngestionFileOptionsModel.SourceFileType = core.StringPtr("csv")
+				createPreviewIngestionFileOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.CreatePreviewIngestionFile(createPreviewIngestionFileOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke CreatePreviewIngestionFile with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the PreviewIngestionFilePrototypeCsvProperty model
+				previewIngestionFilePrototypeCsvPropertyModel := new(watsonxdatav2.PreviewIngestionFilePrototypeCsvProperty)
+				previewIngestionFilePrototypeCsvPropertyModel.Encoding = core.StringPtr("utf-8")
+				previewIngestionFilePrototypeCsvPropertyModel.EscapeCharacter = core.StringPtr("\\\\")
+				previewIngestionFilePrototypeCsvPropertyModel.FieldDelimiter = core.StringPtr(",")
+				previewIngestionFilePrototypeCsvPropertyModel.Header = core.BoolPtr(true)
+				previewIngestionFilePrototypeCsvPropertyModel.LineDelimiter = core.StringPtr("\\n")
+
+				// Construct an instance of the CreatePreviewIngestionFileOptions model
+				createPreviewIngestionFileOptionsModel := new(watsonxdatav2.CreatePreviewIngestionFileOptions)
+				createPreviewIngestionFileOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createPreviewIngestionFileOptionsModel.SourceDataFiles = core.StringPtr("s3://demobucket/data/yellow_tripdata_2022-01.parquet")
+				createPreviewIngestionFileOptionsModel.CsvProperty = previewIngestionFilePrototypeCsvPropertyModel
+				createPreviewIngestionFileOptionsModel.SourceFileType = core.StringPtr("csv")
+				createPreviewIngestionFileOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.CreatePreviewIngestionFile(createPreviewIngestionFileOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the CreatePreviewIngestionFileOptions model with no property values
+				createPreviewIngestionFileOptionsModelNew := new(watsonxdatav2.CreatePreviewIngestionFileOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = watsonxDataService.CreatePreviewIngestionFile(createPreviewIngestionFileOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(201)
+				}))
+			})
+			It(`Invoke CreatePreviewIngestionFile successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the PreviewIngestionFilePrototypeCsvProperty model
+				previewIngestionFilePrototypeCsvPropertyModel := new(watsonxdatav2.PreviewIngestionFilePrototypeCsvProperty)
+				previewIngestionFilePrototypeCsvPropertyModel.Encoding = core.StringPtr("utf-8")
+				previewIngestionFilePrototypeCsvPropertyModel.EscapeCharacter = core.StringPtr("\\\\")
+				previewIngestionFilePrototypeCsvPropertyModel.FieldDelimiter = core.StringPtr(",")
+				previewIngestionFilePrototypeCsvPropertyModel.Header = core.BoolPtr(true)
+				previewIngestionFilePrototypeCsvPropertyModel.LineDelimiter = core.StringPtr("\\n")
+
+				// Construct an instance of the CreatePreviewIngestionFileOptions model
+				createPreviewIngestionFileOptionsModel := new(watsonxdatav2.CreatePreviewIngestionFileOptions)
+				createPreviewIngestionFileOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createPreviewIngestionFileOptionsModel.SourceDataFiles = core.StringPtr("s3://demobucket/data/yellow_tripdata_2022-01.parquet")
+				createPreviewIngestionFileOptionsModel.CsvProperty = previewIngestionFilePrototypeCsvPropertyModel
+				createPreviewIngestionFileOptionsModel.SourceFileType = core.StringPtr("csv")
+				createPreviewIngestionFileOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.CreatePreviewIngestionFile(createPreviewIngestionFileOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
 			})
 		})
 	})
@@ -22774,6 +23936,108 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(createDb2EngineOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(createDb2EngineOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
+			It(`Invoke NewCreateIngestionJobsLocalFilesOptions successfully`, func() {
+				// Construct an instance of the CreateIngestionJobsLocalFilesOptions model
+				authInstanceID := "testString"
+				sourceDataFile := CreateMockReader("This is a mock file.")
+				targetTable := "testString"
+				jobID := "testString"
+				username := "testString"
+				createIngestionJobsLocalFilesOptionsModel := watsonxDataService.NewCreateIngestionJobsLocalFilesOptions(authInstanceID, sourceDataFile, targetTable, jobID, username)
+				createIngestionJobsLocalFilesOptionsModel.SetAuthInstanceID("testString")
+				createIngestionJobsLocalFilesOptionsModel.SetSourceDataFile(CreateMockReader("This is a mock file."))
+				createIngestionJobsLocalFilesOptionsModel.SetTargetTable("testString")
+				createIngestionJobsLocalFilesOptionsModel.SetJobID("testString")
+				createIngestionJobsLocalFilesOptionsModel.SetUsername("testString")
+				createIngestionJobsLocalFilesOptionsModel.SetSourceDataFileContentType("testString")
+				createIngestionJobsLocalFilesOptionsModel.SetSourceFileType("csv")
+				createIngestionJobsLocalFilesOptionsModel.SetCsvProperty("testString")
+				createIngestionJobsLocalFilesOptionsModel.SetCreateIfNotExist(false)
+				createIngestionJobsLocalFilesOptionsModel.SetValidateCsvHeader(false)
+				createIngestionJobsLocalFilesOptionsModel.SetExecuteConfig("testString")
+				createIngestionJobsLocalFilesOptionsModel.SetEngineID("testString")
+				createIngestionJobsLocalFilesOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(createIngestionJobsLocalFilesOptionsModel).ToNot(BeNil())
+				Expect(createIngestionJobsLocalFilesOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(createIngestionJobsLocalFilesOptionsModel.SourceDataFile).To(Equal(CreateMockReader("This is a mock file.")))
+				Expect(createIngestionJobsLocalFilesOptionsModel.TargetTable).To(Equal(core.StringPtr("testString")))
+				Expect(createIngestionJobsLocalFilesOptionsModel.JobID).To(Equal(core.StringPtr("testString")))
+				Expect(createIngestionJobsLocalFilesOptionsModel.Username).To(Equal(core.StringPtr("testString")))
+				Expect(createIngestionJobsLocalFilesOptionsModel.SourceDataFileContentType).To(Equal(core.StringPtr("testString")))
+				Expect(createIngestionJobsLocalFilesOptionsModel.SourceFileType).To(Equal(core.StringPtr("csv")))
+				Expect(createIngestionJobsLocalFilesOptionsModel.CsvProperty).To(Equal(core.StringPtr("testString")))
+				Expect(createIngestionJobsLocalFilesOptionsModel.CreateIfNotExist).To(Equal(core.BoolPtr(false)))
+				Expect(createIngestionJobsLocalFilesOptionsModel.ValidateCsvHeader).To(Equal(core.BoolPtr(false)))
+				Expect(createIngestionJobsLocalFilesOptionsModel.ExecuteConfig).To(Equal(core.StringPtr("testString")))
+				Expect(createIngestionJobsLocalFilesOptionsModel.EngineID).To(Equal(core.StringPtr("testString")))
+				Expect(createIngestionJobsLocalFilesOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewCreateIngestionJobsOptions successfully`, func() {
+				// Construct an instance of the IngestionJobPrototypeCsvProperty model
+				ingestionJobPrototypeCsvPropertyModel := new(watsonxdatav2.IngestionJobPrototypeCsvProperty)
+				Expect(ingestionJobPrototypeCsvPropertyModel).ToNot(BeNil())
+				ingestionJobPrototypeCsvPropertyModel.Encoding = core.StringPtr("utf-8")
+				ingestionJobPrototypeCsvPropertyModel.EscapeCharacter = core.StringPtr("\\\\")
+				ingestionJobPrototypeCsvPropertyModel.FieldDelimiter = core.StringPtr(",")
+				ingestionJobPrototypeCsvPropertyModel.Header = core.BoolPtr(true)
+				ingestionJobPrototypeCsvPropertyModel.LineDelimiter = core.StringPtr("\\n")
+				Expect(ingestionJobPrototypeCsvPropertyModel.Encoding).To(Equal(core.StringPtr("utf-8")))
+				Expect(ingestionJobPrototypeCsvPropertyModel.EscapeCharacter).To(Equal(core.StringPtr("\\\\")))
+				Expect(ingestionJobPrototypeCsvPropertyModel.FieldDelimiter).To(Equal(core.StringPtr(",")))
+				Expect(ingestionJobPrototypeCsvPropertyModel.Header).To(Equal(core.BoolPtr(true)))
+				Expect(ingestionJobPrototypeCsvPropertyModel.LineDelimiter).To(Equal(core.StringPtr("\\n")))
+
+				// Construct an instance of the IngestionJobPrototypeExecuteConfig model
+				ingestionJobPrototypeExecuteConfigModel := new(watsonxdatav2.IngestionJobPrototypeExecuteConfig)
+				Expect(ingestionJobPrototypeExecuteConfigModel).ToNot(BeNil())
+				ingestionJobPrototypeExecuteConfigModel.DriverCores = core.Int64Ptr(int64(1))
+				ingestionJobPrototypeExecuteConfigModel.DriverMemory = core.StringPtr("2G")
+				ingestionJobPrototypeExecuteConfigModel.ExecutorCores = core.Int64Ptr(int64(1))
+				ingestionJobPrototypeExecuteConfigModel.ExecutorMemory = core.StringPtr("2G")
+				ingestionJobPrototypeExecuteConfigModel.NumExecutors = core.Int64Ptr(int64(1))
+				Expect(ingestionJobPrototypeExecuteConfigModel.DriverCores).To(Equal(core.Int64Ptr(int64(1))))
+				Expect(ingestionJobPrototypeExecuteConfigModel.DriverMemory).To(Equal(core.StringPtr("2G")))
+				Expect(ingestionJobPrototypeExecuteConfigModel.ExecutorCores).To(Equal(core.Int64Ptr(int64(1))))
+				Expect(ingestionJobPrototypeExecuteConfigModel.ExecutorMemory).To(Equal(core.StringPtr("2G")))
+				Expect(ingestionJobPrototypeExecuteConfigModel.NumExecutors).To(Equal(core.Int64Ptr(int64(1))))
+
+				// Construct an instance of the CreateIngestionJobsOptions model
+				authInstanceID := "testString"
+				createIngestionJobsOptionsJobID := "ingestion-1699459946935"
+				createIngestionJobsOptionsSourceDataFiles := "s3://demobucket/data/yellow_tripdata_2022-01.parquet"
+				createIngestionJobsOptionsTargetTable := "demodb.test.targettable"
+				createIngestionJobsOptionsUsername := "user1"
+				createIngestionJobsOptionsModel := watsonxDataService.NewCreateIngestionJobsOptions(authInstanceID, createIngestionJobsOptionsJobID, createIngestionJobsOptionsSourceDataFiles, createIngestionJobsOptionsTargetTable, createIngestionJobsOptionsUsername)
+				createIngestionJobsOptionsModel.SetAuthInstanceID("testString")
+				createIngestionJobsOptionsModel.SetJobID("ingestion-1699459946935")
+				createIngestionJobsOptionsModel.SetSourceDataFiles("s3://demobucket/data/yellow_tripdata_2022-01.parquet")
+				createIngestionJobsOptionsModel.SetTargetTable("demodb.test.targettable")
+				createIngestionJobsOptionsModel.SetUsername("user1")
+				createIngestionJobsOptionsModel.SetCreateIfNotExist(false)
+				createIngestionJobsOptionsModel.SetCsvProperty(ingestionJobPrototypeCsvPropertyModel)
+				createIngestionJobsOptionsModel.SetEngineID("spark123")
+				createIngestionJobsOptionsModel.SetExecuteConfig(ingestionJobPrototypeExecuteConfigModel)
+				createIngestionJobsOptionsModel.SetPartitionBy("col1, col2")
+				createIngestionJobsOptionsModel.SetSchema("{\"type\":\"struct\",\"schema-id\":0,\"fields\":[{\"id\":1,\"name\":\"ID\",\"required\":true,\"type\":\"int\"},{\"id\":2,\"name\":\"Name\",\"required\":true,\"type\":\"string\"}]}")
+				createIngestionJobsOptionsModel.SetSourceFileType("csv")
+				createIngestionJobsOptionsModel.SetValidateCsvHeader(false)
+				createIngestionJobsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(createIngestionJobsOptionsModel).ToNot(BeNil())
+				Expect(createIngestionJobsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(createIngestionJobsOptionsModel.JobID).To(Equal(core.StringPtr("ingestion-1699459946935")))
+				Expect(createIngestionJobsOptionsModel.SourceDataFiles).To(Equal(core.StringPtr("s3://demobucket/data/yellow_tripdata_2022-01.parquet")))
+				Expect(createIngestionJobsOptionsModel.TargetTable).To(Equal(core.StringPtr("demodb.test.targettable")))
+				Expect(createIngestionJobsOptionsModel.Username).To(Equal(core.StringPtr("user1")))
+				Expect(createIngestionJobsOptionsModel.CreateIfNotExist).To(Equal(core.BoolPtr(false)))
+				Expect(createIngestionJobsOptionsModel.CsvProperty).To(Equal(ingestionJobPrototypeCsvPropertyModel))
+				Expect(createIngestionJobsOptionsModel.EngineID).To(Equal(core.StringPtr("spark123")))
+				Expect(createIngestionJobsOptionsModel.ExecuteConfig).To(Equal(ingestionJobPrototypeExecuteConfigModel))
+				Expect(createIngestionJobsOptionsModel.PartitionBy).To(Equal(core.StringPtr("col1, col2")))
+				Expect(createIngestionJobsOptionsModel.Schema).To(Equal(core.StringPtr("{\"type\":\"struct\",\"schema-id\":0,\"fields\":[{\"id\":1,\"name\":\"ID\",\"required\":true,\"type\":\"int\"},{\"id\":2,\"name\":\"Name\",\"required\":true,\"type\":\"string\"}]}")))
+				Expect(createIngestionJobsOptionsModel.SourceFileType).To(Equal(core.StringPtr("csv")))
+				Expect(createIngestionJobsOptionsModel.ValidateCsvHeader).To(Equal(core.BoolPtr(false)))
+				Expect(createIngestionJobsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
 			It(`Invoke NewCreateMilvusServiceOptions successfully`, func() {
 				// Construct an instance of the CreateMilvusServiceOptions model
 				createMilvusServiceOptionsOrigin := "native"
@@ -22974,6 +24238,37 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(createPrestoEngineOptionsModel.Version).To(Equal(core.StringPtr("1.2.3")))
 				Expect(createPrestoEngineOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(createPrestoEngineOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewCreatePreviewIngestionFileOptions successfully`, func() {
+				// Construct an instance of the PreviewIngestionFilePrototypeCsvProperty model
+				previewIngestionFilePrototypeCsvPropertyModel := new(watsonxdatav2.PreviewIngestionFilePrototypeCsvProperty)
+				Expect(previewIngestionFilePrototypeCsvPropertyModel).ToNot(BeNil())
+				previewIngestionFilePrototypeCsvPropertyModel.Encoding = core.StringPtr("utf-8")
+				previewIngestionFilePrototypeCsvPropertyModel.EscapeCharacter = core.StringPtr("\\\\")
+				previewIngestionFilePrototypeCsvPropertyModel.FieldDelimiter = core.StringPtr(",")
+				previewIngestionFilePrototypeCsvPropertyModel.Header = core.BoolPtr(true)
+				previewIngestionFilePrototypeCsvPropertyModel.LineDelimiter = core.StringPtr("\\n")
+				Expect(previewIngestionFilePrototypeCsvPropertyModel.Encoding).To(Equal(core.StringPtr("utf-8")))
+				Expect(previewIngestionFilePrototypeCsvPropertyModel.EscapeCharacter).To(Equal(core.StringPtr("\\\\")))
+				Expect(previewIngestionFilePrototypeCsvPropertyModel.FieldDelimiter).To(Equal(core.StringPtr(",")))
+				Expect(previewIngestionFilePrototypeCsvPropertyModel.Header).To(Equal(core.BoolPtr(true)))
+				Expect(previewIngestionFilePrototypeCsvPropertyModel.LineDelimiter).To(Equal(core.StringPtr("\\n")))
+
+				// Construct an instance of the CreatePreviewIngestionFileOptions model
+				authInstanceID := "testString"
+				createPreviewIngestionFileOptionsSourceDataFiles := "s3://demobucket/data/yellow_tripdata_2022-01.parquet"
+				createPreviewIngestionFileOptionsModel := watsonxDataService.NewCreatePreviewIngestionFileOptions(authInstanceID, createPreviewIngestionFileOptionsSourceDataFiles)
+				createPreviewIngestionFileOptionsModel.SetAuthInstanceID("testString")
+				createPreviewIngestionFileOptionsModel.SetSourceDataFiles("s3://demobucket/data/yellow_tripdata_2022-01.parquet")
+				createPreviewIngestionFileOptionsModel.SetCsvProperty(previewIngestionFilePrototypeCsvPropertyModel)
+				createPreviewIngestionFileOptionsModel.SetSourceFileType("csv")
+				createPreviewIngestionFileOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(createPreviewIngestionFileOptionsModel).ToNot(BeNil())
+				Expect(createPreviewIngestionFileOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(createPreviewIngestionFileOptionsModel.SourceDataFiles).To(Equal(core.StringPtr("s3://demobucket/data/yellow_tripdata_2022-01.parquet")))
+				Expect(createPreviewIngestionFileOptionsModel.CsvProperty).To(Equal(previewIngestionFilePrototypeCsvPropertyModel))
+				Expect(createPreviewIngestionFileOptionsModel.SourceFileType).To(Equal(core.StringPtr("csv")))
+				Expect(createPreviewIngestionFileOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewCreateSchemaOptions successfully`, func() {
 				// Construct an instance of the CreateSchemaOptions model
@@ -23278,6 +24573,19 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(deleteEngineOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(deleteEngineOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
+			It(`Invoke NewDeleteIngestionJobsOptions successfully`, func() {
+				// Construct an instance of the DeleteIngestionJobsOptions model
+				jobID := "testString"
+				authInstanceID := "testString"
+				deleteIngestionJobsOptionsModel := watsonxDataService.NewDeleteIngestionJobsOptions(jobID, authInstanceID)
+				deleteIngestionJobsOptionsModel.SetJobID("testString")
+				deleteIngestionJobsOptionsModel.SetAuthInstanceID("testString")
+				deleteIngestionJobsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(deleteIngestionJobsOptionsModel).ToNot(BeNil())
+				Expect(deleteIngestionJobsOptionsModel.JobID).To(Equal(core.StringPtr("testString")))
+				Expect(deleteIngestionJobsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(deleteIngestionJobsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
 			It(`Invoke NewDeleteMilvusServiceOptions successfully`, func() {
 				// Construct an instance of the DeleteMilvusServiceOptions model
 				serviceID := "testString"
@@ -23499,6 +24807,19 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(getDatabaseOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(getDatabaseOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
+			It(`Invoke NewGetIngestionJobOptions successfully`, func() {
+				// Construct an instance of the GetIngestionJobOptions model
+				jobID := "testString"
+				authInstanceID := "testString"
+				getIngestionJobOptionsModel := watsonxDataService.NewGetIngestionJobOptions(jobID, authInstanceID)
+				getIngestionJobOptionsModel.SetJobID("testString")
+				getIngestionJobOptionsModel.SetAuthInstanceID("testString")
+				getIngestionJobOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(getIngestionJobOptionsModel).ToNot(BeNil())
+				Expect(getIngestionJobOptionsModel.JobID).To(Equal(core.StringPtr("testString")))
+				Expect(getIngestionJobOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(getIngestionJobOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
 			It(`Invoke NewGetMilvusServiceOptions successfully`, func() {
 				// Construct an instance of the GetMilvusServiceOptions model
 				serviceID := "testString"
@@ -23714,12 +25035,12 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				authInstanceID := "testString"
 				listIngestionJobsOptionsModel := watsonxDataService.NewListIngestionJobsOptions(authInstanceID)
 				listIngestionJobsOptionsModel.SetAuthInstanceID("testString")
-				listIngestionJobsOptionsModel.SetStart("1")
+				listIngestionJobsOptionsModel.SetPage(int64(1))
 				listIngestionJobsOptionsModel.SetJobsPerPage(int64(1))
 				listIngestionJobsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
 				Expect(listIngestionJobsOptionsModel).ToNot(BeNil())
 				Expect(listIngestionJobsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
-				Expect(listIngestionJobsOptionsModel.Start).To(Equal(core.StringPtr("1")))
+				Expect(listIngestionJobsOptionsModel.Page).To(Equal(core.Int64Ptr(int64(1))))
 				Expect(listIngestionJobsOptionsModel.JobsPerPage).To(Equal(core.Int64Ptr(int64(1))))
 				Expect(listIngestionJobsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
@@ -24656,6 +25977,50 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			Expect(result).ToNot(BeNil())
 			Expect(result).To(Equal(model))
 		})
+		It(`Invoke UnmarshalIngestionJobPrototypeCsvProperty successfully`, func() {
+			// Construct an instance of the model.
+			model := new(watsonxdatav2.IngestionJobPrototypeCsvProperty)
+			model.Encoding = core.StringPtr("utf-8")
+			model.EscapeCharacter = core.StringPtr("\\\\")
+			model.FieldDelimiter = core.StringPtr(",")
+			model.Header = core.BoolPtr(true)
+			model.LineDelimiter = core.StringPtr("\\n")
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *watsonxdatav2.IngestionJobPrototypeCsvProperty
+			err = watsonxdatav2.UnmarshalIngestionJobPrototypeCsvProperty(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
+		It(`Invoke UnmarshalIngestionJobPrototypeExecuteConfig successfully`, func() {
+			// Construct an instance of the model.
+			model := new(watsonxdatav2.IngestionJobPrototypeExecuteConfig)
+			model.DriverCores = core.Int64Ptr(int64(1))
+			model.DriverMemory = core.StringPtr("2G")
+			model.ExecutorCores = core.Int64Ptr(int64(1))
+			model.ExecutorMemory = core.StringPtr("2G")
+			model.NumExecutors = core.Int64Ptr(int64(1))
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *watsonxdatav2.IngestionJobPrototypeExecuteConfig
+			err = watsonxdatav2.UnmarshalIngestionJobPrototypeExecuteConfig(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
 		It(`Invoke UnmarshalMilvusServicePatch successfully`, func() {
 			// Construct an instance of the model.
 			model := new(watsonxdatav2.MilvusServicePatch)
@@ -25034,6 +26399,28 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 			var result *watsonxdatav2.PrestoEnginePropertiesGlobal
 			err = watsonxdatav2.UnmarshalPrestoEnginePropertiesGlobal(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
+		It(`Invoke UnmarshalPreviewIngestionFilePrototypeCsvProperty successfully`, func() {
+			// Construct an instance of the model.
+			model := new(watsonxdatav2.PreviewIngestionFilePrototypeCsvProperty)
+			model.Encoding = core.StringPtr("utf-8")
+			model.EscapeCharacter = core.StringPtr("\\\\")
+			model.FieldDelimiter = core.StringPtr(",")
+			model.Header = core.BoolPtr(true)
+			model.LineDelimiter = core.StringPtr("\\n")
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *watsonxdatav2.PreviewIngestionFilePrototypeCsvProperty
+			err = watsonxdatav2.UnmarshalPreviewIngestionFilePrototypeCsvProperty(raw, &result)
 			Expect(err).To(BeNil())
 			Expect(result).ToNot(BeNil())
 			Expect(result).To(Equal(model))

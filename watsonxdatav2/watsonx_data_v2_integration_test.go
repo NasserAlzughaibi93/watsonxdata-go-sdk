@@ -1892,62 +1892,132 @@ var _ = Describe(`WatsonxDataV2 Integration Tests`, func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
-		It(`ListIngestionJobs(listIngestionJobsOptions *ListIngestionJobsOptions) with pagination`, func(){
+		It(`ListIngestionJobs(listIngestionJobsOptions *ListIngestionJobsOptions)`, func() {
 			listIngestionJobsOptions := &watsonxdatav2.ListIngestionJobsOptions{
 				AuthInstanceID: core.StringPtr("testString"),
-				Start: core.StringPtr("1"),
+				Page: core.Int64Ptr(int64(1)),
 				JobsPerPage: core.Int64Ptr(int64(1)),
 			}
 
-			listIngestionJobsOptions.Start = nil
-
-			var allResults []watsonxdatav2.IngestionJob
-			for {
-				ingestionJobCollection, response, err := watsonxDataService.ListIngestionJobs(listIngestionJobsOptions)
-				Expect(err).To(BeNil())
-				Expect(response.StatusCode).To(Equal(200))
-				Expect(ingestionJobCollection).ToNot(BeNil())
-				allResults = append(allResults, ingestionJobCollection.IngestionJobs...)
-
-				listIngestionJobsOptions.Start, err = ingestionJobCollection.GetNextStart()
-				Expect(err).To(BeNil())
-
-				if listIngestionJobsOptions.Start == nil {
-					break
-				}
-			}
-			fmt.Fprintf(GinkgoWriter, "Retrieved a total of %d item(s) with pagination.\n", len(allResults))
+			ingestionJobCollection, response, err := watsonxDataService.ListIngestionJobs(listIngestionJobsOptions)
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(200))
+			Expect(ingestionJobCollection).ToNot(BeNil())
 		})
-		It(`ListIngestionJobs(listIngestionJobsOptions *ListIngestionJobsOptions) using IngestionJobsPager`, func(){
-			listIngestionJobsOptions := &watsonxdatav2.ListIngestionJobsOptions{
+	})
+
+	Describe(`CreateIngestionJobs - Create an ingestion job`, func() {
+		BeforeEach(func() {
+			shouldSkipTest()
+		})
+		It(`CreateIngestionJobs(createIngestionJobsOptions *CreateIngestionJobsOptions)`, func() {
+			ingestionJobPrototypeCsvPropertyModel := &watsonxdatav2.IngestionJobPrototypeCsvProperty{
+				Encoding: core.StringPtr("utf-8"),
+				EscapeCharacter: core.StringPtr("\\\\"),
+				FieldDelimiter: core.StringPtr(","),
+				Header: core.BoolPtr(true),
+				LineDelimiter: core.StringPtr("\\n"),
+			}
+
+			ingestionJobPrototypeExecuteConfigModel := &watsonxdatav2.IngestionJobPrototypeExecuteConfig{
+				DriverCores: core.Int64Ptr(int64(1)),
+				DriverMemory: core.StringPtr("2G"),
+				ExecutorCores: core.Int64Ptr(int64(1)),
+				ExecutorMemory: core.StringPtr("2G"),
+				NumExecutors: core.Int64Ptr(int64(1)),
+			}
+
+			createIngestionJobsOptions := &watsonxdatav2.CreateIngestionJobsOptions{
 				AuthInstanceID: core.StringPtr("testString"),
-				JobsPerPage: core.Int64Ptr(int64(1)),
+				JobID: core.StringPtr("ingestion-1699459946935"),
+				SourceDataFiles: core.StringPtr("s3://demobucket/data/yellow_tripdata_2022-01.parquet"),
+				TargetTable: core.StringPtr("demodb.test.targettable"),
+				Username: core.StringPtr("user1"),
+				CreateIfNotExist: core.BoolPtr(false),
+				CsvProperty: ingestionJobPrototypeCsvPropertyModel,
+				EngineID: core.StringPtr("spark123"),
+				ExecuteConfig: ingestionJobPrototypeExecuteConfigModel,
+				PartitionBy: core.StringPtr("col1, col2"),
+				Schema: core.StringPtr("{\"type\":\"struct\",\"schema-id\":0,\"fields\":[{\"id\":1,\"name\":\"ID\",\"required\":true,\"type\":\"int\"},{\"id\":2,\"name\":\"Name\",\"required\":true,\"type\":\"string\"}]}"),
+				SourceFileType: core.StringPtr("csv"),
+				ValidateCsvHeader: core.BoolPtr(false),
 			}
 
-			// Test GetNext().
-			pager, err := watsonxDataService.NewIngestionJobsPager(listIngestionJobsOptions)
+			ingestionJob, response, err := watsonxDataService.CreateIngestionJobs(createIngestionJobsOptions)
 			Expect(err).To(BeNil())
-			Expect(pager).ToNot(BeNil())
+			Expect(response.StatusCode).To(Equal(202))
+			Expect(ingestionJob).ToNot(BeNil())
+		})
+	})
 
-			var allResults []watsonxdatav2.IngestionJob
-			for pager.HasNext() {
-				nextPage, err := pager.GetNext()
-				Expect(err).To(BeNil())
-				Expect(nextPage).ToNot(BeNil())
-				allResults = append(allResults, nextPage...)
+	Describe(`CreateIngestionJobsLocalFiles - Create an ingestion job for user local files`, func() {
+		BeforeEach(func() {
+			shouldSkipTest()
+		})
+		It(`CreateIngestionJobsLocalFiles(createIngestionJobsLocalFilesOptions *CreateIngestionJobsLocalFilesOptions)`, func() {
+			createIngestionJobsLocalFilesOptions := &watsonxdatav2.CreateIngestionJobsLocalFilesOptions{
+				AuthInstanceID: core.StringPtr("testString"),
+				SourceDataFile: CreateMockReader("This is a mock file."),
+				TargetTable: core.StringPtr("testString"),
+				JobID: core.StringPtr("testString"),
+				Username: core.StringPtr("testString"),
+				SourceDataFileContentType: core.StringPtr("testString"),
+				SourceFileType: core.StringPtr("csv"),
+				CsvProperty: core.StringPtr("testString"),
+				CreateIfNotExist: core.BoolPtr(false),
+				ValidateCsvHeader: core.BoolPtr(false),
+				ExecuteConfig: core.StringPtr("testString"),
+				EngineID: core.StringPtr("testString"),
 			}
 
-			// Test GetAll().
-			pager, err = watsonxDataService.NewIngestionJobsPager(listIngestionJobsOptions)
+			ingestionJob, response, err := watsonxDataService.CreateIngestionJobsLocalFiles(createIngestionJobsLocalFilesOptions)
 			Expect(err).To(BeNil())
-			Expect(pager).ToNot(BeNil())
+			Expect(response.StatusCode).To(Equal(202))
+			Expect(ingestionJob).ToNot(BeNil())
+		})
+	})
 
-			allItems, err := pager.GetAll()
+	Describe(`GetIngestionJob - Get ingestion job`, func() {
+		BeforeEach(func() {
+			shouldSkipTest()
+		})
+		It(`GetIngestionJob(getIngestionJobOptions *GetIngestionJobOptions)`, func() {
+			getIngestionJobOptions := &watsonxdatav2.GetIngestionJobOptions{
+				JobID: core.StringPtr("testString"),
+				AuthInstanceID: core.StringPtr("testString"),
+			}
+
+			ingestionJob, response, err := watsonxDataService.GetIngestionJob(getIngestionJobOptions)
 			Expect(err).To(BeNil())
-			Expect(allItems).ToNot(BeNil())
+			Expect(response.StatusCode).To(Equal(200))
+			Expect(ingestionJob).ToNot(BeNil())
+		})
+	})
 
-			Expect(len(allItems)).To(Equal(len(allResults)))
-			fmt.Fprintf(GinkgoWriter, "ListIngestionJobs() returned a total of %d item(s) using IngestionJobsPager.\n", len(allResults))
+	Describe(`CreatePreviewIngestionFile - Generate a preview of source file(s)`, func() {
+		BeforeEach(func() {
+			shouldSkipTest()
+		})
+		It(`CreatePreviewIngestionFile(createPreviewIngestionFileOptions *CreatePreviewIngestionFileOptions)`, func() {
+			previewIngestionFilePrototypeCsvPropertyModel := &watsonxdatav2.PreviewIngestionFilePrototypeCsvProperty{
+				Encoding: core.StringPtr("utf-8"),
+				EscapeCharacter: core.StringPtr("\\\\"),
+				FieldDelimiter: core.StringPtr(","),
+				Header: core.BoolPtr(true),
+				LineDelimiter: core.StringPtr("\\n"),
+			}
+
+			createPreviewIngestionFileOptions := &watsonxdatav2.CreatePreviewIngestionFileOptions{
+				AuthInstanceID: core.StringPtr("testString"),
+				SourceDataFiles: core.StringPtr("s3://demobucket/data/yellow_tripdata_2022-01.parquet"),
+				CsvProperty: previewIngestionFilePrototypeCsvPropertyModel,
+				SourceFileType: core.StringPtr("csv"),
+			}
+
+			previewIngestionFile, response, err := watsonxDataService.CreatePreviewIngestionFile(createPreviewIngestionFileOptions)
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(201))
+			Expect(previewIngestionFile).ToNot(BeNil())
 		})
 	})
 
@@ -2248,6 +2318,22 @@ var _ = Describe(`WatsonxDataV2 Integration Tests`, func() {
 			}
 
 			response, err := watsonxDataService.DeleteMilvusService(deleteMilvusServiceOptions)
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(204))
+		})
+	})
+
+	Describe(`DeleteIngestionJobs - Delete an ingestion job`, func() {
+		BeforeEach(func() {
+			shouldSkipTest()
+		})
+		It(`DeleteIngestionJobs(deleteIngestionJobsOptions *DeleteIngestionJobsOptions)`, func() {
+			deleteIngestionJobsOptions := &watsonxdatav2.DeleteIngestionJobsOptions{
+				JobID: core.StringPtr("testString"),
+				AuthInstanceID: core.StringPtr("testString"),
+			}
+
+			response, err := watsonxDataService.DeleteIngestionJobs(deleteIngestionJobsOptions)
 			Expect(err).To(BeNil())
 			Expect(response.StatusCode).To(Equal(204))
 		})

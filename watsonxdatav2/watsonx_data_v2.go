@@ -25,6 +25,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"reflect"
 	"strings"
@@ -2554,7 +2555,7 @@ func (watsonxData *WatsonxDataV2) GetPrestissimoEngineCatalogWithContext(ctx con
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id": *getPrestissimoEngineCatalogOptions.EngineID,
+		"engine_id":  *getPrestissimoEngineCatalogOptions.EngineID,
 		"catalog_id": *getPrestissimoEngineCatalogOptions.CatalogID,
 	}
 
@@ -3699,7 +3700,7 @@ func (watsonxData *WatsonxDataV2) GetPrestoEngineCatalogWithContext(ctx context.
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id": *getPrestoEngineCatalogOptions.EngineID,
+		"engine_id":  *getPrestoEngineCatalogOptions.EngineID,
 		"catalog_id": *getPrestoEngineCatalogOptions.CatalogID,
 	}
 
@@ -4864,7 +4865,7 @@ func (watsonxData *WatsonxDataV2) GetSparkEngineApplicationStatusWithContext(ctx
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id": *getSparkEngineApplicationStatusOptions.EngineID,
+		"engine_id":      *getSparkEngineApplicationStatusOptions.EngineID,
 		"application_id": *getSparkEngineApplicationStatusOptions.ApplicationID,
 	}
 
@@ -5156,7 +5157,7 @@ func (watsonxData *WatsonxDataV2) GetSparkEngineCatalogWithContext(ctx context.C
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id": *getSparkEngineCatalogOptions.EngineID,
+		"engine_id":  *getSparkEngineCatalogOptions.EngineID,
 		"catalog_id": *getSparkEngineCatalogOptions.CatalogID,
 	}
 
@@ -6040,7 +6041,7 @@ func (watsonxData *WatsonxDataV2) DeleteSchemaWithContext(ctx context.Context, d
 
 	pathParamsMap := map[string]string{
 		"catalog_id": *deleteSchemaOptions.CatalogID,
-		"schema_id": *deleteSchemaOptions.SchemaID,
+		"schema_id":  *deleteSchemaOptions.SchemaID,
 	}
 
 	builder := core.NewRequestBuilder(core.DELETE)
@@ -6105,7 +6106,7 @@ func (watsonxData *WatsonxDataV2) ListTablesWithContext(ctx context.Context, lis
 
 	pathParamsMap := map[string]string{
 		"catalog_id": *listTablesOptions.CatalogID,
-		"schema_id": *listTablesOptions.SchemaID,
+		"schema_id":  *listTablesOptions.SchemaID,
 	}
 
 	builder := core.NewRequestBuilder(core.GET)
@@ -6180,8 +6181,8 @@ func (watsonxData *WatsonxDataV2) GetTableWithContext(ctx context.Context, getTa
 
 	pathParamsMap := map[string]string{
 		"catalog_id": *getTableOptions.CatalogID,
-		"schema_id": *getTableOptions.SchemaID,
-		"table_id": *getTableOptions.TableID,
+		"schema_id":  *getTableOptions.SchemaID,
+		"table_id":   *getTableOptions.TableID,
 	}
 
 	builder := core.NewRequestBuilder(core.GET)
@@ -6256,8 +6257,8 @@ func (watsonxData *WatsonxDataV2) DeleteTableWithContext(ctx context.Context, de
 
 	pathParamsMap := map[string]string{
 		"catalog_id": *deleteTableOptions.CatalogID,
-		"schema_id": *deleteTableOptions.SchemaID,
-		"table_id": *deleteTableOptions.TableID,
+		"schema_id":  *deleteTableOptions.SchemaID,
+		"table_id":   *deleteTableOptions.TableID,
 	}
 
 	builder := core.NewRequestBuilder(core.DELETE)
@@ -6322,8 +6323,8 @@ func (watsonxData *WatsonxDataV2) RenameTableWithContext(ctx context.Context, re
 
 	pathParamsMap := map[string]string{
 		"catalog_id": *renameTableOptions.CatalogID,
-		"schema_id": *renameTableOptions.SchemaID,
-		"table_id": *renameTableOptions.TableID,
+		"schema_id":  *renameTableOptions.SchemaID,
+		"table_id":   *renameTableOptions.TableID,
 	}
 
 	builder := core.NewRequestBuilder(core.PATCH)
@@ -6405,8 +6406,8 @@ func (watsonxData *WatsonxDataV2) ListColumnsWithContext(ctx context.Context, li
 
 	pathParamsMap := map[string]string{
 		"catalog_id": *listColumnsOptions.CatalogID,
-		"schema_id": *listColumnsOptions.SchemaID,
-		"table_id": *listColumnsOptions.TableID,
+		"schema_id":  *listColumnsOptions.SchemaID,
+		"table_id":   *listColumnsOptions.TableID,
 	}
 
 	builder := core.NewRequestBuilder(core.GET)
@@ -6481,8 +6482,8 @@ func (watsonxData *WatsonxDataV2) CreateColumnsWithContext(ctx context.Context, 
 
 	pathParamsMap := map[string]string{
 		"catalog_id": *createColumnsOptions.CatalogID,
-		"schema_id": *createColumnsOptions.SchemaID,
-		"table_id": *createColumnsOptions.TableID,
+		"schema_id":  *createColumnsOptions.SchemaID,
+		"table_id":   *createColumnsOptions.TableID,
 	}
 
 	builder := core.NewRequestBuilder(core.POST)
@@ -6568,9 +6569,9 @@ func (watsonxData *WatsonxDataV2) DeleteColumnWithContext(ctx context.Context, d
 
 	pathParamsMap := map[string]string{
 		"catalog_id": *deleteColumnOptions.CatalogID,
-		"schema_id": *deleteColumnOptions.SchemaID,
-		"table_id": *deleteColumnOptions.TableID,
-		"column_id": *deleteColumnOptions.ColumnID,
+		"schema_id":  *deleteColumnOptions.SchemaID,
+		"table_id":   *deleteColumnOptions.TableID,
+		"column_id":  *deleteColumnOptions.ColumnID,
 	}
 
 	builder := core.NewRequestBuilder(core.DELETE)
@@ -6635,9 +6636,9 @@ func (watsonxData *WatsonxDataV2) UpdateColumnWithContext(ctx context.Context, u
 
 	pathParamsMap := map[string]string{
 		"catalog_id": *updateColumnOptions.CatalogID,
-		"schema_id": *updateColumnOptions.SchemaID,
-		"table_id": *updateColumnOptions.TableID,
-		"column_id": *updateColumnOptions.ColumnID,
+		"schema_id":  *updateColumnOptions.SchemaID,
+		"table_id":   *updateColumnOptions.TableID,
+		"column_id":  *updateColumnOptions.ColumnID,
 	}
 
 	builder := core.NewRequestBuilder(core.PATCH)
@@ -6719,8 +6720,8 @@ func (watsonxData *WatsonxDataV2) ListTableSnapshotsWithContext(ctx context.Cont
 
 	pathParamsMap := map[string]string{
 		"catalog_id": *listTableSnapshotsOptions.CatalogID,
-		"schema_id": *listTableSnapshotsOptions.SchemaID,
-		"table_id": *listTableSnapshotsOptions.TableID,
+		"schema_id":  *listTableSnapshotsOptions.SchemaID,
+		"table_id":   *listTableSnapshotsOptions.TableID,
 	}
 
 	builder := core.NewRequestBuilder(core.GET)
@@ -6795,8 +6796,8 @@ func (watsonxData *WatsonxDataV2) RollbackTableWithContext(ctx context.Context, 
 
 	pathParamsMap := map[string]string{
 		"catalog_id": *rollbackTableOptions.CatalogID,
-		"schema_id": *rollbackTableOptions.SchemaID,
-		"table_id": *rollbackTableOptions.TableID,
+		"schema_id":  *rollbackTableOptions.SchemaID,
+		"table_id":   *rollbackTableOptions.TableID,
 	}
 
 	builder := core.NewRequestBuilder(core.POST)
@@ -7345,8 +7346,8 @@ func (watsonxData *WatsonxDataV2) ListIngestionJobsWithContext(ctx context.Conte
 		builder.AddHeader("AuthInstanceId", fmt.Sprint(*listIngestionJobsOptions.AuthInstanceID))
 	}
 
-	if listIngestionJobsOptions.Start != nil {
-		builder.AddQuery("start", fmt.Sprint(*listIngestionJobsOptions.Start))
+	if listIngestionJobsOptions.Page != nil {
+		builder.AddQuery("page", fmt.Sprint(*listIngestionJobsOptions.Page))
 	}
 	if listIngestionJobsOptions.JobsPerPage != nil {
 		builder.AddQuery("jobs_per_page", fmt.Sprint(*listIngestionJobsOptions.JobsPerPage))
@@ -7367,6 +7368,429 @@ func (watsonxData *WatsonxDataV2) ListIngestionJobsWithContext(ctx context.Conte
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalIngestionJobCollection)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// CreateIngestionJobs : Create an ingestion job
+// Create an ingestion job.
+func (watsonxData *WatsonxDataV2) CreateIngestionJobs(createIngestionJobsOptions *CreateIngestionJobsOptions) (result *IngestionJob, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.CreateIngestionJobsWithContext(context.Background(), createIngestionJobsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreateIngestionJobsWithContext is an alternate form of the CreateIngestionJobs method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreateIngestionJobsWithContext(ctx context.Context, createIngestionJobsOptions *CreateIngestionJobsOptions) (result *IngestionJob, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createIngestionJobsOptions, "createIngestionJobsOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createIngestionJobsOptions, "createIngestionJobsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/ingestion_jobs`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range createIngestionJobsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateIngestionJobs")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+	if createIngestionJobsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createIngestionJobsOptions.AuthInstanceID))
+	}
+
+	body := make(map[string]interface{})
+	if createIngestionJobsOptions.JobID != nil {
+		body["job_id"] = createIngestionJobsOptions.JobID
+	}
+	if createIngestionJobsOptions.SourceDataFiles != nil {
+		body["source_data_files"] = createIngestionJobsOptions.SourceDataFiles
+	}
+	if createIngestionJobsOptions.TargetTable != nil {
+		body["target_table"] = createIngestionJobsOptions.TargetTable
+	}
+	if createIngestionJobsOptions.Username != nil {
+		body["username"] = createIngestionJobsOptions.Username
+	}
+	if createIngestionJobsOptions.CreateIfNotExist != nil {
+		body["create_if_not_exist"] = createIngestionJobsOptions.CreateIfNotExist
+	}
+	if createIngestionJobsOptions.CsvProperty != nil {
+		body["csv_property"] = createIngestionJobsOptions.CsvProperty
+	}
+	if createIngestionJobsOptions.EngineID != nil {
+		body["engine_id"] = createIngestionJobsOptions.EngineID
+	}
+	if createIngestionJobsOptions.ExecuteConfig != nil {
+		body["execute_config"] = createIngestionJobsOptions.ExecuteConfig
+	}
+	if createIngestionJobsOptions.PartitionBy != nil {
+		body["partition_by"] = createIngestionJobsOptions.PartitionBy
+	}
+	if createIngestionJobsOptions.Schema != nil {
+		body["schema"] = createIngestionJobsOptions.Schema
+	}
+	if createIngestionJobsOptions.SourceFileType != nil {
+		body["source_file_type"] = createIngestionJobsOptions.SourceFileType
+	}
+	if createIngestionJobsOptions.ValidateCsvHeader != nil {
+		body["validate_csv_header"] = createIngestionJobsOptions.ValidateCsvHeader
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_ingestion_jobs", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalIngestionJob)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// CreateIngestionJobsLocalFiles : Create an ingestion job for user local files
+// Create an ingestion job for user local files.
+func (watsonxData *WatsonxDataV2) CreateIngestionJobsLocalFiles(createIngestionJobsLocalFilesOptions *CreateIngestionJobsLocalFilesOptions) (result *IngestionJob, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.CreateIngestionJobsLocalFilesWithContext(context.Background(), createIngestionJobsLocalFilesOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreateIngestionJobsLocalFilesWithContext is an alternate form of the CreateIngestionJobsLocalFiles method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreateIngestionJobsLocalFilesWithContext(ctx context.Context, createIngestionJobsLocalFilesOptions *CreateIngestionJobsLocalFilesOptions) (result *IngestionJob, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createIngestionJobsLocalFilesOptions, "createIngestionJobsLocalFilesOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createIngestionJobsLocalFilesOptions, "createIngestionJobsLocalFilesOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/ingestion_jobs_local_files`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range createIngestionJobsLocalFilesOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateIngestionJobsLocalFiles")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if createIngestionJobsLocalFilesOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createIngestionJobsLocalFilesOptions.AuthInstanceID))
+	}
+
+	builder.AddFormData("source_data_file", "filename",
+		core.StringNilMapper(createIngestionJobsLocalFilesOptions.SourceDataFileContentType), createIngestionJobsLocalFilesOptions.SourceDataFile)
+	builder.AddFormData("target_table", "", "", fmt.Sprint(*createIngestionJobsLocalFilesOptions.TargetTable))
+	builder.AddFormData("job_id", "", "", fmt.Sprint(*createIngestionJobsLocalFilesOptions.JobID))
+	builder.AddFormData("username", "", "", fmt.Sprint(*createIngestionJobsLocalFilesOptions.Username))
+	if createIngestionJobsLocalFilesOptions.SourceFileType != nil {
+		builder.AddFormData("source_file_type", "", "", fmt.Sprint(*createIngestionJobsLocalFilesOptions.SourceFileType))
+	}
+	if createIngestionJobsLocalFilesOptions.CsvProperty != nil {
+		builder.AddFormData("csv_property", "", "", fmt.Sprint(*createIngestionJobsLocalFilesOptions.CsvProperty))
+	}
+	if createIngestionJobsLocalFilesOptions.CreateIfNotExist != nil {
+		builder.AddFormData("create_if_not_exist", "", "", fmt.Sprint(*createIngestionJobsLocalFilesOptions.CreateIfNotExist))
+	}
+	if createIngestionJobsLocalFilesOptions.ValidateCsvHeader != nil {
+		builder.AddFormData("validate_csv_header", "", "", fmt.Sprint(*createIngestionJobsLocalFilesOptions.ValidateCsvHeader))
+	}
+	if createIngestionJobsLocalFilesOptions.ExecuteConfig != nil {
+		builder.AddFormData("execute_config", "", "", fmt.Sprint(*createIngestionJobsLocalFilesOptions.ExecuteConfig))
+	}
+	if createIngestionJobsLocalFilesOptions.EngineID != nil {
+		builder.AddFormData("engine_id", "", "", fmt.Sprint(*createIngestionJobsLocalFilesOptions.EngineID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_ingestion_jobs_local_files", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalIngestionJob)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// GetIngestionJob : Get ingestion job
+// Get a submitted ingestion job.
+func (watsonxData *WatsonxDataV2) GetIngestionJob(getIngestionJobOptions *GetIngestionJobOptions) (result *IngestionJob, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.GetIngestionJobWithContext(context.Background(), getIngestionJobOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetIngestionJobWithContext is an alternate form of the GetIngestionJob method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) GetIngestionJobWithContext(ctx context.Context, getIngestionJobOptions *GetIngestionJobOptions) (result *IngestionJob, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(getIngestionJobOptions, "getIngestionJobOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(getIngestionJobOptions, "getIngestionJobOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"job_id": *getIngestionJobOptions.JobID,
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/ingestion_jobs/{job_id}`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range getIngestionJobOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "GetIngestionJob")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if getIngestionJobOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*getIngestionJobOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "get_ingestion_job", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalIngestionJob)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// DeleteIngestionJobs : Delete an ingestion job
+// Delete an ingestion job.
+func (watsonxData *WatsonxDataV2) DeleteIngestionJobs(deleteIngestionJobsOptions *DeleteIngestionJobsOptions) (response *core.DetailedResponse, err error) {
+	response, err = watsonxData.DeleteIngestionJobsWithContext(context.Background(), deleteIngestionJobsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// DeleteIngestionJobsWithContext is an alternate form of the DeleteIngestionJobs method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) DeleteIngestionJobsWithContext(ctx context.Context, deleteIngestionJobsOptions *DeleteIngestionJobsOptions) (response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(deleteIngestionJobsOptions, "deleteIngestionJobsOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(deleteIngestionJobsOptions, "deleteIngestionJobsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"job_id": *deleteIngestionJobsOptions.JobID,
+	}
+
+	builder := core.NewRequestBuilder(core.DELETE)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/ingestion_jobs/{job_id}`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range deleteIngestionJobsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "DeleteIngestionJobs")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	if deleteIngestionJobsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*deleteIngestionJobsOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_ingestion_jobs", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+
+	return
+}
+
+// CreatePreviewIngestionFile : Generate a preview of source file(s)
+// Generate a preview of source file(s).
+func (watsonxData *WatsonxDataV2) CreatePreviewIngestionFile(createPreviewIngestionFileOptions *CreatePreviewIngestionFileOptions) (result *PreviewIngestionFile, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.CreatePreviewIngestionFileWithContext(context.Background(), createPreviewIngestionFileOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreatePreviewIngestionFileWithContext is an alternate form of the CreatePreviewIngestionFile method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreatePreviewIngestionFileWithContext(ctx context.Context, createPreviewIngestionFileOptions *CreatePreviewIngestionFileOptions) (result *PreviewIngestionFile, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createPreviewIngestionFileOptions, "createPreviewIngestionFileOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createPreviewIngestionFileOptions, "createPreviewIngestionFileOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/preview_ingestion_file`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range createPreviewIngestionFileOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreatePreviewIngestionFile")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+	if createPreviewIngestionFileOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createPreviewIngestionFileOptions.AuthInstanceID))
+	}
+
+	body := make(map[string]interface{})
+	if createPreviewIngestionFileOptions.SourceDataFiles != nil {
+		body["source_data_files"] = createPreviewIngestionFileOptions.SourceDataFiles
+	}
+	if createPreviewIngestionFileOptions.CsvProperty != nil {
+		body["csv_property"] = createPreviewIngestionFileOptions.CsvProperty
+	}
+	if createPreviewIngestionFileOptions.SourceFileType != nil {
+		body["source_file_type"] = createPreviewIngestionFileOptions.SourceFileType
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_preview_ingestion_file", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalPreviewIngestionFile)
 		if err != nil {
 			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
@@ -7671,23 +8095,23 @@ type BucketRegistration struct {
 // bucket type.
 const (
 	BucketRegistration_BucketType_AmazonS3 = "amazon_s3"
-	BucketRegistration_BucketType_AwsS3 = "aws_s3"
-	BucketRegistration_BucketType_IbmCeph = "ibm_ceph"
-	BucketRegistration_BucketType_IbmCos = "ibm_cos"
-	BucketRegistration_BucketType_Minio = "minio"
+	BucketRegistration_BucketType_AwsS3    = "aws_s3"
+	BucketRegistration_BucketType_IbmCeph  = "ibm_ceph"
+	BucketRegistration_BucketType_IbmCos   = "ibm_cos"
+	BucketRegistration_BucketType_Minio    = "minio"
 )
 
 // Constants associated with the BucketRegistration.ManagedBy property.
 // managed by.
 const (
 	BucketRegistration_ManagedBy_Customer = "customer"
-	BucketRegistration_ManagedBy_Ibm = "ibm"
+	BucketRegistration_ManagedBy_Ibm      = "ibm"
 )
 
 // Constants associated with the BucketRegistration.State property.
 // mark bucket active or inactive.
 const (
-	BucketRegistration_State_Active = "active"
+	BucketRegistration_State_Active   = "active"
 	BucketRegistration_State_Inactive = "inactive"
 )
 
@@ -7927,7 +8351,7 @@ type Catalog struct {
 // Managed by.
 const (
 	Catalog_ManagedBy_Customer = "customer"
-	Catalog_ManagedBy_Ibm = "ibm"
+	Catalog_ManagedBy_Ibm      = "ibm"
 )
 
 // UnmarshalCatalog unmarshals an instance of Catalog from the specified map of raw messages.
@@ -8250,26 +8674,26 @@ type CreateBucketRegistrationOptions struct {
 // Constants associated with the CreateBucketRegistrationOptions.BucketType property.
 // bucket type.
 const (
-	CreateBucketRegistrationOptions_BucketType_AwsS3 = "aws_s3"
+	CreateBucketRegistrationOptions_BucketType_AwsS3   = "aws_s3"
 	CreateBucketRegistrationOptions_BucketType_IbmCeph = "ibm_ceph"
-	CreateBucketRegistrationOptions_BucketType_IbmCos = "ibm_cos"
-	CreateBucketRegistrationOptions_BucketType_Minio = "minio"
+	CreateBucketRegistrationOptions_BucketType_IbmCos  = "ibm_cos"
+	CreateBucketRegistrationOptions_BucketType_Minio   = "minio"
 )
 
 // Constants associated with the CreateBucketRegistrationOptions.ManagedBy property.
 // managed by.
 const (
 	CreateBucketRegistrationOptions_ManagedBy_Customer = "customer"
-	CreateBucketRegistrationOptions_ManagedBy_Ibm = "ibm"
+	CreateBucketRegistrationOptions_ManagedBy_Ibm      = "ibm"
 )
 
 // NewCreateBucketRegistrationOptions : Instantiate CreateBucketRegistrationOptions
 func (*WatsonxDataV2) NewCreateBucketRegistrationOptions(bucketDetails *BucketDetails, bucketType string, description string, managedBy string) *CreateBucketRegistrationOptions {
 	return &CreateBucketRegistrationOptions{
 		BucketDetails: bucketDetails,
-		BucketType: core.StringPtr(bucketType),
-		Description: core.StringPtr(description),
-		ManagedBy: core.StringPtr(managedBy),
+		BucketType:    core.StringPtr(bucketType),
+		Description:   core.StringPtr(description),
+		ManagedBy:     core.StringPtr(managedBy),
 	}
 }
 
@@ -8360,10 +8784,10 @@ type CreateColumnsOptions struct {
 // NewCreateColumnsOptions : Instantiate CreateColumnsOptions
 func (*WatsonxDataV2) NewCreateColumnsOptions(engineID string, catalogID string, schemaID string, tableID string) *CreateColumnsOptions {
 	return &CreateColumnsOptions{
-		EngineID: core.StringPtr(engineID),
+		EngineID:  core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
-		SchemaID: core.StringPtr(schemaID),
-		TableID: core.StringPtr(tableID),
+		SchemaID:  core.StringPtr(schemaID),
+		TableID:   core.StringPtr(tableID),
 	}
 }
 
@@ -8446,7 +8870,7 @@ type CreateDatabaseRegistrationOptions struct {
 func (*WatsonxDataV2) NewCreateDatabaseRegistrationOptions(databaseDisplayName string, databaseType string) *CreateDatabaseRegistrationOptions {
 	return &CreateDatabaseRegistrationOptions{
 		DatabaseDisplayName: core.StringPtr(databaseDisplayName),
-		DatabaseType: core.StringPtr(databaseType),
+		DatabaseType:        core.StringPtr(databaseType),
 	}
 }
 
@@ -8539,7 +8963,7 @@ type CreateDb2EngineOptions struct {
 const (
 	CreateDb2EngineOptions_Origin_Discover = "discover"
 	CreateDb2EngineOptions_Origin_External = "external"
-	CreateDb2EngineOptions_Origin_Native = "native"
+	CreateDb2EngineOptions_Origin_Native   = "native"
 )
 
 // NewCreateDb2EngineOptions : Instantiate CreateDb2EngineOptions
@@ -8663,6 +9087,293 @@ func UnmarshalCreateEngineScaleCreatedBody(m map[string]json.RawMessage, result 
 	return
 }
 
+// CreateIngestionJobsLocalFilesOptions : The CreateIngestionJobsLocalFiles options.
+type CreateIngestionJobsLocalFilesOptions struct {
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId" validate:"required"`
+
+	// The user local file submitted for ingestion.
+	SourceDataFile io.ReadCloser `json:"source_data_file" validate:"required"`
+
+	// Target table name in format catalog.schema.table.
+	TargetTable *string `json:"target_table" validate:"required"`
+
+	// Job ID of the job.
+	JobID *string `json:"job_id" validate:"required"`
+
+	// User submitting ingestion job.
+	Username *string `json:"username" validate:"required"`
+
+	// The content type of sourceDataFile.
+	SourceDataFileContentType *string `json:"source_data_file_content_type,omitempty"`
+
+	// File format of source file.
+	SourceFileType *string `json:"source_file_type,omitempty"`
+
+	// Ingestion CSV properties (base64 encoding of a stringifed json).
+	CsvProperty *string `json:"csv_property,omitempty"`
+
+	// Create new target table (if true); Insert into pre-existing target table (if false).
+	CreateIfNotExist *bool `json:"create_if_not_exist,omitempty"`
+
+	// Validate CSV header if the target table exist.
+	ValidateCsvHeader *bool `json:"validate_csv_header,omitempty"`
+
+	// Ingestion engine configuration (base64 encoding of a stringifed json).
+	ExecuteConfig *string `json:"execute_config,omitempty"`
+
+	// ID of the spark engine to be used for ingestion.
+	EngineID *string `json:"engine_id,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// Constants associated with the CreateIngestionJobsLocalFilesOptions.SourceFileType property.
+// File format of source file.
+const (
+	CreateIngestionJobsLocalFilesOptions_SourceFileType_Csv     = "csv"
+	CreateIngestionJobsLocalFilesOptions_SourceFileType_JSON    = "json"
+	CreateIngestionJobsLocalFilesOptions_SourceFileType_Parquet = "parquet"
+)
+
+// NewCreateIngestionJobsLocalFilesOptions : Instantiate CreateIngestionJobsLocalFilesOptions
+func (*WatsonxDataV2) NewCreateIngestionJobsLocalFilesOptions(authInstanceID string, sourceDataFile io.ReadCloser, targetTable string, jobID string, username string) *CreateIngestionJobsLocalFilesOptions {
+	return &CreateIngestionJobsLocalFilesOptions{
+		AuthInstanceID: core.StringPtr(authInstanceID),
+		SourceDataFile: sourceDataFile,
+		TargetTable:    core.StringPtr(targetTable),
+		JobID:          core.StringPtr(jobID),
+		Username:       core.StringPtr(username),
+	}
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *CreateIngestionJobsLocalFilesOptions) SetAuthInstanceID(authInstanceID string) *CreateIngestionJobsLocalFilesOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetSourceDataFile : Allow user to set SourceDataFile
+func (_options *CreateIngestionJobsLocalFilesOptions) SetSourceDataFile(sourceDataFile io.ReadCloser) *CreateIngestionJobsLocalFilesOptions {
+	_options.SourceDataFile = sourceDataFile
+	return _options
+}
+
+// SetTargetTable : Allow user to set TargetTable
+func (_options *CreateIngestionJobsLocalFilesOptions) SetTargetTable(targetTable string) *CreateIngestionJobsLocalFilesOptions {
+	_options.TargetTable = core.StringPtr(targetTable)
+	return _options
+}
+
+// SetJobID : Allow user to set JobID
+func (_options *CreateIngestionJobsLocalFilesOptions) SetJobID(jobID string) *CreateIngestionJobsLocalFilesOptions {
+	_options.JobID = core.StringPtr(jobID)
+	return _options
+}
+
+// SetUsername : Allow user to set Username
+func (_options *CreateIngestionJobsLocalFilesOptions) SetUsername(username string) *CreateIngestionJobsLocalFilesOptions {
+	_options.Username = core.StringPtr(username)
+	return _options
+}
+
+// SetSourceDataFileContentType : Allow user to set SourceDataFileContentType
+func (_options *CreateIngestionJobsLocalFilesOptions) SetSourceDataFileContentType(sourceDataFileContentType string) *CreateIngestionJobsLocalFilesOptions {
+	_options.SourceDataFileContentType = core.StringPtr(sourceDataFileContentType)
+	return _options
+}
+
+// SetSourceFileType : Allow user to set SourceFileType
+func (_options *CreateIngestionJobsLocalFilesOptions) SetSourceFileType(sourceFileType string) *CreateIngestionJobsLocalFilesOptions {
+	_options.SourceFileType = core.StringPtr(sourceFileType)
+	return _options
+}
+
+// SetCsvProperty : Allow user to set CsvProperty
+func (_options *CreateIngestionJobsLocalFilesOptions) SetCsvProperty(csvProperty string) *CreateIngestionJobsLocalFilesOptions {
+	_options.CsvProperty = core.StringPtr(csvProperty)
+	return _options
+}
+
+// SetCreateIfNotExist : Allow user to set CreateIfNotExist
+func (_options *CreateIngestionJobsLocalFilesOptions) SetCreateIfNotExist(createIfNotExist bool) *CreateIngestionJobsLocalFilesOptions {
+	_options.CreateIfNotExist = core.BoolPtr(createIfNotExist)
+	return _options
+}
+
+// SetValidateCsvHeader : Allow user to set ValidateCsvHeader
+func (_options *CreateIngestionJobsLocalFilesOptions) SetValidateCsvHeader(validateCsvHeader bool) *CreateIngestionJobsLocalFilesOptions {
+	_options.ValidateCsvHeader = core.BoolPtr(validateCsvHeader)
+	return _options
+}
+
+// SetExecuteConfig : Allow user to set ExecuteConfig
+func (_options *CreateIngestionJobsLocalFilesOptions) SetExecuteConfig(executeConfig string) *CreateIngestionJobsLocalFilesOptions {
+	_options.ExecuteConfig = core.StringPtr(executeConfig)
+	return _options
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *CreateIngestionJobsLocalFilesOptions) SetEngineID(engineID string) *CreateIngestionJobsLocalFilesOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreateIngestionJobsLocalFilesOptions) SetHeaders(param map[string]string) *CreateIngestionJobsLocalFilesOptions {
+	options.Headers = param
+	return options
+}
+
+// CreateIngestionJobsOptions : The CreateIngestionJobs options.
+type CreateIngestionJobsOptions struct {
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId" validate:"required"`
+
+	// Job ID of the job.
+	JobID *string `json:"job_id" validate:"required"`
+
+	// Comma separated source file or directory path.
+	SourceDataFiles *string `json:"source_data_files" validate:"required"`
+
+	// Target table name in format catalog.schema.table.
+	TargetTable *string `json:"target_table" validate:"required"`
+
+	// User submitting ingestion job.
+	Username *string `json:"username" validate:"required"`
+
+	// Create new target table (if True); Insert into pre-existing target table (if False).
+	CreateIfNotExist *bool `json:"create_if_not_exist,omitempty"`
+
+	// Ingestion CSV properties.
+	CsvProperty *IngestionJobPrototypeCsvProperty `json:"csv_property,omitempty"`
+
+	// ID of the spark engine to be used for ingestion.
+	EngineID *string `json:"engine_id,omitempty"`
+
+	// Ingestion engine configuration.
+	ExecuteConfig *IngestionJobPrototypeExecuteConfig `json:"execute_config,omitempty"`
+
+	// Partition by expression of the target table.
+	PartitionBy *string `json:"partition_by,omitempty"`
+
+	// Schema definition of the source table.
+	Schema *string `json:"schema,omitempty"`
+
+	// Source file types (parquet or csv or json).
+	SourceFileType *string `json:"source_file_type,omitempty"`
+
+	// Validate CSV header if the target table exist.
+	ValidateCsvHeader *bool `json:"validate_csv_header,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// Constants associated with the CreateIngestionJobsOptions.SourceFileType property.
+// Source file types (parquet or csv or json).
+const (
+	CreateIngestionJobsOptions_SourceFileType_Csv     = "csv"
+	CreateIngestionJobsOptions_SourceFileType_JSON    = "json"
+	CreateIngestionJobsOptions_SourceFileType_Parquet = "parquet"
+)
+
+// NewCreateIngestionJobsOptions : Instantiate CreateIngestionJobsOptions
+func (*WatsonxDataV2) NewCreateIngestionJobsOptions(authInstanceID string, jobID string, sourceDataFiles string, targetTable string, username string) *CreateIngestionJobsOptions {
+	return &CreateIngestionJobsOptions{
+		AuthInstanceID:  core.StringPtr(authInstanceID),
+		JobID:           core.StringPtr(jobID),
+		SourceDataFiles: core.StringPtr(sourceDataFiles),
+		TargetTable:     core.StringPtr(targetTable),
+		Username:        core.StringPtr(username),
+	}
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *CreateIngestionJobsOptions) SetAuthInstanceID(authInstanceID string) *CreateIngestionJobsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetJobID : Allow user to set JobID
+func (_options *CreateIngestionJobsOptions) SetJobID(jobID string) *CreateIngestionJobsOptions {
+	_options.JobID = core.StringPtr(jobID)
+	return _options
+}
+
+// SetSourceDataFiles : Allow user to set SourceDataFiles
+func (_options *CreateIngestionJobsOptions) SetSourceDataFiles(sourceDataFiles string) *CreateIngestionJobsOptions {
+	_options.SourceDataFiles = core.StringPtr(sourceDataFiles)
+	return _options
+}
+
+// SetTargetTable : Allow user to set TargetTable
+func (_options *CreateIngestionJobsOptions) SetTargetTable(targetTable string) *CreateIngestionJobsOptions {
+	_options.TargetTable = core.StringPtr(targetTable)
+	return _options
+}
+
+// SetUsername : Allow user to set Username
+func (_options *CreateIngestionJobsOptions) SetUsername(username string) *CreateIngestionJobsOptions {
+	_options.Username = core.StringPtr(username)
+	return _options
+}
+
+// SetCreateIfNotExist : Allow user to set CreateIfNotExist
+func (_options *CreateIngestionJobsOptions) SetCreateIfNotExist(createIfNotExist bool) *CreateIngestionJobsOptions {
+	_options.CreateIfNotExist = core.BoolPtr(createIfNotExist)
+	return _options
+}
+
+// SetCsvProperty : Allow user to set CsvProperty
+func (_options *CreateIngestionJobsOptions) SetCsvProperty(csvProperty *IngestionJobPrototypeCsvProperty) *CreateIngestionJobsOptions {
+	_options.CsvProperty = csvProperty
+	return _options
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *CreateIngestionJobsOptions) SetEngineID(engineID string) *CreateIngestionJobsOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetExecuteConfig : Allow user to set ExecuteConfig
+func (_options *CreateIngestionJobsOptions) SetExecuteConfig(executeConfig *IngestionJobPrototypeExecuteConfig) *CreateIngestionJobsOptions {
+	_options.ExecuteConfig = executeConfig
+	return _options
+}
+
+// SetPartitionBy : Allow user to set PartitionBy
+func (_options *CreateIngestionJobsOptions) SetPartitionBy(partitionBy string) *CreateIngestionJobsOptions {
+	_options.PartitionBy = core.StringPtr(partitionBy)
+	return _options
+}
+
+// SetSchema : Allow user to set Schema
+func (_options *CreateIngestionJobsOptions) SetSchema(schema string) *CreateIngestionJobsOptions {
+	_options.Schema = core.StringPtr(schema)
+	return _options
+}
+
+// SetSourceFileType : Allow user to set SourceFileType
+func (_options *CreateIngestionJobsOptions) SetSourceFileType(sourceFileType string) *CreateIngestionJobsOptions {
+	_options.SourceFileType = core.StringPtr(sourceFileType)
+	return _options
+}
+
+// SetValidateCsvHeader : Allow user to set ValidateCsvHeader
+func (_options *CreateIngestionJobsOptions) SetValidateCsvHeader(validateCsvHeader bool) *CreateIngestionJobsOptions {
+	_options.ValidateCsvHeader = core.BoolPtr(validateCsvHeader)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreateIngestionJobsOptions) SetHeaders(param map[string]string) *CreateIngestionJobsOptions {
+	options.Headers = param
+	return options
+}
+
 // CreateMilvusServiceOptions : The CreateMilvusService options.
 type CreateMilvusServiceOptions struct {
 	// Origin - place holder.
@@ -8756,7 +9467,7 @@ type CreateNetezzaEngineOptions struct {
 const (
 	CreateNetezzaEngineOptions_Origin_Discover = "discover"
 	CreateNetezzaEngineOptions_Origin_External = "external"
-	CreateNetezzaEngineOptions_Origin_Native = "native"
+	CreateNetezzaEngineOptions_Origin_Native   = "native"
 )
 
 // NewCreateNetezzaEngineOptions : Instantiate CreateNetezzaEngineOptions
@@ -8840,13 +9551,13 @@ type CreateOtherEngineOptions struct {
 const (
 	CreateOtherEngineOptions_Origin_Discover = "discover"
 	CreateOtherEngineOptions_Origin_External = "external"
-	CreateOtherEngineOptions_Origin_Native = "native"
+	CreateOtherEngineOptions_Origin_Native   = "native"
 )
 
 // NewCreateOtherEngineOptions : Instantiate CreateOtherEngineOptions
 func (*WatsonxDataV2) NewCreateOtherEngineOptions(engineDetails *OtherEngineDetailsBody, engineDisplayName string) *CreateOtherEngineOptions {
 	return &CreateOtherEngineOptions{
-		EngineDetails: engineDetails,
+		EngineDetails:     engineDetails,
 		EngineDisplayName: core.StringPtr(engineDisplayName),
 	}
 }
@@ -8937,7 +9648,7 @@ type CreatePrestissimoEngineOptions struct {
 const (
 	CreatePrestissimoEngineOptions_Origin_Discover = "discover"
 	CreatePrestissimoEngineOptions_Origin_External = "external"
-	CreatePrestissimoEngineOptions_Origin_Native = "native"
+	CreatePrestissimoEngineOptions_Origin_Native   = "native"
 )
 
 // NewCreatePrestissimoEngineOptions : Instantiate CreatePrestissimoEngineOptions
@@ -9045,7 +9756,7 @@ type CreatePrestoEngineOptions struct {
 const (
 	CreatePrestoEngineOptions_Origin_Discover = "discover"
 	CreatePrestoEngineOptions_Origin_External = "external"
-	CreatePrestoEngineOptions_Origin_Native = "native"
+	CreatePrestoEngineOptions_Origin_Native   = "native"
 )
 
 // NewCreatePrestoEngineOptions : Instantiate CreatePrestoEngineOptions
@@ -9115,6 +9826,70 @@ func (options *CreatePrestoEngineOptions) SetHeaders(param map[string]string) *C
 	return options
 }
 
+// CreatePreviewIngestionFileOptions : The CreatePreviewIngestionFile options.
+type CreatePreviewIngestionFileOptions struct {
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId" validate:"required"`
+
+	// Comma separated source file or directory path.
+	SourceDataFiles *string `json:"source_data_files" validate:"required"`
+
+	// CSV properties of source file(s).
+	CsvProperty *PreviewIngestionFilePrototypeCsvProperty `json:"csv_property,omitempty"`
+
+	// File format of source file(s).
+	SourceFileType *string `json:"source_file_type,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// Constants associated with the CreatePreviewIngestionFileOptions.SourceFileType property.
+// File format of source file(s).
+const (
+	CreatePreviewIngestionFileOptions_SourceFileType_Csv     = "csv"
+	CreatePreviewIngestionFileOptions_SourceFileType_JSON    = "json"
+	CreatePreviewIngestionFileOptions_SourceFileType_Parquet = "parquet"
+)
+
+// NewCreatePreviewIngestionFileOptions : Instantiate CreatePreviewIngestionFileOptions
+func (*WatsonxDataV2) NewCreatePreviewIngestionFileOptions(authInstanceID string, sourceDataFiles string) *CreatePreviewIngestionFileOptions {
+	return &CreatePreviewIngestionFileOptions{
+		AuthInstanceID:  core.StringPtr(authInstanceID),
+		SourceDataFiles: core.StringPtr(sourceDataFiles),
+	}
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *CreatePreviewIngestionFileOptions) SetAuthInstanceID(authInstanceID string) *CreatePreviewIngestionFileOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetSourceDataFiles : Allow user to set SourceDataFiles
+func (_options *CreatePreviewIngestionFileOptions) SetSourceDataFiles(sourceDataFiles string) *CreatePreviewIngestionFileOptions {
+	_options.SourceDataFiles = core.StringPtr(sourceDataFiles)
+	return _options
+}
+
+// SetCsvProperty : Allow user to set CsvProperty
+func (_options *CreatePreviewIngestionFileOptions) SetCsvProperty(csvProperty *PreviewIngestionFilePrototypeCsvProperty) *CreatePreviewIngestionFileOptions {
+	_options.CsvProperty = csvProperty
+	return _options
+}
+
+// SetSourceFileType : Allow user to set SourceFileType
+func (_options *CreatePreviewIngestionFileOptions) SetSourceFileType(sourceFileType string) *CreatePreviewIngestionFileOptions {
+	_options.SourceFileType = core.StringPtr(sourceFileType)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreatePreviewIngestionFileOptions) SetHeaders(param map[string]string) *CreatePreviewIngestionFileOptions {
+	options.Headers = param
+	return options
+}
+
 // CreateSchemaCreatedBody : success response.
 type CreateSchemaCreatedBody struct {
 	// Response of success.
@@ -9160,8 +9935,8 @@ type CreateSchemaOptions struct {
 // NewCreateSchemaOptions : Instantiate CreateSchemaOptions
 func (*WatsonxDataV2) NewCreateSchemaOptions(engineID string, catalogID string, customPath string, schemaName string) *CreateSchemaOptions {
 	return &CreateSchemaOptions{
-		EngineID: core.StringPtr(engineID),
-		CatalogID: core.StringPtr(catalogID),
+		EngineID:   core.StringPtr(engineID),
+		CatalogID:  core.StringPtr(catalogID),
 		CustomPath: core.StringPtr(customPath),
 		SchemaName: core.StringPtr(schemaName),
 	}
@@ -9249,7 +10024,7 @@ const (
 // NewCreateSparkEngineApplicationOptions : Instantiate CreateSparkEngineApplicationOptions
 func (*WatsonxDataV2) NewCreateSparkEngineApplicationOptions(engineID string, applicationDetails *SparkApplicationDetails) *CreateSparkEngineApplicationOptions {
 	return &CreateSparkEngineApplicationOptions{
-		EngineID: core.StringPtr(engineID),
+		EngineID:           core.StringPtr(engineID),
 		ApplicationDetails: applicationDetails,
 	}
 }
@@ -9343,7 +10118,7 @@ type CreateSparkEngineOptions struct {
 const (
 	CreateSparkEngineOptions_Origin_Discover = "discover"
 	CreateSparkEngineOptions_Origin_External = "external"
-	CreateSparkEngineOptions_Origin_Native = "native"
+	CreateSparkEngineOptions_Origin_Native   = "native"
 )
 
 // NewCreateSparkEngineOptions : Instantiate CreateSparkEngineOptions
@@ -9607,7 +10382,7 @@ type DatabaseDetails struct {
 func (*WatsonxDataV2) NewDatabaseDetails(hostname string, port int64) (_model *DatabaseDetails, err error) {
 	_model = &DatabaseDetails{
 		Hostname: core.StringPtr(hostname),
-		Port: core.Int64Ptr(port),
+		Port:     core.Int64Ptr(port),
 	}
 	err = core.ValidateStruct(_model, "required parameters")
 	if err != nil {
@@ -9962,8 +10737,8 @@ type DatabaseRegistrationPrototypeDatabasePropertiesItems struct {
 func (*WatsonxDataV2) NewDatabaseRegistrationPrototypeDatabasePropertiesItems(encrypt bool, key string, value string) (_model *DatabaseRegistrationPrototypeDatabasePropertiesItems, err error) {
 	_model = &DatabaseRegistrationPrototypeDatabasePropertiesItems{
 		Encrypt: core.BoolPtr(encrypt),
-		Key: core.StringPtr(key),
-		Value: core.StringPtr(value),
+		Key:     core.StringPtr(key),
+		Value:   core.StringPtr(value),
 	}
 	err = core.ValidateStruct(_model, "required parameters")
 	if err != nil {
@@ -10255,11 +11030,11 @@ type DeleteColumnOptions struct {
 // NewDeleteColumnOptions : Instantiate DeleteColumnOptions
 func (*WatsonxDataV2) NewDeleteColumnOptions(engineID string, catalogID string, schemaID string, tableID string, columnID string) *DeleteColumnOptions {
 	return &DeleteColumnOptions{
-		EngineID: core.StringPtr(engineID),
+		EngineID:  core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
-		SchemaID: core.StringPtr(schemaID),
-		TableID: core.StringPtr(tableID),
-		ColumnID: core.StringPtr(columnID),
+		SchemaID:  core.StringPtr(schemaID),
+		TableID:   core.StringPtr(tableID),
+		ColumnID:  core.StringPtr(columnID),
 	}
 }
 
@@ -10453,6 +11228,44 @@ func (options *DeleteEngineOptions) SetHeaders(param map[string]string) *DeleteE
 	return options
 }
 
+// DeleteIngestionJobsOptions : The DeleteIngestionJobs options.
+type DeleteIngestionJobsOptions struct {
+	// ingestion job id.
+	JobID *string `json:"job_id" validate:"required,ne="`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId" validate:"required"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewDeleteIngestionJobsOptions : Instantiate DeleteIngestionJobsOptions
+func (*WatsonxDataV2) NewDeleteIngestionJobsOptions(jobID string, authInstanceID string) *DeleteIngestionJobsOptions {
+	return &DeleteIngestionJobsOptions{
+		JobID:          core.StringPtr(jobID),
+		AuthInstanceID: core.StringPtr(authInstanceID),
+	}
+}
+
+// SetJobID : Allow user to set JobID
+func (_options *DeleteIngestionJobsOptions) SetJobID(jobID string) *DeleteIngestionJobsOptions {
+	_options.JobID = core.StringPtr(jobID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *DeleteIngestionJobsOptions) SetAuthInstanceID(authInstanceID string) *DeleteIngestionJobsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *DeleteIngestionJobsOptions) SetHeaders(param map[string]string) *DeleteIngestionJobsOptions {
+	options.Headers = param
+	return options
+}
+
 // DeleteMilvusServiceOptions : The DeleteMilvusService options.
 type DeleteMilvusServiceOptions struct {
 	// service id.
@@ -10582,7 +11395,7 @@ type DeletePrestissimoEngineCatalogsOptions struct {
 // NewDeletePrestissimoEngineCatalogsOptions : Instantiate DeletePrestissimoEngineCatalogsOptions
 func (*WatsonxDataV2) NewDeletePrestissimoEngineCatalogsOptions(engineID string, catalogNames string) *DeletePrestissimoEngineCatalogsOptions {
 	return &DeletePrestissimoEngineCatalogsOptions{
-		EngineID: core.StringPtr(engineID),
+		EngineID:     core.StringPtr(engineID),
 		CatalogNames: core.StringPtr(catalogNames),
 	}
 }
@@ -10666,7 +11479,7 @@ type DeletePrestoEngineCatalogsOptions struct {
 // NewDeletePrestoEngineCatalogsOptions : Instantiate DeletePrestoEngineCatalogsOptions
 func (*WatsonxDataV2) NewDeletePrestoEngineCatalogsOptions(engineID string, catalogNames string) *DeletePrestoEngineCatalogsOptions {
 	return &DeletePrestoEngineCatalogsOptions{
-		EngineID: core.StringPtr(engineID),
+		EngineID:     core.StringPtr(engineID),
 		CatalogNames: core.StringPtr(catalogNames),
 	}
 }
@@ -10716,9 +11529,9 @@ type DeleteSchemaOptions struct {
 // NewDeleteSchemaOptions : Instantiate DeleteSchemaOptions
 func (*WatsonxDataV2) NewDeleteSchemaOptions(engineID string, catalogID string, schemaID string) *DeleteSchemaOptions {
 	return &DeleteSchemaOptions{
-		EngineID: core.StringPtr(engineID),
+		EngineID:  core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
-		SchemaID: core.StringPtr(schemaID),
+		SchemaID:  core.StringPtr(schemaID),
 	}
 }
 
@@ -10773,7 +11586,7 @@ type DeleteSparkEngineApplicationsOptions struct {
 // NewDeleteSparkEngineApplicationsOptions : Instantiate DeleteSparkEngineApplicationsOptions
 func (*WatsonxDataV2) NewDeleteSparkEngineApplicationsOptions(engineID string, applicationID string) *DeleteSparkEngineApplicationsOptions {
 	return &DeleteSparkEngineApplicationsOptions{
-		EngineID: core.StringPtr(engineID),
+		EngineID:      core.StringPtr(engineID),
 		ApplicationID: core.StringPtr(applicationID),
 	}
 }
@@ -10826,7 +11639,7 @@ type DeleteSparkEngineCatalogsOptions struct {
 // NewDeleteSparkEngineCatalogsOptions : Instantiate DeleteSparkEngineCatalogsOptions
 func (*WatsonxDataV2) NewDeleteSparkEngineCatalogsOptions(engineID string, catalogNames string) *DeleteSparkEngineCatalogsOptions {
 	return &DeleteSparkEngineCatalogsOptions{
-		EngineID: core.StringPtr(engineID),
+		EngineID:     core.StringPtr(engineID),
 		CatalogNames: core.StringPtr(catalogNames),
 	}
 }
@@ -10954,9 +11767,9 @@ type DeleteTableOptions struct {
 func (*WatsonxDataV2) NewDeleteTableOptions(catalogID string, schemaID string, tableID string, engineID string) *DeleteTableOptions {
 	return &DeleteTableOptions{
 		CatalogID: core.StringPtr(catalogID),
-		SchemaID: core.StringPtr(schemaID),
-		TableID: core.StringPtr(tableID),
-		EngineID: core.StringPtr(engineID),
+		SchemaID:  core.StringPtr(schemaID),
+		TableID:   core.StringPtr(tableID),
+		EngineID:  core.StringPtr(engineID),
 	}
 }
 
@@ -11120,13 +11933,13 @@ type EngineDetailsBody struct {
 // Constants associated with the EngineDetailsBody.SizeConfig property.
 // Size config.
 const (
-	EngineDetailsBody_SizeConfig_CacheOptimized = "cache_optimized"
+	EngineDetailsBody_SizeConfig_CacheOptimized   = "cache_optimized"
 	EngineDetailsBody_SizeConfig_ComputeOptimized = "compute_optimized"
-	EngineDetailsBody_SizeConfig_Custom = "custom"
-	EngineDetailsBody_SizeConfig_Large = "large"
-	EngineDetailsBody_SizeConfig_Medium = "medium"
-	EngineDetailsBody_SizeConfig_Small = "small"
-	EngineDetailsBody_SizeConfig_Starter = "starter"
+	EngineDetailsBody_SizeConfig_Custom           = "custom"
+	EngineDetailsBody_SizeConfig_Large            = "large"
+	EngineDetailsBody_SizeConfig_Medium           = "medium"
+	EngineDetailsBody_SizeConfig_Small            = "small"
+	EngineDetailsBody_SizeConfig_Starter          = "starter"
 )
 
 // UnmarshalEngineDetailsBody unmarshals an instance of EngineDetailsBody from the specified map of raw messages.
@@ -11399,6 +12212,44 @@ func (options *GetDatabaseOptions) SetHeaders(param map[string]string) *GetDatab
 	return options
 }
 
+// GetIngestionJobOptions : The GetIngestionJob options.
+type GetIngestionJobOptions struct {
+	// ingestion job id.
+	JobID *string `json:"job_id" validate:"required,ne="`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId" validate:"required"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewGetIngestionJobOptions : Instantiate GetIngestionJobOptions
+func (*WatsonxDataV2) NewGetIngestionJobOptions(jobID string, authInstanceID string) *GetIngestionJobOptions {
+	return &GetIngestionJobOptions{
+		JobID:          core.StringPtr(jobID),
+		AuthInstanceID: core.StringPtr(authInstanceID),
+	}
+}
+
+// SetJobID : Allow user to set JobID
+func (_options *GetIngestionJobOptions) SetJobID(jobID string) *GetIngestionJobOptions {
+	_options.JobID = core.StringPtr(jobID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *GetIngestionJobOptions) SetAuthInstanceID(authInstanceID string) *GetIngestionJobOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *GetIngestionJobOptions) SetHeaders(param map[string]string) *GetIngestionJobOptions {
+	options.Headers = param
+	return options
+}
+
 // GetMilvusServiceOptions : The GetMilvusService options.
 type GetMilvusServiceOptions struct {
 	// service id.
@@ -11454,7 +12305,7 @@ type GetPrestissimoEngineCatalogOptions struct {
 // NewGetPrestissimoEngineCatalogOptions : Instantiate GetPrestissimoEngineCatalogOptions
 func (*WatsonxDataV2) NewGetPrestissimoEngineCatalogOptions(engineID string, catalogID string) *GetPrestissimoEngineCatalogOptions {
 	return &GetPrestissimoEngineCatalogOptions{
-		EngineID: core.StringPtr(engineID),
+		EngineID:  core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
 	}
 }
@@ -11538,7 +12389,7 @@ type GetPrestoEngineCatalogOptions struct {
 // NewGetPrestoEngineCatalogOptions : Instantiate GetPrestoEngineCatalogOptions
 func (*WatsonxDataV2) NewGetPrestoEngineCatalogOptions(engineID string, catalogID string) *GetPrestoEngineCatalogOptions {
 	return &GetPrestoEngineCatalogOptions{
-		EngineID: core.StringPtr(engineID),
+		EngineID:  core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
 	}
 }
@@ -11622,7 +12473,7 @@ type GetSparkEngineApplicationStatusOptions struct {
 // NewGetSparkEngineApplicationStatusOptions : Instantiate GetSparkEngineApplicationStatusOptions
 func (*WatsonxDataV2) NewGetSparkEngineApplicationStatusOptions(engineID string, applicationID string) *GetSparkEngineApplicationStatusOptions {
 	return &GetSparkEngineApplicationStatusOptions{
-		EngineID: core.StringPtr(engineID),
+		EngineID:      core.StringPtr(engineID),
 		ApplicationID: core.StringPtr(applicationID),
 	}
 }
@@ -11669,7 +12520,7 @@ type GetSparkEngineCatalogOptions struct {
 // NewGetSparkEngineCatalogOptions : Instantiate GetSparkEngineCatalogOptions
 func (*WatsonxDataV2) NewGetSparkEngineCatalogOptions(engineID string, catalogID string) *GetSparkEngineCatalogOptions {
 	return &GetSparkEngineCatalogOptions{
-		EngineID: core.StringPtr(engineID),
+		EngineID:  core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
 	}
 }
@@ -11797,9 +12648,9 @@ type GetTableOptions struct {
 func (*WatsonxDataV2) NewGetTableOptions(catalogID string, schemaID string, tableID string, engineID string) *GetTableOptions {
 	return &GetTableOptions{
 		CatalogID: core.StringPtr(catalogID),
-		SchemaID: core.StringPtr(schemaID),
-		TableID: core.StringPtr(tableID),
-		EngineID: core.StringPtr(engineID),
+		SchemaID:  core.StringPtr(schemaID),
+		TableID:   core.StringPtr(tableID),
+		EngineID:  core.StringPtr(engineID),
 	}
 }
 
@@ -11899,7 +12750,7 @@ type IngestionJob struct {
 // Constants associated with the IngestionJob.SourceFileType property.
 // Source file types (parquet or csv).
 const (
-	IngestionJob_SourceFileType_Csv = "csv"
+	IngestionJob_SourceFileType_Csv     = "csv"
 	IngestionJob_SourceFileType_Parquet = "parquet"
 )
 
@@ -12034,21 +12885,6 @@ func UnmarshalIngestionJobCollection(m map[string]json.RawMessage, result interf
 	return
 }
 
-// Retrieve the value to be passed to a request to access the next page of results
-func (resp *IngestionJobCollection) GetNextStart() (*string, error) {
-	if core.IsNil(resp.Next) {
-		return nil, nil
-	}
-	start, err := core.GetQueryParam(resp.Next.Href, "start")
-	if err != nil {
-		err = core.SDKErrorf(err, "", "read-query-param-error", common.GetComponentInfo())
-		return nil, err
-	} else if start == nil {
-		return nil, nil
-	}
-	return start, nil
-}
-
 // IngestionJobCollectionPage : A page in a pagination collection.
 type IngestionJobCollectionPage struct {
 	// Link to the a page in the collection.
@@ -12138,6 +12974,106 @@ type IngestionJobExecuteConfig struct {
 // UnmarshalIngestionJobExecuteConfig unmarshals an instance of IngestionJobExecuteConfig from the specified map of raw messages.
 func UnmarshalIngestionJobExecuteConfig(m map[string]json.RawMessage, result interface{}) (err error) {
 	obj := new(IngestionJobExecuteConfig)
+	err = core.UnmarshalPrimitive(m, "driver_cores", &obj.DriverCores)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "driver_cores-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "driver_memory", &obj.DriverMemory)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "driver_memory-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "executor_cores", &obj.ExecutorCores)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "executor_cores-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "executor_memory", &obj.ExecutorMemory)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "executor_memory-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "num_executors", &obj.NumExecutors)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "num_executors-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// IngestionJobPrototypeCsvProperty : Ingestion CSV properties.
+type IngestionJobPrototypeCsvProperty struct {
+	// Encoding used in CSV file.
+	Encoding *string `json:"encoding,omitempty"`
+
+	// Escape character of CSV file.
+	EscapeCharacter *string `json:"escape_character,omitempty"`
+
+	// Field delimiter of CSV file.
+	FieldDelimiter *string `json:"field_delimiter,omitempty"`
+
+	// Identify if header exists in CSV file.
+	Header *bool `json:"header,omitempty"`
+
+	// Line delimiter of CSV file.
+	LineDelimiter *string `json:"line_delimiter,omitempty"`
+}
+
+// UnmarshalIngestionJobPrototypeCsvProperty unmarshals an instance of IngestionJobPrototypeCsvProperty from the specified map of raw messages.
+func UnmarshalIngestionJobPrototypeCsvProperty(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(IngestionJobPrototypeCsvProperty)
+	err = core.UnmarshalPrimitive(m, "encoding", &obj.Encoding)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "encoding-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "escape_character", &obj.EscapeCharacter)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "escape_character-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "field_delimiter", &obj.FieldDelimiter)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "field_delimiter-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "header", &obj.Header)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "header-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "line_delimiter", &obj.LineDelimiter)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "line_delimiter-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// IngestionJobPrototypeExecuteConfig : Ingestion engine configuration.
+type IngestionJobPrototypeExecuteConfig struct {
+	// Driver core(s) configuration for Spark engine.
+	DriverCores *int64 `json:"driver_cores,omitempty"`
+
+	// Driver memory configuration (in GB) for Spark engine.
+	DriverMemory *string `json:"driver_memory,omitempty"`
+
+	// Executor core(s) configuration for Spark engine.
+	ExecutorCores *int64 `json:"executor_cores,omitempty"`
+
+	// Executor memory configuration (in GB) for Spark engine.
+	ExecutorMemory *string `json:"executor_memory,omitempty"`
+
+	// Number of executors to assign for Spark engine.
+	NumExecutors *int64 `json:"num_executors,omitempty"`
+}
+
+// UnmarshalIngestionJobPrototypeExecuteConfig unmarshals an instance of IngestionJobPrototypeExecuteConfig from the specified map of raw messages.
+func UnmarshalIngestionJobPrototypeExecuteConfig(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(IngestionJobPrototypeExecuteConfig)
 	err = core.UnmarshalPrimitive(m, "driver_cores", &obj.DriverCores)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "driver_cores-error", common.GetComponentInfo())
@@ -12280,10 +13216,10 @@ type ListColumnsOptions struct {
 // NewListColumnsOptions : Instantiate ListColumnsOptions
 func (*WatsonxDataV2) NewListColumnsOptions(engineID string, catalogID string, schemaID string, tableID string) *ListColumnsOptions {
 	return &ListColumnsOptions{
-		EngineID: core.StringPtr(engineID),
+		EngineID:  core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
-		SchemaID: core.StringPtr(schemaID),
-		TableID: core.StringPtr(tableID),
+		SchemaID:  core.StringPtr(schemaID),
+		TableID:   core.StringPtr(tableID),
 	}
 }
 
@@ -12381,7 +13317,7 @@ type ListIngestionJobsOptions struct {
 	AuthInstanceID *string `json:"AuthInstanceId" validate:"required"`
 
 	// Page number of requested ingestion jobs.
-	Start *string `json:"start,omitempty"`
+	Page *int64 `json:"page,omitempty"`
 
 	// Number of requested ingestion jobs.
 	JobsPerPage *int64 `json:"jobs_per_page,omitempty"`
@@ -12403,9 +13339,9 @@ func (_options *ListIngestionJobsOptions) SetAuthInstanceID(authInstanceID strin
 	return _options
 }
 
-// SetStart : Allow user to set Start
-func (_options *ListIngestionJobsOptions) SetStart(start string) *ListIngestionJobsOptions {
-	_options.Start = core.StringPtr(start)
+// SetPage : Allow user to set Page
+func (_options *ListIngestionJobsOptions) SetPage(page int64) *ListIngestionJobsOptions {
+	_options.Page = core.Int64Ptr(page)
 	return _options
 }
 
@@ -12669,7 +13605,7 @@ type ListSchemasOptions struct {
 // NewListSchemasOptions : Instantiate ListSchemasOptions
 func (*WatsonxDataV2) NewListSchemasOptions(engineID string, catalogID string) *ListSchemasOptions {
 	return &ListSchemasOptions{
-		EngineID: core.StringPtr(engineID),
+		EngineID:  core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
 	}
 }
@@ -12883,10 +13819,10 @@ type ListTableSnapshotsOptions struct {
 // NewListTableSnapshotsOptions : Instantiate ListTableSnapshotsOptions
 func (*WatsonxDataV2) NewListTableSnapshotsOptions(engineID string, catalogID string, schemaID string, tableID string) *ListTableSnapshotsOptions {
 	return &ListTableSnapshotsOptions{
-		EngineID: core.StringPtr(engineID),
+		EngineID:  core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
-		SchemaID: core.StringPtr(schemaID),
-		TableID: core.StringPtr(tableID),
+		SchemaID:  core.StringPtr(schemaID),
+		TableID:   core.StringPtr(tableID),
 	}
 }
 
@@ -12948,8 +13884,8 @@ type ListTablesOptions struct {
 func (*WatsonxDataV2) NewListTablesOptions(catalogID string, schemaID string, engineID string) *ListTablesOptions {
 	return &ListTablesOptions{
 		CatalogID: core.StringPtr(catalogID),
-		SchemaID: core.StringPtr(schemaID),
-		EngineID: core.StringPtr(engineID),
+		SchemaID:  core.StringPtr(schemaID),
+		EngineID:  core.StringPtr(engineID),
 	}
 }
 
@@ -13675,7 +14611,7 @@ type OtherEngineDetailsBody struct {
 func (*WatsonxDataV2) NewOtherEngineDetailsBody(connectionString string, engineType string) (_model *OtherEngineDetailsBody, err error) {
 	_model = &OtherEngineDetailsBody{
 		ConnectionString: core.StringPtr(connectionString),
-		EngineType: core.StringPtr(engineType),
+		EngineType:       core.StringPtr(engineType),
 	}
 	err = core.ValidateStruct(_model, "required parameters")
 	if err != nil {
@@ -13934,7 +14870,7 @@ const (
 const (
 	PrestissimoEngine_Origin_Discover = "discover"
 	PrestissimoEngine_Origin_External = "external"
-	PrestissimoEngine_Origin_Native = "native"
+	PrestissimoEngine_Origin_Native   = "native"
 )
 
 // Constants associated with the PrestissimoEngine.Status property.
@@ -14133,13 +15069,13 @@ type PrestissimoEngineDetails struct {
 // Constants associated with the PrestissimoEngineDetails.SizeConfig property.
 // Size config.
 const (
-	PrestissimoEngineDetails_SizeConfig_CacheOptimized = "cache_optimized"
+	PrestissimoEngineDetails_SizeConfig_CacheOptimized   = "cache_optimized"
 	PrestissimoEngineDetails_SizeConfig_ComputeOptimized = "compute_optimized"
-	PrestissimoEngineDetails_SizeConfig_Custom = "custom"
-	PrestissimoEngineDetails_SizeConfig_Large = "large"
-	PrestissimoEngineDetails_SizeConfig_Medium = "medium"
-	PrestissimoEngineDetails_SizeConfig_Small = "small"
-	PrestissimoEngineDetails_SizeConfig_Starter = "starter"
+	PrestissimoEngineDetails_SizeConfig_Custom           = "custom"
+	PrestissimoEngineDetails_SizeConfig_Large            = "large"
+	PrestissimoEngineDetails_SizeConfig_Medium           = "medium"
+	PrestissimoEngineDetails_SizeConfig_Small            = "small"
+	PrestissimoEngineDetails_SizeConfig_Starter          = "starter"
 )
 
 // UnmarshalPrestissimoEngineDetails unmarshals an instance of PrestissimoEngineDetails from the specified map of raw messages.
@@ -14564,7 +15500,7 @@ const (
 const (
 	PrestoEngine_Origin_Discover = "discover"
 	PrestoEngine_Origin_External = "external"
-	PrestoEngine_Origin_Native = "native"
+	PrestoEngine_Origin_Native   = "native"
 )
 
 // Constants associated with the PrestoEngine.Status property.
@@ -14992,6 +15928,188 @@ func (prestoEnginePropertiesGlobal *PrestoEnginePropertiesGlobal) asPatch() (_pa
 	return
 }
 
+// PreviewIngestionFile : Schema of the data in the source file.
+type PreviewIngestionFile struct {
+	// Array of column names of the table.
+	ColumnNames []string `json:"column_names" validate:"required"`
+
+	// Array of column types of the table.
+	ColumnTypes []string `json:"column_types" validate:"required"`
+
+	// Name of the file being previewed.
+	FileName *string `json:"file_name" validate:"required"`
+
+	// First 10 rows of the table.
+	Rows *PreviewIngestionFileRows `json:"rows" validate:"required"`
+}
+
+// UnmarshalPreviewIngestionFile unmarshals an instance of PreviewIngestionFile from the specified map of raw messages.
+func UnmarshalPreviewIngestionFile(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(PreviewIngestionFile)
+	err = core.UnmarshalPrimitive(m, "column_names", &obj.ColumnNames)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "column_names-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "column_types", &obj.ColumnTypes)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "column_types-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "file_name", &obj.FileName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "file_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "rows", &obj.Rows, UnmarshalPreviewIngestionFileRows)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "rows-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// PreviewIngestionFilePrototypeCsvProperty : CSV properties of source file(s).
+type PreviewIngestionFilePrototypeCsvProperty struct {
+	// Encoding used in CSV file.
+	Encoding *string `json:"encoding,omitempty"`
+
+	// Escape character of CSV file.
+	EscapeCharacter *string `json:"escape_character,omitempty"`
+
+	// Field delimiter of CSV file.
+	FieldDelimiter *string `json:"field_delimiter,omitempty"`
+
+	// Identify if header exists in CSV file.
+	Header *bool `json:"header,omitempty"`
+
+	// Line delimiter of CSV file.
+	LineDelimiter *string `json:"line_delimiter,omitempty"`
+}
+
+// UnmarshalPreviewIngestionFilePrototypeCsvProperty unmarshals an instance of PreviewIngestionFilePrototypeCsvProperty from the specified map of raw messages.
+func UnmarshalPreviewIngestionFilePrototypeCsvProperty(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(PreviewIngestionFilePrototypeCsvProperty)
+	err = core.UnmarshalPrimitive(m, "encoding", &obj.Encoding)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "encoding-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "escape_character", &obj.EscapeCharacter)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "escape_character-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "field_delimiter", &obj.FieldDelimiter)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "field_delimiter-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "header", &obj.Header)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "header-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "line_delimiter", &obj.LineDelimiter)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "line_delimiter-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// PreviewIngestionFileRows : First 10 rows of the table.
+type PreviewIngestionFileRows struct {
+	// Each rows slice.
+	RowEight []string `json:"row_eight,omitempty"`
+
+	// Each rows slice.
+	RowFive []string `json:"row_five,omitempty"`
+
+	// Each rows slice.
+	RowFour []string `json:"row_four,omitempty"`
+
+	// Each rows slice.
+	RowNine []string `json:"row_nine,omitempty"`
+
+	// Each rows slice.
+	RowOne []string `json:"row_one,omitempty"`
+
+	// Each rows slice.
+	RowSeven []string `json:"row_seven,omitempty"`
+
+	// Each rows slice.
+	RowSix []string `json:"row_six,omitempty"`
+
+	// Each rows slice.
+	RowTen []string `json:"row_ten,omitempty"`
+
+	// Each rows slice.
+	RowThree []string `json:"row_three,omitempty"`
+
+	// Each rows slice.
+	RowTwo []string `json:"row_two,omitempty"`
+}
+
+// UnmarshalPreviewIngestionFileRows unmarshals an instance of PreviewIngestionFileRows from the specified map of raw messages.
+func UnmarshalPreviewIngestionFileRows(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(PreviewIngestionFileRows)
+	err = core.UnmarshalPrimitive(m, "row_eight", &obj.RowEight)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "row_eight-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "row_five", &obj.RowFive)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "row_five-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "row_four", &obj.RowFour)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "row_four-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "row_nine", &obj.RowNine)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "row_nine-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "row_one", &obj.RowOne)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "row_one-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "row_seven", &obj.RowSeven)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "row_seven-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "row_six", &obj.RowSix)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "row_six-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "row_ten", &obj.RowTen)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "row_ten-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "row_three", &obj.RowThree)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "row_three-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "row_two", &obj.RowTwo)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "row_two-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
 // RemoveEngineProperties : RemoveEngine properties.
 type RemoveEngineProperties struct {
 	// catalog properties.
@@ -15198,10 +16316,10 @@ type RenameTableOptions struct {
 func (*WatsonxDataV2) NewRenameTableOptions(catalogID string, schemaID string, tableID string, engineID string, body map[string]interface{}) *RenameTableOptions {
 	return &RenameTableOptions{
 		CatalogID: core.StringPtr(catalogID),
-		SchemaID: core.StringPtr(schemaID),
-		TableID: core.StringPtr(tableID),
-		EngineID: core.StringPtr(engineID),
-		Body: body,
+		SchemaID:  core.StringPtr(schemaID),
+		TableID:   core.StringPtr(tableID),
+		EngineID:  core.StringPtr(engineID),
+		Body:      body,
 	}
 }
 
@@ -15476,10 +16594,10 @@ type RollbackTableOptions struct {
 // NewRollbackTableOptions : Instantiate RollbackTableOptions
 func (*WatsonxDataV2) NewRollbackTableOptions(engineID string, catalogID string, schemaID string, tableID string) *RollbackTableOptions {
 	return &RollbackTableOptions{
-		EngineID: core.StringPtr(engineID),
+		EngineID:  core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
-		SchemaID: core.StringPtr(schemaID),
-		TableID: core.StringPtr(tableID),
+		SchemaID:  core.StringPtr(schemaID),
+		TableID:   core.StringPtr(tableID),
 	}
 }
 
@@ -15572,7 +16690,7 @@ type RunExplainAnalyzeStatementOptions struct {
 // NewRunExplainAnalyzeStatementOptions : Instantiate RunExplainAnalyzeStatementOptions
 func (*WatsonxDataV2) NewRunExplainAnalyzeStatementOptions(engineID string, statement string) *RunExplainAnalyzeStatementOptions {
 	return &RunExplainAnalyzeStatementOptions{
-		EngineID: core.StringPtr(engineID),
+		EngineID:  core.StringPtr(engineID),
 		Statement: core.StringPtr(statement),
 	}
 }
@@ -15658,23 +16776,23 @@ type RunExplainStatementOptions struct {
 // Format.
 const (
 	RunExplainStatementOptions_Format_Graphviz = "graphviz"
-	RunExplainStatementOptions_Format_JSON = "json"
-	RunExplainStatementOptions_Format_Text = "text"
+	RunExplainStatementOptions_Format_JSON     = "json"
+	RunExplainStatementOptions_Format_Text     = "text"
 )
 
 // Constants associated with the RunExplainStatementOptions.Type property.
 // Type.
 const (
 	RunExplainStatementOptions_Type_Distributed = "distributed"
-	RunExplainStatementOptions_Type_Io = "io"
-	RunExplainStatementOptions_Type_Logical = "logical"
-	RunExplainStatementOptions_Type_Validate = "validate"
+	RunExplainStatementOptions_Type_Io          = "io"
+	RunExplainStatementOptions_Type_Logical     = "logical"
+	RunExplainStatementOptions_Type_Validate    = "validate"
 )
 
 // NewRunExplainStatementOptions : Instantiate RunExplainStatementOptions
 func (*WatsonxDataV2) NewRunExplainStatementOptions(engineID string, statement string) *RunExplainStatementOptions {
 	return &RunExplainStatementOptions{
-		EngineID: core.StringPtr(engineID),
+		EngineID:  core.StringPtr(engineID),
 		Statement: core.StringPtr(statement),
 	}
 }
@@ -15736,7 +16854,7 @@ type RunPrestissimoExplainAnalyzeStatementOptions struct {
 // NewRunPrestissimoExplainAnalyzeStatementOptions : Instantiate RunPrestissimoExplainAnalyzeStatementOptions
 func (*WatsonxDataV2) NewRunPrestissimoExplainAnalyzeStatementOptions(engineID string, statement string) *RunPrestissimoExplainAnalyzeStatementOptions {
 	return &RunPrestissimoExplainAnalyzeStatementOptions{
-		EngineID: core.StringPtr(engineID),
+		EngineID:  core.StringPtr(engineID),
 		Statement: core.StringPtr(statement),
 	}
 }
@@ -15796,23 +16914,23 @@ type RunPrestissimoExplainStatementOptions struct {
 // Format.
 const (
 	RunPrestissimoExplainStatementOptions_Format_Graphviz = "graphviz"
-	RunPrestissimoExplainStatementOptions_Format_JSON = "json"
-	RunPrestissimoExplainStatementOptions_Format_Text = "text"
+	RunPrestissimoExplainStatementOptions_Format_JSON     = "json"
+	RunPrestissimoExplainStatementOptions_Format_Text     = "text"
 )
 
 // Constants associated with the RunPrestissimoExplainStatementOptions.Type property.
 // Type.
 const (
 	RunPrestissimoExplainStatementOptions_Type_Distributed = "distributed"
-	RunPrestissimoExplainStatementOptions_Type_Io = "io"
-	RunPrestissimoExplainStatementOptions_Type_Logical = "logical"
-	RunPrestissimoExplainStatementOptions_Type_Validate = "validate"
+	RunPrestissimoExplainStatementOptions_Type_Io          = "io"
+	RunPrestissimoExplainStatementOptions_Type_Logical     = "logical"
+	RunPrestissimoExplainStatementOptions_Type_Validate    = "validate"
 )
 
 // NewRunPrestissimoExplainStatementOptions : Instantiate RunPrestissimoExplainStatementOptions
 func (*WatsonxDataV2) NewRunPrestissimoExplainStatementOptions(engineID string, statement string) *RunPrestissimoExplainStatementOptions {
 	return &RunPrestissimoExplainStatementOptions{
-		EngineID: core.StringPtr(engineID),
+		EngineID:  core.StringPtr(engineID),
 		Statement: core.StringPtr(statement),
 	}
 }
@@ -16260,7 +17378,7 @@ type SparkEngine struct {
 const (
 	SparkEngine_Origin_Discover = "discover"
 	SparkEngine_Origin_External = "external"
-	SparkEngine_Origin_Native = "native"
+	SparkEngine_Origin_Native   = "native"
 )
 
 // Constants associated with the SparkEngine.Type property.
@@ -17142,7 +18260,7 @@ type SyncCatalogs struct {
 func (*WatsonxDataV2) NewSyncCatalogs(autoAddNewTables bool, syncIcebergMd bool) (_model *SyncCatalogs, err error) {
 	_model = &SyncCatalogs{
 		AutoAddNewTables: core.BoolPtr(autoAddNewTables),
-		SyncIcebergMd: core.BoolPtr(syncIcebergMd),
+		SyncIcebergMd:    core.BoolPtr(syncIcebergMd),
 	}
 	err = core.ValidateStruct(_model, "required parameters")
 	if err != nil {
@@ -17332,7 +18450,7 @@ type UpdateBucketRegistrationOptions struct {
 func (*WatsonxDataV2) NewUpdateBucketRegistrationOptions(bucketID string, body map[string]interface{}) *UpdateBucketRegistrationOptions {
 	return &UpdateBucketRegistrationOptions{
 		BucketID: core.StringPtr(bucketID),
-		Body: body,
+		Body:     body,
 	}
 }
 
@@ -17390,12 +18508,12 @@ type UpdateColumnOptions struct {
 // NewUpdateColumnOptions : Instantiate UpdateColumnOptions
 func (*WatsonxDataV2) NewUpdateColumnOptions(engineID string, catalogID string, schemaID string, tableID string, columnID string, body map[string]interface{}) *UpdateColumnOptions {
 	return &UpdateColumnOptions{
-		EngineID: core.StringPtr(engineID),
+		EngineID:  core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
-		SchemaID: core.StringPtr(schemaID),
-		TableID: core.StringPtr(tableID),
-		ColumnID: core.StringPtr(columnID),
-		Body: body,
+		SchemaID:  core.StringPtr(schemaID),
+		TableID:   core.StringPtr(tableID),
+		ColumnID:  core.StringPtr(columnID),
+		Body:      body,
 	}
 }
 
@@ -17466,7 +18584,7 @@ type UpdateDatabaseOptions struct {
 func (*WatsonxDataV2) NewUpdateDatabaseOptions(databaseID string, body map[string]interface{}) *UpdateDatabaseOptions {
 	return &UpdateDatabaseOptions{
 		DatabaseID: core.StringPtr(databaseID),
-		Body: body,
+		Body:       body,
 	}
 }
 
@@ -17513,7 +18631,7 @@ type UpdateDb2EngineOptions struct {
 func (*WatsonxDataV2) NewUpdateDb2EngineOptions(engineID string, body map[string]interface{}) *UpdateDb2EngineOptions {
 	return &UpdateDb2EngineOptions{
 		EngineID: core.StringPtr(engineID),
-		Body: body,
+		Body:     body,
 	}
 }
 
@@ -17560,7 +18678,7 @@ type UpdateMilvusServiceOptions struct {
 func (*WatsonxDataV2) NewUpdateMilvusServiceOptions(serviceID string, body map[string]interface{}) *UpdateMilvusServiceOptions {
 	return &UpdateMilvusServiceOptions{
 		ServiceID: core.StringPtr(serviceID),
-		Body: body,
+		Body:      body,
 	}
 }
 
@@ -17607,7 +18725,7 @@ type UpdateNetezzaEngineOptions struct {
 func (*WatsonxDataV2) NewUpdateNetezzaEngineOptions(engineID string, body map[string]interface{}) *UpdateNetezzaEngineOptions {
 	return &UpdateNetezzaEngineOptions{
 		EngineID: core.StringPtr(engineID),
-		Body: body,
+		Body:     body,
 	}
 }
 
@@ -17654,7 +18772,7 @@ type UpdatePrestissimoEngineOptions struct {
 func (*WatsonxDataV2) NewUpdatePrestissimoEngineOptions(engineID string, body map[string]interface{}) *UpdatePrestissimoEngineOptions {
 	return &UpdatePrestissimoEngineOptions{
 		EngineID: core.StringPtr(engineID),
-		Body: body,
+		Body:     body,
 	}
 }
 
@@ -17701,7 +18819,7 @@ type UpdatePrestoEngineOptions struct {
 func (*WatsonxDataV2) NewUpdatePrestoEngineOptions(engineID string, body map[string]interface{}) *UpdatePrestoEngineOptions {
 	return &UpdatePrestoEngineOptions{
 		EngineID: core.StringPtr(engineID),
-		Body: body,
+		Body:     body,
 	}
 }
 
@@ -17848,7 +18966,7 @@ type UpdateSparkEngineOptions struct {
 func (*WatsonxDataV2) NewUpdateSparkEngineOptions(engineID string, body map[string]interface{}) *UpdateSparkEngineOptions {
 	return &UpdateSparkEngineOptions{
 		EngineID: core.StringPtr(engineID),
-		Body: body,
+		Body:     body,
 	}
 }
 
@@ -17913,7 +19031,7 @@ type UpdateSyncCatalogOptions struct {
 func (*WatsonxDataV2) NewUpdateSyncCatalogOptions(catalogID string, body map[string]interface{}) *UpdateSyncCatalogOptions {
 	return &UpdateSyncCatalogOptions{
 		CatalogID: core.StringPtr(catalogID),
-		Body: body,
+		Body:      body,
 	}
 }
 
@@ -17939,98 +19057,4 @@ func (_options *UpdateSyncCatalogOptions) SetAuthInstanceID(authInstanceID strin
 func (options *UpdateSyncCatalogOptions) SetHeaders(param map[string]string) *UpdateSyncCatalogOptions {
 	options.Headers = param
 	return options
-}
-
-//
-// IngestionJobsPager can be used to simplify the use of the "ListIngestionJobs" method.
-//
-type IngestionJobsPager struct {
-	hasNext bool
-	options *ListIngestionJobsOptions
-	client  *WatsonxDataV2
-	pageContext struct {
-		next *string
-	}
-}
-
-// NewIngestionJobsPager returns a new IngestionJobsPager instance.
-func (watsonxData *WatsonxDataV2) NewIngestionJobsPager(options *ListIngestionJobsOptions) (pager *IngestionJobsPager, err error) {
-	if options.Start != nil && *options.Start != "" {
-		err = core.SDKErrorf(nil, "the 'options.Start' field should not be set", "no-query-setting", common.GetComponentInfo())
-		return
-	}
-
-	var optionsCopy ListIngestionJobsOptions = *options
-	pager = &IngestionJobsPager{
-		hasNext: true,
-		options: &optionsCopy,
-		client:  watsonxData,
-	}
-	return
-}
-
-// HasNext returns true if there are potentially more results to be retrieved.
-func (pager *IngestionJobsPager) HasNext() bool {
-	return pager.hasNext
-}
-
-// GetNextWithContext returns the next page of results using the specified Context.
-func (pager *IngestionJobsPager) GetNextWithContext(ctx context.Context) (page []IngestionJob, err error) {
-	if !pager.HasNext() {
-		return nil, fmt.Errorf("no more results available")
-	}
-
-	pager.options.Start = pager.pageContext.next
-
-	result, _, err := pager.client.ListIngestionJobsWithContext(ctx, pager.options)
-	if err != nil {
-		err = core.RepurposeSDKProblem(err, "error-getting-next-page")
-		return
-	}
-
-	var next *string
-	if result.Next != nil {
-		var start *string
-		start, err = core.GetQueryParam(result.Next.Href, "start")
-		if err != nil {
-			errMsg := fmt.Sprintf("error retrieving 'start' query parameter from URL '%s': %s", *result.Next.Href, err.Error())
-			err = core.SDKErrorf(err, errMsg, "get-query-error", common.GetComponentInfo())
-			return
-		}
-		next = start
-	}
-	pager.pageContext.next = next
-	pager.hasNext = (pager.pageContext.next != nil)
-	page = result.IngestionJobs
-
-	return
-}
-
-// GetAllWithContext returns all results by invoking GetNextWithContext() repeatedly
-// until all pages of results have been retrieved.
-func (pager *IngestionJobsPager) GetAllWithContext(ctx context.Context) (allItems []IngestionJob, err error) {
-	for pager.HasNext() {
-		var nextPage []IngestionJob
-		nextPage, err = pager.GetNextWithContext(ctx)
-		if err != nil {
-			err = core.RepurposeSDKProblem(err, "error-getting-next-page")
-			return
-		}
-		allItems = append(allItems, nextPage...)
-	}
-	return
-}
-
-// GetNext invokes GetNextWithContext() using context.Background() as the Context parameter.
-func (pager *IngestionJobsPager) GetNext() (page []IngestionJob, err error) {
-	page, err = pager.GetNextWithContext(context.Background())
-	err = core.RepurposeSDKProblem(err, "")
-	return
-}
-
-// GetAll invokes GetAllWithContext() using context.Background() as the Context parameter.
-func (pager *IngestionJobsPager) GetAll() (allItems []IngestionJob, err error) {
-	allItems, err = pager.GetAllWithContext(context.Background())
-	err = core.RepurposeSDKProblem(err, "")
-	return
 }
