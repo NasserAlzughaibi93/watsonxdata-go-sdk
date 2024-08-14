@@ -279,9 +279,6 @@ func (watsonxData *WatsonxDataV2) CreateBucketRegistrationWithContext(ctx contex
 	}
 
 	body := make(map[string]interface{})
-	if createBucketRegistrationOptions.BucketDetails != nil {
-		body["bucket_details"] = createBucketRegistrationOptions.BucketDetails
-	}
 	if createBucketRegistrationOptions.BucketType != nil {
 		body["bucket_type"] = createBucketRegistrationOptions.BucketType
 	}
@@ -294,11 +291,17 @@ func (watsonxData *WatsonxDataV2) CreateBucketRegistrationWithContext(ctx contex
 	if createBucketRegistrationOptions.AssociatedCatalog != nil {
 		body["associated_catalog"] = createBucketRegistrationOptions.AssociatedCatalog
 	}
+	if createBucketRegistrationOptions.BucketDetails != nil {
+		body["bucket_details"] = createBucketRegistrationOptions.BucketDetails
+	}
 	if createBucketRegistrationOptions.BucketDisplayName != nil {
 		body["bucket_display_name"] = createBucketRegistrationOptions.BucketDisplayName
 	}
 	if createBucketRegistrationOptions.Region != nil {
 		body["region"] = createBucketRegistrationOptions.Region
+	}
+	if createBucketRegistrationOptions.StorageDetails != nil {
+		body["storage_details"] = createBucketRegistrationOptions.StorageDetails
 	}
 	if createBucketRegistrationOptions.Tags != nil {
 		body["tags"] = createBucketRegistrationOptions.Tags
@@ -406,29 +409,29 @@ func (watsonxData *WatsonxDataV2) GetBucketRegistrationWithContext(ctx context.C
 	return
 }
 
-// DeregisterBucket : Deregister Bucket
+// DeleteBucketRegistration : Deregister Bucket
 // Deregister a bucket.
-func (watsonxData *WatsonxDataV2) DeregisterBucket(deregisterBucketOptions *DeregisterBucketOptions) (response *core.DetailedResponse, err error) {
-	response, err = watsonxData.DeregisterBucketWithContext(context.Background(), deregisterBucketOptions)
+func (watsonxData *WatsonxDataV2) DeleteBucketRegistration(deleteBucketRegistrationOptions *DeleteBucketRegistrationOptions) (response *core.DetailedResponse, err error) {
+	response, err = watsonxData.DeleteBucketRegistrationWithContext(context.Background(), deleteBucketRegistrationOptions)
 	err = core.RepurposeSDKProblem(err, "")
 	return
 }
 
-// DeregisterBucketWithContext is an alternate form of the DeregisterBucket method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) DeregisterBucketWithContext(ctx context.Context, deregisterBucketOptions *DeregisterBucketOptions) (response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(deregisterBucketOptions, "deregisterBucketOptions cannot be nil")
+// DeleteBucketRegistrationWithContext is an alternate form of the DeleteBucketRegistration method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) DeleteBucketRegistrationWithContext(ctx context.Context, deleteBucketRegistrationOptions *DeleteBucketRegistrationOptions) (response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(deleteBucketRegistrationOptions, "deleteBucketRegistrationOptions cannot be nil")
 	if err != nil {
 		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(deregisterBucketOptions, "deregisterBucketOptions")
+	err = core.ValidateStruct(deleteBucketRegistrationOptions, "deleteBucketRegistrationOptions")
 	if err != nil {
 		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"bucket_id": *deregisterBucketOptions.BucketID,
+		"bucket_id": *deleteBucketRegistrationOptions.BucketID,
 	}
 
 	builder := core.NewRequestBuilder(core.DELETE)
@@ -440,16 +443,16 @@ func (watsonxData *WatsonxDataV2) DeregisterBucketWithContext(ctx context.Contex
 		return
 	}
 
-	for headerName, headerValue := range deregisterBucketOptions.Headers {
+	for headerName, headerValue := range deleteBucketRegistrationOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "DeregisterBucket")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "DeleteBucketRegistration")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
-	if deregisterBucketOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*deregisterBucketOptions.AuthInstanceID))
+	if deleteBucketRegistrationOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*deleteBucketRegistrationOptions.AuthInstanceID))
 	}
 
 	request, err := builder.Build()
@@ -460,7 +463,7 @@ func (watsonxData *WatsonxDataV2) DeregisterBucketWithContext(ctx context.Contex
 
 	response, err = watsonxData.Service.Request(request, nil)
 	if err != nil {
-		core.EnrichHTTPProblem(err, "deregister_bucket", getServiceComponentInfo())
+		core.EnrichHTTPProblem(err, "delete_bucket_registration", getServiceComponentInfo())
 		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
@@ -728,6 +731,10 @@ func (watsonxData *WatsonxDataV2) ListBucketObjectsWithContext(ctx context.Conte
 		builder.AddHeader("AuthInstanceId", fmt.Sprint(*listBucketObjectsOptions.AuthInstanceID))
 	}
 
+	if listBucketObjectsOptions.Path != nil {
+		builder.AddQuery("path", fmt.Sprint(*listBucketObjectsOptions.Path))
+	}
+
 	request, err := builder.Build()
 	if err != nil {
 		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
@@ -743,6 +750,193 @@ func (watsonxData *WatsonxDataV2) ListBucketObjectsWithContext(ctx context.Conte
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalBucketRegistrationObjectCollection)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// GetBucketObjectProperties : Get bucket object properties
+// Get bucket object properties.
+func (watsonxData *WatsonxDataV2) GetBucketObjectProperties(getBucketObjectPropertiesOptions *GetBucketObjectPropertiesOptions) (result *BucketObjectProperties, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.GetBucketObjectPropertiesWithContext(context.Background(), getBucketObjectPropertiesOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetBucketObjectPropertiesWithContext is an alternate form of the GetBucketObjectProperties method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) GetBucketObjectPropertiesWithContext(ctx context.Context, getBucketObjectPropertiesOptions *GetBucketObjectPropertiesOptions) (result *BucketObjectProperties, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(getBucketObjectPropertiesOptions, "getBucketObjectPropertiesOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(getBucketObjectPropertiesOptions, "getBucketObjectPropertiesOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"bucket_id": *getBucketObjectPropertiesOptions.BucketID,
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/bucket_registrations/{bucket_id}/object_properties`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range getBucketObjectPropertiesOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "GetBucketObjectProperties")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+	if getBucketObjectPropertiesOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*getBucketObjectPropertiesOptions.AuthInstanceID))
+	}
+
+	body := make(map[string]interface{})
+	if getBucketObjectPropertiesOptions.Paths != nil {
+		body["paths"] = getBucketObjectPropertiesOptions.Paths
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "get_bucket_object_properties", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalBucketObjectProperties)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// CreateHdfsStorage : Add/Create HDFS storage
+// Add or create a new HDFS database.
+func (watsonxData *WatsonxDataV2) CreateHdfsStorage(createHdfsStorageOptions *CreateHdfsStorageOptions) (result *HdfsStorageRegistration, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.CreateHdfsStorageWithContext(context.Background(), createHdfsStorageOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreateHdfsStorageWithContext is an alternate form of the CreateHdfsStorage method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreateHdfsStorageWithContext(ctx context.Context, createHdfsStorageOptions *CreateHdfsStorageOptions) (result *HdfsStorageRegistration, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createHdfsStorageOptions, "createHdfsStorageOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createHdfsStorageOptions, "createHdfsStorageOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/storage_hdfs_registrations`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range createHdfsStorageOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateHdfsStorage")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if createHdfsStorageOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createHdfsStorageOptions.AuthInstanceID))
+	}
+
+	builder.AddFormData("bucket_display_name", "", "", fmt.Sprint(*createHdfsStorageOptions.BucketDisplayName))
+	builder.AddFormData("bucket_type", "", "", fmt.Sprint(*createHdfsStorageOptions.BucketType))
+	builder.AddFormData("hms_thrift_uri", "", "", fmt.Sprint(*createHdfsStorageOptions.HmsThriftURI))
+	builder.AddFormData("hms_thrift_port", "", "", fmt.Sprint(*createHdfsStorageOptions.HmsThriftPort))
+	builder.AddFormData("core_site", "", "", fmt.Sprint(*createHdfsStorageOptions.CoreSite))
+	builder.AddFormData("hdfs_site", "", "", fmt.Sprint(*createHdfsStorageOptions.HdfsSite))
+	builder.AddFormData("kerberos", "", "", fmt.Sprint(*createHdfsStorageOptions.Kerberos))
+	builder.AddFormData("catalog_name", "", "", fmt.Sprint(*createHdfsStorageOptions.CatalogName))
+	builder.AddFormData("catalog_type", "", "", fmt.Sprint(*createHdfsStorageOptions.CatalogType))
+	if createHdfsStorageOptions.Krb5Config != nil {
+		builder.AddFormData("krb5_config", "", "", fmt.Sprint(*createHdfsStorageOptions.Krb5Config))
+	}
+	if createHdfsStorageOptions.HiveKeytab != nil {
+		builder.AddFormData("hive_keytab", "filename",
+			core.StringNilMapper(createHdfsStorageOptions.HiveKeytabContentType), createHdfsStorageOptions.HiveKeytab)
+	}
+	if createHdfsStorageOptions.HdfsKeytab != nil {
+		builder.AddFormData("hdfs_keytab", "filename",
+			core.StringNilMapper(createHdfsStorageOptions.HdfsKeytabContentType), createHdfsStorageOptions.HdfsKeytab)
+	}
+	if createHdfsStorageOptions.HiveServerPrincipal != nil {
+		builder.AddFormData("hive_server_principal", "", "", fmt.Sprint(*createHdfsStorageOptions.HiveServerPrincipal))
+	}
+	if createHdfsStorageOptions.HiveClientPrincipal != nil {
+		builder.AddFormData("hive_client_principal", "", "", fmt.Sprint(*createHdfsStorageOptions.HiveClientPrincipal))
+	}
+	if createHdfsStorageOptions.HdfsPrincipal != nil {
+		builder.AddFormData("hdfs_principal", "", "", fmt.Sprint(*createHdfsStorageOptions.HdfsPrincipal))
+	}
+	if createHdfsStorageOptions.Description != nil {
+		builder.AddFormData("description", "", "", fmt.Sprint(*createHdfsStorageOptions.Description))
+	}
+	if createHdfsStorageOptions.CreatedOn != nil {
+		builder.AddFormData("created_on", "", "", fmt.Sprint(*createHdfsStorageOptions.CreatedOn))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_hdfs_storage", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalHdfsStorageRegistration)
 		if err != nil {
 			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
@@ -1129,6 +1323,350 @@ func (watsonxData *WatsonxDataV2) UpdateDatabaseWithContext(ctx context.Context,
 	return
 }
 
+// ListDriverRegistration : Get drivers
+// Get all driver details.
+func (watsonxData *WatsonxDataV2) ListDriverRegistration(listDriverRegistrationOptions *ListDriverRegistrationOptions) (result *DriverRegistrationCollection, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.ListDriverRegistrationWithContext(context.Background(), listDriverRegistrationOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// ListDriverRegistrationWithContext is an alternate form of the ListDriverRegistration method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) ListDriverRegistrationWithContext(ctx context.Context, listDriverRegistrationOptions *ListDriverRegistrationOptions) (result *DriverRegistrationCollection, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(listDriverRegistrationOptions, "listDriverRegistrationOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/driver_registrations`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range listDriverRegistrationOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "ListDriverRegistration")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if listDriverRegistrationOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*listDriverRegistrationOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "list_driver_registration", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalDriverRegistrationCollection)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// CreateDriverRegistration : Register driver
+// Register a new driver.
+func (watsonxData *WatsonxDataV2) CreateDriverRegistration(createDriverRegistrationOptions *CreateDriverRegistrationOptions) (result *DriverRegistration, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.CreateDriverRegistrationWithContext(context.Background(), createDriverRegistrationOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreateDriverRegistrationWithContext is an alternate form of the CreateDriverRegistration method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreateDriverRegistrationWithContext(ctx context.Context, createDriverRegistrationOptions *CreateDriverRegistrationOptions) (result *DriverRegistration, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createDriverRegistrationOptions, "createDriverRegistrationOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createDriverRegistrationOptions, "createDriverRegistrationOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/driver_registrations`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range createDriverRegistrationOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateDriverRegistration")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if createDriverRegistrationOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createDriverRegistrationOptions.AuthInstanceID))
+	}
+
+	builder.AddFormData("driver", "filename",
+		core.StringNilMapper(createDriverRegistrationOptions.DriverContentType), createDriverRegistrationOptions.Driver)
+	builder.AddFormData("driver_name", "", "", fmt.Sprint(*createDriverRegistrationOptions.DriverName))
+	builder.AddFormData("connection_type", "", "", fmt.Sprint(*createDriverRegistrationOptions.ConnectionType))
+	if createDriverRegistrationOptions.Version != nil {
+		builder.AddFormData("version", "", "", fmt.Sprint(*createDriverRegistrationOptions.Version))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_driver_registration", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalDriverRegistration)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// DeleteDriverRegistration : Delete driver
+// Delete a driver.
+func (watsonxData *WatsonxDataV2) DeleteDriverRegistration(deleteDriverRegistrationOptions *DeleteDriverRegistrationOptions) (response *core.DetailedResponse, err error) {
+	response, err = watsonxData.DeleteDriverRegistrationWithContext(context.Background(), deleteDriverRegistrationOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// DeleteDriverRegistrationWithContext is an alternate form of the DeleteDriverRegistration method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) DeleteDriverRegistrationWithContext(ctx context.Context, deleteDriverRegistrationOptions *DeleteDriverRegistrationOptions) (response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(deleteDriverRegistrationOptions, "deleteDriverRegistrationOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(deleteDriverRegistrationOptions, "deleteDriverRegistrationOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"driver_id": *deleteDriverRegistrationOptions.DriverID,
+	}
+
+	builder := core.NewRequestBuilder(core.DELETE)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/driver_registrations/{driver_id}`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range deleteDriverRegistrationOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "DeleteDriverRegistration")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	if deleteDriverRegistrationOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*deleteDriverRegistrationOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_driver_registration", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+
+	return
+}
+
+// DeleteDriverEngines : Disassociate engines from driver
+// Disassociate one or more engines from a driver.
+func (watsonxData *WatsonxDataV2) DeleteDriverEngines(deleteDriverEnginesOptions *DeleteDriverEnginesOptions) (response *core.DetailedResponse, err error) {
+	response, err = watsonxData.DeleteDriverEnginesWithContext(context.Background(), deleteDriverEnginesOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// DeleteDriverEnginesWithContext is an alternate form of the DeleteDriverEngines method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) DeleteDriverEnginesWithContext(ctx context.Context, deleteDriverEnginesOptions *DeleteDriverEnginesOptions) (response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(deleteDriverEnginesOptions, "deleteDriverEnginesOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(deleteDriverEnginesOptions, "deleteDriverEnginesOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"driver_id": *deleteDriverEnginesOptions.DriverID,
+	}
+
+	builder := core.NewRequestBuilder(core.DELETE)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/driver_registrations/{driver_id}/engines`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range deleteDriverEnginesOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "DeleteDriverEngines")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	if deleteDriverEnginesOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*deleteDriverEnginesOptions.AuthInstanceID))
+	}
+
+	builder.AddQuery("engine_ids", fmt.Sprint(*deleteDriverEnginesOptions.EngineIds))
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_driver_engines", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+
+	return
+}
+
+// UpdateDriverEngines : Associate engines to driver
+// Associate one or more engines to a driver.
+func (watsonxData *WatsonxDataV2) UpdateDriverEngines(updateDriverEnginesOptions *UpdateDriverEnginesOptions) (result *DriverRegistrationEngine, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.UpdateDriverEnginesWithContext(context.Background(), updateDriverEnginesOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// UpdateDriverEnginesWithContext is an alternate form of the UpdateDriverEngines method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) UpdateDriverEnginesWithContext(ctx context.Context, updateDriverEnginesOptions *UpdateDriverEnginesOptions) (result *DriverRegistrationEngine, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(updateDriverEnginesOptions, "updateDriverEnginesOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(updateDriverEnginesOptions, "updateDriverEnginesOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"driver_id": *updateDriverEnginesOptions.DriverID,
+	}
+
+	builder := core.NewRequestBuilder(core.PATCH)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/driver_registrations/{driver_id}/engines`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range updateDriverEnginesOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "UpdateDriverEngines")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/merge-patch+json")
+	if updateDriverEnginesOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*updateDriverEnginesOptions.AuthInstanceID))
+	}
+
+	_, err = builder.SetBodyContentJSON(updateDriverEnginesOptions.Body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "update_driver_engines", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalDriverRegistrationEngine)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
 // ListOtherEngines : List other engines
 // list all other engine details.
 func (watsonxData *WatsonxDataV2) ListOtherEngines(listOtherEnginesOptions *ListOtherEnginesOptions) (result *OtherEngineCollection, response *core.DetailedResponse, err error) {
@@ -1252,9 +1790,6 @@ func (watsonxData *WatsonxDataV2) CreateOtherEngineWithContext(ctx context.Conte
 	if createOtherEngineOptions.Tags != nil {
 		body["tags"] = createOtherEngineOptions.Tags
 	}
-	if createOtherEngineOptions.Type != nil {
-		body["type"] = createOtherEngineOptions.Type
-	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
@@ -1343,6 +1878,395 @@ func (watsonxData *WatsonxDataV2) DeleteOtherEngineWithContext(ctx context.Conte
 		core.EnrichHTTPProblem(err, "delete_other_engine", getServiceComponentInfo())
 		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
+	}
+
+	return
+}
+
+// ListAllIntegrations : Get all existing Integrations
+// Get all existing Integrations.
+func (watsonxData *WatsonxDataV2) ListAllIntegrations(listAllIntegrationsOptions *ListAllIntegrationsOptions) (result *IntegrationCollection, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.ListAllIntegrationsWithContext(context.Background(), listAllIntegrationsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// ListAllIntegrationsWithContext is an alternate form of the ListAllIntegrations method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) ListAllIntegrationsWithContext(ctx context.Context, listAllIntegrationsOptions *ListAllIntegrationsOptions) (result *IntegrationCollection, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(listAllIntegrationsOptions, "listAllIntegrationsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/integrations`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range listAllIntegrationsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "ListAllIntegrations")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if listAllIntegrationsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*listAllIntegrationsOptions.AuthInstanceID))
+	}
+	if listAllIntegrationsOptions.Secret != nil {
+		builder.AddHeader("Secret", fmt.Sprint(*listAllIntegrationsOptions.Secret))
+	}
+
+	if listAllIntegrationsOptions.ServiceType != nil {
+		builder.AddQuery("service_type", fmt.Sprint(*listAllIntegrationsOptions.ServiceType))
+	}
+	if listAllIntegrationsOptions.State != nil {
+		builder.AddQuery("state", strings.Join(listAllIntegrationsOptions.State, ","))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "list_all_integrations", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalIntegrationCollection)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// CreateIntegration : To register an integration
+// To register an integration.
+func (watsonxData *WatsonxDataV2) CreateIntegration(createIntegrationOptions *CreateIntegrationOptions) (result *Integration, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.CreateIntegrationWithContext(context.Background(), createIntegrationOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreateIntegrationWithContext is an alternate form of the CreateIntegration method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreateIntegrationWithContext(ctx context.Context, createIntegrationOptions *CreateIntegrationOptions) (result *Integration, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createIntegrationOptions, "createIntegrationOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createIntegrationOptions, "createIntegrationOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/integrations`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range createIntegrationOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateIntegration")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+	if createIntegrationOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createIntegrationOptions.AuthInstanceID))
+	}
+
+	body := make(map[string]interface{})
+	if createIntegrationOptions.Apikey != nil {
+		body["apikey"] = createIntegrationOptions.Apikey
+	}
+	if createIntegrationOptions.EnableDataPolicyWithinWxd != nil {
+		body["enable_data_policy_within_wxd"] = createIntegrationOptions.EnableDataPolicyWithinWxd
+	}
+	if createIntegrationOptions.Password != nil {
+		body["password"] = createIntegrationOptions.Password
+	}
+	if createIntegrationOptions.Resource != nil {
+		body["resource"] = createIntegrationOptions.Resource
+	}
+	if createIntegrationOptions.ServiceType != nil {
+		body["service_type"] = createIntegrationOptions.ServiceType
+	}
+	if createIntegrationOptions.StorageCatalogs != nil {
+		body["storage_catalogs"] = createIntegrationOptions.StorageCatalogs
+	}
+	if createIntegrationOptions.URL != nil {
+		body["url"] = createIntegrationOptions.URL
+	}
+	if createIntegrationOptions.Username != nil {
+		body["username"] = createIntegrationOptions.Username
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_integration", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalIntegration)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// GetIntegrations : Get an Integration
+// Get an Integration.
+func (watsonxData *WatsonxDataV2) GetIntegrations(getIntegrationsOptions *GetIntegrationsOptions) (result *Integration, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.GetIntegrationsWithContext(context.Background(), getIntegrationsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetIntegrationsWithContext is an alternate form of the GetIntegrations method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) GetIntegrationsWithContext(ctx context.Context, getIntegrationsOptions *GetIntegrationsOptions) (result *Integration, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(getIntegrationsOptions, "getIntegrationsOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(getIntegrationsOptions, "getIntegrationsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"integration_id": *getIntegrationsOptions.IntegrationID,
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/integrations/{integration_id}`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range getIntegrationsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "GetIntegrations")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if getIntegrationsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*getIntegrationsOptions.AuthInstanceID))
+	}
+	if getIntegrationsOptions.Secret != nil {
+		builder.AddHeader("Secret", fmt.Sprint(*getIntegrationsOptions.Secret))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "get_integrations", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalIntegration)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// DeleteIntegration : Remove an Integration
+// Remove an Integration.
+func (watsonxData *WatsonxDataV2) DeleteIntegration(deleteIntegrationOptions *DeleteIntegrationOptions) (response *core.DetailedResponse, err error) {
+	response, err = watsonxData.DeleteIntegrationWithContext(context.Background(), deleteIntegrationOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// DeleteIntegrationWithContext is an alternate form of the DeleteIntegration method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) DeleteIntegrationWithContext(ctx context.Context, deleteIntegrationOptions *DeleteIntegrationOptions) (response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(deleteIntegrationOptions, "deleteIntegrationOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(deleteIntegrationOptions, "deleteIntegrationOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"integration_id": *deleteIntegrationOptions.IntegrationID,
+	}
+
+	builder := core.NewRequestBuilder(core.DELETE)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/integrations/{integration_id}`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range deleteIntegrationOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "DeleteIntegration")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	if deleteIntegrationOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*deleteIntegrationOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_integration", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+
+	return
+}
+
+// UpdateIntegration : Update an existing Integration
+// Update an existing Integration.
+func (watsonxData *WatsonxDataV2) UpdateIntegration(updateIntegrationOptions *UpdateIntegrationOptions) (result *Integration, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.UpdateIntegrationWithContext(context.Background(), updateIntegrationOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// UpdateIntegrationWithContext is an alternate form of the UpdateIntegration method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) UpdateIntegrationWithContext(ctx context.Context, updateIntegrationOptions *UpdateIntegrationOptions) (result *Integration, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(updateIntegrationOptions, "updateIntegrationOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(updateIntegrationOptions, "updateIntegrationOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"integration_id": *updateIntegrationOptions.IntegrationID,
+	}
+
+	builder := core.NewRequestBuilder(core.PATCH)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/integrations/{integration_id}`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range updateIntegrationOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "UpdateIntegration")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/merge-patch+json")
+	if updateIntegrationOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*updateIntegrationOptions.AuthInstanceID))
+	}
+
+	_, err = builder.SetBodyContentJSON(updateIntegrationOptions.IntegrationPatch)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "update_integration", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalIntegration)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
 	}
 
 	return
@@ -1938,6 +2862,95 @@ func (watsonxData *WatsonxDataV2) UpdateNetezzaEngineWithContext(ctx context.Con
 	return
 }
 
+// CreateExecuteQuery : Execute a query
+// Execute a query.
+func (watsonxData *WatsonxDataV2) CreateExecuteQuery(createExecuteQueryOptions *CreateExecuteQueryOptions) (result *ExecuteQueryCreatedBody, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.CreateExecuteQueryWithContext(context.Background(), createExecuteQueryOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreateExecuteQueryWithContext is an alternate form of the CreateExecuteQuery method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreateExecuteQueryWithContext(ctx context.Context, createExecuteQueryOptions *CreateExecuteQueryOptions) (result *ExecuteQueryCreatedBody, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createExecuteQueryOptions, "createExecuteQueryOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createExecuteQueryOptions, "createExecuteQueryOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"engine_id": *createExecuteQueryOptions.EngineID,
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/queries/execute/{engine_id}`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range createExecuteQueryOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateExecuteQuery")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+	if createExecuteQueryOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createExecuteQueryOptions.AuthInstanceID))
+	}
+
+	body := make(map[string]interface{})
+	if createExecuteQueryOptions.SqlString != nil {
+		body["sql_string"] = createExecuteQueryOptions.SqlString
+	}
+	if createExecuteQueryOptions.CatalogName != nil {
+		body["catalog_name"] = createExecuteQueryOptions.CatalogName
+	}
+	if createExecuteQueryOptions.SchemaName != nil {
+		body["schema_name"] = createExecuteQueryOptions.SchemaName
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_execute_query", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalExecuteQueryCreatedBody)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
 // ListPrestissimoEngines : Get list of prestissimo engines
 // Get list of all prestissimo engines.
 func (watsonxData *WatsonxDataV2) ListPrestissimoEngines(listPrestissimoEnginesOptions *ListPrestissimoEnginesOptions) (result *PrestissimoEngineCollection, response *core.DetailedResponse, err error) {
@@ -2386,29 +3399,29 @@ func (watsonxData *WatsonxDataV2) ListPrestissimoEngineCatalogsWithContext(ctx c
 	return
 }
 
-// AddPrestissimoEngineCatalogs : Associate catalogs to a prestissimo engine
+// CreatePrestissimoEngineCatalogs : Associate catalogs to a prestissimo engine
 // Associate one or more catalogs to a prestissimo engine.
-func (watsonxData *WatsonxDataV2) AddPrestissimoEngineCatalogs(addPrestissimoEngineCatalogsOptions *AddPrestissimoEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
-	result, response, err = watsonxData.AddPrestissimoEngineCatalogsWithContext(context.Background(), addPrestissimoEngineCatalogsOptions)
+func (watsonxData *WatsonxDataV2) CreatePrestissimoEngineCatalogs(createPrestissimoEngineCatalogsOptions *CreatePrestissimoEngineCatalogsOptions) (result *Catalog, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.CreatePrestissimoEngineCatalogsWithContext(context.Background(), createPrestissimoEngineCatalogsOptions)
 	err = core.RepurposeSDKProblem(err, "")
 	return
 }
 
-// AddPrestissimoEngineCatalogsWithContext is an alternate form of the AddPrestissimoEngineCatalogs method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) AddPrestissimoEngineCatalogsWithContext(ctx context.Context, addPrestissimoEngineCatalogsOptions *AddPrestissimoEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(addPrestissimoEngineCatalogsOptions, "addPrestissimoEngineCatalogsOptions cannot be nil")
+// CreatePrestissimoEngineCatalogsWithContext is an alternate form of the CreatePrestissimoEngineCatalogs method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreatePrestissimoEngineCatalogsWithContext(ctx context.Context, createPrestissimoEngineCatalogsOptions *CreatePrestissimoEngineCatalogsOptions) (result *Catalog, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createPrestissimoEngineCatalogsOptions, "createPrestissimoEngineCatalogsOptions cannot be nil")
 	if err != nil {
 		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(addPrestissimoEngineCatalogsOptions, "addPrestissimoEngineCatalogsOptions")
+	err = core.ValidateStruct(createPrestissimoEngineCatalogsOptions, "createPrestissimoEngineCatalogsOptions")
 	if err != nil {
 		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id": *addPrestissimoEngineCatalogsOptions.EngineID,
+		"engine_id": *createPrestissimoEngineCatalogsOptions.EngineID,
 	}
 
 	builder := core.NewRequestBuilder(core.POST)
@@ -2420,23 +3433,23 @@ func (watsonxData *WatsonxDataV2) AddPrestissimoEngineCatalogsWithContext(ctx co
 		return
 	}
 
-	for headerName, headerValue := range addPrestissimoEngineCatalogsOptions.Headers {
+	for headerName, headerValue := range createPrestissimoEngineCatalogsOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "AddPrestissimoEngineCatalogs")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreatePrestissimoEngineCatalogs")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
 	builder.AddHeader("Content-Type", "application/json")
-	if addPrestissimoEngineCatalogsOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*addPrestissimoEngineCatalogsOptions.AuthInstanceID))
+	if createPrestissimoEngineCatalogsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createPrestissimoEngineCatalogsOptions.AuthInstanceID))
 	}
 
 	body := make(map[string]interface{})
-	if addPrestissimoEngineCatalogsOptions.CatalogNames != nil {
-		body["catalog_names"] = addPrestissimoEngineCatalogsOptions.CatalogNames
+	if createPrestissimoEngineCatalogsOptions.CatalogName != nil {
+		body["catalog_name"] = createPrestissimoEngineCatalogsOptions.CatalogName
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
@@ -2453,12 +3466,12 @@ func (watsonxData *WatsonxDataV2) AddPrestissimoEngineCatalogsWithContext(ctx co
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
-		core.EnrichHTTPProblem(err, "add_prestissimo_engine_catalogs", getServiceComponentInfo())
+		core.EnrichHTTPProblem(err, "create_prestissimo_engine_catalogs", getServiceComponentInfo())
 		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
-		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCatalogCollection)
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCatalog)
 		if err != nil {
 			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
@@ -2555,7 +3568,7 @@ func (watsonxData *WatsonxDataV2) GetPrestissimoEngineCatalogWithContext(ctx con
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id":  *getPrestissimoEngineCatalogOptions.EngineID,
+		"engine_id": *getPrestissimoEngineCatalogOptions.EngineID,
 		"catalog_id": *getPrestissimoEngineCatalogOptions.CatalogID,
 	}
 
@@ -3531,29 +4544,29 @@ func (watsonxData *WatsonxDataV2) ListPrestoEngineCatalogsWithContext(ctx contex
 	return
 }
 
-// AddPrestoEngineCatalogs : Associate catalogs to presto engine
+// CreatePrestoEngineCatalogs : Associate catalogs to presto engine
 // Associate one or more catalogs to a presto engine.
-func (watsonxData *WatsonxDataV2) AddPrestoEngineCatalogs(addPrestoEngineCatalogsOptions *AddPrestoEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
-	result, response, err = watsonxData.AddPrestoEngineCatalogsWithContext(context.Background(), addPrestoEngineCatalogsOptions)
+func (watsonxData *WatsonxDataV2) CreatePrestoEngineCatalogs(createPrestoEngineCatalogsOptions *CreatePrestoEngineCatalogsOptions) (result *Catalog, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.CreatePrestoEngineCatalogsWithContext(context.Background(), createPrestoEngineCatalogsOptions)
 	err = core.RepurposeSDKProblem(err, "")
 	return
 }
 
-// AddPrestoEngineCatalogsWithContext is an alternate form of the AddPrestoEngineCatalogs method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) AddPrestoEngineCatalogsWithContext(ctx context.Context, addPrestoEngineCatalogsOptions *AddPrestoEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(addPrestoEngineCatalogsOptions, "addPrestoEngineCatalogsOptions cannot be nil")
+// CreatePrestoEngineCatalogsWithContext is an alternate form of the CreatePrestoEngineCatalogs method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreatePrestoEngineCatalogsWithContext(ctx context.Context, createPrestoEngineCatalogsOptions *CreatePrestoEngineCatalogsOptions) (result *Catalog, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createPrestoEngineCatalogsOptions, "createPrestoEngineCatalogsOptions cannot be nil")
 	if err != nil {
 		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(addPrestoEngineCatalogsOptions, "addPrestoEngineCatalogsOptions")
+	err = core.ValidateStruct(createPrestoEngineCatalogsOptions, "createPrestoEngineCatalogsOptions")
 	if err != nil {
 		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id": *addPrestoEngineCatalogsOptions.EngineID,
+		"engine_id": *createPrestoEngineCatalogsOptions.EngineID,
 	}
 
 	builder := core.NewRequestBuilder(core.POST)
@@ -3565,23 +4578,23 @@ func (watsonxData *WatsonxDataV2) AddPrestoEngineCatalogsWithContext(ctx context
 		return
 	}
 
-	for headerName, headerValue := range addPrestoEngineCatalogsOptions.Headers {
+	for headerName, headerValue := range createPrestoEngineCatalogsOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "AddPrestoEngineCatalogs")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreatePrestoEngineCatalogs")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
 	builder.AddHeader("Content-Type", "application/json")
-	if addPrestoEngineCatalogsOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*addPrestoEngineCatalogsOptions.AuthInstanceID))
+	if createPrestoEngineCatalogsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createPrestoEngineCatalogsOptions.AuthInstanceID))
 	}
 
 	body := make(map[string]interface{})
-	if addPrestoEngineCatalogsOptions.CatalogNames != nil {
-		body["catalog_names"] = addPrestoEngineCatalogsOptions.CatalogNames
+	if createPrestoEngineCatalogsOptions.CatalogName != nil {
+		body["catalog_name"] = createPrestoEngineCatalogsOptions.CatalogName
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
@@ -3598,12 +4611,12 @@ func (watsonxData *WatsonxDataV2) AddPrestoEngineCatalogsWithContext(ctx context
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
-		core.EnrichHTTPProblem(err, "add_presto_engine_catalogs", getServiceComponentInfo())
+		core.EnrichHTTPProblem(err, "create_presto_engine_catalogs", getServiceComponentInfo())
 		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
-		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCatalogCollection)
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCatalog)
 		if err != nil {
 			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
@@ -3700,7 +4713,7 @@ func (watsonxData *WatsonxDataV2) GetPrestoEngineCatalogWithContext(ctx context.
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id":  *getPrestoEngineCatalogOptions.EngineID,
+		"engine_id": *getPrestoEngineCatalogOptions.EngineID,
 		"catalog_id": *getPrestoEngineCatalogOptions.CatalogID,
 	}
 
@@ -4218,6 +5231,1264 @@ func (watsonxData *WatsonxDataV2) ScalePrestoEngineWithContext(ctx context.Conte
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCreateEngineScaleCreatedBody)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// GetSalIntegration : Get SAL Integrations
+// Get SAL Integration.
+func (watsonxData *WatsonxDataV2) GetSalIntegration(getSalIntegrationOptions *GetSalIntegrationOptions) (result *SalIntegration, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.GetSalIntegrationWithContext(context.Background(), getSalIntegrationOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetSalIntegrationWithContext is an alternate form of the GetSalIntegration method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) GetSalIntegrationWithContext(ctx context.Context, getSalIntegrationOptions *GetSalIntegrationOptions) (result *SalIntegration, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(getSalIntegrationOptions, "getSalIntegrationOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/sal_integrations`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range getSalIntegrationOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "GetSalIntegration")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if getSalIntegrationOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*getSalIntegrationOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "get_sal_integration", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSalIntegration)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// CreateSalIntegration : Create sal integration with wxd
+// Add or create a new sal integration.
+func (watsonxData *WatsonxDataV2) CreateSalIntegration(createSalIntegrationOptions *CreateSalIntegrationOptions) (result *SalIntegration, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.CreateSalIntegrationWithContext(context.Background(), createSalIntegrationOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreateSalIntegrationWithContext is an alternate form of the CreateSalIntegration method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreateSalIntegrationWithContext(ctx context.Context, createSalIntegrationOptions *CreateSalIntegrationOptions) (result *SalIntegration, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createSalIntegrationOptions, "createSalIntegrationOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createSalIntegrationOptions, "createSalIntegrationOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/sal_integrations`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range createSalIntegrationOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateSalIntegration")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+	if createSalIntegrationOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createSalIntegrationOptions.AuthInstanceID))
+	}
+
+	body := make(map[string]interface{})
+	if createSalIntegrationOptions.Apikey != nil {
+		body["apikey"] = createSalIntegrationOptions.Apikey
+	}
+	if createSalIntegrationOptions.EngineID != nil {
+		body["engine_id"] = createSalIntegrationOptions.EngineID
+	}
+	if createSalIntegrationOptions.StorageResourceCrn != nil {
+		body["storage_resource_crn"] = createSalIntegrationOptions.StorageResourceCrn
+	}
+	if createSalIntegrationOptions.StorageType != nil {
+		body["storage_type"] = createSalIntegrationOptions.StorageType
+	}
+	if createSalIntegrationOptions.TrialPlan != nil {
+		body["trial_plan"] = createSalIntegrationOptions.TrialPlan
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_sal_integration", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSalIntegration)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// DeleteSalIntegration : Delete sal-wxd integration
+// Delete a sal-wxd integration.
+func (watsonxData *WatsonxDataV2) DeleteSalIntegration(deleteSalIntegrationOptions *DeleteSalIntegrationOptions) (response *core.DetailedResponse, err error) {
+	response, err = watsonxData.DeleteSalIntegrationWithContext(context.Background(), deleteSalIntegrationOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// DeleteSalIntegrationWithContext is an alternate form of the DeleteSalIntegration method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) DeleteSalIntegrationWithContext(ctx context.Context, deleteSalIntegrationOptions *DeleteSalIntegrationOptions) (response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(deleteSalIntegrationOptions, "deleteSalIntegrationOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.DELETE)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/sal_integrations`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range deleteSalIntegrationOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "DeleteSalIntegration")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "delete_sal_integration", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+
+	return
+}
+
+// UpdateSalIntegration : Update sal-wxd integration
+// Update sal-wxd integration details.
+func (watsonxData *WatsonxDataV2) UpdateSalIntegration(updateSalIntegrationOptions *UpdateSalIntegrationOptions) (result *SalIntegration, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.UpdateSalIntegrationWithContext(context.Background(), updateSalIntegrationOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// UpdateSalIntegrationWithContext is an alternate form of the UpdateSalIntegration method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) UpdateSalIntegrationWithContext(ctx context.Context, updateSalIntegrationOptions *UpdateSalIntegrationOptions) (result *SalIntegration, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(updateSalIntegrationOptions, "updateSalIntegrationOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(updateSalIntegrationOptions, "updateSalIntegrationOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.PATCH)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/sal_integrations`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range updateSalIntegrationOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "UpdateSalIntegration")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/merge-patch+json")
+	if updateSalIntegrationOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*updateSalIntegrationOptions.AuthInstanceID))
+	}
+
+	_, err = builder.SetBodyContentJSON(updateSalIntegrationOptions.Body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "update_sal_integration", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSalIntegration)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// CreateSalIntegrationEnrichment : Trigger enrichment jobs on schemas and tables
+// Trigger enrichment jobs on schemas and tables.
+func (watsonxData *WatsonxDataV2) CreateSalIntegrationEnrichment(createSalIntegrationEnrichmentOptions *CreateSalIntegrationEnrichmentOptions) (response *core.DetailedResponse, err error) {
+	response, err = watsonxData.CreateSalIntegrationEnrichmentWithContext(context.Background(), createSalIntegrationEnrichmentOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreateSalIntegrationEnrichmentWithContext is an alternate form of the CreateSalIntegrationEnrichment method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreateSalIntegrationEnrichmentWithContext(ctx context.Context, createSalIntegrationEnrichmentOptions *CreateSalIntegrationEnrichmentOptions) (response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createSalIntegrationEnrichmentOptions, "createSalIntegrationEnrichmentOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createSalIntegrationEnrichmentOptions, "createSalIntegrationEnrichmentOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/sal_integrations/enrichment`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range createSalIntegrationEnrichmentOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateSalIntegrationEnrichment")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Content-Type", "application/json")
+	if createSalIntegrationEnrichmentOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createSalIntegrationEnrichmentOptions.AuthInstanceID))
+	}
+
+	body := make(map[string]interface{})
+	if createSalIntegrationEnrichmentOptions.EnrichmentPrototype != nil {
+		body["enrichment_prototype"] = createSalIntegrationEnrichmentOptions.EnrichmentPrototype
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_sal_integration_enrichment", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+
+	return
+}
+
+// GetSalIntegrationEnrichmentAssets : Get semantic enrichment assets associated with the schema
+// Get semantic enrichment job runs associated with the schema.
+func (watsonxData *WatsonxDataV2) GetSalIntegrationEnrichmentAssets(getSalIntegrationEnrichmentAssetsOptions *GetSalIntegrationEnrichmentAssetsOptions) (result *SalIntegrationEnrichmentAssets, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.GetSalIntegrationEnrichmentAssetsWithContext(context.Background(), getSalIntegrationEnrichmentAssetsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetSalIntegrationEnrichmentAssetsWithContext is an alternate form of the GetSalIntegrationEnrichmentAssets method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) GetSalIntegrationEnrichmentAssetsWithContext(ctx context.Context, getSalIntegrationEnrichmentAssetsOptions *GetSalIntegrationEnrichmentAssetsOptions) (result *SalIntegrationEnrichmentAssets, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(getSalIntegrationEnrichmentAssetsOptions, "getSalIntegrationEnrichmentAssetsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/sal_integrations/enrichment_assets`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range getSalIntegrationEnrichmentAssetsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "GetSalIntegrationEnrichmentAssets")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if getSalIntegrationEnrichmentAssetsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*getSalIntegrationEnrichmentAssetsOptions.AuthInstanceID))
+	}
+
+	if getSalIntegrationEnrichmentAssetsOptions.ProjectID != nil {
+		builder.AddQuery("project_id", fmt.Sprint(*getSalIntegrationEnrichmentAssetsOptions.ProjectID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "get_sal_integration_enrichment_assets", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSalIntegrationEnrichmentAssets)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// GetSalIntegrationEnrichmentDataAsset : Get semantic enrichment data asset associated with the table
+// Get semantic enrichment data asset associated with the table.
+func (watsonxData *WatsonxDataV2) GetSalIntegrationEnrichmentDataAsset(getSalIntegrationEnrichmentDataAssetOptions *GetSalIntegrationEnrichmentDataAssetOptions) (result *SalIntegrationEnrichmentDataAsset, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.GetSalIntegrationEnrichmentDataAssetWithContext(context.Background(), getSalIntegrationEnrichmentDataAssetOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetSalIntegrationEnrichmentDataAssetWithContext is an alternate form of the GetSalIntegrationEnrichmentDataAsset method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) GetSalIntegrationEnrichmentDataAssetWithContext(ctx context.Context, getSalIntegrationEnrichmentDataAssetOptions *GetSalIntegrationEnrichmentDataAssetOptions) (result *SalIntegrationEnrichmentDataAsset, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(getSalIntegrationEnrichmentDataAssetOptions, "getSalIntegrationEnrichmentDataAssetOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/sal_integrations/enrichment_data_asset`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range getSalIntegrationEnrichmentDataAssetOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "GetSalIntegrationEnrichmentDataAsset")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if getSalIntegrationEnrichmentDataAssetOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*getSalIntegrationEnrichmentDataAssetOptions.AuthInstanceID))
+	}
+
+	if getSalIntegrationEnrichmentDataAssetOptions.ProjectID != nil {
+		builder.AddQuery("project_id", fmt.Sprint(*getSalIntegrationEnrichmentDataAssetOptions.ProjectID))
+	}
+	if getSalIntegrationEnrichmentDataAssetOptions.AssetID != nil {
+		builder.AddQuery("asset_id", fmt.Sprint(*getSalIntegrationEnrichmentDataAssetOptions.AssetID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "get_sal_integration_enrichment_data_asset", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSalIntegrationEnrichmentDataAsset)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// GetSalIntegrationEnrichmentJobRunLogs : Get semantic enrichment job run logs associated with the job run
+// Get semantic enrichment job run logs associated with the job run.
+func (watsonxData *WatsonxDataV2) GetSalIntegrationEnrichmentJobRunLogs(getSalIntegrationEnrichmentJobRunLogsOptions *GetSalIntegrationEnrichmentJobRunLogsOptions) (result *SalIntegrationEnrichmentJobRunLogs, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.GetSalIntegrationEnrichmentJobRunLogsWithContext(context.Background(), getSalIntegrationEnrichmentJobRunLogsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetSalIntegrationEnrichmentJobRunLogsWithContext is an alternate form of the GetSalIntegrationEnrichmentJobRunLogs method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) GetSalIntegrationEnrichmentJobRunLogsWithContext(ctx context.Context, getSalIntegrationEnrichmentJobRunLogsOptions *GetSalIntegrationEnrichmentJobRunLogsOptions) (result *SalIntegrationEnrichmentJobRunLogs, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(getSalIntegrationEnrichmentJobRunLogsOptions, "getSalIntegrationEnrichmentJobRunLogsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/sal_integrations/enrichment_job_run_logs`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range getSalIntegrationEnrichmentJobRunLogsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "GetSalIntegrationEnrichmentJobRunLogs")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if getSalIntegrationEnrichmentJobRunLogsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*getSalIntegrationEnrichmentJobRunLogsOptions.AuthInstanceID))
+	}
+
+	if getSalIntegrationEnrichmentJobRunLogsOptions.JobID != nil {
+		builder.AddQuery("job_id", fmt.Sprint(*getSalIntegrationEnrichmentJobRunLogsOptions.JobID))
+	}
+	if getSalIntegrationEnrichmentJobRunLogsOptions.JobRunID != nil {
+		builder.AddQuery("job_run_id", fmt.Sprint(*getSalIntegrationEnrichmentJobRunLogsOptions.JobRunID))
+	}
+	if getSalIntegrationEnrichmentJobRunLogsOptions.ProjectID != nil {
+		builder.AddQuery("project_id", fmt.Sprint(*getSalIntegrationEnrichmentJobRunLogsOptions.ProjectID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "get_sal_integration_enrichment_job_run_logs", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSalIntegrationEnrichmentJobRunLogs)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// GetSalIntegrationEnrichmentJobRuns : Get semantic enrichment job runs associated with the schema
+// Get semantic enrichment job runs associated with the schema.
+func (watsonxData *WatsonxDataV2) GetSalIntegrationEnrichmentJobRuns(getSalIntegrationEnrichmentJobRunsOptions *GetSalIntegrationEnrichmentJobRunsOptions) (result *SalIntegrationEnrichmentJobRun, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.GetSalIntegrationEnrichmentJobRunsWithContext(context.Background(), getSalIntegrationEnrichmentJobRunsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetSalIntegrationEnrichmentJobRunsWithContext is an alternate form of the GetSalIntegrationEnrichmentJobRuns method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) GetSalIntegrationEnrichmentJobRunsWithContext(ctx context.Context, getSalIntegrationEnrichmentJobRunsOptions *GetSalIntegrationEnrichmentJobRunsOptions) (result *SalIntegrationEnrichmentJobRun, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(getSalIntegrationEnrichmentJobRunsOptions, "getSalIntegrationEnrichmentJobRunsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/sal_integrations/enrichment_job_runs`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range getSalIntegrationEnrichmentJobRunsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "GetSalIntegrationEnrichmentJobRuns")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if getSalIntegrationEnrichmentJobRunsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*getSalIntegrationEnrichmentJobRunsOptions.AuthInstanceID))
+	}
+
+	if getSalIntegrationEnrichmentJobRunsOptions.JobID != nil {
+		builder.AddQuery("job_id", fmt.Sprint(*getSalIntegrationEnrichmentJobRunsOptions.JobID))
+	}
+	if getSalIntegrationEnrichmentJobRunsOptions.ProjectID != nil {
+		builder.AddQuery("project_id", fmt.Sprint(*getSalIntegrationEnrichmentJobRunsOptions.ProjectID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "get_sal_integration_enrichment_job_runs", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSalIntegrationEnrichmentJobRun)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// GetSalIntegrationEnrichmentJobs : Get semantic enrichment jobs associated with the schema
+// Get semantic enrichment jobs associated with the schema.
+func (watsonxData *WatsonxDataV2) GetSalIntegrationEnrichmentJobs(getSalIntegrationEnrichmentJobsOptions *GetSalIntegrationEnrichmentJobsOptions) (result *SalIntegrationEnrichmentJobs, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.GetSalIntegrationEnrichmentJobsWithContext(context.Background(), getSalIntegrationEnrichmentJobsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetSalIntegrationEnrichmentJobsWithContext is an alternate form of the GetSalIntegrationEnrichmentJobs method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) GetSalIntegrationEnrichmentJobsWithContext(ctx context.Context, getSalIntegrationEnrichmentJobsOptions *GetSalIntegrationEnrichmentJobsOptions) (result *SalIntegrationEnrichmentJobs, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(getSalIntegrationEnrichmentJobsOptions, "getSalIntegrationEnrichmentJobsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/sal_integrations/enrichment_jobs`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range getSalIntegrationEnrichmentJobsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "GetSalIntegrationEnrichmentJobs")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if getSalIntegrationEnrichmentJobsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*getSalIntegrationEnrichmentJobsOptions.AuthInstanceID))
+	}
+
+	if getSalIntegrationEnrichmentJobsOptions.WkcProjectID != nil {
+		builder.AddQuery("wkc_project_id", fmt.Sprint(*getSalIntegrationEnrichmentJobsOptions.WkcProjectID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "get_sal_integration_enrichment_jobs", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSalIntegrationEnrichmentJobs)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// GetSalIntegrationGlossaryTerms : Get list of uploaded glossary terms
+// Get list of uploaded glossary terms.
+func (watsonxData *WatsonxDataV2) GetSalIntegrationGlossaryTerms(getSalIntegrationGlossaryTermsOptions *GetSalIntegrationGlossaryTermsOptions) (result *SalIntegrationGlossaryTerms, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.GetSalIntegrationGlossaryTermsWithContext(context.Background(), getSalIntegrationGlossaryTermsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetSalIntegrationGlossaryTermsWithContext is an alternate form of the GetSalIntegrationGlossaryTerms method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) GetSalIntegrationGlossaryTermsWithContext(ctx context.Context, getSalIntegrationGlossaryTermsOptions *GetSalIntegrationGlossaryTermsOptions) (result *SalIntegrationGlossaryTerms, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(getSalIntegrationGlossaryTermsOptions, "getSalIntegrationGlossaryTermsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/sal_integrations/glossary_terms`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range getSalIntegrationGlossaryTermsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "GetSalIntegrationGlossaryTerms")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if getSalIntegrationGlossaryTermsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*getSalIntegrationGlossaryTermsOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "get_sal_integration_glossary_terms", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSalIntegrationGlossaryTerms)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// GetSalIntegrationMappings : Get wkc catalog and project mapped to the schema
+// Get wkc catalog and project mapped to the schema.
+func (watsonxData *WatsonxDataV2) GetSalIntegrationMappings(getSalIntegrationMappingsOptions *GetSalIntegrationMappingsOptions) (result *SalIntegrationMappings, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.GetSalIntegrationMappingsWithContext(context.Background(), getSalIntegrationMappingsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetSalIntegrationMappingsWithContext is an alternate form of the GetSalIntegrationMappings method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) GetSalIntegrationMappingsWithContext(ctx context.Context, getSalIntegrationMappingsOptions *GetSalIntegrationMappingsOptions) (result *SalIntegrationMappings, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(getSalIntegrationMappingsOptions, "getSalIntegrationMappingsOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(getSalIntegrationMappingsOptions, "getSalIntegrationMappingsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/sal_integrations/mappings`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range getSalIntegrationMappingsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "GetSalIntegrationMappings")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if getSalIntegrationMappingsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*getSalIntegrationMappingsOptions.AuthInstanceID))
+	}
+
+	builder.AddQuery("catalog_name", fmt.Sprint(*getSalIntegrationMappingsOptions.CatalogName))
+	builder.AddQuery("schema_name", fmt.Sprint(*getSalIntegrationMappingsOptions.SchemaName))
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "get_sal_integration_mappings", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSalIntegrationMappings)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// GetSalIntegrationEnrichmentGlobalSettings : Get metadata enrichment global settings
+// Get metadata enrichment global settings.
+func (watsonxData *WatsonxDataV2) GetSalIntegrationEnrichmentGlobalSettings(getSalIntegrationEnrichmentGlobalSettingsOptions *GetSalIntegrationEnrichmentGlobalSettingsOptions) (result *SalIntegrationEnrichmentSettings, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.GetSalIntegrationEnrichmentGlobalSettingsWithContext(context.Background(), getSalIntegrationEnrichmentGlobalSettingsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetSalIntegrationEnrichmentGlobalSettingsWithContext is an alternate form of the GetSalIntegrationEnrichmentGlobalSettings method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) GetSalIntegrationEnrichmentGlobalSettingsWithContext(ctx context.Context, getSalIntegrationEnrichmentGlobalSettingsOptions *GetSalIntegrationEnrichmentGlobalSettingsOptions) (result *SalIntegrationEnrichmentSettings, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(getSalIntegrationEnrichmentGlobalSettingsOptions, "getSalIntegrationEnrichmentGlobalSettingsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/sal_integrations/metadata_enrichment_global_settings`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range getSalIntegrationEnrichmentGlobalSettingsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "GetSalIntegrationEnrichmentGlobalSettings")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if getSalIntegrationEnrichmentGlobalSettingsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*getSalIntegrationEnrichmentGlobalSettingsOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "get_sal_integration_enrichment_global_settings", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSalIntegrationEnrichmentSettings)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// CreateSalIntegrationEnrichmentGlobalSettings : Add metadata enrichment global settings
+// Add metadata enrichment global settings.
+func (watsonxData *WatsonxDataV2) CreateSalIntegrationEnrichmentGlobalSettings(createSalIntegrationEnrichmentGlobalSettingsOptions *CreateSalIntegrationEnrichmentGlobalSettingsOptions) (result *SalIntegrationEnrichmentSettings, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.CreateSalIntegrationEnrichmentGlobalSettingsWithContext(context.Background(), createSalIntegrationEnrichmentGlobalSettingsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreateSalIntegrationEnrichmentGlobalSettingsWithContext is an alternate form of the CreateSalIntegrationEnrichmentGlobalSettings method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreateSalIntegrationEnrichmentGlobalSettingsWithContext(ctx context.Context, createSalIntegrationEnrichmentGlobalSettingsOptions *CreateSalIntegrationEnrichmentGlobalSettingsOptions) (result *SalIntegrationEnrichmentSettings, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createSalIntegrationEnrichmentGlobalSettingsOptions, "createSalIntegrationEnrichmentGlobalSettingsOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createSalIntegrationEnrichmentGlobalSettingsOptions, "createSalIntegrationEnrichmentGlobalSettingsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/sal_integrations/metadata_enrichment_global_settings`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range createSalIntegrationEnrichmentGlobalSettingsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateSalIntegrationEnrichmentGlobalSettings")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+	if createSalIntegrationEnrichmentGlobalSettingsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createSalIntegrationEnrichmentGlobalSettingsOptions.AuthInstanceID))
+	}
+
+	body := make(map[string]interface{})
+	if createSalIntegrationEnrichmentGlobalSettingsOptions.SemanticExpansion != nil {
+		body["semantic_expansion"] = createSalIntegrationEnrichmentGlobalSettingsOptions.SemanticExpansion
+	}
+	if createSalIntegrationEnrichmentGlobalSettingsOptions.TermAssignment != nil {
+		body["term_assignment"] = createSalIntegrationEnrichmentGlobalSettingsOptions.TermAssignment
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_sal_integration_enrichment_global_settings", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSalIntegrationEnrichmentSettings)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// GetSalIntegrationEnrichmentSettings : get metadata enrichment settings for a project
+// get metadata enrichment settings for a project.
+func (watsonxData *WatsonxDataV2) GetSalIntegrationEnrichmentSettings(getSalIntegrationEnrichmentSettingsOptions *GetSalIntegrationEnrichmentSettingsOptions) (result *SalIntegrationEnrichmentSettings, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.GetSalIntegrationEnrichmentSettingsWithContext(context.Background(), getSalIntegrationEnrichmentSettingsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetSalIntegrationEnrichmentSettingsWithContext is an alternate form of the GetSalIntegrationEnrichmentSettings method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) GetSalIntegrationEnrichmentSettingsWithContext(ctx context.Context, getSalIntegrationEnrichmentSettingsOptions *GetSalIntegrationEnrichmentSettingsOptions) (result *SalIntegrationEnrichmentSettings, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(getSalIntegrationEnrichmentSettingsOptions, "getSalIntegrationEnrichmentSettingsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/sal_integrations/metadata_enrichment_settings`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range getSalIntegrationEnrichmentSettingsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "GetSalIntegrationEnrichmentSettings")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if getSalIntegrationEnrichmentSettingsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*getSalIntegrationEnrichmentSettingsOptions.AuthInstanceID))
+	}
+
+	if getSalIntegrationEnrichmentSettingsOptions.ProjectID != nil {
+		builder.AddQuery("project_id", fmt.Sprint(*getSalIntegrationEnrichmentSettingsOptions.ProjectID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "get_sal_integration_enrichment_settings", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSalIntegrationEnrichmentSettings)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// CreateSalIntegrationEnrichmentSettings : Add metadata enrichment settings for a project
+// Add metadata enrichment settings for a project.
+func (watsonxData *WatsonxDataV2) CreateSalIntegrationEnrichmentSettings(createSalIntegrationEnrichmentSettingsOptions *CreateSalIntegrationEnrichmentSettingsOptions) (response *core.DetailedResponse, err error) {
+	response, err = watsonxData.CreateSalIntegrationEnrichmentSettingsWithContext(context.Background(), createSalIntegrationEnrichmentSettingsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreateSalIntegrationEnrichmentSettingsWithContext is an alternate form of the CreateSalIntegrationEnrichmentSettings method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreateSalIntegrationEnrichmentSettingsWithContext(ctx context.Context, createSalIntegrationEnrichmentSettingsOptions *CreateSalIntegrationEnrichmentSettingsOptions) (response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createSalIntegrationEnrichmentSettingsOptions, "createSalIntegrationEnrichmentSettingsOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createSalIntegrationEnrichmentSettingsOptions, "createSalIntegrationEnrichmentSettingsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/sal_integrations/metadata_enrichment_settings`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range createSalIntegrationEnrichmentSettingsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateSalIntegrationEnrichmentSettings")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Content-Type", "application/json")
+	if createSalIntegrationEnrichmentSettingsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createSalIntegrationEnrichmentSettingsOptions.AuthInstanceID))
+	}
+
+	if createSalIntegrationEnrichmentSettingsOptions.ProjectID != nil {
+		builder.AddQuery("project_id", fmt.Sprint(*createSalIntegrationEnrichmentSettingsOptions.ProjectID))
+	}
+
+	body := make(map[string]interface{})
+	if createSalIntegrationEnrichmentSettingsOptions.SemanticExpansion != nil {
+		body["semantic_expansion"] = createSalIntegrationEnrichmentSettingsOptions.SemanticExpansion
+	}
+	if createSalIntegrationEnrichmentSettingsOptions.TermAssignment != nil {
+		body["term_assignment"] = createSalIntegrationEnrichmentSettingsOptions.TermAssignment
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	response, err = watsonxData.Service.Request(request, nil)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_sal_integration_enrichment_settings", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+
+	return
+}
+
+// CreateSalIntegrationUploadGlossary : Upload semantic enrichment business terms glossary
+// Upload semantic enrichment business terms glossary.
+func (watsonxData *WatsonxDataV2) CreateSalIntegrationUploadGlossary(createSalIntegrationUploadGlossaryOptions *CreateSalIntegrationUploadGlossaryOptions) (result *SalIntegrationUploadGlossary, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.CreateSalIntegrationUploadGlossaryWithContext(context.Background(), createSalIntegrationUploadGlossaryOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreateSalIntegrationUploadGlossaryWithContext is an alternate form of the CreateSalIntegrationUploadGlossary method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreateSalIntegrationUploadGlossaryWithContext(ctx context.Context, createSalIntegrationUploadGlossaryOptions *CreateSalIntegrationUploadGlossaryOptions) (result *SalIntegrationUploadGlossary, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createSalIntegrationUploadGlossaryOptions, "createSalIntegrationUploadGlossaryOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createSalIntegrationUploadGlossaryOptions, "createSalIntegrationUploadGlossaryOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/sal_integrations/upload_glossary`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range createSalIntegrationUploadGlossaryOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateSalIntegrationUploadGlossary")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if createSalIntegrationUploadGlossaryOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createSalIntegrationUploadGlossaryOptions.AuthInstanceID))
+	}
+
+	builder.AddFormData("replace_option", "", "", fmt.Sprint(*createSalIntegrationUploadGlossaryOptions.ReplaceOption))
+	if createSalIntegrationUploadGlossaryOptions.GlossaryCsv != nil {
+		builder.AddFormData("glossary_csv", "filename",
+			core.StringNilMapper(createSalIntegrationUploadGlossaryOptions.GlossaryCsvContentType), createSalIntegrationUploadGlossaryOptions.GlossaryCsv)
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_sal_integration_upload_glossary", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSalIntegrationUploadGlossary)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// GetSalIntegrationUploadGlossaryStatus : Get status of upload glossary job
+// Get status of upload glossary job.
+func (watsonxData *WatsonxDataV2) GetSalIntegrationUploadGlossaryStatus(getSalIntegrationUploadGlossaryStatusOptions *GetSalIntegrationUploadGlossaryStatusOptions) (result *SalIntegrationUploadGlossaryStatus, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.GetSalIntegrationUploadGlossaryStatusWithContext(context.Background(), getSalIntegrationUploadGlossaryStatusOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetSalIntegrationUploadGlossaryStatusWithContext is an alternate form of the GetSalIntegrationUploadGlossaryStatus method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) GetSalIntegrationUploadGlossaryStatusWithContext(ctx context.Context, getSalIntegrationUploadGlossaryStatusOptions *GetSalIntegrationUploadGlossaryStatusOptions) (result *SalIntegrationUploadGlossaryStatus, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(getSalIntegrationUploadGlossaryStatusOptions, "getSalIntegrationUploadGlossaryStatusOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/sal_integrations/upload_glossary_status`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range getSalIntegrationUploadGlossaryStatusOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "GetSalIntegrationUploadGlossaryStatus")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if getSalIntegrationUploadGlossaryStatusOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*getSalIntegrationUploadGlossaryStatusOptions.AuthInstanceID))
+	}
+
+	if getSalIntegrationUploadGlossaryStatusOptions.ProcessID != nil {
+		builder.AddQuery("process_id", fmt.Sprint(*getSalIntegrationUploadGlossaryStatusOptions.ProcessID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "get_sal_integration_upload_glossary_status", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSalIntegrationUploadGlossaryStatus)
 		if err != nil {
 			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
@@ -4865,7 +7136,7 @@ func (watsonxData *WatsonxDataV2) GetSparkEngineApplicationStatusWithContext(ctx
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id":      *getSparkEngineApplicationStatusOptions.EngineID,
+		"engine_id": *getSparkEngineApplicationStatusOptions.EngineID,
 		"application_id": *getSparkEngineApplicationStatusOptions.ApplicationID,
 	}
 
@@ -4988,29 +7259,29 @@ func (watsonxData *WatsonxDataV2) ListSparkEngineCatalogsWithContext(ctx context
 	return
 }
 
-// AddSparkEngineCatalogs : Associate catalogs to spark engine
+// CreateSparkEngineCatalogs : Associate catalogs to spark engine
 // Associate one or more catalogs to a spark engine.
-func (watsonxData *WatsonxDataV2) AddSparkEngineCatalogs(addSparkEngineCatalogsOptions *AddSparkEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
-	result, response, err = watsonxData.AddSparkEngineCatalogsWithContext(context.Background(), addSparkEngineCatalogsOptions)
+func (watsonxData *WatsonxDataV2) CreateSparkEngineCatalogs(createSparkEngineCatalogsOptions *CreateSparkEngineCatalogsOptions) (result *Catalog, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.CreateSparkEngineCatalogsWithContext(context.Background(), createSparkEngineCatalogsOptions)
 	err = core.RepurposeSDKProblem(err, "")
 	return
 }
 
-// AddSparkEngineCatalogsWithContext is an alternate form of the AddSparkEngineCatalogs method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) AddSparkEngineCatalogsWithContext(ctx context.Context, addSparkEngineCatalogsOptions *AddSparkEngineCatalogsOptions) (result *CatalogCollection, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(addSparkEngineCatalogsOptions, "addSparkEngineCatalogsOptions cannot be nil")
+// CreateSparkEngineCatalogsWithContext is an alternate form of the CreateSparkEngineCatalogs method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreateSparkEngineCatalogsWithContext(ctx context.Context, createSparkEngineCatalogsOptions *CreateSparkEngineCatalogsOptions) (result *Catalog, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createSparkEngineCatalogsOptions, "createSparkEngineCatalogsOptions cannot be nil")
 	if err != nil {
 		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(addSparkEngineCatalogsOptions, "addSparkEngineCatalogsOptions")
+	err = core.ValidateStruct(createSparkEngineCatalogsOptions, "createSparkEngineCatalogsOptions")
 	if err != nil {
 		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id": *addSparkEngineCatalogsOptions.EngineID,
+		"engine_id": *createSparkEngineCatalogsOptions.EngineID,
 	}
 
 	builder := core.NewRequestBuilder(core.POST)
@@ -5022,23 +7293,23 @@ func (watsonxData *WatsonxDataV2) AddSparkEngineCatalogsWithContext(ctx context.
 		return
 	}
 
-	for headerName, headerValue := range addSparkEngineCatalogsOptions.Headers {
+	for headerName, headerValue := range createSparkEngineCatalogsOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "AddSparkEngineCatalogs")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateSparkEngineCatalogs")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
 	builder.AddHeader("Content-Type", "application/json")
-	if addSparkEngineCatalogsOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*addSparkEngineCatalogsOptions.AuthInstanceID))
+	if createSparkEngineCatalogsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createSparkEngineCatalogsOptions.AuthInstanceID))
 	}
 
 	body := make(map[string]interface{})
-	if addSparkEngineCatalogsOptions.CatalogNames != nil {
-		body["catalog_names"] = addSparkEngineCatalogsOptions.CatalogNames
+	if createSparkEngineCatalogsOptions.CatalogName != nil {
+		body["catalog_name"] = createSparkEngineCatalogsOptions.CatalogName
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
@@ -5055,12 +7326,12 @@ func (watsonxData *WatsonxDataV2) AddSparkEngineCatalogsWithContext(ctx context.
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
-		core.EnrichHTTPProblem(err, "add_spark_engine_catalogs", getServiceComponentInfo())
+		core.EnrichHTTPProblem(err, "create_spark_engine_catalogs", getServiceComponentInfo())
 		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
 	if rawResponse != nil {
-		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCatalogCollection)
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalCatalog)
 		if err != nil {
 			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
@@ -5157,7 +7428,7 @@ func (watsonxData *WatsonxDataV2) GetSparkEngineCatalogWithContext(ctx context.C
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id":  *getSparkEngineCatalogOptions.EngineID,
+		"engine_id": *getSparkEngineCatalogOptions.EngineID,
 		"catalog_id": *getSparkEngineCatalogOptions.CatalogID,
 	}
 
@@ -5428,29 +7699,29 @@ func (watsonxData *WatsonxDataV2) DeleteSparkEngineHistoryServerWithContext(ctx 
 	return
 }
 
-// CreateSparkEnginePause : Pause engine
+// PauseSparkEngine : Pause engine
 // Pause engine.
-func (watsonxData *WatsonxDataV2) CreateSparkEnginePause(createSparkEnginePauseOptions *CreateSparkEnginePauseOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
-	result, response, err = watsonxData.CreateSparkEnginePauseWithContext(context.Background(), createSparkEnginePauseOptions)
+func (watsonxData *WatsonxDataV2) PauseSparkEngine(pauseSparkEngineOptions *PauseSparkEngineOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.PauseSparkEngineWithContext(context.Background(), pauseSparkEngineOptions)
 	err = core.RepurposeSDKProblem(err, "")
 	return
 }
 
-// CreateSparkEnginePauseWithContext is an alternate form of the CreateSparkEnginePause method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) CreateSparkEnginePauseWithContext(ctx context.Context, createSparkEnginePauseOptions *CreateSparkEnginePauseOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(createSparkEnginePauseOptions, "createSparkEnginePauseOptions cannot be nil")
+// PauseSparkEngineWithContext is an alternate form of the PauseSparkEngine method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) PauseSparkEngineWithContext(ctx context.Context, pauseSparkEngineOptions *PauseSparkEngineOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(pauseSparkEngineOptions, "pauseSparkEngineOptions cannot be nil")
 	if err != nil {
 		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(createSparkEnginePauseOptions, "createSparkEnginePauseOptions")
+	err = core.ValidateStruct(pauseSparkEngineOptions, "pauseSparkEngineOptions")
 	if err != nil {
 		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id": *createSparkEnginePauseOptions.EngineID,
+		"engine_id": *pauseSparkEngineOptions.EngineID,
 	}
 
 	builder := core.NewRequestBuilder(core.POST)
@@ -5462,17 +7733,17 @@ func (watsonxData *WatsonxDataV2) CreateSparkEnginePauseWithContext(ctx context.
 		return
 	}
 
-	for headerName, headerValue := range createSparkEnginePauseOptions.Headers {
+	for headerName, headerValue := range pauseSparkEngineOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateSparkEnginePause")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "PauseSparkEngine")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
-	if createSparkEnginePauseOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createSparkEnginePauseOptions.AuthInstanceID))
+	if pauseSparkEngineOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*pauseSparkEngineOptions.AuthInstanceID))
 	}
 
 	request, err := builder.Build()
@@ -5484,7 +7755,7 @@ func (watsonxData *WatsonxDataV2) CreateSparkEnginePauseWithContext(ctx context.
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
-		core.EnrichHTTPProblem(err, "create_spark_engine_pause", getServiceComponentInfo())
+		core.EnrichHTTPProblem(err, "pause_spark_engine", getServiceComponentInfo())
 		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
@@ -5500,29 +7771,29 @@ func (watsonxData *WatsonxDataV2) CreateSparkEnginePauseWithContext(ctx context.
 	return
 }
 
-// CreateSparkEngineResume : Resume engine
+// ResumeSparkEngine : Resume engine
 // Resume engine.
-func (watsonxData *WatsonxDataV2) CreateSparkEngineResume(createSparkEngineResumeOptions *CreateSparkEngineResumeOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
-	result, response, err = watsonxData.CreateSparkEngineResumeWithContext(context.Background(), createSparkEngineResumeOptions)
+func (watsonxData *WatsonxDataV2) ResumeSparkEngine(resumeSparkEngineOptions *ResumeSparkEngineOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.ResumeSparkEngineWithContext(context.Background(), resumeSparkEngineOptions)
 	err = core.RepurposeSDKProblem(err, "")
 	return
 }
 
-// CreateSparkEngineResumeWithContext is an alternate form of the CreateSparkEngineResume method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) CreateSparkEngineResumeWithContext(ctx context.Context, createSparkEngineResumeOptions *CreateSparkEngineResumeOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(createSparkEngineResumeOptions, "createSparkEngineResumeOptions cannot be nil")
+// ResumeSparkEngineWithContext is an alternate form of the ResumeSparkEngine method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) ResumeSparkEngineWithContext(ctx context.Context, resumeSparkEngineOptions *ResumeSparkEngineOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(resumeSparkEngineOptions, "resumeSparkEngineOptions cannot be nil")
 	if err != nil {
 		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(createSparkEngineResumeOptions, "createSparkEngineResumeOptions")
+	err = core.ValidateStruct(resumeSparkEngineOptions, "resumeSparkEngineOptions")
 	if err != nil {
 		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id": *createSparkEngineResumeOptions.EngineID,
+		"engine_id": *resumeSparkEngineOptions.EngineID,
 	}
 
 	builder := core.NewRequestBuilder(core.POST)
@@ -5534,17 +7805,17 @@ func (watsonxData *WatsonxDataV2) CreateSparkEngineResumeWithContext(ctx context
 		return
 	}
 
-	for headerName, headerValue := range createSparkEngineResumeOptions.Headers {
+	for headerName, headerValue := range resumeSparkEngineOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateSparkEngineResume")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "ResumeSparkEngine")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
-	if createSparkEngineResumeOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createSparkEngineResumeOptions.AuthInstanceID))
+	if resumeSparkEngineOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*resumeSparkEngineOptions.AuthInstanceID))
 	}
 
 	request, err := builder.Build()
@@ -5556,7 +7827,7 @@ func (watsonxData *WatsonxDataV2) CreateSparkEngineResumeWithContext(ctx context
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
-		core.EnrichHTTPProblem(err, "create_spark_engine_resume", getServiceComponentInfo())
+		core.EnrichHTTPProblem(err, "resume_spark_engine", getServiceComponentInfo())
 		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
@@ -5572,29 +7843,29 @@ func (watsonxData *WatsonxDataV2) CreateSparkEngineResumeWithContext(ctx context
 	return
 }
 
-// CreateSparkEngineScale : Scale Spark engine
+// ScaleSparkEngine : Scale Spark engine
 // Scale Saprk engine.
-func (watsonxData *WatsonxDataV2) CreateSparkEngineScale(createSparkEngineScaleOptions *CreateSparkEngineScaleOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
-	result, response, err = watsonxData.CreateSparkEngineScaleWithContext(context.Background(), createSparkEngineScaleOptions)
+func (watsonxData *WatsonxDataV2) ScaleSparkEngine(scaleSparkEngineOptions *ScaleSparkEngineOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.ScaleSparkEngineWithContext(context.Background(), scaleSparkEngineOptions)
 	err = core.RepurposeSDKProblem(err, "")
 	return
 }
 
-// CreateSparkEngineScaleWithContext is an alternate form of the CreateSparkEngineScale method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) CreateSparkEngineScaleWithContext(ctx context.Context, createSparkEngineScaleOptions *CreateSparkEngineScaleOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(createSparkEngineScaleOptions, "createSparkEngineScaleOptions cannot be nil")
+// ScaleSparkEngineWithContext is an alternate form of the ScaleSparkEngine method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) ScaleSparkEngineWithContext(ctx context.Context, scaleSparkEngineOptions *ScaleSparkEngineOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(scaleSparkEngineOptions, "scaleSparkEngineOptions cannot be nil")
 	if err != nil {
 		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(createSparkEngineScaleOptions, "createSparkEngineScaleOptions")
+	err = core.ValidateStruct(scaleSparkEngineOptions, "scaleSparkEngineOptions")
 	if err != nil {
 		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"engine_id": *createSparkEngineScaleOptions.EngineID,
+		"engine_id": *scaleSparkEngineOptions.EngineID,
 	}
 
 	builder := core.NewRequestBuilder(core.POST)
@@ -5606,23 +7877,23 @@ func (watsonxData *WatsonxDataV2) CreateSparkEngineScaleWithContext(ctx context.
 		return
 	}
 
-	for headerName, headerValue := range createSparkEngineScaleOptions.Headers {
+	for headerName, headerValue := range scaleSparkEngineOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateSparkEngineScale")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "ScaleSparkEngine")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
 	builder.AddHeader("Content-Type", "application/json")
-	if createSparkEngineScaleOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createSparkEngineScaleOptions.AuthInstanceID))
+	if scaleSparkEngineOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*scaleSparkEngineOptions.AuthInstanceID))
 	}
 
 	body := make(map[string]interface{})
-	if createSparkEngineScaleOptions.NumberOfNodes != nil {
-		body["number_of_nodes"] = createSparkEngineScaleOptions.NumberOfNodes
+	if scaleSparkEngineOptions.NumberOfNodes != nil {
+		body["number_of_nodes"] = scaleSparkEngineOptions.NumberOfNodes
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
@@ -5639,7 +7910,7 @@ func (watsonxData *WatsonxDataV2) CreateSparkEngineScaleWithContext(ctx context.
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
-		core.EnrichHTTPProblem(err, "create_spark_engine_scale", getServiceComponentInfo())
+		core.EnrichHTTPProblem(err, "scale_spark_engine", getServiceComponentInfo())
 		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
@@ -5987,6 +8258,12 @@ func (watsonxData *WatsonxDataV2) CreateSchemaWithContext(ctx context.Context, c
 	if createSchemaOptions.BucketName != nil {
 		body["bucket_name"] = createSchemaOptions.BucketName
 	}
+	if createSchemaOptions.Hostname != nil {
+		body["hostname"] = createSchemaOptions.Hostname
+	}
+	if createSchemaOptions.Port != nil {
+		body["port"] = createSchemaOptions.Port
+	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
@@ -6041,7 +8318,7 @@ func (watsonxData *WatsonxDataV2) DeleteSchemaWithContext(ctx context.Context, d
 
 	pathParamsMap := map[string]string{
 		"catalog_id": *deleteSchemaOptions.CatalogID,
-		"schema_id":  *deleteSchemaOptions.SchemaID,
+		"schema_id": *deleteSchemaOptions.SchemaID,
 	}
 
 	builder := core.NewRequestBuilder(core.DELETE)
@@ -6106,7 +8383,7 @@ func (watsonxData *WatsonxDataV2) ListTablesWithContext(ctx context.Context, lis
 
 	pathParamsMap := map[string]string{
 		"catalog_id": *listTablesOptions.CatalogID,
-		"schema_id":  *listTablesOptions.SchemaID,
+		"schema_id": *listTablesOptions.SchemaID,
 	}
 
 	builder := core.NewRequestBuilder(core.GET)
@@ -6181,8 +8458,8 @@ func (watsonxData *WatsonxDataV2) GetTableWithContext(ctx context.Context, getTa
 
 	pathParamsMap := map[string]string{
 		"catalog_id": *getTableOptions.CatalogID,
-		"schema_id":  *getTableOptions.SchemaID,
-		"table_id":   *getTableOptions.TableID,
+		"schema_id": *getTableOptions.SchemaID,
+		"table_id": *getTableOptions.TableID,
 	}
 
 	builder := core.NewRequestBuilder(core.GET)
@@ -6208,6 +8485,9 @@ func (watsonxData *WatsonxDataV2) GetTableWithContext(ctx context.Context, getTa
 	}
 
 	builder.AddQuery("engine_id", fmt.Sprint(*getTableOptions.EngineID))
+	if getTableOptions.Type != nil {
+		builder.AddQuery("type", fmt.Sprint(*getTableOptions.Type))
+	}
 
 	request, err := builder.Build()
 	if err != nil {
@@ -6257,8 +8537,8 @@ func (watsonxData *WatsonxDataV2) DeleteTableWithContext(ctx context.Context, de
 
 	pathParamsMap := map[string]string{
 		"catalog_id": *deleteTableOptions.CatalogID,
-		"schema_id":  *deleteTableOptions.SchemaID,
-		"table_id":   *deleteTableOptions.TableID,
+		"schema_id": *deleteTableOptions.SchemaID,
+		"table_id": *deleteTableOptions.TableID,
 	}
 
 	builder := core.NewRequestBuilder(core.DELETE)
@@ -6283,6 +8563,9 @@ func (watsonxData *WatsonxDataV2) DeleteTableWithContext(ctx context.Context, de
 	}
 
 	builder.AddQuery("engine_id", fmt.Sprint(*deleteTableOptions.EngineID))
+	if deleteTableOptions.Type != nil {
+		builder.AddQuery("type", fmt.Sprint(*deleteTableOptions.Type))
+	}
 
 	request, err := builder.Build()
 	if err != nil {
@@ -6300,31 +8583,31 @@ func (watsonxData *WatsonxDataV2) DeleteTableWithContext(ctx context.Context, de
 	return
 }
 
-// RenameTable : Rename table
+// UpdateTable : Rename table
 // Rename table.
-func (watsonxData *WatsonxDataV2) RenameTable(renameTableOptions *RenameTableOptions) (result *Table, response *core.DetailedResponse, err error) {
-	result, response, err = watsonxData.RenameTableWithContext(context.Background(), renameTableOptions)
+func (watsonxData *WatsonxDataV2) UpdateTable(updateTableOptions *UpdateTableOptions) (result *Table, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.UpdateTableWithContext(context.Background(), updateTableOptions)
 	err = core.RepurposeSDKProblem(err, "")
 	return
 }
 
-// RenameTableWithContext is an alternate form of the RenameTable method which supports a Context parameter
-func (watsonxData *WatsonxDataV2) RenameTableWithContext(ctx context.Context, renameTableOptions *RenameTableOptions) (result *Table, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(renameTableOptions, "renameTableOptions cannot be nil")
+// UpdateTableWithContext is an alternate form of the UpdateTable method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) UpdateTableWithContext(ctx context.Context, updateTableOptions *UpdateTableOptions) (result *Table, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(updateTableOptions, "updateTableOptions cannot be nil")
 	if err != nil {
 		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
 		return
 	}
-	err = core.ValidateStruct(renameTableOptions, "renameTableOptions")
+	err = core.ValidateStruct(updateTableOptions, "updateTableOptions")
 	if err != nil {
 		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
 		return
 	}
 
 	pathParamsMap := map[string]string{
-		"catalog_id": *renameTableOptions.CatalogID,
-		"schema_id":  *renameTableOptions.SchemaID,
-		"table_id":   *renameTableOptions.TableID,
+		"catalog_id": *updateTableOptions.CatalogID,
+		"schema_id": *updateTableOptions.SchemaID,
+		"table_id": *updateTableOptions.TableID,
 	}
 
 	builder := core.NewRequestBuilder(core.PATCH)
@@ -6336,23 +8619,26 @@ func (watsonxData *WatsonxDataV2) RenameTableWithContext(ctx context.Context, re
 		return
 	}
 
-	for headerName, headerValue := range renameTableOptions.Headers {
+	for headerName, headerValue := range updateTableOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "RenameTable")
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "UpdateTable")
 	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
 	builder.AddHeader("Content-Type", "application/merge-patch+json")
-	if renameTableOptions.AuthInstanceID != nil {
-		builder.AddHeader("AuthInstanceId", fmt.Sprint(*renameTableOptions.AuthInstanceID))
+	if updateTableOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*updateTableOptions.AuthInstanceID))
 	}
 
-	builder.AddQuery("engine_id", fmt.Sprint(*renameTableOptions.EngineID))
+	builder.AddQuery("engine_id", fmt.Sprint(*updateTableOptions.EngineID))
+	if updateTableOptions.Type != nil {
+		builder.AddQuery("type", fmt.Sprint(*updateTableOptions.Type))
+	}
 
-	_, err = builder.SetBodyContentJSON(renameTableOptions.Body)
+	_, err = builder.SetBodyContentJSON(updateTableOptions.Body)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
 		return
@@ -6367,7 +8653,7 @@ func (watsonxData *WatsonxDataV2) RenameTableWithContext(ctx context.Context, re
 	var rawResponse map[string]json.RawMessage
 	response, err = watsonxData.Service.Request(request, &rawResponse)
 	if err != nil {
-		core.EnrichHTTPProblem(err, "rename_table", getServiceComponentInfo())
+		core.EnrichHTTPProblem(err, "update_table", getServiceComponentInfo())
 		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
 		return
 	}
@@ -6406,8 +8692,8 @@ func (watsonxData *WatsonxDataV2) ListColumnsWithContext(ctx context.Context, li
 
 	pathParamsMap := map[string]string{
 		"catalog_id": *listColumnsOptions.CatalogID,
-		"schema_id":  *listColumnsOptions.SchemaID,
-		"table_id":   *listColumnsOptions.TableID,
+		"schema_id": *listColumnsOptions.SchemaID,
+		"table_id": *listColumnsOptions.TableID,
 	}
 
 	builder := core.NewRequestBuilder(core.GET)
@@ -6482,8 +8768,8 @@ func (watsonxData *WatsonxDataV2) CreateColumnsWithContext(ctx context.Context, 
 
 	pathParamsMap := map[string]string{
 		"catalog_id": *createColumnsOptions.CatalogID,
-		"schema_id":  *createColumnsOptions.SchemaID,
-		"table_id":   *createColumnsOptions.TableID,
+		"schema_id": *createColumnsOptions.SchemaID,
+		"table_id": *createColumnsOptions.TableID,
 	}
 
 	builder := core.NewRequestBuilder(core.POST)
@@ -6569,9 +8855,9 @@ func (watsonxData *WatsonxDataV2) DeleteColumnWithContext(ctx context.Context, d
 
 	pathParamsMap := map[string]string{
 		"catalog_id": *deleteColumnOptions.CatalogID,
-		"schema_id":  *deleteColumnOptions.SchemaID,
-		"table_id":   *deleteColumnOptions.TableID,
-		"column_id":  *deleteColumnOptions.ColumnID,
+		"schema_id": *deleteColumnOptions.SchemaID,
+		"table_id": *deleteColumnOptions.TableID,
+		"column_id": *deleteColumnOptions.ColumnID,
 	}
 
 	builder := core.NewRequestBuilder(core.DELETE)
@@ -6636,9 +8922,9 @@ func (watsonxData *WatsonxDataV2) UpdateColumnWithContext(ctx context.Context, u
 
 	pathParamsMap := map[string]string{
 		"catalog_id": *updateColumnOptions.CatalogID,
-		"schema_id":  *updateColumnOptions.SchemaID,
-		"table_id":   *updateColumnOptions.TableID,
-		"column_id":  *updateColumnOptions.ColumnID,
+		"schema_id": *updateColumnOptions.SchemaID,
+		"table_id": *updateColumnOptions.TableID,
+		"column_id": *updateColumnOptions.ColumnID,
 	}
 
 	builder := core.NewRequestBuilder(core.PATCH)
@@ -6720,8 +9006,8 @@ func (watsonxData *WatsonxDataV2) ListTableSnapshotsWithContext(ctx context.Cont
 
 	pathParamsMap := map[string]string{
 		"catalog_id": *listTableSnapshotsOptions.CatalogID,
-		"schema_id":  *listTableSnapshotsOptions.SchemaID,
-		"table_id":   *listTableSnapshotsOptions.TableID,
+		"schema_id": *listTableSnapshotsOptions.SchemaID,
+		"table_id": *listTableSnapshotsOptions.TableID,
 	}
 
 	builder := core.NewRequestBuilder(core.GET)
@@ -6796,8 +9082,8 @@ func (watsonxData *WatsonxDataV2) RollbackTableWithContext(ctx context.Context, 
 
 	pathParamsMap := map[string]string{
 		"catalog_id": *rollbackTableOptions.CatalogID,
-		"schema_id":  *rollbackTableOptions.SchemaID,
-		"table_id":   *rollbackTableOptions.TableID,
+		"schema_id": *rollbackTableOptions.SchemaID,
+		"table_id": *rollbackTableOptions.TableID,
 	}
 
 	builder := core.NewRequestBuilder(core.POST)
@@ -7047,17 +9333,29 @@ func (watsonxData *WatsonxDataV2) CreateMilvusServiceWithContext(ctx context.Con
 	}
 
 	body := make(map[string]interface{})
+	if createMilvusServiceOptions.BucketName != nil {
+		body["bucket_name"] = createMilvusServiceOptions.BucketName
+	}
 	if createMilvusServiceOptions.Origin != nil {
 		body["origin"] = createMilvusServiceOptions.Origin
 	}
-	if createMilvusServiceOptions.Description != nil {
-		body["description"] = createMilvusServiceOptions.Description
+	if createMilvusServiceOptions.RootPath != nil {
+		body["root_path"] = createMilvusServiceOptions.RootPath
 	}
 	if createMilvusServiceOptions.ServiceDisplayName != nil {
 		body["service_display_name"] = createMilvusServiceOptions.ServiceDisplayName
 	}
+	if createMilvusServiceOptions.BucketType != nil {
+		body["bucket_type"] = createMilvusServiceOptions.BucketType
+	}
+	if createMilvusServiceOptions.Description != nil {
+		body["description"] = createMilvusServiceOptions.Description
+	}
 	if createMilvusServiceOptions.Tags != nil {
 		body["tags"] = createMilvusServiceOptions.Tags
+	}
+	if createMilvusServiceOptions.TshirtSize != nil {
+		body["tshirt_size"] = createMilvusServiceOptions.TshirtSize
 	}
 	_, err = builder.SetBodyContentJSON(body)
 	if err != nil {
@@ -7303,6 +9601,378 @@ func (watsonxData *WatsonxDataV2) UpdateMilvusServiceWithContext(ctx context.Con
 	return
 }
 
+// ListMilvusServiceDatabases : Get milvus service databases
+// Get milvus service databases.
+func (watsonxData *WatsonxDataV2) ListMilvusServiceDatabases(listMilvusServiceDatabasesOptions *ListMilvusServiceDatabasesOptions) (result *MilvusServiceDatabases, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.ListMilvusServiceDatabasesWithContext(context.Background(), listMilvusServiceDatabasesOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// ListMilvusServiceDatabasesWithContext is an alternate form of the ListMilvusServiceDatabases method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) ListMilvusServiceDatabasesWithContext(ctx context.Context, listMilvusServiceDatabasesOptions *ListMilvusServiceDatabasesOptions) (result *MilvusServiceDatabases, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(listMilvusServiceDatabasesOptions, "listMilvusServiceDatabasesOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(listMilvusServiceDatabasesOptions, "listMilvusServiceDatabasesOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"service_id": *listMilvusServiceDatabasesOptions.ServiceID,
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/milvus_services/{service_id}/databases`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range listMilvusServiceDatabasesOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "ListMilvusServiceDatabases")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if listMilvusServiceDatabasesOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*listMilvusServiceDatabasesOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "list_milvus_service_databases", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalMilvusServiceDatabases)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// ListMilvusDatabaseCollections : Get milvus database collections
+// Get milvus database collections.
+func (watsonxData *WatsonxDataV2) ListMilvusDatabaseCollections(listMilvusDatabaseCollectionsOptions *ListMilvusDatabaseCollectionsOptions) (result *MilvusDatabaseCollections, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.ListMilvusDatabaseCollectionsWithContext(context.Background(), listMilvusDatabaseCollectionsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// ListMilvusDatabaseCollectionsWithContext is an alternate form of the ListMilvusDatabaseCollections method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) ListMilvusDatabaseCollectionsWithContext(ctx context.Context, listMilvusDatabaseCollectionsOptions *ListMilvusDatabaseCollectionsOptions) (result *MilvusDatabaseCollections, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(listMilvusDatabaseCollectionsOptions, "listMilvusDatabaseCollectionsOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(listMilvusDatabaseCollectionsOptions, "listMilvusDatabaseCollectionsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"service_id": *listMilvusDatabaseCollectionsOptions.ServiceID,
+		"database_id": *listMilvusDatabaseCollectionsOptions.DatabaseID,
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/milvus_services/{service_id}/databases/{database_id}/collections`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range listMilvusDatabaseCollectionsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "ListMilvusDatabaseCollections")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if listMilvusDatabaseCollectionsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*listMilvusDatabaseCollectionsOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "list_milvus_database_collections", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalMilvusDatabaseCollections)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// CreateMilvusServicePause : Pause milvus service
+// Pause a running milvus service.
+func (watsonxData *WatsonxDataV2) CreateMilvusServicePause(createMilvusServicePauseOptions *CreateMilvusServicePauseOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.CreateMilvusServicePauseWithContext(context.Background(), createMilvusServicePauseOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreateMilvusServicePauseWithContext is an alternate form of the CreateMilvusServicePause method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreateMilvusServicePauseWithContext(ctx context.Context, createMilvusServicePauseOptions *CreateMilvusServicePauseOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createMilvusServicePauseOptions, "createMilvusServicePauseOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createMilvusServicePauseOptions, "createMilvusServicePauseOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"service_id": *createMilvusServicePauseOptions.ServiceID,
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/milvus_services/{service_id}/pause`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range createMilvusServicePauseOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateMilvusServicePause")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if createMilvusServicePauseOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createMilvusServicePauseOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_milvus_service_pause", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSuccessResponse)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// CreateMilvusServiceResume : Resume milvus service
+// Resume a paused milvus service.
+func (watsonxData *WatsonxDataV2) CreateMilvusServiceResume(createMilvusServiceResumeOptions *CreateMilvusServiceResumeOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.CreateMilvusServiceResumeWithContext(context.Background(), createMilvusServiceResumeOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreateMilvusServiceResumeWithContext is an alternate form of the CreateMilvusServiceResume method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreateMilvusServiceResumeWithContext(ctx context.Context, createMilvusServiceResumeOptions *CreateMilvusServiceResumeOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createMilvusServiceResumeOptions, "createMilvusServiceResumeOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createMilvusServiceResumeOptions, "createMilvusServiceResumeOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"service_id": *createMilvusServiceResumeOptions.ServiceID,
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/milvus_services/{service_id}/resume`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range createMilvusServiceResumeOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateMilvusServiceResume")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if createMilvusServiceResumeOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createMilvusServiceResumeOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_milvus_service_resume", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSuccessResponse)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// CreateMilvusServiceScale : Scale a milvus service
+// Scale an existing milvus service.
+func (watsonxData *WatsonxDataV2) CreateMilvusServiceScale(createMilvusServiceScaleOptions *CreateMilvusServiceScaleOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.CreateMilvusServiceScaleWithContext(context.Background(), createMilvusServiceScaleOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreateMilvusServiceScaleWithContext is an alternate form of the CreateMilvusServiceScale method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) CreateMilvusServiceScaleWithContext(ctx context.Context, createMilvusServiceScaleOptions *CreateMilvusServiceScaleOptions) (result *SuccessResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createMilvusServiceScaleOptions, "createMilvusServiceScaleOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createMilvusServiceScaleOptions, "createMilvusServiceScaleOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"service_id": *createMilvusServiceScaleOptions.ServiceID,
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/milvus_services/{service_id}/scale`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range createMilvusServiceScaleOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "CreateMilvusServiceScale")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+	if createMilvusServiceScaleOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*createMilvusServiceScaleOptions.AuthInstanceID))
+	}
+
+	body := make(map[string]interface{})
+	if createMilvusServiceScaleOptions.TshirtSize != nil {
+		body["tshirt_size"] = createMilvusServiceScaleOptions.TshirtSize
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_milvus_service_scale", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSuccessResponse)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
 // ListIngestionJobs : Get ingestion jobs
 // Get list of ingestion jobs.
 func (watsonxData *WatsonxDataV2) ListIngestionJobs(listIngestionJobsOptions *ListIngestionJobsOptions) (result *IngestionJobCollection, response *core.DetailedResponse, err error) {
@@ -7346,8 +10016,8 @@ func (watsonxData *WatsonxDataV2) ListIngestionJobsWithContext(ctx context.Conte
 		builder.AddHeader("AuthInstanceId", fmt.Sprint(*listIngestionJobsOptions.AuthInstanceID))
 	}
 
-	if listIngestionJobsOptions.Page != nil {
-		builder.AddQuery("page", fmt.Sprint(*listIngestionJobsOptions.Page))
+	if listIngestionJobsOptions.Start != nil {
+		builder.AddQuery("start", fmt.Sprint(*listIngestionJobsOptions.Start))
 	}
 	if listIngestionJobsOptions.JobsPerPage != nil {
 		builder.AddQuery("jobs_per_page", fmt.Sprint(*listIngestionJobsOptions.JobsPerPage))
@@ -7800,146 +10470,71 @@ func (watsonxData *WatsonxDataV2) CreatePreviewIngestionFileWithContext(ctx cont
 
 	return
 }
+
+// GetEndpoints : Get CPG and CAS endpoints
+// Get Common policy gateway (CPG) and  Data Access Service(CAS) endpoints.
+func (watsonxData *WatsonxDataV2) GetEndpoints(getEndpointsOptions *GetEndpointsOptions) (result *EndpointCollection, response *core.DetailedResponse, err error) {
+	result, response, err = watsonxData.GetEndpointsWithContext(context.Background(), getEndpointsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetEndpointsWithContext is an alternate form of the GetEndpoints method which supports a Context parameter
+func (watsonxData *WatsonxDataV2) GetEndpointsWithContext(ctx context.Context, getEndpointsOptions *GetEndpointsOptions) (result *EndpointCollection, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(getEndpointsOptions, "getEndpointsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = watsonxData.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(watsonxData.Service.Options.URL, `/endpoints`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range getEndpointsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("watsonx_data", "V2", "GetEndpoints")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	if getEndpointsOptions.AuthInstanceID != nil {
+		builder.AddHeader("AuthInstanceId", fmt.Sprint(*getEndpointsOptions.AuthInstanceID))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = watsonxData.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "get_endpoints", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalEndpointCollection)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
 func getServiceComponentInfo() *core.ProblemComponent {
 	return core.NewProblemComponent(DefaultServiceName, "2.0.0")
-}
-
-// AddPrestissimoEngineCatalogsOptions : The AddPrestissimoEngineCatalogs options.
-type AddPrestissimoEngineCatalogsOptions struct {
-	// engine id.
-	EngineID *string `json:"engine_id" validate:"required,ne="`
-
-	// catalog names.
-	CatalogNames *string `json:"catalog_names,omitempty"`
-
-	// CRN.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests.
-	Headers map[string]string
-}
-
-// NewAddPrestissimoEngineCatalogsOptions : Instantiate AddPrestissimoEngineCatalogsOptions
-func (*WatsonxDataV2) NewAddPrestissimoEngineCatalogsOptions(engineID string) *AddPrestissimoEngineCatalogsOptions {
-	return &AddPrestissimoEngineCatalogsOptions{
-		EngineID: core.StringPtr(engineID),
-	}
-}
-
-// SetEngineID : Allow user to set EngineID
-func (_options *AddPrestissimoEngineCatalogsOptions) SetEngineID(engineID string) *AddPrestissimoEngineCatalogsOptions {
-	_options.EngineID = core.StringPtr(engineID)
-	return _options
-}
-
-// SetCatalogNames : Allow user to set CatalogNames
-func (_options *AddPrestissimoEngineCatalogsOptions) SetCatalogNames(catalogNames string) *AddPrestissimoEngineCatalogsOptions {
-	_options.CatalogNames = core.StringPtr(catalogNames)
-	return _options
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *AddPrestissimoEngineCatalogsOptions) SetAuthInstanceID(authInstanceID string) *AddPrestissimoEngineCatalogsOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *AddPrestissimoEngineCatalogsOptions) SetHeaders(param map[string]string) *AddPrestissimoEngineCatalogsOptions {
-	options.Headers = param
-	return options
-}
-
-// AddPrestoEngineCatalogsOptions : The AddPrestoEngineCatalogs options.
-type AddPrestoEngineCatalogsOptions struct {
-	// engine id.
-	EngineID *string `json:"engine_id" validate:"required,ne="`
-
-	// catalog names.
-	CatalogNames *string `json:"catalog_names,omitempty"`
-
-	// CRN.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests.
-	Headers map[string]string
-}
-
-// NewAddPrestoEngineCatalogsOptions : Instantiate AddPrestoEngineCatalogsOptions
-func (*WatsonxDataV2) NewAddPrestoEngineCatalogsOptions(engineID string) *AddPrestoEngineCatalogsOptions {
-	return &AddPrestoEngineCatalogsOptions{
-		EngineID: core.StringPtr(engineID),
-	}
-}
-
-// SetEngineID : Allow user to set EngineID
-func (_options *AddPrestoEngineCatalogsOptions) SetEngineID(engineID string) *AddPrestoEngineCatalogsOptions {
-	_options.EngineID = core.StringPtr(engineID)
-	return _options
-}
-
-// SetCatalogNames : Allow user to set CatalogNames
-func (_options *AddPrestoEngineCatalogsOptions) SetCatalogNames(catalogNames string) *AddPrestoEngineCatalogsOptions {
-	_options.CatalogNames = core.StringPtr(catalogNames)
-	return _options
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *AddPrestoEngineCatalogsOptions) SetAuthInstanceID(authInstanceID string) *AddPrestoEngineCatalogsOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *AddPrestoEngineCatalogsOptions) SetHeaders(param map[string]string) *AddPrestoEngineCatalogsOptions {
-	options.Headers = param
-	return options
-}
-
-// AddSparkEngineCatalogsOptions : The AddSparkEngineCatalogs options.
-type AddSparkEngineCatalogsOptions struct {
-	// engine id.
-	EngineID *string `json:"engine_id" validate:"required,ne="`
-
-	// catalog names.
-	CatalogNames *string `json:"catalog_names,omitempty"`
-
-	// CRN.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests.
-	Headers map[string]string
-}
-
-// NewAddSparkEngineCatalogsOptions : Instantiate AddSparkEngineCatalogsOptions
-func (*WatsonxDataV2) NewAddSparkEngineCatalogsOptions(engineID string) *AddSparkEngineCatalogsOptions {
-	return &AddSparkEngineCatalogsOptions{
-		EngineID: core.StringPtr(engineID),
-	}
-}
-
-// SetEngineID : Allow user to set EngineID
-func (_options *AddSparkEngineCatalogsOptions) SetEngineID(engineID string) *AddSparkEngineCatalogsOptions {
-	_options.EngineID = core.StringPtr(engineID)
-	return _options
-}
-
-// SetCatalogNames : Allow user to set CatalogNames
-func (_options *AddSparkEngineCatalogsOptions) SetCatalogNames(catalogNames string) *AddSparkEngineCatalogsOptions {
-	_options.CatalogNames = core.StringPtr(catalogNames)
-	return _options
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *AddSparkEngineCatalogsOptions) SetAuthInstanceID(authInstanceID string) *AddSparkEngineCatalogsOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *AddSparkEngineCatalogsOptions) SetHeaders(param map[string]string) *AddSparkEngineCatalogsOptions {
-	options.Headers = param
-	return options
 }
 
 // BucketCatalog : bucket catalog.
@@ -7987,6 +10582,15 @@ type BucketDetails struct {
 	// Cos endpoint.
 	Endpoint *string `json:"endpoint,omitempty"`
 
+	// Key file, encrypted during bucket registration.
+	KeyFile *string `json:"key_file,omitempty"`
+
+	// bucket provider.
+	Provider *string `json:"provider,omitempty"`
+
+	// Region where the bucket is located.
+	Region *string `json:"region,omitempty"`
+
 	// Secret access key, encrypted during bucket registration.
 	SecretKey *string `json:"secret_key,omitempty"`
 }
@@ -8021,6 +10625,21 @@ func UnmarshalBucketDetails(m map[string]json.RawMessage, result interface{}) (e
 		err = core.SDKErrorf(err, "", "endpoint-error", common.GetComponentInfo())
 		return
 	}
+	err = core.UnmarshalPrimitive(m, "key_file", &obj.KeyFile)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "key_file-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "provider", &obj.Provider)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "provider-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "region", &obj.Region)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "region-error", common.GetComponentInfo())
+		return
+	}
 	err = core.UnmarshalPrimitive(m, "secret_key", &obj.SecretKey)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "secret_key-error", common.GetComponentInfo())
@@ -8042,10 +10661,37 @@ func (bucketDetails *BucketDetails) asPatch() (_patch map[string]interface{}) {
 	if !core.IsNil(bucketDetails.Endpoint) {
 		_patch["endpoint"] = bucketDetails.Endpoint
 	}
+	if !core.IsNil(bucketDetails.KeyFile) {
+		_patch["key_file"] = bucketDetails.KeyFile
+	}
+	if !core.IsNil(bucketDetails.Provider) {
+		_patch["provider"] = bucketDetails.Provider
+	}
+	if !core.IsNil(bucketDetails.Region) {
+		_patch["region"] = bucketDetails.Region
+	}
 	if !core.IsNil(bucketDetails.SecretKey) {
 		_patch["secret_key"] = bucketDetails.SecretKey
 	}
 
+	return
+}
+
+// BucketObjectProperties : muliple bucket object properties.
+type BucketObjectProperties struct {
+	// muliple bucket object properties.
+	ObjectProperties []BucketRegistrationObjectSizeCollection `json:"object_properties,omitempty"`
+}
+
+// UnmarshalBucketObjectProperties unmarshals an instance of BucketObjectProperties from the specified map of raw messages.
+func UnmarshalBucketObjectProperties(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(BucketObjectProperties)
+	err = core.UnmarshalModel(m, "object_properties", &obj.ObjectProperties, UnmarshalBucketRegistrationObjectSizeCollection)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "object_properties-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
 
@@ -8087,6 +10733,9 @@ type BucketRegistration struct {
 	// mark bucket active or inactive.
 	State *string `json:"state" validate:"required"`
 
+	// storage details.
+	StorageDetails *StorageDetails `json:"storage_details,omitempty"`
+
 	// tags.
 	Tags []string `json:"tags,omitempty"`
 }
@@ -8094,24 +10743,27 @@ type BucketRegistration struct {
 // Constants associated with the BucketRegistration.BucketType property.
 // bucket type.
 const (
+	BucketRegistration_BucketType_AdlsGen1 = "adls_gen1"
+	BucketRegistration_BucketType_AdlsGen2 = "adls_gen2"
 	BucketRegistration_BucketType_AmazonS3 = "amazon_s3"
-	BucketRegistration_BucketType_AwsS3    = "aws_s3"
-	BucketRegistration_BucketType_IbmCeph  = "ibm_ceph"
-	BucketRegistration_BucketType_IbmCos   = "ibm_cos"
-	BucketRegistration_BucketType_Minio    = "minio"
+	BucketRegistration_BucketType_AwsS3 = "aws_s3"
+	BucketRegistration_BucketType_GoogleCs = "google_cs"
+	BucketRegistration_BucketType_IbmCeph = "ibm_ceph"
+	BucketRegistration_BucketType_IbmCos = "ibm_cos"
+	BucketRegistration_BucketType_Minio = "minio"
 )
 
 // Constants associated with the BucketRegistration.ManagedBy property.
 // managed by.
 const (
 	BucketRegistration_ManagedBy_Customer = "customer"
-	BucketRegistration_ManagedBy_Ibm      = "ibm"
+	BucketRegistration_ManagedBy_Ibm = "ibm"
 )
 
 // Constants associated with the BucketRegistration.State property.
 // mark bucket active or inactive.
 const (
-	BucketRegistration_State_Active   = "active"
+	BucketRegistration_State_Active = "active"
 	BucketRegistration_State_Inactive = "inactive"
 )
 
@@ -8178,6 +10830,11 @@ func UnmarshalBucketRegistration(m map[string]json.RawMessage, result interface{
 		err = core.SDKErrorf(err, "", "state-error", common.GetComponentInfo())
 		return
 	}
+	err = core.UnmarshalModel(m, "storage_details", &obj.StorageDetails, UnmarshalStorageDetails)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "storage_details-error", common.GetComponentInfo())
+		return
+	}
 	err = core.UnmarshalPrimitive(m, "tags", &obj.Tags)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
@@ -8217,6 +10874,64 @@ func UnmarshalBucketRegistrationObjectCollection(m map[string]json.RawMessage, r
 	err = core.UnmarshalPrimitive(m, "objects", &obj.Objects)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "objects-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// BucketRegistrationObjectSizeCollection : Bucket object size.
+type BucketRegistrationObjectSizeCollection struct {
+	// content type.
+	ContentType *string `json:"content_type,omitempty"`
+
+	// file type.
+	FileType *string `json:"file_type,omitempty"`
+
+	// bucket last modified.
+	LastModified *string `json:"last_modified,omitempty"`
+
+	// Additional metadata associated with the object.
+	Metadata map[string]string `json:"metadata,omitempty"`
+
+	// bucket last modified.
+	Path *string `json:"path,omitempty"`
+
+	// size of the bucket objects.
+	Size *string `json:"size,omitempty"`
+}
+
+// UnmarshalBucketRegistrationObjectSizeCollection unmarshals an instance of BucketRegistrationObjectSizeCollection from the specified map of raw messages.
+func UnmarshalBucketRegistrationObjectSizeCollection(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(BucketRegistrationObjectSizeCollection)
+	err = core.UnmarshalPrimitive(m, "content_type", &obj.ContentType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "content_type-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "file_type", &obj.FileType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "file_type-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "last_modified", &obj.LastModified)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "last_modified-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "metadata", &obj.Metadata)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "metadata-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "path", &obj.Path)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "path-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "size", &obj.Size)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "size-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -8351,7 +11066,7 @@ type Catalog struct {
 // Managed by.
 const (
 	Catalog_ManagedBy_Customer = "customer"
-	Catalog_ManagedBy_Ibm      = "ibm"
+	Catalog_ManagedBy_Ibm = "ibm"
 )
 
 // UnmarshalCatalog unmarshals an instance of Catalog from the specified map of raw messages.
@@ -8496,6 +11211,9 @@ type Column struct {
 	// scale.
 	Scale *string `json:"scale,omitempty"`
 
+	// precision.
+	Precision *string `json:"precision,omitempty"`
+
 	// Data type.
 	Type *string `json:"type,omitempty"`
 }
@@ -8526,6 +11244,11 @@ func UnmarshalColumn(m map[string]json.RawMessage, result interface{}) (err erro
 	err = core.UnmarshalPrimitive(m, "scale", &obj.Scale)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "scale-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "precision", &obj.Precision)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "precision-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "type", &obj.Type)
@@ -8640,9 +11363,6 @@ func (options *CreateActivateBucketOptions) SetHeaders(param map[string]string) 
 
 // CreateBucketRegistrationOptions : The CreateBucketRegistration options.
 type CreateBucketRegistrationOptions struct {
-	// bucket details.
-	BucketDetails *BucketDetails `json:"bucket_details" validate:"required"`
-
 	// bucket type.
 	BucketType *string `json:"bucket_type" validate:"required"`
 
@@ -8655,16 +11375,22 @@ type CreateBucketRegistrationOptions struct {
 	// bucket catalog.
 	AssociatedCatalog *BucketCatalog `json:"associated_catalog,omitempty"`
 
+	// bucket details.
+	BucketDetails *BucketDetails `json:"bucket_details,omitempty"`
+
 	// bucket display name.
 	BucketDisplayName *string `json:"bucket_display_name,omitempty"`
 
 	// region where the bucket is located.
 	Region *string `json:"region,omitempty"`
 
+	// storage details.
+	StorageDetails *StorageDetails `json:"storage_details,omitempty"`
+
 	// tags.
 	Tags []string `json:"tags,omitempty"`
 
-	// CRN.
+	// Instance ID.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
 	// Allows users to set headers on API requests.
@@ -8674,33 +11400,29 @@ type CreateBucketRegistrationOptions struct {
 // Constants associated with the CreateBucketRegistrationOptions.BucketType property.
 // bucket type.
 const (
-	CreateBucketRegistrationOptions_BucketType_AwsS3   = "aws_s3"
+	CreateBucketRegistrationOptions_BucketType_AdlsGen1 = "adls_gen1"
+	CreateBucketRegistrationOptions_BucketType_AdlsGen2 = "adls_gen2"
+	CreateBucketRegistrationOptions_BucketType_AwsS3 = "aws_s3"
+	CreateBucketRegistrationOptions_BucketType_GoogleCs = "google_cs"
 	CreateBucketRegistrationOptions_BucketType_IbmCeph = "ibm_ceph"
-	CreateBucketRegistrationOptions_BucketType_IbmCos  = "ibm_cos"
-	CreateBucketRegistrationOptions_BucketType_Minio   = "minio"
+	CreateBucketRegistrationOptions_BucketType_IbmCos = "ibm_cos"
+	CreateBucketRegistrationOptions_BucketType_Minio = "minio"
 )
 
 // Constants associated with the CreateBucketRegistrationOptions.ManagedBy property.
 // managed by.
 const (
 	CreateBucketRegistrationOptions_ManagedBy_Customer = "customer"
-	CreateBucketRegistrationOptions_ManagedBy_Ibm      = "ibm"
+	CreateBucketRegistrationOptions_ManagedBy_Ibm = "ibm"
 )
 
 // NewCreateBucketRegistrationOptions : Instantiate CreateBucketRegistrationOptions
-func (*WatsonxDataV2) NewCreateBucketRegistrationOptions(bucketDetails *BucketDetails, bucketType string, description string, managedBy string) *CreateBucketRegistrationOptions {
+func (*WatsonxDataV2) NewCreateBucketRegistrationOptions(bucketType string, description string, managedBy string) *CreateBucketRegistrationOptions {
 	return &CreateBucketRegistrationOptions{
-		BucketDetails: bucketDetails,
-		BucketType:    core.StringPtr(bucketType),
-		Description:   core.StringPtr(description),
-		ManagedBy:     core.StringPtr(managedBy),
+		BucketType: core.StringPtr(bucketType),
+		Description: core.StringPtr(description),
+		ManagedBy: core.StringPtr(managedBy),
 	}
-}
-
-// SetBucketDetails : Allow user to set BucketDetails
-func (_options *CreateBucketRegistrationOptions) SetBucketDetails(bucketDetails *BucketDetails) *CreateBucketRegistrationOptions {
-	_options.BucketDetails = bucketDetails
-	return _options
 }
 
 // SetBucketType : Allow user to set BucketType
@@ -8727,6 +11449,12 @@ func (_options *CreateBucketRegistrationOptions) SetAssociatedCatalog(associated
 	return _options
 }
 
+// SetBucketDetails : Allow user to set BucketDetails
+func (_options *CreateBucketRegistrationOptions) SetBucketDetails(bucketDetails *BucketDetails) *CreateBucketRegistrationOptions {
+	_options.BucketDetails = bucketDetails
+	return _options
+}
+
 // SetBucketDisplayName : Allow user to set BucketDisplayName
 func (_options *CreateBucketRegistrationOptions) SetBucketDisplayName(bucketDisplayName string) *CreateBucketRegistrationOptions {
 	_options.BucketDisplayName = core.StringPtr(bucketDisplayName)
@@ -8736,6 +11464,12 @@ func (_options *CreateBucketRegistrationOptions) SetBucketDisplayName(bucketDisp
 // SetRegion : Allow user to set Region
 func (_options *CreateBucketRegistrationOptions) SetRegion(region string) *CreateBucketRegistrationOptions {
 	_options.Region = core.StringPtr(region)
+	return _options
+}
+
+// SetStorageDetails : Allow user to set StorageDetails
+func (_options *CreateBucketRegistrationOptions) SetStorageDetails(storageDetails *StorageDetails) *CreateBucketRegistrationOptions {
+	_options.StorageDetails = storageDetails
 	return _options
 }
 
@@ -8774,7 +11508,7 @@ type CreateColumnsOptions struct {
 	// List of the tables present in the schema.
 	Columns []Column `json:"columns,omitempty"`
 
-	// CRN.
+	// watsonx.data instance ID.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
 	// Allows users to set headers on API requests.
@@ -8784,10 +11518,10 @@ type CreateColumnsOptions struct {
 // NewCreateColumnsOptions : Instantiate CreateColumnsOptions
 func (*WatsonxDataV2) NewCreateColumnsOptions(engineID string, catalogID string, schemaID string, tableID string) *CreateColumnsOptions {
 	return &CreateColumnsOptions{
-		EngineID:  core.StringPtr(engineID),
+		EngineID: core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
-		SchemaID:  core.StringPtr(schemaID),
-		TableID:   core.StringPtr(tableID),
+		SchemaID: core.StringPtr(schemaID),
+		TableID: core.StringPtr(tableID),
 	}
 }
 
@@ -8859,7 +11593,7 @@ type CreateDatabaseRegistrationOptions struct {
 	// tags.
 	Tags []string `json:"tags,omitempty"`
 
-	// CRN.
+	// watsonx.data instance ID.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
 	// Allows users to set headers on API requests.
@@ -8870,7 +11604,7 @@ type CreateDatabaseRegistrationOptions struct {
 func (*WatsonxDataV2) NewCreateDatabaseRegistrationOptions(databaseDisplayName string, databaseType string) *CreateDatabaseRegistrationOptions {
 	return &CreateDatabaseRegistrationOptions{
 		DatabaseDisplayName: core.StringPtr(databaseDisplayName),
-		DatabaseType:        core.StringPtr(databaseType),
+		DatabaseType: core.StringPtr(databaseType),
 	}
 }
 
@@ -8963,7 +11697,7 @@ type CreateDb2EngineOptions struct {
 const (
 	CreateDb2EngineOptions_Origin_Discover = "discover"
 	CreateDb2EngineOptions_Origin_External = "external"
-	CreateDb2EngineOptions_Origin_Native   = "native"
+	CreateDb2EngineOptions_Origin_Native = "native"
 )
 
 // NewCreateDb2EngineOptions : Instantiate CreateDb2EngineOptions
@@ -9011,6 +11745,81 @@ func (_options *CreateDb2EngineOptions) SetAuthInstanceID(authInstanceID string)
 
 // SetHeaders : Allow user to set Headers
 func (options *CreateDb2EngineOptions) SetHeaders(param map[string]string) *CreateDb2EngineOptions {
+	options.Headers = param
+	return options
+}
+
+// CreateDriverRegistrationOptions : The CreateDriverRegistration options.
+type CreateDriverRegistrationOptions struct {
+	// Driver file to upload.
+	Driver io.ReadCloser `json:"driver" validate:"required"`
+
+	// Driver name.
+	DriverName *string `json:"driver_name" validate:"required"`
+
+	// Driver connection type.
+	ConnectionType *string `json:"connection_type" validate:"required"`
+
+	// The content type of driver.
+	DriverContentType *string `json:"driver_content_type,omitempty"`
+
+	// Driver status.
+	Version *string `json:"version,omitempty"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCreateDriverRegistrationOptions : Instantiate CreateDriverRegistrationOptions
+func (*WatsonxDataV2) NewCreateDriverRegistrationOptions(driver io.ReadCloser, driverName string, connectionType string) *CreateDriverRegistrationOptions {
+	return &CreateDriverRegistrationOptions{
+		Driver: driver,
+		DriverName: core.StringPtr(driverName),
+		ConnectionType: core.StringPtr(connectionType),
+	}
+}
+
+// SetDriver : Allow user to set Driver
+func (_options *CreateDriverRegistrationOptions) SetDriver(driver io.ReadCloser) *CreateDriverRegistrationOptions {
+	_options.Driver = driver
+	return _options
+}
+
+// SetDriverName : Allow user to set DriverName
+func (_options *CreateDriverRegistrationOptions) SetDriverName(driverName string) *CreateDriverRegistrationOptions {
+	_options.DriverName = core.StringPtr(driverName)
+	return _options
+}
+
+// SetConnectionType : Allow user to set ConnectionType
+func (_options *CreateDriverRegistrationOptions) SetConnectionType(connectionType string) *CreateDriverRegistrationOptions {
+	_options.ConnectionType = core.StringPtr(connectionType)
+	return _options
+}
+
+// SetDriverContentType : Allow user to set DriverContentType
+func (_options *CreateDriverRegistrationOptions) SetDriverContentType(driverContentType string) *CreateDriverRegistrationOptions {
+	_options.DriverContentType = core.StringPtr(driverContentType)
+	return _options
+}
+
+// SetVersion : Allow user to set Version
+func (_options *CreateDriverRegistrationOptions) SetVersion(version string) *CreateDriverRegistrationOptions {
+	_options.Version = core.StringPtr(version)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *CreateDriverRegistrationOptions) SetAuthInstanceID(authInstanceID string) *CreateDriverRegistrationOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreateDriverRegistrationOptions) SetHeaders(param map[string]string) *CreateDriverRegistrationOptions {
 	options.Headers = param
 	return options
 }
@@ -9087,6 +11896,278 @@ func UnmarshalCreateEngineScaleCreatedBody(m map[string]json.RawMessage, result 
 	return
 }
 
+// CreateExecuteQueryOptions : The CreateExecuteQuery options.
+type CreateExecuteQueryOptions struct {
+	// Engine name.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// query to be executed.
+	SqlString *string `json:"sql_string" validate:"required"`
+
+	// Name of the catalog.
+	CatalogName *string `json:"catalog_name,omitempty"`
+
+	// Schema name.
+	SchemaName *string `json:"schema_name,omitempty"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCreateExecuteQueryOptions : Instantiate CreateExecuteQueryOptions
+func (*WatsonxDataV2) NewCreateExecuteQueryOptions(engineID string, sqlString string) *CreateExecuteQueryOptions {
+	return &CreateExecuteQueryOptions{
+		EngineID: core.StringPtr(engineID),
+		SqlString: core.StringPtr(sqlString),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *CreateExecuteQueryOptions) SetEngineID(engineID string) *CreateExecuteQueryOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetSqlString : Allow user to set SqlString
+func (_options *CreateExecuteQueryOptions) SetSqlString(sqlString string) *CreateExecuteQueryOptions {
+	_options.SqlString = core.StringPtr(sqlString)
+	return _options
+}
+
+// SetCatalogName : Allow user to set CatalogName
+func (_options *CreateExecuteQueryOptions) SetCatalogName(catalogName string) *CreateExecuteQueryOptions {
+	_options.CatalogName = core.StringPtr(catalogName)
+	return _options
+}
+
+// SetSchemaName : Allow user to set SchemaName
+func (_options *CreateExecuteQueryOptions) SetSchemaName(schemaName string) *CreateExecuteQueryOptions {
+	_options.SchemaName = core.StringPtr(schemaName)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *CreateExecuteQueryOptions) SetAuthInstanceID(authInstanceID string) *CreateExecuteQueryOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreateExecuteQueryOptions) SetHeaders(param map[string]string) *CreateExecuteQueryOptions {
+	options.Headers = param
+	return options
+}
+
+// CreateHdfsStorageOptions : The CreateHdfsStorage options.
+type CreateHdfsStorageOptions struct {
+	// Bucket display name.
+	BucketDisplayName *string `json:"bucket_display_name" validate:"required"`
+
+	// Bucket type.
+	BucketType *string `json:"bucket_type" validate:"required"`
+
+	// HMS Thrift URI.
+	HmsThriftURI *string `json:"hms_thrift_uri" validate:"required"`
+
+	// HMS Thrift Port.
+	HmsThriftPort *int64 `json:"hms_thrift_port" validate:"required"`
+
+	// contents of core-site.xml file.
+	CoreSite *string `json:"core_site" validate:"required"`
+
+	// contents of hdfs-site.xml file.
+	HdfsSite *string `json:"hdfs_site" validate:"required"`
+
+	// Kerberos Flag.
+	Kerberos *string `json:"kerberos" validate:"required"`
+
+	// Catalog name.
+	CatalogName *string `json:"catalog_name" validate:"required"`
+
+	// Catalog type.
+	CatalogType *string `json:"catalog_type" validate:"required"`
+
+	// Kerberos config file.
+	Krb5Config *string `json:"krb5_config,omitempty"`
+
+	// Hive keytab file.
+	HiveKeytab io.ReadCloser `json:"hive_keytab,omitempty"`
+
+	// The content type of hiveKeytab.
+	HiveKeytabContentType *string `json:"hive_keytab_content_type,omitempty"`
+
+	// HDFS keytab file.
+	HdfsKeytab io.ReadCloser `json:"hdfs_keytab,omitempty"`
+
+	// The content type of hdfsKeytab.
+	HdfsKeytabContentType *string `json:"hdfs_keytab_content_type,omitempty"`
+
+	// Hive server principal.
+	HiveServerPrincipal *string `json:"hive_server_principal,omitempty"`
+
+	// Hive client principal.
+	HiveClientPrincipal *string `json:"hive_client_principal,omitempty"`
+
+	// HDFS principal.
+	HdfsPrincipal *string `json:"hdfs_principal,omitempty"`
+
+	// Database description.
+	Description *string `json:"description,omitempty"`
+
+	// Created on.
+	CreatedOn *string `json:"created_on,omitempty"`
+
+	// Instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCreateHdfsStorageOptions : Instantiate CreateHdfsStorageOptions
+func (*WatsonxDataV2) NewCreateHdfsStorageOptions(bucketDisplayName string, bucketType string, hmsThriftURI string, hmsThriftPort int64, coreSite string, hdfsSite string, kerberos string, catalogName string, catalogType string) *CreateHdfsStorageOptions {
+	return &CreateHdfsStorageOptions{
+		BucketDisplayName: core.StringPtr(bucketDisplayName),
+		BucketType: core.StringPtr(bucketType),
+		HmsThriftURI: core.StringPtr(hmsThriftURI),
+		HmsThriftPort: core.Int64Ptr(hmsThriftPort),
+		CoreSite: core.StringPtr(coreSite),
+		HdfsSite: core.StringPtr(hdfsSite),
+		Kerberos: core.StringPtr(kerberos),
+		CatalogName: core.StringPtr(catalogName),
+		CatalogType: core.StringPtr(catalogType),
+	}
+}
+
+// SetBucketDisplayName : Allow user to set BucketDisplayName
+func (_options *CreateHdfsStorageOptions) SetBucketDisplayName(bucketDisplayName string) *CreateHdfsStorageOptions {
+	_options.BucketDisplayName = core.StringPtr(bucketDisplayName)
+	return _options
+}
+
+// SetBucketType : Allow user to set BucketType
+func (_options *CreateHdfsStorageOptions) SetBucketType(bucketType string) *CreateHdfsStorageOptions {
+	_options.BucketType = core.StringPtr(bucketType)
+	return _options
+}
+
+// SetHmsThriftURI : Allow user to set HmsThriftURI
+func (_options *CreateHdfsStorageOptions) SetHmsThriftURI(hmsThriftURI string) *CreateHdfsStorageOptions {
+	_options.HmsThriftURI = core.StringPtr(hmsThriftURI)
+	return _options
+}
+
+// SetHmsThriftPort : Allow user to set HmsThriftPort
+func (_options *CreateHdfsStorageOptions) SetHmsThriftPort(hmsThriftPort int64) *CreateHdfsStorageOptions {
+	_options.HmsThriftPort = core.Int64Ptr(hmsThriftPort)
+	return _options
+}
+
+// SetCoreSite : Allow user to set CoreSite
+func (_options *CreateHdfsStorageOptions) SetCoreSite(coreSite string) *CreateHdfsStorageOptions {
+	_options.CoreSite = core.StringPtr(coreSite)
+	return _options
+}
+
+// SetHdfsSite : Allow user to set HdfsSite
+func (_options *CreateHdfsStorageOptions) SetHdfsSite(hdfsSite string) *CreateHdfsStorageOptions {
+	_options.HdfsSite = core.StringPtr(hdfsSite)
+	return _options
+}
+
+// SetKerberos : Allow user to set Kerberos
+func (_options *CreateHdfsStorageOptions) SetKerberos(kerberos string) *CreateHdfsStorageOptions {
+	_options.Kerberos = core.StringPtr(kerberos)
+	return _options
+}
+
+// SetCatalogName : Allow user to set CatalogName
+func (_options *CreateHdfsStorageOptions) SetCatalogName(catalogName string) *CreateHdfsStorageOptions {
+	_options.CatalogName = core.StringPtr(catalogName)
+	return _options
+}
+
+// SetCatalogType : Allow user to set CatalogType
+func (_options *CreateHdfsStorageOptions) SetCatalogType(catalogType string) *CreateHdfsStorageOptions {
+	_options.CatalogType = core.StringPtr(catalogType)
+	return _options
+}
+
+// SetKrb5Config : Allow user to set Krb5Config
+func (_options *CreateHdfsStorageOptions) SetKrb5Config(krb5Config string) *CreateHdfsStorageOptions {
+	_options.Krb5Config = core.StringPtr(krb5Config)
+	return _options
+}
+
+// SetHiveKeytab : Allow user to set HiveKeytab
+func (_options *CreateHdfsStorageOptions) SetHiveKeytab(hiveKeytab io.ReadCloser) *CreateHdfsStorageOptions {
+	_options.HiveKeytab = hiveKeytab
+	return _options
+}
+
+// SetHiveKeytabContentType : Allow user to set HiveKeytabContentType
+func (_options *CreateHdfsStorageOptions) SetHiveKeytabContentType(hiveKeytabContentType string) *CreateHdfsStorageOptions {
+	_options.HiveKeytabContentType = core.StringPtr(hiveKeytabContentType)
+	return _options
+}
+
+// SetHdfsKeytab : Allow user to set HdfsKeytab
+func (_options *CreateHdfsStorageOptions) SetHdfsKeytab(hdfsKeytab io.ReadCloser) *CreateHdfsStorageOptions {
+	_options.HdfsKeytab = hdfsKeytab
+	return _options
+}
+
+// SetHdfsKeytabContentType : Allow user to set HdfsKeytabContentType
+func (_options *CreateHdfsStorageOptions) SetHdfsKeytabContentType(hdfsKeytabContentType string) *CreateHdfsStorageOptions {
+	_options.HdfsKeytabContentType = core.StringPtr(hdfsKeytabContentType)
+	return _options
+}
+
+// SetHiveServerPrincipal : Allow user to set HiveServerPrincipal
+func (_options *CreateHdfsStorageOptions) SetHiveServerPrincipal(hiveServerPrincipal string) *CreateHdfsStorageOptions {
+	_options.HiveServerPrincipal = core.StringPtr(hiveServerPrincipal)
+	return _options
+}
+
+// SetHiveClientPrincipal : Allow user to set HiveClientPrincipal
+func (_options *CreateHdfsStorageOptions) SetHiveClientPrincipal(hiveClientPrincipal string) *CreateHdfsStorageOptions {
+	_options.HiveClientPrincipal = core.StringPtr(hiveClientPrincipal)
+	return _options
+}
+
+// SetHdfsPrincipal : Allow user to set HdfsPrincipal
+func (_options *CreateHdfsStorageOptions) SetHdfsPrincipal(hdfsPrincipal string) *CreateHdfsStorageOptions {
+	_options.HdfsPrincipal = core.StringPtr(hdfsPrincipal)
+	return _options
+}
+
+// SetDescription : Allow user to set Description
+func (_options *CreateHdfsStorageOptions) SetDescription(description string) *CreateHdfsStorageOptions {
+	_options.Description = core.StringPtr(description)
+	return _options
+}
+
+// SetCreatedOn : Allow user to set CreatedOn
+func (_options *CreateHdfsStorageOptions) SetCreatedOn(createdOn string) *CreateHdfsStorageOptions {
+	_options.CreatedOn = core.StringPtr(createdOn)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *CreateHdfsStorageOptions) SetAuthInstanceID(authInstanceID string) *CreateHdfsStorageOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreateHdfsStorageOptions) SetHeaders(param map[string]string) *CreateHdfsStorageOptions {
+	options.Headers = param
+	return options
+}
+
 // CreateIngestionJobsLocalFilesOptions : The CreateIngestionJobsLocalFiles options.
 type CreateIngestionJobsLocalFilesOptions struct {
 	// watsonx.data instance ID.
@@ -9132,8 +12213,8 @@ type CreateIngestionJobsLocalFilesOptions struct {
 // Constants associated with the CreateIngestionJobsLocalFilesOptions.SourceFileType property.
 // File format of source file.
 const (
-	CreateIngestionJobsLocalFilesOptions_SourceFileType_Csv     = "csv"
-	CreateIngestionJobsLocalFilesOptions_SourceFileType_JSON    = "json"
+	CreateIngestionJobsLocalFilesOptions_SourceFileType_Csv = "csv"
+	CreateIngestionJobsLocalFilesOptions_SourceFileType_JSON = "json"
 	CreateIngestionJobsLocalFilesOptions_SourceFileType_Parquet = "parquet"
 )
 
@@ -9142,9 +12223,9 @@ func (*WatsonxDataV2) NewCreateIngestionJobsLocalFilesOptions(authInstanceID str
 	return &CreateIngestionJobsLocalFilesOptions{
 		AuthInstanceID: core.StringPtr(authInstanceID),
 		SourceDataFile: sourceDataFile,
-		TargetTable:    core.StringPtr(targetTable),
-		JobID:          core.StringPtr(jobID),
-		Username:       core.StringPtr(username),
+		TargetTable: core.StringPtr(targetTable),
+		JobID: core.StringPtr(jobID),
+		Username: core.StringPtr(username),
 	}
 }
 
@@ -9274,19 +12355,19 @@ type CreateIngestionJobsOptions struct {
 // Constants associated with the CreateIngestionJobsOptions.SourceFileType property.
 // Source file types (parquet or csv or json).
 const (
-	CreateIngestionJobsOptions_SourceFileType_Csv     = "csv"
-	CreateIngestionJobsOptions_SourceFileType_JSON    = "json"
+	CreateIngestionJobsOptions_SourceFileType_Csv = "csv"
+	CreateIngestionJobsOptions_SourceFileType_JSON = "json"
 	CreateIngestionJobsOptions_SourceFileType_Parquet = "parquet"
 )
 
 // NewCreateIngestionJobsOptions : Instantiate CreateIngestionJobsOptions
 func (*WatsonxDataV2) NewCreateIngestionJobsOptions(authInstanceID string, jobID string, sourceDataFiles string, targetTable string, username string) *CreateIngestionJobsOptions {
 	return &CreateIngestionJobsOptions{
-		AuthInstanceID:  core.StringPtr(authInstanceID),
-		JobID:           core.StringPtr(jobID),
+		AuthInstanceID: core.StringPtr(authInstanceID),
+		JobID: core.StringPtr(jobID),
 		SourceDataFiles: core.StringPtr(sourceDataFiles),
-		TargetTable:     core.StringPtr(targetTable),
-		Username:        core.StringPtr(username),
+		TargetTable: core.StringPtr(targetTable),
+		Username: core.StringPtr(username),
 	}
 }
 
@@ -9374,21 +12455,131 @@ func (options *CreateIngestionJobsOptions) SetHeaders(param map[string]string) *
 	return options
 }
 
+// CreateIntegrationOptions : The CreateIntegration options.
+type CreateIntegrationOptions struct {
+	// Integration APIKEY.
+	Apikey *string `json:"apikey,omitempty"`
+
+	// data policy enabler with wxd for ranger.
+	EnableDataPolicyWithinWxd *bool `json:"enable_data_policy_within_wxd,omitempty"`
+
+	// Integration password.
+	Password *string `json:"password,omitempty"`
+
+	// resouce for ranger.
+	Resource *string `json:"resource,omitempty"`
+
+	// Integration type.
+	ServiceType *string `json:"service_type,omitempty"`
+
+	// Comma separated list of bucket catalogs which have ikc enabled.
+	StorageCatalogs []string `json:"storage_catalogs,omitempty"`
+
+	// Integration Connection URL.
+	URL *string `json:"url,omitempty"`
+
+	// Integration username.
+	Username *string `json:"username,omitempty"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCreateIntegrationOptions : Instantiate CreateIntegrationOptions
+func (*WatsonxDataV2) NewCreateIntegrationOptions() *CreateIntegrationOptions {
+	return &CreateIntegrationOptions{}
+}
+
+// SetApikey : Allow user to set Apikey
+func (_options *CreateIntegrationOptions) SetApikey(apikey string) *CreateIntegrationOptions {
+	_options.Apikey = core.StringPtr(apikey)
+	return _options
+}
+
+// SetEnableDataPolicyWithinWxd : Allow user to set EnableDataPolicyWithinWxd
+func (_options *CreateIntegrationOptions) SetEnableDataPolicyWithinWxd(enableDataPolicyWithinWxd bool) *CreateIntegrationOptions {
+	_options.EnableDataPolicyWithinWxd = core.BoolPtr(enableDataPolicyWithinWxd)
+	return _options
+}
+
+// SetPassword : Allow user to set Password
+func (_options *CreateIntegrationOptions) SetPassword(password string) *CreateIntegrationOptions {
+	_options.Password = core.StringPtr(password)
+	return _options
+}
+
+// SetResource : Allow user to set Resource
+func (_options *CreateIntegrationOptions) SetResource(resource string) *CreateIntegrationOptions {
+	_options.Resource = core.StringPtr(resource)
+	return _options
+}
+
+// SetServiceType : Allow user to set ServiceType
+func (_options *CreateIntegrationOptions) SetServiceType(serviceType string) *CreateIntegrationOptions {
+	_options.ServiceType = core.StringPtr(serviceType)
+	return _options
+}
+
+// SetStorageCatalogs : Allow user to set StorageCatalogs
+func (_options *CreateIntegrationOptions) SetStorageCatalogs(storageCatalogs []string) *CreateIntegrationOptions {
+	_options.StorageCatalogs = storageCatalogs
+	return _options
+}
+
+// SetURL : Allow user to set URL
+func (_options *CreateIntegrationOptions) SetURL(url string) *CreateIntegrationOptions {
+	_options.URL = core.StringPtr(url)
+	return _options
+}
+
+// SetUsername : Allow user to set Username
+func (_options *CreateIntegrationOptions) SetUsername(username string) *CreateIntegrationOptions {
+	_options.Username = core.StringPtr(username)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *CreateIntegrationOptions) SetAuthInstanceID(authInstanceID string) *CreateIntegrationOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreateIntegrationOptions) SetHeaders(param map[string]string) *CreateIntegrationOptions {
+	options.Headers = param
+	return options
+}
+
 // CreateMilvusServiceOptions : The CreateMilvusService options.
 type CreateMilvusServiceOptions struct {
+	// bucket name.
+	BucketName *string `json:"bucket_name" validate:"required"`
+
 	// Origin - place holder.
 	Origin *string `json:"origin" validate:"required"`
+
+	// root path.
+	RootPath *string `json:"root_path" validate:"required"`
+
+	// Service display name.
+	ServiceDisplayName *string `json:"service_display_name" validate:"required"`
+
+	// bucket type.
+	BucketType *string `json:"bucket_type,omitempty"`
 
 	// Service description.
 	Description *string `json:"description,omitempty"`
 
-	// Service display name.
-	ServiceDisplayName *string `json:"service_display_name,omitempty"`
-
 	// Tags.
 	Tags []string `json:"tags,omitempty"`
 
-	// CRN.
+	// tshirt size.
+	TshirtSize *string `json:"tshirt_size,omitempty"`
+
+	// watsonx.data instance ID.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
 	// Allows users to set headers on API requests.
@@ -9396,10 +12587,19 @@ type CreateMilvusServiceOptions struct {
 }
 
 // NewCreateMilvusServiceOptions : Instantiate CreateMilvusServiceOptions
-func (*WatsonxDataV2) NewCreateMilvusServiceOptions(origin string) *CreateMilvusServiceOptions {
+func (*WatsonxDataV2) NewCreateMilvusServiceOptions(bucketName string, origin string, rootPath string, serviceDisplayName string) *CreateMilvusServiceOptions {
 	return &CreateMilvusServiceOptions{
+		BucketName: core.StringPtr(bucketName),
 		Origin: core.StringPtr(origin),
+		RootPath: core.StringPtr(rootPath),
+		ServiceDisplayName: core.StringPtr(serviceDisplayName),
 	}
+}
+
+// SetBucketName : Allow user to set BucketName
+func (_options *CreateMilvusServiceOptions) SetBucketName(bucketName string) *CreateMilvusServiceOptions {
+	_options.BucketName = core.StringPtr(bucketName)
+	return _options
 }
 
 // SetOrigin : Allow user to set Origin
@@ -9408,9 +12608,9 @@ func (_options *CreateMilvusServiceOptions) SetOrigin(origin string) *CreateMilv
 	return _options
 }
 
-// SetDescription : Allow user to set Description
-func (_options *CreateMilvusServiceOptions) SetDescription(description string) *CreateMilvusServiceOptions {
-	_options.Description = core.StringPtr(description)
+// SetRootPath : Allow user to set RootPath
+func (_options *CreateMilvusServiceOptions) SetRootPath(rootPath string) *CreateMilvusServiceOptions {
+	_options.RootPath = core.StringPtr(rootPath)
 	return _options
 }
 
@@ -9420,9 +12620,27 @@ func (_options *CreateMilvusServiceOptions) SetServiceDisplayName(serviceDisplay
 	return _options
 }
 
+// SetBucketType : Allow user to set BucketType
+func (_options *CreateMilvusServiceOptions) SetBucketType(bucketType string) *CreateMilvusServiceOptions {
+	_options.BucketType = core.StringPtr(bucketType)
+	return _options
+}
+
+// SetDescription : Allow user to set Description
+func (_options *CreateMilvusServiceOptions) SetDescription(description string) *CreateMilvusServiceOptions {
+	_options.Description = core.StringPtr(description)
+	return _options
+}
+
 // SetTags : Allow user to set Tags
 func (_options *CreateMilvusServiceOptions) SetTags(tags []string) *CreateMilvusServiceOptions {
 	_options.Tags = tags
+	return _options
+}
+
+// SetTshirtSize : Allow user to set TshirtSize
+func (_options *CreateMilvusServiceOptions) SetTshirtSize(tshirtSize string) *CreateMilvusServiceOptions {
+	_options.TshirtSize = core.StringPtr(tshirtSize)
 	return _options
 }
 
@@ -9434,6 +12652,126 @@ func (_options *CreateMilvusServiceOptions) SetAuthInstanceID(authInstanceID str
 
 // SetHeaders : Allow user to set Headers
 func (options *CreateMilvusServiceOptions) SetHeaders(param map[string]string) *CreateMilvusServiceOptions {
+	options.Headers = param
+	return options
+}
+
+// CreateMilvusServicePauseOptions : The CreateMilvusServicePause options.
+type CreateMilvusServicePauseOptions struct {
+	// service id.
+	ServiceID *string `json:"service_id" validate:"required,ne="`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCreateMilvusServicePauseOptions : Instantiate CreateMilvusServicePauseOptions
+func (*WatsonxDataV2) NewCreateMilvusServicePauseOptions(serviceID string) *CreateMilvusServicePauseOptions {
+	return &CreateMilvusServicePauseOptions{
+		ServiceID: core.StringPtr(serviceID),
+	}
+}
+
+// SetServiceID : Allow user to set ServiceID
+func (_options *CreateMilvusServicePauseOptions) SetServiceID(serviceID string) *CreateMilvusServicePauseOptions {
+	_options.ServiceID = core.StringPtr(serviceID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *CreateMilvusServicePauseOptions) SetAuthInstanceID(authInstanceID string) *CreateMilvusServicePauseOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreateMilvusServicePauseOptions) SetHeaders(param map[string]string) *CreateMilvusServicePauseOptions {
+	options.Headers = param
+	return options
+}
+
+// CreateMilvusServiceResumeOptions : The CreateMilvusServiceResume options.
+type CreateMilvusServiceResumeOptions struct {
+	// service id.
+	ServiceID *string `json:"service_id" validate:"required,ne="`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCreateMilvusServiceResumeOptions : Instantiate CreateMilvusServiceResumeOptions
+func (*WatsonxDataV2) NewCreateMilvusServiceResumeOptions(serviceID string) *CreateMilvusServiceResumeOptions {
+	return &CreateMilvusServiceResumeOptions{
+		ServiceID: core.StringPtr(serviceID),
+	}
+}
+
+// SetServiceID : Allow user to set ServiceID
+func (_options *CreateMilvusServiceResumeOptions) SetServiceID(serviceID string) *CreateMilvusServiceResumeOptions {
+	_options.ServiceID = core.StringPtr(serviceID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *CreateMilvusServiceResumeOptions) SetAuthInstanceID(authInstanceID string) *CreateMilvusServiceResumeOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreateMilvusServiceResumeOptions) SetHeaders(param map[string]string) *CreateMilvusServiceResumeOptions {
+	options.Headers = param
+	return options
+}
+
+// CreateMilvusServiceScaleOptions : The CreateMilvusServiceScale options.
+type CreateMilvusServiceScaleOptions struct {
+	// service id.
+	ServiceID *string `json:"service_id" validate:"required,ne="`
+
+	// tshirt size.
+	TshirtSize *string `json:"tshirt_size,omitempty"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCreateMilvusServiceScaleOptions : Instantiate CreateMilvusServiceScaleOptions
+func (*WatsonxDataV2) NewCreateMilvusServiceScaleOptions(serviceID string) *CreateMilvusServiceScaleOptions {
+	return &CreateMilvusServiceScaleOptions{
+		ServiceID: core.StringPtr(serviceID),
+	}
+}
+
+// SetServiceID : Allow user to set ServiceID
+func (_options *CreateMilvusServiceScaleOptions) SetServiceID(serviceID string) *CreateMilvusServiceScaleOptions {
+	_options.ServiceID = core.StringPtr(serviceID)
+	return _options
+}
+
+// SetTshirtSize : Allow user to set TshirtSize
+func (_options *CreateMilvusServiceScaleOptions) SetTshirtSize(tshirtSize string) *CreateMilvusServiceScaleOptions {
+	_options.TshirtSize = core.StringPtr(tshirtSize)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *CreateMilvusServiceScaleOptions) SetAuthInstanceID(authInstanceID string) *CreateMilvusServiceScaleOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreateMilvusServiceScaleOptions) SetHeaders(param map[string]string) *CreateMilvusServiceScaleOptions {
 	options.Headers = param
 	return options
 }
@@ -9467,7 +12805,7 @@ type CreateNetezzaEngineOptions struct {
 const (
 	CreateNetezzaEngineOptions_Origin_Discover = "discover"
 	CreateNetezzaEngineOptions_Origin_External = "external"
-	CreateNetezzaEngineOptions_Origin_Native   = "native"
+	CreateNetezzaEngineOptions_Origin_Native = "native"
 )
 
 // NewCreateNetezzaEngineOptions : Instantiate CreateNetezzaEngineOptions
@@ -9536,9 +12874,6 @@ type CreateOtherEngineOptions struct {
 	// other engine tags.
 	Tags []string `json:"tags,omitempty"`
 
-	// Engine type.
-	Type *string `json:"type,omitempty"`
-
 	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
@@ -9551,13 +12886,13 @@ type CreateOtherEngineOptions struct {
 const (
 	CreateOtherEngineOptions_Origin_Discover = "discover"
 	CreateOtherEngineOptions_Origin_External = "external"
-	CreateOtherEngineOptions_Origin_Native   = "native"
+	CreateOtherEngineOptions_Origin_Native = "native"
 )
 
 // NewCreateOtherEngineOptions : Instantiate CreateOtherEngineOptions
 func (*WatsonxDataV2) NewCreateOtherEngineOptions(engineDetails *OtherEngineDetailsBody, engineDisplayName string) *CreateOtherEngineOptions {
 	return &CreateOtherEngineOptions{
-		EngineDetails:     engineDetails,
+		EngineDetails: engineDetails,
 		EngineDisplayName: core.StringPtr(engineDisplayName),
 	}
 }
@@ -9592,12 +12927,6 @@ func (_options *CreateOtherEngineOptions) SetTags(tags []string) *CreateOtherEng
 	return _options
 }
 
-// SetType : Allow user to set Type
-func (_options *CreateOtherEngineOptions) SetType(typeVar string) *CreateOtherEngineOptions {
-	_options.Type = core.StringPtr(typeVar)
-	return _options
-}
-
 // SetAuthInstanceID : Allow user to set AuthInstanceID
 func (_options *CreateOtherEngineOptions) SetAuthInstanceID(authInstanceID string) *CreateOtherEngineOptions {
 	_options.AuthInstanceID = core.StringPtr(authInstanceID)
@@ -9606,6 +12935,52 @@ func (_options *CreateOtherEngineOptions) SetAuthInstanceID(authInstanceID strin
 
 // SetHeaders : Allow user to set Headers
 func (options *CreateOtherEngineOptions) SetHeaders(param map[string]string) *CreateOtherEngineOptions {
+	options.Headers = param
+	return options
+}
+
+// CreatePrestissimoEngineCatalogsOptions : The CreatePrestissimoEngineCatalogs options.
+type CreatePrestissimoEngineCatalogsOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// catalog names.
+	CatalogName *string `json:"catalog_name,omitempty"`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCreatePrestissimoEngineCatalogsOptions : Instantiate CreatePrestissimoEngineCatalogsOptions
+func (*WatsonxDataV2) NewCreatePrestissimoEngineCatalogsOptions(engineID string) *CreatePrestissimoEngineCatalogsOptions {
+	return &CreatePrestissimoEngineCatalogsOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *CreatePrestissimoEngineCatalogsOptions) SetEngineID(engineID string) *CreatePrestissimoEngineCatalogsOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetCatalogName : Allow user to set CatalogName
+func (_options *CreatePrestissimoEngineCatalogsOptions) SetCatalogName(catalogName string) *CreatePrestissimoEngineCatalogsOptions {
+	_options.CatalogName = core.StringPtr(catalogName)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *CreatePrestissimoEngineCatalogsOptions) SetAuthInstanceID(authInstanceID string) *CreatePrestissimoEngineCatalogsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreatePrestissimoEngineCatalogsOptions) SetHeaders(param map[string]string) *CreatePrestissimoEngineCatalogsOptions {
 	options.Headers = param
 	return options
 }
@@ -9648,7 +13023,7 @@ type CreatePrestissimoEngineOptions struct {
 const (
 	CreatePrestissimoEngineOptions_Origin_Discover = "discover"
 	CreatePrestissimoEngineOptions_Origin_External = "external"
-	CreatePrestissimoEngineOptions_Origin_Native   = "native"
+	CreatePrestissimoEngineOptions_Origin_Native = "native"
 )
 
 // NewCreatePrestissimoEngineOptions : Instantiate CreatePrestissimoEngineOptions
@@ -9718,6 +13093,52 @@ func (options *CreatePrestissimoEngineOptions) SetHeaders(param map[string]strin
 	return options
 }
 
+// CreatePrestoEngineCatalogsOptions : The CreatePrestoEngineCatalogs options.
+type CreatePrestoEngineCatalogsOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// catalog names.
+	CatalogName *string `json:"catalog_name,omitempty"`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCreatePrestoEngineCatalogsOptions : Instantiate CreatePrestoEngineCatalogsOptions
+func (*WatsonxDataV2) NewCreatePrestoEngineCatalogsOptions(engineID string) *CreatePrestoEngineCatalogsOptions {
+	return &CreatePrestoEngineCatalogsOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *CreatePrestoEngineCatalogsOptions) SetEngineID(engineID string) *CreatePrestoEngineCatalogsOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetCatalogName : Allow user to set CatalogName
+func (_options *CreatePrestoEngineCatalogsOptions) SetCatalogName(catalogName string) *CreatePrestoEngineCatalogsOptions {
+	_options.CatalogName = core.StringPtr(catalogName)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *CreatePrestoEngineCatalogsOptions) SetAuthInstanceID(authInstanceID string) *CreatePrestoEngineCatalogsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreatePrestoEngineCatalogsOptions) SetHeaders(param map[string]string) *CreatePrestoEngineCatalogsOptions {
+	options.Headers = param
+	return options
+}
+
 // CreatePrestoEngineOptions : The CreatePrestoEngine options.
 type CreatePrestoEngineOptions struct {
 	// Origin - created or registered.
@@ -9756,7 +13177,7 @@ type CreatePrestoEngineOptions struct {
 const (
 	CreatePrestoEngineOptions_Origin_Discover = "discover"
 	CreatePrestoEngineOptions_Origin_External = "external"
-	CreatePrestoEngineOptions_Origin_Native   = "native"
+	CreatePrestoEngineOptions_Origin_Native = "native"
 )
 
 // NewCreatePrestoEngineOptions : Instantiate CreatePrestoEngineOptions
@@ -9847,15 +13268,15 @@ type CreatePreviewIngestionFileOptions struct {
 // Constants associated with the CreatePreviewIngestionFileOptions.SourceFileType property.
 // File format of source file(s).
 const (
-	CreatePreviewIngestionFileOptions_SourceFileType_Csv     = "csv"
-	CreatePreviewIngestionFileOptions_SourceFileType_JSON    = "json"
+	CreatePreviewIngestionFileOptions_SourceFileType_Csv = "csv"
+	CreatePreviewIngestionFileOptions_SourceFileType_JSON = "json"
 	CreatePreviewIngestionFileOptions_SourceFileType_Parquet = "parquet"
 )
 
 // NewCreatePreviewIngestionFileOptions : Instantiate CreatePreviewIngestionFileOptions
 func (*WatsonxDataV2) NewCreatePreviewIngestionFileOptions(authInstanceID string, sourceDataFiles string) *CreatePreviewIngestionFileOptions {
 	return &CreatePreviewIngestionFileOptions{
-		AuthInstanceID:  core.StringPtr(authInstanceID),
+		AuthInstanceID: core.StringPtr(authInstanceID),
 		SourceDataFiles: core.StringPtr(sourceDataFiles),
 	}
 }
@@ -9886,6 +13307,275 @@ func (_options *CreatePreviewIngestionFileOptions) SetSourceFileType(sourceFileT
 
 // SetHeaders : Allow user to set Headers
 func (options *CreatePreviewIngestionFileOptions) SetHeaders(param map[string]string) *CreatePreviewIngestionFileOptions {
+	options.Headers = param
+	return options
+}
+
+// CreateSalIntegrationEnrichmentGlobalSettingsOptions : The CreateSalIntegrationEnrichmentGlobalSettings options.
+type CreateSalIntegrationEnrichmentGlobalSettingsOptions struct {
+	// semantic expansion.
+	SemanticExpansion *SalIntegrationEnrichmentSettingsSemanticExpansion `json:"semantic_expansion,omitempty"`
+
+	// semantic expansion.
+	TermAssignment *SalIntegrationEnrichmentSettingsTermAssignment `json:"term_assignment,omitempty"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCreateSalIntegrationEnrichmentGlobalSettingsOptions : Instantiate CreateSalIntegrationEnrichmentGlobalSettingsOptions
+func (*WatsonxDataV2) NewCreateSalIntegrationEnrichmentGlobalSettingsOptions() *CreateSalIntegrationEnrichmentGlobalSettingsOptions {
+	return &CreateSalIntegrationEnrichmentGlobalSettingsOptions{}
+}
+
+// SetSemanticExpansion : Allow user to set SemanticExpansion
+func (_options *CreateSalIntegrationEnrichmentGlobalSettingsOptions) SetSemanticExpansion(semanticExpansion *SalIntegrationEnrichmentSettingsSemanticExpansion) *CreateSalIntegrationEnrichmentGlobalSettingsOptions {
+	_options.SemanticExpansion = semanticExpansion
+	return _options
+}
+
+// SetTermAssignment : Allow user to set TermAssignment
+func (_options *CreateSalIntegrationEnrichmentGlobalSettingsOptions) SetTermAssignment(termAssignment *SalIntegrationEnrichmentSettingsTermAssignment) *CreateSalIntegrationEnrichmentGlobalSettingsOptions {
+	_options.TermAssignment = termAssignment
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *CreateSalIntegrationEnrichmentGlobalSettingsOptions) SetAuthInstanceID(authInstanceID string) *CreateSalIntegrationEnrichmentGlobalSettingsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreateSalIntegrationEnrichmentGlobalSettingsOptions) SetHeaders(param map[string]string) *CreateSalIntegrationEnrichmentGlobalSettingsOptions {
+	options.Headers = param
+	return options
+}
+
+// CreateSalIntegrationEnrichmentOptions : The CreateSalIntegrationEnrichment options.
+type CreateSalIntegrationEnrichmentOptions struct {
+	// Encrichment api object.
+	EnrichmentPrototype *EnrichmentObj `json:"enrichment_prototype,omitempty"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCreateSalIntegrationEnrichmentOptions : Instantiate CreateSalIntegrationEnrichmentOptions
+func (*WatsonxDataV2) NewCreateSalIntegrationEnrichmentOptions() *CreateSalIntegrationEnrichmentOptions {
+	return &CreateSalIntegrationEnrichmentOptions{}
+}
+
+// SetEnrichmentPrototype : Allow user to set EnrichmentPrototype
+func (_options *CreateSalIntegrationEnrichmentOptions) SetEnrichmentPrototype(enrichmentPrototype *EnrichmentObj) *CreateSalIntegrationEnrichmentOptions {
+	_options.EnrichmentPrototype = enrichmentPrototype
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *CreateSalIntegrationEnrichmentOptions) SetAuthInstanceID(authInstanceID string) *CreateSalIntegrationEnrichmentOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreateSalIntegrationEnrichmentOptions) SetHeaders(param map[string]string) *CreateSalIntegrationEnrichmentOptions {
+	options.Headers = param
+	return options
+}
+
+// CreateSalIntegrationEnrichmentSettingsOptions : The CreateSalIntegrationEnrichmentSettings options.
+type CreateSalIntegrationEnrichmentSettingsOptions struct {
+	// semantic expansion.
+	SemanticExpansion *SalIntegrationEnrichmentSettingsSemanticExpansion `json:"semantic_expansion,omitempty"`
+
+	// semantic expansion.
+	TermAssignment *SalIntegrationEnrichmentSettingsTermAssignment `json:"term_assignment,omitempty"`
+
+	// wkc project id.
+	ProjectID *string `json:"project_id,omitempty"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCreateSalIntegrationEnrichmentSettingsOptions : Instantiate CreateSalIntegrationEnrichmentSettingsOptions
+func (*WatsonxDataV2) NewCreateSalIntegrationEnrichmentSettingsOptions() *CreateSalIntegrationEnrichmentSettingsOptions {
+	return &CreateSalIntegrationEnrichmentSettingsOptions{}
+}
+
+// SetSemanticExpansion : Allow user to set SemanticExpansion
+func (_options *CreateSalIntegrationEnrichmentSettingsOptions) SetSemanticExpansion(semanticExpansion *SalIntegrationEnrichmentSettingsSemanticExpansion) *CreateSalIntegrationEnrichmentSettingsOptions {
+	_options.SemanticExpansion = semanticExpansion
+	return _options
+}
+
+// SetTermAssignment : Allow user to set TermAssignment
+func (_options *CreateSalIntegrationEnrichmentSettingsOptions) SetTermAssignment(termAssignment *SalIntegrationEnrichmentSettingsTermAssignment) *CreateSalIntegrationEnrichmentSettingsOptions {
+	_options.TermAssignment = termAssignment
+	return _options
+}
+
+// SetProjectID : Allow user to set ProjectID
+func (_options *CreateSalIntegrationEnrichmentSettingsOptions) SetProjectID(projectID string) *CreateSalIntegrationEnrichmentSettingsOptions {
+	_options.ProjectID = core.StringPtr(projectID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *CreateSalIntegrationEnrichmentSettingsOptions) SetAuthInstanceID(authInstanceID string) *CreateSalIntegrationEnrichmentSettingsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreateSalIntegrationEnrichmentSettingsOptions) SetHeaders(param map[string]string) *CreateSalIntegrationEnrichmentSettingsOptions {
+	options.Headers = param
+	return options
+}
+
+// CreateSalIntegrationOptions : The CreateSalIntegration options.
+type CreateSalIntegrationOptions struct {
+	// IAM apikey.
+	Apikey *string `json:"apikey" validate:"required"`
+
+	// engine ID.
+	EngineID *string `json:"engine_id" validate:"required"`
+
+	// COS storage resource crn.
+	StorageResourceCrn *string `json:"storage_resource_crn,omitempty"`
+
+	// COS storage type.
+	StorageType *string `json:"storage_type,omitempty"`
+
+	// COS storage type.
+	TrialPlan *bool `json:"trial_plan,omitempty"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCreateSalIntegrationOptions : Instantiate CreateSalIntegrationOptions
+func (*WatsonxDataV2) NewCreateSalIntegrationOptions(apikey string, engineID string) *CreateSalIntegrationOptions {
+	return &CreateSalIntegrationOptions{
+		Apikey: core.StringPtr(apikey),
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetApikey : Allow user to set Apikey
+func (_options *CreateSalIntegrationOptions) SetApikey(apikey string) *CreateSalIntegrationOptions {
+	_options.Apikey = core.StringPtr(apikey)
+	return _options
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *CreateSalIntegrationOptions) SetEngineID(engineID string) *CreateSalIntegrationOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetStorageResourceCrn : Allow user to set StorageResourceCrn
+func (_options *CreateSalIntegrationOptions) SetStorageResourceCrn(storageResourceCrn string) *CreateSalIntegrationOptions {
+	_options.StorageResourceCrn = core.StringPtr(storageResourceCrn)
+	return _options
+}
+
+// SetStorageType : Allow user to set StorageType
+func (_options *CreateSalIntegrationOptions) SetStorageType(storageType string) *CreateSalIntegrationOptions {
+	_options.StorageType = core.StringPtr(storageType)
+	return _options
+}
+
+// SetTrialPlan : Allow user to set TrialPlan
+func (_options *CreateSalIntegrationOptions) SetTrialPlan(trialPlan bool) *CreateSalIntegrationOptions {
+	_options.TrialPlan = core.BoolPtr(trialPlan)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *CreateSalIntegrationOptions) SetAuthInstanceID(authInstanceID string) *CreateSalIntegrationOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreateSalIntegrationOptions) SetHeaders(param map[string]string) *CreateSalIntegrationOptions {
+	options.Headers = param
+	return options
+}
+
+// CreateSalIntegrationUploadGlossaryOptions : The CreateSalIntegrationUploadGlossary options.
+type CreateSalIntegrationUploadGlossaryOptions struct {
+	// glossary upload replace option.
+	ReplaceOption *string `json:"replace_option" validate:"required"`
+
+	// Glossary CSV file.
+	GlossaryCsv io.ReadCloser `json:"glossary_csv,omitempty"`
+
+	// The content type of glossaryCsv.
+	GlossaryCsvContentType *string `json:"glossary_csv_content_type,omitempty"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// Constants associated with the CreateSalIntegrationUploadGlossaryOptions.ReplaceOption property.
+// glossary upload replace option.
+const (
+	CreateSalIntegrationUploadGlossaryOptions_ReplaceOption_All = "all"
+	CreateSalIntegrationUploadGlossaryOptions_ReplaceOption_Empty = "empty"
+	CreateSalIntegrationUploadGlossaryOptions_ReplaceOption_Specified = "specified"
+)
+
+// NewCreateSalIntegrationUploadGlossaryOptions : Instantiate CreateSalIntegrationUploadGlossaryOptions
+func (*WatsonxDataV2) NewCreateSalIntegrationUploadGlossaryOptions(replaceOption string) *CreateSalIntegrationUploadGlossaryOptions {
+	return &CreateSalIntegrationUploadGlossaryOptions{
+		ReplaceOption: core.StringPtr(replaceOption),
+	}
+}
+
+// SetReplaceOption : Allow user to set ReplaceOption
+func (_options *CreateSalIntegrationUploadGlossaryOptions) SetReplaceOption(replaceOption string) *CreateSalIntegrationUploadGlossaryOptions {
+	_options.ReplaceOption = core.StringPtr(replaceOption)
+	return _options
+}
+
+// SetGlossaryCsv : Allow user to set GlossaryCsv
+func (_options *CreateSalIntegrationUploadGlossaryOptions) SetGlossaryCsv(glossaryCsv io.ReadCloser) *CreateSalIntegrationUploadGlossaryOptions {
+	_options.GlossaryCsv = glossaryCsv
+	return _options
+}
+
+// SetGlossaryCsvContentType : Allow user to set GlossaryCsvContentType
+func (_options *CreateSalIntegrationUploadGlossaryOptions) SetGlossaryCsvContentType(glossaryCsvContentType string) *CreateSalIntegrationUploadGlossaryOptions {
+	_options.GlossaryCsvContentType = core.StringPtr(glossaryCsvContentType)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *CreateSalIntegrationUploadGlossaryOptions) SetAuthInstanceID(authInstanceID string) *CreateSalIntegrationUploadGlossaryOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreateSalIntegrationUploadGlossaryOptions) SetHeaders(param map[string]string) *CreateSalIntegrationUploadGlossaryOptions {
 	options.Headers = param
 	return options
 }
@@ -9925,7 +13615,13 @@ type CreateSchemaOptions struct {
 	// Bucket associated to metastore where schema will be added.
 	BucketName *string `json:"bucket_name,omitempty"`
 
-	// CRN.
+	// Host name.
+	Hostname *string `json:"hostname,omitempty"`
+
+	// Port.
+	Port *int64 `json:"port,omitempty"`
+
+	// watsonx.data instance ID.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
 	// Allows users to set headers on API requests.
@@ -9935,8 +13631,8 @@ type CreateSchemaOptions struct {
 // NewCreateSchemaOptions : Instantiate CreateSchemaOptions
 func (*WatsonxDataV2) NewCreateSchemaOptions(engineID string, catalogID string, customPath string, schemaName string) *CreateSchemaOptions {
 	return &CreateSchemaOptions{
-		EngineID:   core.StringPtr(engineID),
-		CatalogID:  core.StringPtr(catalogID),
+		EngineID: core.StringPtr(engineID),
+		CatalogID: core.StringPtr(catalogID),
 		CustomPath: core.StringPtr(customPath),
 		SchemaName: core.StringPtr(schemaName),
 	}
@@ -9969,6 +13665,18 @@ func (_options *CreateSchemaOptions) SetSchemaName(schemaName string) *CreateSch
 // SetBucketName : Allow user to set BucketName
 func (_options *CreateSchemaOptions) SetBucketName(bucketName string) *CreateSchemaOptions {
 	_options.BucketName = core.StringPtr(bucketName)
+	return _options
+}
+
+// SetHostname : Allow user to set Hostname
+func (_options *CreateSchemaOptions) SetHostname(hostname string) *CreateSchemaOptions {
+	_options.Hostname = core.StringPtr(hostname)
+	return _options
+}
+
+// SetPort : Allow user to set Port
+func (_options *CreateSchemaOptions) SetPort(port int64) *CreateSchemaOptions {
+	_options.Port = core.Int64Ptr(port)
 	return _options
 }
 
@@ -10024,7 +13732,7 @@ const (
 // NewCreateSparkEngineApplicationOptions : Instantiate CreateSparkEngineApplicationOptions
 func (*WatsonxDataV2) NewCreateSparkEngineApplicationOptions(engineID string, applicationDetails *SparkApplicationDetails) *CreateSparkEngineApplicationOptions {
 	return &CreateSparkEngineApplicationOptions{
-		EngineID:           core.StringPtr(engineID),
+		EngineID: core.StringPtr(engineID),
 		ApplicationDetails: applicationDetails,
 	}
 }
@@ -10083,6 +13791,52 @@ func (options *CreateSparkEngineApplicationOptions) SetHeaders(param map[string]
 	return options
 }
 
+// CreateSparkEngineCatalogsOptions : The CreateSparkEngineCatalogs options.
+type CreateSparkEngineCatalogsOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// catalog names.
+	CatalogName *string `json:"catalog_name,omitempty"`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCreateSparkEngineCatalogsOptions : Instantiate CreateSparkEngineCatalogsOptions
+func (*WatsonxDataV2) NewCreateSparkEngineCatalogsOptions(engineID string) *CreateSparkEngineCatalogsOptions {
+	return &CreateSparkEngineCatalogsOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *CreateSparkEngineCatalogsOptions) SetEngineID(engineID string) *CreateSparkEngineCatalogsOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetCatalogName : Allow user to set CatalogName
+func (_options *CreateSparkEngineCatalogsOptions) SetCatalogName(catalogName string) *CreateSparkEngineCatalogsOptions {
+	_options.CatalogName = core.StringPtr(catalogName)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *CreateSparkEngineCatalogsOptions) SetAuthInstanceID(authInstanceID string) *CreateSparkEngineCatalogsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreateSparkEngineCatalogsOptions) SetHeaders(param map[string]string) *CreateSparkEngineCatalogsOptions {
+	options.Headers = param
+	return options
+}
+
 // CreateSparkEngineOptions : The CreateSparkEngine options.
 type CreateSparkEngineOptions struct {
 	// Origin - created or registered.
@@ -10118,7 +13872,7 @@ type CreateSparkEngineOptions struct {
 const (
 	CreateSparkEngineOptions_Origin_Discover = "discover"
 	CreateSparkEngineOptions_Origin_External = "external"
-	CreateSparkEngineOptions_Origin_Native   = "native"
+	CreateSparkEngineOptions_Origin_Native = "native"
 )
 
 // NewCreateSparkEngineOptions : Instantiate CreateSparkEngineOptions
@@ -10182,126 +13936,6 @@ func (options *CreateSparkEngineOptions) SetHeaders(param map[string]string) *Cr
 	return options
 }
 
-// CreateSparkEnginePauseOptions : The CreateSparkEnginePause options.
-type CreateSparkEnginePauseOptions struct {
-	// engine id.
-	EngineID *string `json:"engine_id" validate:"required,ne="`
-
-	// CRN.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests.
-	Headers map[string]string
-}
-
-// NewCreateSparkEnginePauseOptions : Instantiate CreateSparkEnginePauseOptions
-func (*WatsonxDataV2) NewCreateSparkEnginePauseOptions(engineID string) *CreateSparkEnginePauseOptions {
-	return &CreateSparkEnginePauseOptions{
-		EngineID: core.StringPtr(engineID),
-	}
-}
-
-// SetEngineID : Allow user to set EngineID
-func (_options *CreateSparkEnginePauseOptions) SetEngineID(engineID string) *CreateSparkEnginePauseOptions {
-	_options.EngineID = core.StringPtr(engineID)
-	return _options
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *CreateSparkEnginePauseOptions) SetAuthInstanceID(authInstanceID string) *CreateSparkEnginePauseOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *CreateSparkEnginePauseOptions) SetHeaders(param map[string]string) *CreateSparkEnginePauseOptions {
-	options.Headers = param
-	return options
-}
-
-// CreateSparkEngineResumeOptions : The CreateSparkEngineResume options.
-type CreateSparkEngineResumeOptions struct {
-	// engine id.
-	EngineID *string `json:"engine_id" validate:"required,ne="`
-
-	// CRN.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests.
-	Headers map[string]string
-}
-
-// NewCreateSparkEngineResumeOptions : Instantiate CreateSparkEngineResumeOptions
-func (*WatsonxDataV2) NewCreateSparkEngineResumeOptions(engineID string) *CreateSparkEngineResumeOptions {
-	return &CreateSparkEngineResumeOptions{
-		EngineID: core.StringPtr(engineID),
-	}
-}
-
-// SetEngineID : Allow user to set EngineID
-func (_options *CreateSparkEngineResumeOptions) SetEngineID(engineID string) *CreateSparkEngineResumeOptions {
-	_options.EngineID = core.StringPtr(engineID)
-	return _options
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *CreateSparkEngineResumeOptions) SetAuthInstanceID(authInstanceID string) *CreateSparkEngineResumeOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *CreateSparkEngineResumeOptions) SetHeaders(param map[string]string) *CreateSparkEngineResumeOptions {
-	options.Headers = param
-	return options
-}
-
-// CreateSparkEngineScaleOptions : The CreateSparkEngineScale options.
-type CreateSparkEngineScaleOptions struct {
-	// engine id.
-	EngineID *string `json:"engine_id" validate:"required,ne="`
-
-	// Node count.
-	NumberOfNodes *int64 `json:"number_of_nodes,omitempty"`
-
-	// CRN.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests.
-	Headers map[string]string
-}
-
-// NewCreateSparkEngineScaleOptions : Instantiate CreateSparkEngineScaleOptions
-func (*WatsonxDataV2) NewCreateSparkEngineScaleOptions(engineID string) *CreateSparkEngineScaleOptions {
-	return &CreateSparkEngineScaleOptions{
-		EngineID: core.StringPtr(engineID),
-	}
-}
-
-// SetEngineID : Allow user to set EngineID
-func (_options *CreateSparkEngineScaleOptions) SetEngineID(engineID string) *CreateSparkEngineScaleOptions {
-	_options.EngineID = core.StringPtr(engineID)
-	return _options
-}
-
-// SetNumberOfNodes : Allow user to set NumberOfNodes
-func (_options *CreateSparkEngineScaleOptions) SetNumberOfNodes(numberOfNodes int64) *CreateSparkEngineScaleOptions {
-	_options.NumberOfNodes = core.Int64Ptr(numberOfNodes)
-	return _options
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *CreateSparkEngineScaleOptions) SetAuthInstanceID(authInstanceID string) *CreateSparkEngineScaleOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *CreateSparkEngineScaleOptions) SetHeaders(param map[string]string) *CreateSparkEngineScaleOptions {
-	options.Headers = param
-	return options
-}
-
 // DatabaseCatalog : database catalog.
 type DatabaseCatalog struct {
 	// catalog name.
@@ -10338,17 +13972,56 @@ func UnmarshalDatabaseCatalog(m map[string]json.RawMessage, result interface{}) 
 
 // DatabaseDetails : database details.
 type DatabaseDetails struct {
+	// Authentication method.
+	AuthenticationType *string `json:"authentication_type,omitempty"`
+
+	// Broker authentication password.
+	BrokerAuthenticationPassword *string `json:"broker_authentication_password,omitempty"`
+
+	// Broker authentication type.
+	BrokerAuthenticationType *string `json:"broker_authentication_type,omitempty"`
+
+	// Broker authentication user.
+	BrokerAuthenticationUser *string `json:"broker_authentication_user,omitempty"`
+
 	// contents of a pem/crt file.
 	Certificate *string `json:"certificate,omitempty"`
 
 	// extension of the certificate file.
 	CertificateExtension *string `json:"certificate_extension,omitempty"`
 
+	// connection mode.
+	ConnectionMethod *string `json:"connection_method,omitempty"`
+
+	// connection mode.
+	ConnectionMode *string `json:"connection_mode,omitempty"`
+
+	// connection mode value.
+	ConnectionModeValue *string `json:"connection_mode_value,omitempty"`
+
+	// Connection type.
+	ConnectionType *string `json:"connection_type,omitempty"`
+
+	// Controller authentication password.
+	ControllerAuthenticationPassword *string `json:"controller_authentication_password,omitempty"`
+
+	// Controller authentication type.
+	ControllerAuthenticationType *string `json:"controller_authentication_type,omitempty"`
+
+	// Controller authentication user.
+	ControllerAuthenticationUser *string `json:"controller_authentication_user,omitempty"`
+
+	// CPD Hostname.
+	CpdHostname *string `json:"cpd_hostname,omitempty"`
+
+	// Base 64 encoded json file.
+	CredentialsKey *string `json:"credentials_key,omitempty"`
+
 	// Database name.
 	DatabaseName *string `json:"database_name,omitempty"`
 
 	// Host name.
-	Hostname *string `json:"hostname" validate:"required"`
+	Hostname *string `json:"hostname,omitempty"`
 
 	// Hostname in certificate.
 	HostnameInCertificate *string `json:"hostname_in_certificate,omitempty"`
@@ -10356,14 +14029,41 @@ type DatabaseDetails struct {
 	// String of hostname:port.
 	Hosts *string `json:"hosts,omitempty"`
 
+	// informix server value.
+	InformixServer *string `json:"informix_server,omitempty"`
+
 	// Psssword.
 	Password *string `json:"password,omitempty"`
 
 	// Port.
-	Port *int64 `json:"port" validate:"required"`
+	Port *int64 `json:"port,omitempty"`
+
+	// Project ID.
+	ProjectID *string `json:"project_id,omitempty"`
 
 	// SASL Mode.
 	Sasl *bool `json:"sasl,omitempty"`
+
+	// service api key.
+	ServiceApiKey *string `json:"service_api_key,omitempty"`
+
+	// service hostname.
+	ServiceHostname *string `json:"service_hostname,omitempty"`
+
+	// service password.
+	ServicePassword *string `json:"service_password,omitempty"`
+
+	// Service Port.
+	ServicePort *int64 `json:"service_port,omitempty"`
+
+	// Service SSL Mode.
+	ServiceSsl *bool `json:"service_ssl,omitempty"`
+
+	// service token url.
+	ServiceTokenURL *string `json:"service_token_url,omitempty"`
+
+	// service username.
+	ServiceUsername *string `json:"service_username,omitempty"`
 
 	// SSL Mode.
 	Ssl *bool `json:"ssl,omitempty"`
@@ -10376,24 +14076,34 @@ type DatabaseDetails struct {
 
 	// Verify certificate.
 	ValidateServerCertificate *bool `json:"validate_server_certificate,omitempty"`
-}
 
-// NewDatabaseDetails : Instantiate DatabaseDetails (Generic Model Constructor)
-func (*WatsonxDataV2) NewDatabaseDetails(hostname string, port int64) (_model *DatabaseDetails, err error) {
-	_model = &DatabaseDetails{
-		Hostname: core.StringPtr(hostname),
-		Port:     core.Int64Ptr(port),
-	}
-	err = core.ValidateStruct(_model, "required parameters")
-	if err != nil {
-		err = core.SDKErrorf(err, "", "model-missing-required", common.GetComponentInfo())
-	}
-	return
+	// Verify host name.
+	VerifyHostName *bool `json:"verify_host_name,omitempty"`
 }
 
 // UnmarshalDatabaseDetails unmarshals an instance of DatabaseDetails from the specified map of raw messages.
 func UnmarshalDatabaseDetails(m map[string]json.RawMessage, result interface{}) (err error) {
 	obj := new(DatabaseDetails)
+	err = core.UnmarshalPrimitive(m, "authentication_type", &obj.AuthenticationType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "authentication_type-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "broker_authentication_password", &obj.BrokerAuthenticationPassword)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "broker_authentication_password-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "broker_authentication_type", &obj.BrokerAuthenticationType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "broker_authentication_type-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "broker_authentication_user", &obj.BrokerAuthenticationUser)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "broker_authentication_user-error", common.GetComponentInfo())
+		return
+	}
 	err = core.UnmarshalPrimitive(m, "certificate", &obj.Certificate)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "certificate-error", common.GetComponentInfo())
@@ -10402,6 +14112,51 @@ func UnmarshalDatabaseDetails(m map[string]json.RawMessage, result interface{}) 
 	err = core.UnmarshalPrimitive(m, "certificate_extension", &obj.CertificateExtension)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "certificate_extension-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "connection_method", &obj.ConnectionMethod)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "connection_method-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "connection_mode", &obj.ConnectionMode)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "connection_mode-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "connection_mode_value", &obj.ConnectionModeValue)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "connection_mode_value-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "connection_type", &obj.ConnectionType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "connection_type-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "controller_authentication_password", &obj.ControllerAuthenticationPassword)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "controller_authentication_password-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "controller_authentication_type", &obj.ControllerAuthenticationType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "controller_authentication_type-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "controller_authentication_user", &obj.ControllerAuthenticationUser)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "controller_authentication_user-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "cpd_hostname", &obj.CpdHostname)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "cpd_hostname-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "credentials_key", &obj.CredentialsKey)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "credentials_key-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "database_name", &obj.DatabaseName)
@@ -10424,6 +14179,11 @@ func UnmarshalDatabaseDetails(m map[string]json.RawMessage, result interface{}) 
 		err = core.SDKErrorf(err, "", "hosts-error", common.GetComponentInfo())
 		return
 	}
+	err = core.UnmarshalPrimitive(m, "informix_server", &obj.InformixServer)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "informix_server-error", common.GetComponentInfo())
+		return
+	}
 	err = core.UnmarshalPrimitive(m, "password", &obj.Password)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "password-error", common.GetComponentInfo())
@@ -10434,9 +14194,49 @@ func UnmarshalDatabaseDetails(m map[string]json.RawMessage, result interface{}) 
 		err = core.SDKErrorf(err, "", "port-error", common.GetComponentInfo())
 		return
 	}
+	err = core.UnmarshalPrimitive(m, "project_id", &obj.ProjectID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "project_id-error", common.GetComponentInfo())
+		return
+	}
 	err = core.UnmarshalPrimitive(m, "sasl", &obj.Sasl)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "sasl-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "service_api_key", &obj.ServiceApiKey)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "service_api_key-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "service_hostname", &obj.ServiceHostname)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "service_hostname-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "service_password", &obj.ServicePassword)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "service_password-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "service_port", &obj.ServicePort)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "service_port-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "service_ssl", &obj.ServiceSsl)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "service_ssl-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "service_token_url", &obj.ServiceTokenURL)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "service_token_url-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "service_username", &obj.ServiceUsername)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "service_username-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "ssl", &obj.Ssl)
@@ -10457,6 +14257,11 @@ func UnmarshalDatabaseDetails(m map[string]json.RawMessage, result interface{}) 
 	err = core.UnmarshalPrimitive(m, "validate_server_certificate", &obj.ValidateServerCertificate)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "validate_server_certificate-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "verify_host_name", &obj.VerifyHostName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "verify_host_name-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -10500,6 +14305,9 @@ type DatabaseRegistration struct {
 
 	// tags.
 	Tags []string `json:"tags,omitempty"`
+
+	// List of topics.
+	Topics []DatabaseRegistrationTopicsItems `json:"topics,omitempty"`
 }
 
 // UnmarshalDatabaseRegistration unmarshals an instance of DatabaseRegistration from the specified map of raw messages.
@@ -10563,6 +14371,11 @@ func UnmarshalDatabaseRegistration(m map[string]json.RawMessage, result interfac
 	err = core.UnmarshalPrimitive(m, "tags", &obj.Tags)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "topics", &obj.Topics, UnmarshalDatabaseRegistrationTopicsItems)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "topics-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -10634,6 +14447,9 @@ type DatabaseRegistrationPatch struct {
 
 	// New tags.
 	Tags []string `json:"tags,omitempty"`
+
+	// List of topics.
+	Topics []DatabaseRegistrationPatchTopicsItems `json:"topics,omitempty"`
 }
 
 // UnmarshalDatabaseRegistrationPatch unmarshals an instance of DatabaseRegistrationPatch from the specified map of raw messages.
@@ -10659,6 +14475,11 @@ func UnmarshalDatabaseRegistrationPatch(m map[string]json.RawMessage, result int
 		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
 		return
 	}
+	err = core.UnmarshalModel(m, "topics", &obj.Topics, UnmarshalDatabaseRegistrationPatchTopicsItems)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "topics-error", common.GetComponentInfo())
+		return
+	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
@@ -10677,6 +14498,13 @@ func (databaseRegistrationPatch *DatabaseRegistrationPatch) AsPatch() (_patch ma
 	}
 	if !core.IsNil(databaseRegistrationPatch.Tags) {
 		_patch["tags"] = databaseRegistrationPatch.Tags
+	}
+	if !core.IsNil(databaseRegistrationPatch.Topics) {
+		var topicsPatches []map[string]interface{}
+		for _, topics := range databaseRegistrationPatch.Topics {
+			topicsPatches = append(topicsPatches, topics.asPatch())
+		}
+		_patch["topics"] = topicsPatches
 	}
 
 	return
@@ -10721,6 +14549,67 @@ func (databaseRegistrationPatchDatabaseDetails *DatabaseRegistrationPatchDatabas
 	return
 }
 
+// DatabaseRegistrationPatchTopicsItems : Topic.
+type DatabaseRegistrationPatchTopicsItems struct {
+	// Created on.
+	CreatedOn *string `json:"created_on,omitempty"`
+
+	// file contents.
+	FileContents *string `json:"file_contents,omitempty"`
+
+	// file name.
+	FileName *string `json:"file_name,omitempty"`
+
+	// topic name.
+	TopicName *string `json:"topic_name,omitempty"`
+}
+
+// UnmarshalDatabaseRegistrationPatchTopicsItems unmarshals an instance of DatabaseRegistrationPatchTopicsItems from the specified map of raw messages.
+func UnmarshalDatabaseRegistrationPatchTopicsItems(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(DatabaseRegistrationPatchTopicsItems)
+	err = core.UnmarshalPrimitive(m, "created_on", &obj.CreatedOn)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "created_on-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "file_contents", &obj.FileContents)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "file_contents-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "file_name", &obj.FileName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "file_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "topic_name", &obj.TopicName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "topic_name-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the DatabaseRegistrationPatchTopicsItems
+func (databaseRegistrationPatchTopicsItems *DatabaseRegistrationPatchTopicsItems) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(databaseRegistrationPatchTopicsItems.CreatedOn) {
+		_patch["created_on"] = databaseRegistrationPatchTopicsItems.CreatedOn
+	}
+	if !core.IsNil(databaseRegistrationPatchTopicsItems.FileContents) {
+		_patch["file_contents"] = databaseRegistrationPatchTopicsItems.FileContents
+	}
+	if !core.IsNil(databaseRegistrationPatchTopicsItems.FileName) {
+		_patch["file_name"] = databaseRegistrationPatchTopicsItems.FileName
+	}
+	if !core.IsNil(databaseRegistrationPatchTopicsItems.TopicName) {
+		_patch["topic_name"] = databaseRegistrationPatchTopicsItems.TopicName
+	}
+
+	return
+}
+
 // DatabaseRegistrationPrototypeDatabasePropertiesItems : Key value object.
 type DatabaseRegistrationPrototypeDatabasePropertiesItems struct {
 	// Wether the value is to be encrypted before storing.
@@ -10737,8 +14626,8 @@ type DatabaseRegistrationPrototypeDatabasePropertiesItems struct {
 func (*WatsonxDataV2) NewDatabaseRegistrationPrototypeDatabasePropertiesItems(encrypt bool, key string, value string) (_model *DatabaseRegistrationPrototypeDatabasePropertiesItems, err error) {
 	_model = &DatabaseRegistrationPrototypeDatabasePropertiesItems{
 		Encrypt: core.BoolPtr(encrypt),
-		Key:     core.StringPtr(key),
-		Value:   core.StringPtr(value),
+		Key: core.StringPtr(key),
+		Value: core.StringPtr(value),
 	}
 	err = core.ValidateStruct(_model, "required parameters")
 	if err != nil {
@@ -10763,6 +14652,48 @@ func UnmarshalDatabaseRegistrationPrototypeDatabasePropertiesItems(m map[string]
 	err = core.UnmarshalPrimitive(m, "value", &obj.Value)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "value-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// DatabaseRegistrationTopicsItems : Topic.
+type DatabaseRegistrationTopicsItems struct {
+	// Created on.
+	CreatedOn *string `json:"created_on,omitempty"`
+
+	// file content.
+	FileContents *string `json:"file_contents,omitempty"`
+
+	// file name.
+	FileName *string `json:"file_name,omitempty"`
+
+	// topic name.
+	TopicName *string `json:"topic_name,omitempty"`
+}
+
+// UnmarshalDatabaseRegistrationTopicsItems unmarshals an instance of DatabaseRegistrationTopicsItems from the specified map of raw messages.
+func UnmarshalDatabaseRegistrationTopicsItems(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(DatabaseRegistrationTopicsItems)
+	err = core.UnmarshalPrimitive(m, "created_on", &obj.CreatedOn)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "created_on-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "file_contents", &obj.FileContents)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "file_contents-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "file_name", &obj.FileName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "file_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "topic_name", &obj.TopicName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "topic_name-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -11003,6 +14934,43 @@ func (db2EnginePatch *Db2EnginePatch) AsPatch() (_patch map[string]interface{}, 
 	return
 }
 
+// DeleteBucketRegistrationOptions : The DeleteBucketRegistration options.
+type DeleteBucketRegistrationOptions struct {
+	// bucket id.
+	BucketID *string `json:"bucket_id" validate:"required,ne="`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewDeleteBucketRegistrationOptions : Instantiate DeleteBucketRegistrationOptions
+func (*WatsonxDataV2) NewDeleteBucketRegistrationOptions(bucketID string) *DeleteBucketRegistrationOptions {
+	return &DeleteBucketRegistrationOptions{
+		BucketID: core.StringPtr(bucketID),
+	}
+}
+
+// SetBucketID : Allow user to set BucketID
+func (_options *DeleteBucketRegistrationOptions) SetBucketID(bucketID string) *DeleteBucketRegistrationOptions {
+	_options.BucketID = core.StringPtr(bucketID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *DeleteBucketRegistrationOptions) SetAuthInstanceID(authInstanceID string) *DeleteBucketRegistrationOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *DeleteBucketRegistrationOptions) SetHeaders(param map[string]string) *DeleteBucketRegistrationOptions {
+	options.Headers = param
+	return options
+}
+
 // DeleteColumnOptions : The DeleteColumn options.
 type DeleteColumnOptions struct {
 	// engine id.
@@ -11030,11 +14998,11 @@ type DeleteColumnOptions struct {
 // NewDeleteColumnOptions : Instantiate DeleteColumnOptions
 func (*WatsonxDataV2) NewDeleteColumnOptions(engineID string, catalogID string, schemaID string, tableID string, columnID string) *DeleteColumnOptions {
 	return &DeleteColumnOptions{
-		EngineID:  core.StringPtr(engineID),
+		EngineID: core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
-		SchemaID:  core.StringPtr(schemaID),
-		TableID:   core.StringPtr(tableID),
-		ColumnID:  core.StringPtr(columnID),
+		SchemaID: core.StringPtr(schemaID),
+		TableID: core.StringPtr(tableID),
+		ColumnID: core.StringPtr(columnID),
 	}
 }
 
@@ -11191,6 +15159,90 @@ func (options *DeleteDeactivateBucketOptions) SetHeaders(param map[string]string
 	return options
 }
 
+// DeleteDriverEnginesOptions : The DeleteDriverEngines options.
+type DeleteDriverEnginesOptions struct {
+	// driver id.
+	DriverID *string `json:"driver_id" validate:"required,ne="`
+
+	// Engine id(s) to be disassociated from the driver, comma separated.
+	EngineIds *string `json:"engine_ids" validate:"required"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewDeleteDriverEnginesOptions : Instantiate DeleteDriverEnginesOptions
+func (*WatsonxDataV2) NewDeleteDriverEnginesOptions(driverID string, engineIds string) *DeleteDriverEnginesOptions {
+	return &DeleteDriverEnginesOptions{
+		DriverID: core.StringPtr(driverID),
+		EngineIds: core.StringPtr(engineIds),
+	}
+}
+
+// SetDriverID : Allow user to set DriverID
+func (_options *DeleteDriverEnginesOptions) SetDriverID(driverID string) *DeleteDriverEnginesOptions {
+	_options.DriverID = core.StringPtr(driverID)
+	return _options
+}
+
+// SetEngineIds : Allow user to set EngineIds
+func (_options *DeleteDriverEnginesOptions) SetEngineIds(engineIds string) *DeleteDriverEnginesOptions {
+	_options.EngineIds = core.StringPtr(engineIds)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *DeleteDriverEnginesOptions) SetAuthInstanceID(authInstanceID string) *DeleteDriverEnginesOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *DeleteDriverEnginesOptions) SetHeaders(param map[string]string) *DeleteDriverEnginesOptions {
+	options.Headers = param
+	return options
+}
+
+// DeleteDriverRegistrationOptions : The DeleteDriverRegistration options.
+type DeleteDriverRegistrationOptions struct {
+	// Driver ID.
+	DriverID *string `json:"driver_id" validate:"required,ne="`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewDeleteDriverRegistrationOptions : Instantiate DeleteDriverRegistrationOptions
+func (*WatsonxDataV2) NewDeleteDriverRegistrationOptions(driverID string) *DeleteDriverRegistrationOptions {
+	return &DeleteDriverRegistrationOptions{
+		DriverID: core.StringPtr(driverID),
+	}
+}
+
+// SetDriverID : Allow user to set DriverID
+func (_options *DeleteDriverRegistrationOptions) SetDriverID(driverID string) *DeleteDriverRegistrationOptions {
+	_options.DriverID = core.StringPtr(driverID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *DeleteDriverRegistrationOptions) SetAuthInstanceID(authInstanceID string) *DeleteDriverRegistrationOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *DeleteDriverRegistrationOptions) SetHeaders(param map[string]string) *DeleteDriverRegistrationOptions {
+	options.Headers = param
+	return options
+}
+
 // DeleteEngineOptions : The DeleteEngine options.
 type DeleteEngineOptions struct {
 	// engine id.
@@ -11243,7 +15295,7 @@ type DeleteIngestionJobsOptions struct {
 // NewDeleteIngestionJobsOptions : Instantiate DeleteIngestionJobsOptions
 func (*WatsonxDataV2) NewDeleteIngestionJobsOptions(jobID string, authInstanceID string) *DeleteIngestionJobsOptions {
 	return &DeleteIngestionJobsOptions{
-		JobID:          core.StringPtr(jobID),
+		JobID: core.StringPtr(jobID),
 		AuthInstanceID: core.StringPtr(authInstanceID),
 	}
 }
@@ -11262,6 +15314,43 @@ func (_options *DeleteIngestionJobsOptions) SetAuthInstanceID(authInstanceID str
 
 // SetHeaders : Allow user to set Headers
 func (options *DeleteIngestionJobsOptions) SetHeaders(param map[string]string) *DeleteIngestionJobsOptions {
+	options.Headers = param
+	return options
+}
+
+// DeleteIntegrationOptions : The DeleteIntegration options.
+type DeleteIntegrationOptions struct {
+	// integration_id.
+	IntegrationID *string `json:"integration_id" validate:"required,ne="`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewDeleteIntegrationOptions : Instantiate DeleteIntegrationOptions
+func (*WatsonxDataV2) NewDeleteIntegrationOptions(integrationID string) *DeleteIntegrationOptions {
+	return &DeleteIntegrationOptions{
+		IntegrationID: core.StringPtr(integrationID),
+	}
+}
+
+// SetIntegrationID : Allow user to set IntegrationID
+func (_options *DeleteIntegrationOptions) SetIntegrationID(integrationID string) *DeleteIntegrationOptions {
+	_options.IntegrationID = core.StringPtr(integrationID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *DeleteIntegrationOptions) SetAuthInstanceID(authInstanceID string) *DeleteIntegrationOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *DeleteIntegrationOptions) SetHeaders(param map[string]string) *DeleteIntegrationOptions {
 	options.Headers = param
 	return options
 }
@@ -11395,7 +15484,7 @@ type DeletePrestissimoEngineCatalogsOptions struct {
 // NewDeletePrestissimoEngineCatalogsOptions : Instantiate DeletePrestissimoEngineCatalogsOptions
 func (*WatsonxDataV2) NewDeletePrestissimoEngineCatalogsOptions(engineID string, catalogNames string) *DeletePrestissimoEngineCatalogsOptions {
 	return &DeletePrestissimoEngineCatalogsOptions{
-		EngineID:     core.StringPtr(engineID),
+		EngineID: core.StringPtr(engineID),
 		CatalogNames: core.StringPtr(catalogNames),
 	}
 }
@@ -11479,7 +15568,7 @@ type DeletePrestoEngineCatalogsOptions struct {
 // NewDeletePrestoEngineCatalogsOptions : Instantiate DeletePrestoEngineCatalogsOptions
 func (*WatsonxDataV2) NewDeletePrestoEngineCatalogsOptions(engineID string, catalogNames string) *DeletePrestoEngineCatalogsOptions {
 	return &DeletePrestoEngineCatalogsOptions{
-		EngineID:     core.StringPtr(engineID),
+		EngineID: core.StringPtr(engineID),
 		CatalogNames: core.StringPtr(catalogNames),
 	}
 }
@@ -11508,6 +15597,24 @@ func (options *DeletePrestoEngineCatalogsOptions) SetHeaders(param map[string]st
 	return options
 }
 
+// DeleteSalIntegrationOptions : The DeleteSalIntegration options.
+type DeleteSalIntegrationOptions struct {
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewDeleteSalIntegrationOptions : Instantiate DeleteSalIntegrationOptions
+func (*WatsonxDataV2) NewDeleteSalIntegrationOptions() *DeleteSalIntegrationOptions {
+	return &DeleteSalIntegrationOptions{}
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *DeleteSalIntegrationOptions) SetHeaders(param map[string]string) *DeleteSalIntegrationOptions {
+	options.Headers = param
+	return options
+}
+
 // DeleteSchemaOptions : The DeleteSchema options.
 type DeleteSchemaOptions struct {
 	// Engine name.
@@ -11529,9 +15636,9 @@ type DeleteSchemaOptions struct {
 // NewDeleteSchemaOptions : Instantiate DeleteSchemaOptions
 func (*WatsonxDataV2) NewDeleteSchemaOptions(engineID string, catalogID string, schemaID string) *DeleteSchemaOptions {
 	return &DeleteSchemaOptions{
-		EngineID:  core.StringPtr(engineID),
+		EngineID: core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
-		SchemaID:  core.StringPtr(schemaID),
+		SchemaID: core.StringPtr(schemaID),
 	}
 }
 
@@ -11586,7 +15693,7 @@ type DeleteSparkEngineApplicationsOptions struct {
 // NewDeleteSparkEngineApplicationsOptions : Instantiate DeleteSparkEngineApplicationsOptions
 func (*WatsonxDataV2) NewDeleteSparkEngineApplicationsOptions(engineID string, applicationID string) *DeleteSparkEngineApplicationsOptions {
 	return &DeleteSparkEngineApplicationsOptions{
-		EngineID:      core.StringPtr(engineID),
+		EngineID: core.StringPtr(engineID),
 		ApplicationID: core.StringPtr(applicationID),
 	}
 }
@@ -11639,7 +15746,7 @@ type DeleteSparkEngineCatalogsOptions struct {
 // NewDeleteSparkEngineCatalogsOptions : Instantiate DeleteSparkEngineCatalogsOptions
 func (*WatsonxDataV2) NewDeleteSparkEngineCatalogsOptions(engineID string, catalogNames string) *DeleteSparkEngineCatalogsOptions {
 	return &DeleteSparkEngineCatalogsOptions{
-		EngineID:     core.StringPtr(engineID),
+		EngineID: core.StringPtr(engineID),
 		CatalogNames: core.StringPtr(catalogNames),
 	}
 }
@@ -11756,6 +15863,9 @@ type DeleteTableOptions struct {
 	// engine id.
 	EngineID *string `json:"engine_id" validate:"required"`
 
+	// URL encoded table type.
+	Type *string `json:"type,omitempty"`
+
 	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
@@ -11767,9 +15877,9 @@ type DeleteTableOptions struct {
 func (*WatsonxDataV2) NewDeleteTableOptions(catalogID string, schemaID string, tableID string, engineID string) *DeleteTableOptions {
 	return &DeleteTableOptions{
 		CatalogID: core.StringPtr(catalogID),
-		SchemaID:  core.StringPtr(schemaID),
-		TableID:   core.StringPtr(tableID),
-		EngineID:  core.StringPtr(engineID),
+		SchemaID: core.StringPtr(schemaID),
+		TableID: core.StringPtr(tableID),
+		EngineID: core.StringPtr(engineID),
 	}
 }
 
@@ -11797,6 +15907,12 @@ func (_options *DeleteTableOptions) SetEngineID(engineID string) *DeleteTableOpt
 	return _options
 }
 
+// SetType : Allow user to set Type
+func (_options *DeleteTableOptions) SetType(typeVar string) *DeleteTableOptions {
+	_options.Type = core.StringPtr(typeVar)
+	return _options
+}
+
 // SetAuthInstanceID : Allow user to set AuthInstanceID
 func (_options *DeleteTableOptions) SetAuthInstanceID(authInstanceID string) *DeleteTableOptions {
 	_options.AuthInstanceID = core.StringPtr(authInstanceID)
@@ -11805,43 +15921,6 @@ func (_options *DeleteTableOptions) SetAuthInstanceID(authInstanceID string) *De
 
 // SetHeaders : Allow user to set Headers
 func (options *DeleteTableOptions) SetHeaders(param map[string]string) *DeleteTableOptions {
-	options.Headers = param
-	return options
-}
-
-// DeregisterBucketOptions : The DeregisterBucket options.
-type DeregisterBucketOptions struct {
-	// bucket id.
-	BucketID *string `json:"bucket_id" validate:"required,ne="`
-
-	// CRN.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests.
-	Headers map[string]string
-}
-
-// NewDeregisterBucketOptions : Instantiate DeregisterBucketOptions
-func (*WatsonxDataV2) NewDeregisterBucketOptions(bucketID string) *DeregisterBucketOptions {
-	return &DeregisterBucketOptions{
-		BucketID: core.StringPtr(bucketID),
-	}
-}
-
-// SetBucketID : Allow user to set BucketID
-func (_options *DeregisterBucketOptions) SetBucketID(bucketID string) *DeregisterBucketOptions {
-	_options.BucketID = core.StringPtr(bucketID)
-	return _options
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *DeregisterBucketOptions) SetAuthInstanceID(authInstanceID string) *DeregisterBucketOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *DeregisterBucketOptions) SetHeaders(param map[string]string) *DeregisterBucketOptions {
 	options.Headers = param
 	return options
 }
@@ -11906,6 +15985,188 @@ func UnmarshalDriver(m map[string]json.RawMessage, result interface{}) (err erro
 	return
 }
 
+// DriverRegistration : Driver registration.
+type DriverRegistration struct {
+	// Associated engines.
+	AssociatedEngines []string `json:"associated_engines,omitempty"`
+
+	// Driver connection type.
+	ConnectionType *string `json:"connection_type,omitempty"`
+
+	// Driver ID auto generated during driver registration.
+	DriverID *string `json:"driver_id,omitempty"`
+
+	// Driver name.
+	DriverName *string `json:"driver_name,omitempty"`
+
+	// Created on.
+	ModifiedAt *string `json:"modified_at,omitempty"`
+
+	// Created by.
+	ModifiedBy *string `json:"modified_by,omitempty"`
+
+	// Driver status.
+	Status *string `json:"status,omitempty"`
+
+	// Driver version.
+	Version *string `json:"version,omitempty"`
+}
+
+// UnmarshalDriverRegistration unmarshals an instance of DriverRegistration from the specified map of raw messages.
+func UnmarshalDriverRegistration(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(DriverRegistration)
+	err = core.UnmarshalPrimitive(m, "associated_engines", &obj.AssociatedEngines)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "associated_engines-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "connection_type", &obj.ConnectionType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "connection_type-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "driver_id", &obj.DriverID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "driver_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "driver_name", &obj.DriverName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "driver_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "modified_at", &obj.ModifiedAt)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "modified_at-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "modified_by", &obj.ModifiedBy)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "modified_by-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "status", &obj.Status)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "status-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "version", &obj.Version)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "version-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// DriverRegistrationCollection : list driver registrations.
+type DriverRegistrationCollection struct {
+	// Driver collection body.
+	DriverRegistrations []DriverRegistration `json:"driver_registrations,omitempty"`
+}
+
+// UnmarshalDriverRegistrationCollection unmarshals an instance of DriverRegistrationCollection from the specified map of raw messages.
+func UnmarshalDriverRegistrationCollection(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(DriverRegistrationCollection)
+	err = core.UnmarshalModel(m, "driver_registrations", &obj.DriverRegistrations, UnmarshalDriverRegistration)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "driver_registrations-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// DriverRegistrationEngine : Engines associated to the driver.
+type DriverRegistrationEngine struct {
+	// List of engine IDs.
+	Engines []string `json:"engines,omitempty"`
+}
+
+// UnmarshalDriverRegistrationEngine unmarshals an instance of DriverRegistrationEngine from the specified map of raw messages.
+func UnmarshalDriverRegistrationEngine(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(DriverRegistrationEngine)
+	err = core.UnmarshalPrimitive(m, "engines", &obj.Engines)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engines-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// DriverRegistrationEnginePrototype : Engines associated to the driver.
+type DriverRegistrationEnginePrototype struct {
+	// List of engine IDs.
+	Engines []string `json:"engines,omitempty"`
+}
+
+// UnmarshalDriverRegistrationEnginePrototype unmarshals an instance of DriverRegistrationEnginePrototype from the specified map of raw messages.
+func UnmarshalDriverRegistrationEnginePrototype(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(DriverRegistrationEnginePrototype)
+	err = core.UnmarshalPrimitive(m, "engines", &obj.Engines)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engines-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// AsPatch returns a generic map representation of the DriverRegistrationEnginePrototype
+func (driverRegistrationEnginePrototype *DriverRegistrationEnginePrototype) AsPatch() (_patch map[string]interface{}, err error) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(driverRegistrationEnginePrototype.Engines) {
+		_patch["engines"] = driverRegistrationEnginePrototype.Engines
+	}
+
+	return
+}
+
+// Endpoint : The service endpoint.
+type Endpoint struct {
+	// The external host of the service.
+	ExternalHost *string `json:"external_host,omitempty"`
+
+	// The service type.
+	ServiceType *string `json:"service_type,omitempty"`
+}
+
+// UnmarshalEndpoint unmarshals an instance of Endpoint from the specified map of raw messages.
+func UnmarshalEndpoint(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(Endpoint)
+	err = core.UnmarshalPrimitive(m, "external_host", &obj.ExternalHost)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "external_host-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "service_type", &obj.ServiceType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "service_type-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// EndpointCollection : List endpoints.
+type EndpointCollection struct {
+	// List of the endpoints CPG and CAS.
+	Endpoints []Endpoint `json:"endpoints,omitempty"`
+}
+
+// UnmarshalEndpointCollection unmarshals an instance of EndpointCollection from the specified map of raw messages.
+func UnmarshalEndpointCollection(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(EndpointCollection)
+	err = core.UnmarshalModel(m, "endpoints", &obj.Endpoints, UnmarshalEndpoint)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "endpoints-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
 // EngineDetailsBody : Node details.
 type EngineDetailsBody struct {
 	// api key to work with the saas IAE instance.
@@ -11914,7 +16175,7 @@ type EngineDetailsBody struct {
 	// External engine connection string.
 	ConnectionString *string `json:"connection_string,omitempty"`
 
-	// coordinator/worker property settings.
+	// Coordinator/ worker properties.
 	Coordinator *NodeDescriptionBody `json:"coordinator,omitempty"`
 
 	// Instance to access the instance.
@@ -11926,20 +16187,20 @@ type EngineDetailsBody struct {
 	// Size config.
 	SizeConfig *string `json:"size_config,omitempty"`
 
-	// coordinator/worker property settings.
+	// Coordinator/ worker properties.
 	Worker *NodeDescriptionBody `json:"worker,omitempty"`
 }
 
 // Constants associated with the EngineDetailsBody.SizeConfig property.
 // Size config.
 const (
-	EngineDetailsBody_SizeConfig_CacheOptimized   = "cache_optimized"
+	EngineDetailsBody_SizeConfig_CacheOptimized = "cache_optimized"
 	EngineDetailsBody_SizeConfig_ComputeOptimized = "compute_optimized"
-	EngineDetailsBody_SizeConfig_Custom           = "custom"
-	EngineDetailsBody_SizeConfig_Large            = "large"
-	EngineDetailsBody_SizeConfig_Medium           = "medium"
-	EngineDetailsBody_SizeConfig_Small            = "small"
-	EngineDetailsBody_SizeConfig_Starter          = "starter"
+	EngineDetailsBody_SizeConfig_Custom = "custom"
+	EngineDetailsBody_SizeConfig_Large = "large"
+	EngineDetailsBody_SizeConfig_Medium = "medium"
+	EngineDetailsBody_SizeConfig_Small = "small"
+	EngineDetailsBody_SizeConfig_Starter = "starter"
 )
 
 // UnmarshalEngineDetailsBody unmarshals an instance of EngineDetailsBody from the specified map of raw messages.
@@ -11984,12 +16245,51 @@ func UnmarshalEngineDetailsBody(m map[string]json.RawMessage, result interface{}
 	return
 }
 
-// EnginePropertiesOaiGen1Configuration : Configuration settings.
-type EnginePropertiesOaiGen1Configuration struct {
-	// coordinator/worker property settings.
+// EnginePropertiesLogConfiguration : Log Configuration settings.
+type EnginePropertiesLogConfiguration struct {
+	// Coordinator/ worker properties.
 	Coordinator *NodeDescriptionBody `json:"coordinator,omitempty"`
 
-	// coordinator/worker property settings.
+	// Coordinator/ worker properties.
+	Worker *NodeDescriptionBody `json:"worker,omitempty"`
+}
+
+// UnmarshalEnginePropertiesLogConfiguration unmarshals an instance of EnginePropertiesLogConfiguration from the specified map of raw messages.
+func UnmarshalEnginePropertiesLogConfiguration(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(EnginePropertiesLogConfiguration)
+	err = core.UnmarshalModel(m, "coordinator", &obj.Coordinator, UnmarshalNodeDescriptionBody)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "coordinator-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "worker", &obj.Worker, UnmarshalNodeDescriptionBody)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "worker-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the EnginePropertiesLogConfiguration
+func (enginePropertiesLogConfiguration *EnginePropertiesLogConfiguration) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(enginePropertiesLogConfiguration.Coordinator) {
+		_patch["coordinator"] = enginePropertiesLogConfiguration.Coordinator.asPatch()
+	}
+	if !core.IsNil(enginePropertiesLogConfiguration.Worker) {
+		_patch["worker"] = enginePropertiesLogConfiguration.Worker.asPatch()
+	}
+
+	return
+}
+
+// EnginePropertiesOaiGen1Configuration : Configuration settings.
+type EnginePropertiesOaiGen1Configuration struct {
+	// Coordinator/ worker properties.
+	Coordinator *NodeDescriptionBody `json:"coordinator,omitempty"`
+
+	// Coordinator/ worker properties.
 	Worker *NodeDescriptionBody `json:"worker,omitempty"`
 }
 
@@ -12025,10 +16325,10 @@ func (enginePropertiesOaiGen1Configuration *EnginePropertiesOaiGen1Configuration
 
 // EnginePropertiesOaiGen1Jvm : JVM settings.
 type EnginePropertiesOaiGen1Jvm struct {
-	// coordinator/worker property settings.
+	// Coordinator/ worker properties.
 	Coordinator *NodeDescriptionBody `json:"coordinator,omitempty"`
 
-	// coordinator/worker property settings.
+	// Coordinator/ worker properties.
 	Worker *NodeDescriptionBody `json:"worker,omitempty"`
 }
 
@@ -12064,10 +16364,10 @@ func (enginePropertiesOaiGen1Jvm *EnginePropertiesOaiGen1Jvm) asPatch() (_patch 
 
 // EnginePropertiesOaiGenConfiguration : Configuration settings for the engine properties.
 type EnginePropertiesOaiGenConfiguration struct {
-	// Node details.
+	// coordinator/worker property settings.
 	Coordinator *PrestissimoNodeDescriptionBody `json:"coordinator,omitempty"`
 
-	// Node details.
+	// coordinator/worker property settings.
 	Worker *PrestissimoNodeDescriptionBody `json:"worker,omitempty"`
 }
 
@@ -12099,6 +16399,202 @@ func (enginePropertiesOaiGenConfiguration *EnginePropertiesOaiGenConfiguration) 
 	}
 
 	return
+}
+
+// EnrichmentAsset : Encrichment asset.
+type EnrichmentAsset struct {
+	// schema name.
+	AssetAttributes []string `json:"asset_attributes,omitempty"`
+
+	// data asset id.
+	AssetID *string `json:"asset_id,omitempty"`
+
+	// asset name.
+	AssetName *string `json:"asset_name,omitempty"`
+
+	// resource name.
+	ResourceKey *string `json:"resource_key,omitempty"`
+
+	// schema.
+	SchemaName *string `json:"schema_name,omitempty"`
+}
+
+// UnmarshalEnrichmentAsset unmarshals an instance of EnrichmentAsset from the specified map of raw messages.
+func UnmarshalEnrichmentAsset(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(EnrichmentAsset)
+	err = core.UnmarshalPrimitive(m, "asset_attributes", &obj.AssetAttributes)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "asset_attributes-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "asset_id", &obj.AssetID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "asset_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "asset_name", &obj.AssetName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "asset_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "resource_key", &obj.ResourceKey)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "resource_key-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "schema_name", &obj.SchemaName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "schema_name-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// EnrichmentObj : Encrichment api object.
+type EnrichmentObj struct {
+	// catalog name.
+	Catalog *string `json:"catalog" validate:"required"`
+
+	// operation type.
+	Operation *string `json:"operation" validate:"required"`
+
+	// schema name.
+	Schema *string `json:"schema" validate:"required"`
+
+	// schema name.
+	Tables []string `json:"tables,omitempty"`
+}
+
+// NewEnrichmentObj : Instantiate EnrichmentObj (Generic Model Constructor)
+func (*WatsonxDataV2) NewEnrichmentObj(catalog string, operation string, schema string) (_model *EnrichmentObj, err error) {
+	_model = &EnrichmentObj{
+		Catalog: core.StringPtr(catalog),
+		Operation: core.StringPtr(operation),
+		Schema: core.StringPtr(schema),
+	}
+	err = core.ValidateStruct(_model, "required parameters")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "model-missing-required", common.GetComponentInfo())
+	}
+	return
+}
+
+// UnmarshalEnrichmentObj unmarshals an instance of EnrichmentObj from the specified map of raw messages.
+func UnmarshalEnrichmentObj(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(EnrichmentObj)
+	err = core.UnmarshalPrimitive(m, "catalog", &obj.Catalog)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "catalog-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "operation", &obj.Operation)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "operation-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "schema", &obj.Schema)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "schema-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "tables", &obj.Tables)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "tables-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// ErrorObj : integration error object.
+type ErrorObj struct {
+	// error code.
+	Code *string `json:"code,omitempty"`
+
+	// error message.
+	Message *string `json:"message,omitempty"`
+}
+
+// UnmarshalErrorObj unmarshals an instance of ErrorObj from the specified map of raw messages.
+func UnmarshalErrorObj(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(ErrorObj)
+	err = core.UnmarshalPrimitive(m, "code", &obj.Code)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "code-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "message", &obj.Message)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "message-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// ExecuteQueryCreatedBody : success response.
+type ExecuteQueryCreatedBody struct {
+	// ResultExecuteQuery OK.
+	Response *ResultExecuteQuery `json:"response,omitempty"`
+}
+
+// UnmarshalExecuteQueryCreatedBody unmarshals an instance of ExecuteQueryCreatedBody from the specified map of raw messages.
+func UnmarshalExecuteQueryCreatedBody(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(ExecuteQueryCreatedBody)
+	err = core.UnmarshalModel(m, "response", &obj.Response, UnmarshalResultExecuteQuery)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "response-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// GetBucketObjectPropertiesOptions : The GetBucketObjectProperties options.
+type GetBucketObjectPropertiesOptions struct {
+	// bucket id.
+	BucketID *string `json:"bucket_id" validate:"required,ne="`
+
+	// bucket object size.
+	Paths []Path `json:"paths,omitempty"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewGetBucketObjectPropertiesOptions : Instantiate GetBucketObjectPropertiesOptions
+func (*WatsonxDataV2) NewGetBucketObjectPropertiesOptions(bucketID string) *GetBucketObjectPropertiesOptions {
+	return &GetBucketObjectPropertiesOptions{
+		BucketID: core.StringPtr(bucketID),
+	}
+}
+
+// SetBucketID : Allow user to set BucketID
+func (_options *GetBucketObjectPropertiesOptions) SetBucketID(bucketID string) *GetBucketObjectPropertiesOptions {
+	_options.BucketID = core.StringPtr(bucketID)
+	return _options
+}
+
+// SetPaths : Allow user to set Paths
+func (_options *GetBucketObjectPropertiesOptions) SetPaths(paths []Path) *GetBucketObjectPropertiesOptions {
+	_options.Paths = paths
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *GetBucketObjectPropertiesOptions) SetAuthInstanceID(authInstanceID string) *GetBucketObjectPropertiesOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *GetBucketObjectPropertiesOptions) SetHeaders(param map[string]string) *GetBucketObjectPropertiesOptions {
+	options.Headers = param
+	return options
 }
 
 // GetBucketRegistrationOptions : The GetBucketRegistration options.
@@ -12212,6 +16708,32 @@ func (options *GetDatabaseOptions) SetHeaders(param map[string]string) *GetDatab
 	return options
 }
 
+// GetEndpointsOptions : The GetEndpoints options.
+type GetEndpointsOptions struct {
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewGetEndpointsOptions : Instantiate GetEndpointsOptions
+func (*WatsonxDataV2) NewGetEndpointsOptions() *GetEndpointsOptions {
+	return &GetEndpointsOptions{}
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *GetEndpointsOptions) SetAuthInstanceID(authInstanceID string) *GetEndpointsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *GetEndpointsOptions) SetHeaders(param map[string]string) *GetEndpointsOptions {
+	options.Headers = param
+	return options
+}
+
 // GetIngestionJobOptions : The GetIngestionJob options.
 type GetIngestionJobOptions struct {
 	// ingestion job id.
@@ -12227,7 +16749,7 @@ type GetIngestionJobOptions struct {
 // NewGetIngestionJobOptions : Instantiate GetIngestionJobOptions
 func (*WatsonxDataV2) NewGetIngestionJobOptions(jobID string, authInstanceID string) *GetIngestionJobOptions {
 	return &GetIngestionJobOptions{
-		JobID:          core.StringPtr(jobID),
+		JobID: core.StringPtr(jobID),
 		AuthInstanceID: core.StringPtr(authInstanceID),
 	}
 }
@@ -12246,6 +16768,52 @@ func (_options *GetIngestionJobOptions) SetAuthInstanceID(authInstanceID string)
 
 // SetHeaders : Allow user to set Headers
 func (options *GetIngestionJobOptions) SetHeaders(param map[string]string) *GetIngestionJobOptions {
+	options.Headers = param
+	return options
+}
+
+// GetIntegrationsOptions : The GetIntegrations options.
+type GetIntegrationsOptions struct {
+	// integration_id.
+	IntegrationID *string `json:"integration_id" validate:"required,ne="`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// API Authentication service token.
+	Secret *string `json:"Secret,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewGetIntegrationsOptions : Instantiate GetIntegrationsOptions
+func (*WatsonxDataV2) NewGetIntegrationsOptions(integrationID string) *GetIntegrationsOptions {
+	return &GetIntegrationsOptions{
+		IntegrationID: core.StringPtr(integrationID),
+	}
+}
+
+// SetIntegrationID : Allow user to set IntegrationID
+func (_options *GetIntegrationsOptions) SetIntegrationID(integrationID string) *GetIntegrationsOptions {
+	_options.IntegrationID = core.StringPtr(integrationID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *GetIntegrationsOptions) SetAuthInstanceID(authInstanceID string) *GetIntegrationsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetSecret : Allow user to set Secret
+func (_options *GetIntegrationsOptions) SetSecret(secret string) *GetIntegrationsOptions {
+	_options.Secret = core.StringPtr(secret)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *GetIntegrationsOptions) SetHeaders(param map[string]string) *GetIntegrationsOptions {
 	options.Headers = param
 	return options
 }
@@ -12305,7 +16873,7 @@ type GetPrestissimoEngineCatalogOptions struct {
 // NewGetPrestissimoEngineCatalogOptions : Instantiate GetPrestissimoEngineCatalogOptions
 func (*WatsonxDataV2) NewGetPrestissimoEngineCatalogOptions(engineID string, catalogID string) *GetPrestissimoEngineCatalogOptions {
 	return &GetPrestissimoEngineCatalogOptions{
-		EngineID:  core.StringPtr(engineID),
+		EngineID: core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
 	}
 }
@@ -12389,7 +16957,7 @@ type GetPrestoEngineCatalogOptions struct {
 // NewGetPrestoEngineCatalogOptions : Instantiate GetPrestoEngineCatalogOptions
 func (*WatsonxDataV2) NewGetPrestoEngineCatalogOptions(engineID string, catalogID string) *GetPrestoEngineCatalogOptions {
 	return &GetPrestoEngineCatalogOptions{
-		EngineID:  core.StringPtr(engineID),
+		EngineID: core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
 	}
 }
@@ -12455,6 +17023,412 @@ func (options *GetPrestoEngineOptions) SetHeaders(param map[string]string) *GetP
 	return options
 }
 
+// GetSalIntegrationEnrichmentAssetsOptions : The GetSalIntegrationEnrichmentAssets options.
+type GetSalIntegrationEnrichmentAssetsOptions struct {
+	// enrichment project id.
+	ProjectID *string `json:"project_id,omitempty"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewGetSalIntegrationEnrichmentAssetsOptions : Instantiate GetSalIntegrationEnrichmentAssetsOptions
+func (*WatsonxDataV2) NewGetSalIntegrationEnrichmentAssetsOptions() *GetSalIntegrationEnrichmentAssetsOptions {
+	return &GetSalIntegrationEnrichmentAssetsOptions{}
+}
+
+// SetProjectID : Allow user to set ProjectID
+func (_options *GetSalIntegrationEnrichmentAssetsOptions) SetProjectID(projectID string) *GetSalIntegrationEnrichmentAssetsOptions {
+	_options.ProjectID = core.StringPtr(projectID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *GetSalIntegrationEnrichmentAssetsOptions) SetAuthInstanceID(authInstanceID string) *GetSalIntegrationEnrichmentAssetsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *GetSalIntegrationEnrichmentAssetsOptions) SetHeaders(param map[string]string) *GetSalIntegrationEnrichmentAssetsOptions {
+	options.Headers = param
+	return options
+}
+
+// GetSalIntegrationEnrichmentDataAssetOptions : The GetSalIntegrationEnrichmentDataAsset options.
+type GetSalIntegrationEnrichmentDataAssetOptions struct {
+	// enrichment project id.
+	ProjectID *string `json:"project_id,omitempty"`
+
+	// enrichment data asset id.
+	AssetID *string `json:"asset_id,omitempty"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewGetSalIntegrationEnrichmentDataAssetOptions : Instantiate GetSalIntegrationEnrichmentDataAssetOptions
+func (*WatsonxDataV2) NewGetSalIntegrationEnrichmentDataAssetOptions() *GetSalIntegrationEnrichmentDataAssetOptions {
+	return &GetSalIntegrationEnrichmentDataAssetOptions{}
+}
+
+// SetProjectID : Allow user to set ProjectID
+func (_options *GetSalIntegrationEnrichmentDataAssetOptions) SetProjectID(projectID string) *GetSalIntegrationEnrichmentDataAssetOptions {
+	_options.ProjectID = core.StringPtr(projectID)
+	return _options
+}
+
+// SetAssetID : Allow user to set AssetID
+func (_options *GetSalIntegrationEnrichmentDataAssetOptions) SetAssetID(assetID string) *GetSalIntegrationEnrichmentDataAssetOptions {
+	_options.AssetID = core.StringPtr(assetID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *GetSalIntegrationEnrichmentDataAssetOptions) SetAuthInstanceID(authInstanceID string) *GetSalIntegrationEnrichmentDataAssetOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *GetSalIntegrationEnrichmentDataAssetOptions) SetHeaders(param map[string]string) *GetSalIntegrationEnrichmentDataAssetOptions {
+	options.Headers = param
+	return options
+}
+
+// GetSalIntegrationEnrichmentGlobalSettingsOptions : The GetSalIntegrationEnrichmentGlobalSettings options.
+type GetSalIntegrationEnrichmentGlobalSettingsOptions struct {
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewGetSalIntegrationEnrichmentGlobalSettingsOptions : Instantiate GetSalIntegrationEnrichmentGlobalSettingsOptions
+func (*WatsonxDataV2) NewGetSalIntegrationEnrichmentGlobalSettingsOptions() *GetSalIntegrationEnrichmentGlobalSettingsOptions {
+	return &GetSalIntegrationEnrichmentGlobalSettingsOptions{}
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *GetSalIntegrationEnrichmentGlobalSettingsOptions) SetAuthInstanceID(authInstanceID string) *GetSalIntegrationEnrichmentGlobalSettingsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *GetSalIntegrationEnrichmentGlobalSettingsOptions) SetHeaders(param map[string]string) *GetSalIntegrationEnrichmentGlobalSettingsOptions {
+	options.Headers = param
+	return options
+}
+
+// GetSalIntegrationEnrichmentJobRunLogsOptions : The GetSalIntegrationEnrichmentJobRunLogs options.
+type GetSalIntegrationEnrichmentJobRunLogsOptions struct {
+	// enrichment job id.
+	JobID *string `json:"job_id,omitempty"`
+
+	// enrichment job run id.
+	JobRunID *string `json:"job_run_id,omitempty"`
+
+	// enrichment project id.
+	ProjectID *string `json:"project_id,omitempty"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewGetSalIntegrationEnrichmentJobRunLogsOptions : Instantiate GetSalIntegrationEnrichmentJobRunLogsOptions
+func (*WatsonxDataV2) NewGetSalIntegrationEnrichmentJobRunLogsOptions() *GetSalIntegrationEnrichmentJobRunLogsOptions {
+	return &GetSalIntegrationEnrichmentJobRunLogsOptions{}
+}
+
+// SetJobID : Allow user to set JobID
+func (_options *GetSalIntegrationEnrichmentJobRunLogsOptions) SetJobID(jobID string) *GetSalIntegrationEnrichmentJobRunLogsOptions {
+	_options.JobID = core.StringPtr(jobID)
+	return _options
+}
+
+// SetJobRunID : Allow user to set JobRunID
+func (_options *GetSalIntegrationEnrichmentJobRunLogsOptions) SetJobRunID(jobRunID string) *GetSalIntegrationEnrichmentJobRunLogsOptions {
+	_options.JobRunID = core.StringPtr(jobRunID)
+	return _options
+}
+
+// SetProjectID : Allow user to set ProjectID
+func (_options *GetSalIntegrationEnrichmentJobRunLogsOptions) SetProjectID(projectID string) *GetSalIntegrationEnrichmentJobRunLogsOptions {
+	_options.ProjectID = core.StringPtr(projectID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *GetSalIntegrationEnrichmentJobRunLogsOptions) SetAuthInstanceID(authInstanceID string) *GetSalIntegrationEnrichmentJobRunLogsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *GetSalIntegrationEnrichmentJobRunLogsOptions) SetHeaders(param map[string]string) *GetSalIntegrationEnrichmentJobRunLogsOptions {
+	options.Headers = param
+	return options
+}
+
+// GetSalIntegrationEnrichmentJobRunsOptions : The GetSalIntegrationEnrichmentJobRuns options.
+type GetSalIntegrationEnrichmentJobRunsOptions struct {
+	// enrichment job id.
+	JobID *string `json:"job_id,omitempty"`
+
+	// enrichment project id.
+	ProjectID *string `json:"project_id,omitempty"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewGetSalIntegrationEnrichmentJobRunsOptions : Instantiate GetSalIntegrationEnrichmentJobRunsOptions
+func (*WatsonxDataV2) NewGetSalIntegrationEnrichmentJobRunsOptions() *GetSalIntegrationEnrichmentJobRunsOptions {
+	return &GetSalIntegrationEnrichmentJobRunsOptions{}
+}
+
+// SetJobID : Allow user to set JobID
+func (_options *GetSalIntegrationEnrichmentJobRunsOptions) SetJobID(jobID string) *GetSalIntegrationEnrichmentJobRunsOptions {
+	_options.JobID = core.StringPtr(jobID)
+	return _options
+}
+
+// SetProjectID : Allow user to set ProjectID
+func (_options *GetSalIntegrationEnrichmentJobRunsOptions) SetProjectID(projectID string) *GetSalIntegrationEnrichmentJobRunsOptions {
+	_options.ProjectID = core.StringPtr(projectID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *GetSalIntegrationEnrichmentJobRunsOptions) SetAuthInstanceID(authInstanceID string) *GetSalIntegrationEnrichmentJobRunsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *GetSalIntegrationEnrichmentJobRunsOptions) SetHeaders(param map[string]string) *GetSalIntegrationEnrichmentJobRunsOptions {
+	options.Headers = param
+	return options
+}
+
+// GetSalIntegrationEnrichmentJobsOptions : The GetSalIntegrationEnrichmentJobs options.
+type GetSalIntegrationEnrichmentJobsOptions struct {
+	// ikc project id.
+	WkcProjectID *string `json:"wkc_project_id,omitempty"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewGetSalIntegrationEnrichmentJobsOptions : Instantiate GetSalIntegrationEnrichmentJobsOptions
+func (*WatsonxDataV2) NewGetSalIntegrationEnrichmentJobsOptions() *GetSalIntegrationEnrichmentJobsOptions {
+	return &GetSalIntegrationEnrichmentJobsOptions{}
+}
+
+// SetWkcProjectID : Allow user to set WkcProjectID
+func (_options *GetSalIntegrationEnrichmentJobsOptions) SetWkcProjectID(wkcProjectID string) *GetSalIntegrationEnrichmentJobsOptions {
+	_options.WkcProjectID = core.StringPtr(wkcProjectID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *GetSalIntegrationEnrichmentJobsOptions) SetAuthInstanceID(authInstanceID string) *GetSalIntegrationEnrichmentJobsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *GetSalIntegrationEnrichmentJobsOptions) SetHeaders(param map[string]string) *GetSalIntegrationEnrichmentJobsOptions {
+	options.Headers = param
+	return options
+}
+
+// GetSalIntegrationEnrichmentSettingsOptions : The GetSalIntegrationEnrichmentSettings options.
+type GetSalIntegrationEnrichmentSettingsOptions struct {
+	// wkc project id.
+	ProjectID *string `json:"project_id,omitempty"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewGetSalIntegrationEnrichmentSettingsOptions : Instantiate GetSalIntegrationEnrichmentSettingsOptions
+func (*WatsonxDataV2) NewGetSalIntegrationEnrichmentSettingsOptions() *GetSalIntegrationEnrichmentSettingsOptions {
+	return &GetSalIntegrationEnrichmentSettingsOptions{}
+}
+
+// SetProjectID : Allow user to set ProjectID
+func (_options *GetSalIntegrationEnrichmentSettingsOptions) SetProjectID(projectID string) *GetSalIntegrationEnrichmentSettingsOptions {
+	_options.ProjectID = core.StringPtr(projectID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *GetSalIntegrationEnrichmentSettingsOptions) SetAuthInstanceID(authInstanceID string) *GetSalIntegrationEnrichmentSettingsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *GetSalIntegrationEnrichmentSettingsOptions) SetHeaders(param map[string]string) *GetSalIntegrationEnrichmentSettingsOptions {
+	options.Headers = param
+	return options
+}
+
+// GetSalIntegrationGlossaryTermsOptions : The GetSalIntegrationGlossaryTerms options.
+type GetSalIntegrationGlossaryTermsOptions struct {
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewGetSalIntegrationGlossaryTermsOptions : Instantiate GetSalIntegrationGlossaryTermsOptions
+func (*WatsonxDataV2) NewGetSalIntegrationGlossaryTermsOptions() *GetSalIntegrationGlossaryTermsOptions {
+	return &GetSalIntegrationGlossaryTermsOptions{}
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *GetSalIntegrationGlossaryTermsOptions) SetAuthInstanceID(authInstanceID string) *GetSalIntegrationGlossaryTermsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *GetSalIntegrationGlossaryTermsOptions) SetHeaders(param map[string]string) *GetSalIntegrationGlossaryTermsOptions {
+	options.Headers = param
+	return options
+}
+
+// GetSalIntegrationMappingsOptions : The GetSalIntegrationMappings options.
+type GetSalIntegrationMappingsOptions struct {
+	// catalog name.
+	CatalogName *string `json:"catalog_name" validate:"required"`
+
+	// schema name.
+	SchemaName *string `json:"schema_name" validate:"required"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewGetSalIntegrationMappingsOptions : Instantiate GetSalIntegrationMappingsOptions
+func (*WatsonxDataV2) NewGetSalIntegrationMappingsOptions(catalogName string, schemaName string) *GetSalIntegrationMappingsOptions {
+	return &GetSalIntegrationMappingsOptions{
+		CatalogName: core.StringPtr(catalogName),
+		SchemaName: core.StringPtr(schemaName),
+	}
+}
+
+// SetCatalogName : Allow user to set CatalogName
+func (_options *GetSalIntegrationMappingsOptions) SetCatalogName(catalogName string) *GetSalIntegrationMappingsOptions {
+	_options.CatalogName = core.StringPtr(catalogName)
+	return _options
+}
+
+// SetSchemaName : Allow user to set SchemaName
+func (_options *GetSalIntegrationMappingsOptions) SetSchemaName(schemaName string) *GetSalIntegrationMappingsOptions {
+	_options.SchemaName = core.StringPtr(schemaName)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *GetSalIntegrationMappingsOptions) SetAuthInstanceID(authInstanceID string) *GetSalIntegrationMappingsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *GetSalIntegrationMappingsOptions) SetHeaders(param map[string]string) *GetSalIntegrationMappingsOptions {
+	options.Headers = param
+	return options
+}
+
+// GetSalIntegrationOptions : The GetSalIntegration options.
+type GetSalIntegrationOptions struct {
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewGetSalIntegrationOptions : Instantiate GetSalIntegrationOptions
+func (*WatsonxDataV2) NewGetSalIntegrationOptions() *GetSalIntegrationOptions {
+	return &GetSalIntegrationOptions{}
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *GetSalIntegrationOptions) SetAuthInstanceID(authInstanceID string) *GetSalIntegrationOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *GetSalIntegrationOptions) SetHeaders(param map[string]string) *GetSalIntegrationOptions {
+	options.Headers = param
+	return options
+}
+
+// GetSalIntegrationUploadGlossaryStatusOptions : The GetSalIntegrationUploadGlossaryStatus options.
+type GetSalIntegrationUploadGlossaryStatusOptions struct {
+	// upload process id.
+	ProcessID *string `json:"process_id,omitempty"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewGetSalIntegrationUploadGlossaryStatusOptions : Instantiate GetSalIntegrationUploadGlossaryStatusOptions
+func (*WatsonxDataV2) NewGetSalIntegrationUploadGlossaryStatusOptions() *GetSalIntegrationUploadGlossaryStatusOptions {
+	return &GetSalIntegrationUploadGlossaryStatusOptions{}
+}
+
+// SetProcessID : Allow user to set ProcessID
+func (_options *GetSalIntegrationUploadGlossaryStatusOptions) SetProcessID(processID string) *GetSalIntegrationUploadGlossaryStatusOptions {
+	_options.ProcessID = core.StringPtr(processID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *GetSalIntegrationUploadGlossaryStatusOptions) SetAuthInstanceID(authInstanceID string) *GetSalIntegrationUploadGlossaryStatusOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *GetSalIntegrationUploadGlossaryStatusOptions) SetHeaders(param map[string]string) *GetSalIntegrationUploadGlossaryStatusOptions {
+	options.Headers = param
+	return options
+}
+
 // GetSparkEngineApplicationStatusOptions : The GetSparkEngineApplicationStatus options.
 type GetSparkEngineApplicationStatusOptions struct {
 	// engine id.
@@ -12473,7 +17447,7 @@ type GetSparkEngineApplicationStatusOptions struct {
 // NewGetSparkEngineApplicationStatusOptions : Instantiate GetSparkEngineApplicationStatusOptions
 func (*WatsonxDataV2) NewGetSparkEngineApplicationStatusOptions(engineID string, applicationID string) *GetSparkEngineApplicationStatusOptions {
 	return &GetSparkEngineApplicationStatusOptions{
-		EngineID:      core.StringPtr(engineID),
+		EngineID: core.StringPtr(engineID),
 		ApplicationID: core.StringPtr(applicationID),
 	}
 }
@@ -12520,7 +17494,7 @@ type GetSparkEngineCatalogOptions struct {
 // NewGetSparkEngineCatalogOptions : Instantiate GetSparkEngineCatalogOptions
 func (*WatsonxDataV2) NewGetSparkEngineCatalogOptions(engineID string, catalogID string) *GetSparkEngineCatalogOptions {
 	return &GetSparkEngineCatalogOptions{
-		EngineID:  core.StringPtr(engineID),
+		EngineID: core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
 	}
 }
@@ -12637,6 +17611,9 @@ type GetTableOptions struct {
 	// engine id.
 	EngineID *string `json:"engine_id" validate:"required"`
 
+	// URL encoded table type.
+	Type *string `json:"type,omitempty"`
+
 	// CRN.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
@@ -12648,9 +17625,9 @@ type GetTableOptions struct {
 func (*WatsonxDataV2) NewGetTableOptions(catalogID string, schemaID string, tableID string, engineID string) *GetTableOptions {
 	return &GetTableOptions{
 		CatalogID: core.StringPtr(catalogID),
-		SchemaID:  core.StringPtr(schemaID),
-		TableID:   core.StringPtr(tableID),
-		EngineID:  core.StringPtr(engineID),
+		SchemaID: core.StringPtr(schemaID),
+		TableID: core.StringPtr(tableID),
+		EngineID: core.StringPtr(engineID),
 	}
 }
 
@@ -12678,6 +17655,12 @@ func (_options *GetTableOptions) SetEngineID(engineID string) *GetTableOptions {
 	return _options
 }
 
+// SetType : Allow user to set Type
+func (_options *GetTableOptions) SetType(typeVar string) *GetTableOptions {
+	_options.Type = core.StringPtr(typeVar)
+	return _options
+}
+
 // SetAuthInstanceID : Allow user to set AuthInstanceID
 func (_options *GetTableOptions) SetAuthInstanceID(authInstanceID string) *GetTableOptions {
 	_options.AuthInstanceID = core.StringPtr(authInstanceID)
@@ -12688,6 +17671,149 @@ func (_options *GetTableOptions) SetAuthInstanceID(authInstanceID string) *GetTa
 func (options *GetTableOptions) SetHeaders(param map[string]string) *GetTableOptions {
 	options.Headers = param
 	return options
+}
+
+// GlossaryObject : glossary object.
+type GlossaryObject struct {
+	// description.
+	Description *string `json:"description,omitempty"`
+
+	// glossary term.
+	Name *string `json:"name,omitempty"`
+}
+
+// UnmarshalGlossaryObject unmarshals an instance of GlossaryObject from the specified map of raw messages.
+func UnmarshalGlossaryObject(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(GlossaryObject)
+	err = core.UnmarshalPrimitive(m, "description", &obj.Description)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "description-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "name", &obj.Name)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "name-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// HdfsStorageRegistration : HDFS storage registration.
+type HdfsStorageRegistration struct {
+	// Actions.
+	Actions []string `json:"actions,omitempty"`
+
+	// bucket catalog.
+	AssociatedCatalog *BucketCatalog `json:"associated_catalog" validate:"required"`
+
+	// HDFS storage display name.
+	BucketDisplayName *string `json:"bucket_display_name,omitempty"`
+
+	// HDFS Storage ID auto generated during registration.
+	BucketID *string `json:"bucket_id,omitempty"`
+
+	// HDFS type.
+	BucketType *string `json:"bucket_type" validate:"required"`
+
+	// Username who created the HDFS storage.
+	CreatedBy *string `json:"created_by" validate:"required"`
+
+	// Creation date.
+	CreatedOn *string `json:"created_on" validate:"required"`
+
+	// HDFS description.
+	Description *string `json:"description" validate:"required"`
+
+	// managed by.
+	ManagedBy *string `json:"managed_by" validate:"required"`
+
+	// mark hdfs active or inactive.
+	State *string `json:"state" validate:"required"`
+
+	// tags.
+	Tags []string `json:"tags,omitempty"`
+}
+
+// Constants associated with the HdfsStorageRegistration.BucketType property.
+// HDFS type.
+const (
+	HdfsStorageRegistration_BucketType_Hdfs = "hdfs"
+)
+
+// Constants associated with the HdfsStorageRegistration.ManagedBy property.
+// managed by.
+const (
+	HdfsStorageRegistration_ManagedBy_Customer = "customer"
+)
+
+// Constants associated with the HdfsStorageRegistration.State property.
+// mark hdfs active or inactive.
+const (
+	HdfsStorageRegistration_State_Active = "active"
+	HdfsStorageRegistration_State_Inactive = "inactive"
+)
+
+// UnmarshalHdfsStorageRegistration unmarshals an instance of HdfsStorageRegistration from the specified map of raw messages.
+func UnmarshalHdfsStorageRegistration(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(HdfsStorageRegistration)
+	err = core.UnmarshalPrimitive(m, "actions", &obj.Actions)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "actions-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "associated_catalog", &obj.AssociatedCatalog, UnmarshalBucketCatalog)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "associated_catalog-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "bucket_display_name", &obj.BucketDisplayName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "bucket_display_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "bucket_id", &obj.BucketID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "bucket_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "bucket_type", &obj.BucketType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "bucket_type-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "created_by", &obj.CreatedBy)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "created_by-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "created_on", &obj.CreatedOn)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "created_on-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "description", &obj.Description)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "description-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "managed_by", &obj.ManagedBy)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "managed_by-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "state", &obj.State)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "state-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "tags", &obj.Tags)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
 }
 
 // IngestionJob : Ingestion job.
@@ -12750,7 +17876,7 @@ type IngestionJob struct {
 // Constants associated with the IngestionJob.SourceFileType property.
 // Source file types (parquet or csv).
 const (
-	IngestionJob_SourceFileType_Csv     = "csv"
+	IngestionJob_SourceFileType_Csv = "csv"
 	IngestionJob_SourceFileType_Parquet = "parquet"
 )
 
@@ -12883,6 +18009,21 @@ func UnmarshalIngestionJobCollection(m map[string]json.RawMessage, result interf
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
+}
+
+// Retrieve the value to be passed to a request to access the next page of results
+func (resp *IngestionJobCollection) GetNextStart() (*string, error) {
+	if core.IsNil(resp.Next) {
+		return nil, nil
+	}
+	start, err := core.GetQueryParam(resp.Next.Href, "start")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "read-query-param-error", common.GetComponentInfo())
+		return nil, err
+	} else if start == nil {
+		return nil, nil
+	}
+	return start, nil
 }
 
 // IngestionJobCollectionPage : A page in a pagination collection.
@@ -13103,13 +18244,303 @@ func UnmarshalIngestionJobPrototypeExecuteConfig(m map[string]json.RawMessage, r
 	return
 }
 
+// Integration : Integration.
+type Integration struct {
+	// Integration APIKEY.
+	Apikey *string `json:"apikey,omitempty"`
+
+	// Properties.
+	ConfigProperties *string `json:"config_properties,omitempty"`
+
+	// data policy enabler with wxd for ranger.
+	EnableDataPolicyWithinWxd *bool `json:"enable_data_policy_within_wxd,omitempty"`
+
+	// Properties.
+	GovernanceProperties *string `json:"governance_properties,omitempty"`
+
+	// resouce for ranger.
+	IntegrationID *string `json:"integration_id,omitempty"`
+
+	// modified time in epoch format.
+	ModifiedAt *int64 `json:"modified_at,omitempty"`
+
+	// modified user name.
+	ModifiedBy *string `json:"modified_by,omitempty"`
+
+	// Integration password.
+	Password *string `json:"password,omitempty"`
+
+	// resouce for ranger.
+	Resource *string `json:"resource,omitempty"`
+
+	// Integration type.
+	ServiceType *string `json:"service_type,omitempty"`
+
+	// current state.
+	State *string `json:"state,omitempty"`
+
+	// Comma separated list of storage catalogs for which ikc needs to be enabled.
+	StorageCatalogs []string `json:"storage_catalogs,omitempty"`
+
+	// Integration Connection URL.
+	URL *string `json:"url,omitempty"`
+
+	// Username.
+	Username *string `json:"username,omitempty"`
+}
+
+// UnmarshalIntegration unmarshals an instance of Integration from the specified map of raw messages.
+func UnmarshalIntegration(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(Integration)
+	err = core.UnmarshalPrimitive(m, "apikey", &obj.Apikey)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "apikey-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "config_properties", &obj.ConfigProperties)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "config_properties-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "enable_data_policy_within_wxd", &obj.EnableDataPolicyWithinWxd)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "enable_data_policy_within_wxd-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "governance_properties", &obj.GovernanceProperties)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "governance_properties-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "integration_id", &obj.IntegrationID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "integration_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "modified_at", &obj.ModifiedAt)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "modified_at-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "modified_by", &obj.ModifiedBy)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "modified_by-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "password", &obj.Password)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "password-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "resource", &obj.Resource)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "resource-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "service_type", &obj.ServiceType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "service_type-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "state", &obj.State)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "state-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "storage_catalogs", &obj.StorageCatalogs)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "storage_catalogs-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "url", &obj.URL)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "username", &obj.Username)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "username-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// IntegrationCollection : list all existing integrations.
+type IntegrationCollection struct {
+	// Database body.
+	Integrations []Integration `json:"integrations,omitempty"`
+}
+
+// UnmarshalIntegrationCollection unmarshals an instance of IntegrationCollection from the specified map of raw messages.
+func UnmarshalIntegrationCollection(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(IntegrationCollection)
+	err = core.UnmarshalModel(m, "integrations", &obj.Integrations, UnmarshalIntegration)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "integrations-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// IntegrationPatch : Update an Integration body.
+type IntegrationPatch struct {
+	// Integration APIKEY.
+	Apikey *string `json:"apikey,omitempty"`
+
+	// data policy enabler with wxd for ranger.
+	EnableDataPolicyWithinWxd *bool `json:"enable_data_policy_within_wxd,omitempty"`
+
+	// Integration password.
+	Password *string `json:"password,omitempty"`
+
+	// resouce for ranger.
+	Resource *string `json:"resource,omitempty"`
+
+	// Comma separated list of bucket catalogs which have ikc enabled.
+	StorageCatalogs []string `json:"storage_catalogs,omitempty"`
+
+	// Integration Connection URL.
+	URL *string `json:"url,omitempty"`
+
+	// Integration username.
+	Username *string `json:"username,omitempty"`
+}
+
+// UnmarshalIntegrationPatch unmarshals an instance of IntegrationPatch from the specified map of raw messages.
+func UnmarshalIntegrationPatch(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(IntegrationPatch)
+	err = core.UnmarshalPrimitive(m, "apikey", &obj.Apikey)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "apikey-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "enable_data_policy_within_wxd", &obj.EnableDataPolicyWithinWxd)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "enable_data_policy_within_wxd-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "password", &obj.Password)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "password-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "resource", &obj.Resource)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "resource-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "storage_catalogs", &obj.StorageCatalogs)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "storage_catalogs-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "url", &obj.URL)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "username", &obj.Username)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "username-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// AsPatch returns a generic map representation of the IntegrationPatch
+func (integrationPatch *IntegrationPatch) AsPatch() (_patch map[string]interface{}, err error) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(integrationPatch.Apikey) {
+		_patch["apikey"] = integrationPatch.Apikey
+	}
+	if !core.IsNil(integrationPatch.EnableDataPolicyWithinWxd) {
+		_patch["enable_data_policy_within_wxd"] = integrationPatch.EnableDataPolicyWithinWxd
+	}
+	if !core.IsNil(integrationPatch.Password) {
+		_patch["password"] = integrationPatch.Password
+	}
+	if !core.IsNil(integrationPatch.Resource) {
+		_patch["resource"] = integrationPatch.Resource
+	}
+	if !core.IsNil(integrationPatch.StorageCatalogs) {
+		_patch["storage_catalogs"] = integrationPatch.StorageCatalogs
+	}
+	if !core.IsNil(integrationPatch.URL) {
+		_patch["url"] = integrationPatch.URL
+	}
+	if !core.IsNil(integrationPatch.Username) {
+		_patch["username"] = integrationPatch.Username
+	}
+
+	return
+}
+
+// ListAllIntegrationsOptions : The ListAllIntegrations options.
+type ListAllIntegrationsOptions struct {
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// API Authentication service token.
+	Secret *string `json:"Secret,omitempty"`
+
+	// service_type.
+	ServiceType *string `json:"service_type,omitempty"`
+
+	// state.
+	State []string `json:"state,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewListAllIntegrationsOptions : Instantiate ListAllIntegrationsOptions
+func (*WatsonxDataV2) NewListAllIntegrationsOptions() *ListAllIntegrationsOptions {
+	return &ListAllIntegrationsOptions{}
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *ListAllIntegrationsOptions) SetAuthInstanceID(authInstanceID string) *ListAllIntegrationsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetSecret : Allow user to set Secret
+func (_options *ListAllIntegrationsOptions) SetSecret(secret string) *ListAllIntegrationsOptions {
+	_options.Secret = core.StringPtr(secret)
+	return _options
+}
+
+// SetServiceType : Allow user to set ServiceType
+func (_options *ListAllIntegrationsOptions) SetServiceType(serviceType string) *ListAllIntegrationsOptions {
+	_options.ServiceType = core.StringPtr(serviceType)
+	return _options
+}
+
+// SetState : Allow user to set State
+func (_options *ListAllIntegrationsOptions) SetState(state []string) *ListAllIntegrationsOptions {
+	_options.State = state
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *ListAllIntegrationsOptions) SetHeaders(param map[string]string) *ListAllIntegrationsOptions {
+	options.Headers = param
+	return options
+}
+
 // ListBucketObjectsOptions : The ListBucketObjects options.
 type ListBucketObjectsOptions struct {
 	// bucket id.
 	BucketID *string `json:"bucket_id" validate:"required,ne="`
 
-	// CRN.
+	// Instance ID.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// path.
+	Path *string `json:"path,omitempty"`
 
 	// Allows users to set headers on API requests.
 	Headers map[string]string
@@ -13134,6 +18565,12 @@ func (_options *ListBucketObjectsOptions) SetAuthInstanceID(authInstanceID strin
 	return _options
 }
 
+// SetPath : Allow user to set Path
+func (_options *ListBucketObjectsOptions) SetPath(path string) *ListBucketObjectsOptions {
+	_options.Path = core.StringPtr(path)
+	return _options
+}
+
 // SetHeaders : Allow user to set Headers
 func (options *ListBucketObjectsOptions) SetHeaders(param map[string]string) *ListBucketObjectsOptions {
 	options.Headers = param
@@ -13142,7 +18579,7 @@ func (options *ListBucketObjectsOptions) SetHeaders(param map[string]string) *Li
 
 // ListBucketRegistrationsOptions : The ListBucketRegistrations options.
 type ListBucketRegistrationsOptions struct {
-	// CRN.
+	// Instance ID.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
 	// Allows users to set headers on API requests.
@@ -13206,7 +18643,7 @@ type ListColumnsOptions struct {
 	// URL encoded schema name.
 	TableID *string `json:"table_id" validate:"required,ne="`
 
-	// CRN.
+	// watsonx.data instance ID.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
 	// Allows users to set headers on API requests.
@@ -13216,10 +18653,10 @@ type ListColumnsOptions struct {
 // NewListColumnsOptions : Instantiate ListColumnsOptions
 func (*WatsonxDataV2) NewListColumnsOptions(engineID string, catalogID string, schemaID string, tableID string) *ListColumnsOptions {
 	return &ListColumnsOptions{
-		EngineID:  core.StringPtr(engineID),
+		EngineID: core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
-		SchemaID:  core.StringPtr(schemaID),
-		TableID:   core.StringPtr(tableID),
+		SchemaID: core.StringPtr(schemaID),
+		TableID: core.StringPtr(tableID),
 	}
 }
 
@@ -13261,7 +18698,7 @@ func (options *ListColumnsOptions) SetHeaders(param map[string]string) *ListColu
 
 // ListDatabaseRegistrationsOptions : The ListDatabaseRegistrations options.
 type ListDatabaseRegistrationsOptions struct {
-	// CRN.
+	// watsonx.data instance ID.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
 	// Allows users to set headers on API requests.
@@ -13311,13 +18748,39 @@ func (options *ListDb2EnginesOptions) SetHeaders(param map[string]string) *ListD
 	return options
 }
 
+// ListDriverRegistrationOptions : The ListDriverRegistration options.
+type ListDriverRegistrationOptions struct {
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewListDriverRegistrationOptions : Instantiate ListDriverRegistrationOptions
+func (*WatsonxDataV2) NewListDriverRegistrationOptions() *ListDriverRegistrationOptions {
+	return &ListDriverRegistrationOptions{}
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *ListDriverRegistrationOptions) SetAuthInstanceID(authInstanceID string) *ListDriverRegistrationOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *ListDriverRegistrationOptions) SetHeaders(param map[string]string) *ListDriverRegistrationOptions {
+	options.Headers = param
+	return options
+}
+
 // ListIngestionJobsOptions : The ListIngestionJobs options.
 type ListIngestionJobsOptions struct {
 	// watsonx.data instance ID.
 	AuthInstanceID *string `json:"AuthInstanceId" validate:"required"`
 
 	// Page number of requested ingestion jobs.
-	Page *int64 `json:"page,omitempty"`
+	Start *string `json:"start,omitempty"`
 
 	// Number of requested ingestion jobs.
 	JobsPerPage *int64 `json:"jobs_per_page,omitempty"`
@@ -13339,9 +18802,9 @@ func (_options *ListIngestionJobsOptions) SetAuthInstanceID(authInstanceID strin
 	return _options
 }
 
-// SetPage : Allow user to set Page
-func (_options *ListIngestionJobsOptions) SetPage(page int64) *ListIngestionJobsOptions {
-	_options.Page = core.Int64Ptr(page)
+// SetStart : Allow user to set Start
+func (_options *ListIngestionJobsOptions) SetStart(start string) *ListIngestionJobsOptions {
+	_options.Start = core.StringPtr(start)
 	return _options
 }
 
@@ -13357,9 +18820,93 @@ func (options *ListIngestionJobsOptions) SetHeaders(param map[string]string) *Li
 	return options
 }
 
+// ListMilvusDatabaseCollectionsOptions : The ListMilvusDatabaseCollections options.
+type ListMilvusDatabaseCollectionsOptions struct {
+	// service id.
+	ServiceID *string `json:"service_id" validate:"required,ne="`
+
+	// database id.
+	DatabaseID *string `json:"database_id" validate:"required,ne="`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewListMilvusDatabaseCollectionsOptions : Instantiate ListMilvusDatabaseCollectionsOptions
+func (*WatsonxDataV2) NewListMilvusDatabaseCollectionsOptions(serviceID string, databaseID string) *ListMilvusDatabaseCollectionsOptions {
+	return &ListMilvusDatabaseCollectionsOptions{
+		ServiceID: core.StringPtr(serviceID),
+		DatabaseID: core.StringPtr(databaseID),
+	}
+}
+
+// SetServiceID : Allow user to set ServiceID
+func (_options *ListMilvusDatabaseCollectionsOptions) SetServiceID(serviceID string) *ListMilvusDatabaseCollectionsOptions {
+	_options.ServiceID = core.StringPtr(serviceID)
+	return _options
+}
+
+// SetDatabaseID : Allow user to set DatabaseID
+func (_options *ListMilvusDatabaseCollectionsOptions) SetDatabaseID(databaseID string) *ListMilvusDatabaseCollectionsOptions {
+	_options.DatabaseID = core.StringPtr(databaseID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *ListMilvusDatabaseCollectionsOptions) SetAuthInstanceID(authInstanceID string) *ListMilvusDatabaseCollectionsOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *ListMilvusDatabaseCollectionsOptions) SetHeaders(param map[string]string) *ListMilvusDatabaseCollectionsOptions {
+	options.Headers = param
+	return options
+}
+
+// ListMilvusServiceDatabasesOptions : The ListMilvusServiceDatabases options.
+type ListMilvusServiceDatabasesOptions struct {
+	// service id.
+	ServiceID *string `json:"service_id" validate:"required,ne="`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewListMilvusServiceDatabasesOptions : Instantiate ListMilvusServiceDatabasesOptions
+func (*WatsonxDataV2) NewListMilvusServiceDatabasesOptions(serviceID string) *ListMilvusServiceDatabasesOptions {
+	return &ListMilvusServiceDatabasesOptions{
+		ServiceID: core.StringPtr(serviceID),
+	}
+}
+
+// SetServiceID : Allow user to set ServiceID
+func (_options *ListMilvusServiceDatabasesOptions) SetServiceID(serviceID string) *ListMilvusServiceDatabasesOptions {
+	_options.ServiceID = core.StringPtr(serviceID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *ListMilvusServiceDatabasesOptions) SetAuthInstanceID(authInstanceID string) *ListMilvusServiceDatabasesOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *ListMilvusServiceDatabasesOptions) SetHeaders(param map[string]string) *ListMilvusServiceDatabasesOptions {
+	options.Headers = param
+	return options
+}
+
 // ListMilvusServicesOptions : The ListMilvusServices options.
 type ListMilvusServicesOptions struct {
-	// CRN.
+	// watsonx.data instance ID.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
 	// Allows users to set headers on API requests.
@@ -13605,7 +19152,7 @@ type ListSchemasOptions struct {
 // NewListSchemasOptions : Instantiate ListSchemasOptions
 func (*WatsonxDataV2) NewListSchemasOptions(engineID string, catalogID string) *ListSchemasOptions {
 	return &ListSchemasOptions{
-		EngineID:  core.StringPtr(engineID),
+		EngineID: core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
 	}
 }
@@ -13809,7 +19356,7 @@ type ListTableSnapshotsOptions struct {
 	// Table ID.
 	TableID *string `json:"table_id" validate:"required,ne="`
 
-	// CRN.
+	// watsonx.data instance ID.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
 	// Allows users to set headers on API requests.
@@ -13819,10 +19366,10 @@ type ListTableSnapshotsOptions struct {
 // NewListTableSnapshotsOptions : Instantiate ListTableSnapshotsOptions
 func (*WatsonxDataV2) NewListTableSnapshotsOptions(engineID string, catalogID string, schemaID string, tableID string) *ListTableSnapshotsOptions {
 	return &ListTableSnapshotsOptions{
-		EngineID:  core.StringPtr(engineID),
+		EngineID: core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
-		SchemaID:  core.StringPtr(schemaID),
-		TableID:   core.StringPtr(tableID),
+		SchemaID: core.StringPtr(schemaID),
+		TableID: core.StringPtr(tableID),
 	}
 }
 
@@ -13884,8 +19431,8 @@ type ListTablesOptions struct {
 func (*WatsonxDataV2) NewListTablesOptions(catalogID string, schemaID string, engineID string) *ListTablesOptions {
 	return &ListTablesOptions{
 		CatalogID: core.StringPtr(catalogID),
-		SchemaID:  core.StringPtr(schemaID),
-		EngineID:  core.StringPtr(engineID),
+		SchemaID: core.StringPtr(schemaID),
+		EngineID: core.StringPtr(engineID),
 	}
 }
 
@@ -13919,12 +19466,39 @@ func (options *ListTablesOptions) SetHeaders(param map[string]string) *ListTable
 	return options
 }
 
+// MilvusDatabaseCollections : List milvus collections.
+type MilvusDatabaseCollections struct {
+	// milvus collections.
+	Collections []Milvusdbcollection `json:"collections,omitempty"`
+}
+
+// UnmarshalMilvusDatabaseCollections unmarshals an instance of MilvusDatabaseCollections from the specified map of raw messages.
+func UnmarshalMilvusDatabaseCollections(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(MilvusDatabaseCollections)
+	err = core.UnmarshalModel(m, "collections", &obj.Collections, UnmarshalMilvusdbcollection)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "collections-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
 // MilvusService : milvus service details.
 type MilvusService struct {
+	// bucket access key.
+	AccessKey *string `json:"access_key,omitempty"`
+
 	// Actions.
 	Actions []string `json:"actions,omitempty"`
 
-	// Created user name.
+	// bucket name.
+	BucketName *string `json:"bucket_name,omitempty"`
+
+	// bucket type.
+	BucketType *string `json:"bucket_type,omitempty"`
+
+	// Username of the user who created the watsonx.data instance.
 	CreatedBy *string `json:"created_by,omitempty"`
 
 	// Created time in epoch format.
@@ -13932,6 +19506,9 @@ type MilvusService struct {
 
 	// Service description.
 	Description *string `json:"description,omitempty"`
+
+	// bucket endpoint.
+	Endpoint *string `json:"endpoint,omitempty"`
 
 	// milvus grpc_host.
 	GrpcHost *string `json:"grpc_host,omitempty"`
@@ -13951,6 +19528,12 @@ type MilvusService struct {
 	// Origin - place holder.
 	Origin *string `json:"origin,omitempty"`
 
+	// root path.
+	RootPath *string `json:"root_path,omitempty"`
+
+	// bucket secret access key.
+	SecretKey *string `json:"secret_key,omitempty"`
+
 	// Service display name.
 	ServiceDisplayName *string `json:"service_display_name,omitempty"`
 
@@ -13965,6 +19548,9 @@ type MilvusService struct {
 
 	// Tags.
 	Tags []string `json:"tags,omitempty"`
+
+	// tshirt size.
+	TshirtSize *string `json:"tshirt_size,omitempty"`
 
 	// service type.
 	Type *string `json:"type,omitempty"`
@@ -13981,9 +19567,24 @@ const (
 // UnmarshalMilvusService unmarshals an instance of MilvusService from the specified map of raw messages.
 func UnmarshalMilvusService(m map[string]json.RawMessage, result interface{}) (err error) {
 	obj := new(MilvusService)
+	err = core.UnmarshalPrimitive(m, "access_key", &obj.AccessKey)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "access_key-error", common.GetComponentInfo())
+		return
+	}
 	err = core.UnmarshalPrimitive(m, "actions", &obj.Actions)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "actions-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "bucket_name", &obj.BucketName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "bucket_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "bucket_type", &obj.BucketType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "bucket_type-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "created_by", &obj.CreatedBy)
@@ -13999,6 +19600,11 @@ func UnmarshalMilvusService(m map[string]json.RawMessage, result interface{}) (e
 	err = core.UnmarshalPrimitive(m, "description", &obj.Description)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "description-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "endpoint", &obj.Endpoint)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "endpoint-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "grpc_host", &obj.GrpcHost)
@@ -14031,6 +19637,16 @@ func UnmarshalMilvusService(m map[string]json.RawMessage, result interface{}) (e
 		err = core.SDKErrorf(err, "", "origin-error", common.GetComponentInfo())
 		return
 	}
+	err = core.UnmarshalPrimitive(m, "root_path", &obj.RootPath)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "root_path-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "secret_key", &obj.SecretKey)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "secret_key-error", common.GetComponentInfo())
+		return
+	}
 	err = core.UnmarshalPrimitive(m, "service_display_name", &obj.ServiceDisplayName)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "service_display_name-error", common.GetComponentInfo())
@@ -14056,6 +19672,11 @@ func UnmarshalMilvusService(m map[string]json.RawMessage, result interface{}) (e
 		err = core.SDKErrorf(err, "", "tags-error", common.GetComponentInfo())
 		return
 	}
+	err = core.UnmarshalPrimitive(m, "tshirt_size", &obj.TshirtSize)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "tshirt_size-error", common.GetComponentInfo())
+		return
+	}
 	err = core.UnmarshalPrimitive(m, "type", &obj.Type)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "type-error", common.GetComponentInfo())
@@ -14077,6 +19698,24 @@ func UnmarshalMilvusServiceCollection(m map[string]json.RawMessage, result inter
 	err = core.UnmarshalModel(m, "milvus_services", &obj.MilvusServices, UnmarshalMilvusService)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "milvus_services-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// MilvusServiceDatabases : List milvus databases.
+type MilvusServiceDatabases struct {
+	// milvus database body.
+	Databases []string `json:"databases,omitempty"`
+}
+
+// UnmarshalMilvusServiceDatabases unmarshals an instance of MilvusServiceDatabases from the specified map of raw messages.
+func UnmarshalMilvusServiceDatabases(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(MilvusServiceDatabases)
+	err = core.UnmarshalPrimitive(m, "databases", &obj.Databases)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "databases-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -14130,6 +19769,48 @@ func (milvusServicePatch *MilvusServicePatch) AsPatch() (_patch map[string]inter
 		_patch["tags"] = milvusServicePatch.Tags
 	}
 
+	return
+}
+
+// Milvusdbcollection : milvus service details.
+type Milvusdbcollection struct {
+	// milvus collection id.
+	CollectionID *int64 `json:"collection_id,omitempty"`
+
+	// milvus status.
+	CollectionName *string `json:"collection_name,omitempty"`
+
+	// milvus physical channels.
+	PhysicalChannels []string `json:"physical_channels,omitempty"`
+
+	// milvus virtual channels.
+	VirtualChannels []string `json:"virtual_channels,omitempty"`
+}
+
+// UnmarshalMilvusdbcollection unmarshals an instance of Milvusdbcollection from the specified map of raw messages.
+func UnmarshalMilvusdbcollection(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(Milvusdbcollection)
+	err = core.UnmarshalPrimitive(m, "collection_id", &obj.CollectionID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "collection_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "collection_name", &obj.CollectionName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "collection_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "physical_channels", &obj.PhysicalChannels)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "physical_channels-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "virtual_channels", &obj.VirtualChannels)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "virtual_channels-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
 
@@ -14393,7 +20074,7 @@ func UnmarshalNodeDescription(m map[string]json.RawMessage, result interface{}) 
 	return
 }
 
-// NodeDescriptionBody : coordinator/worker property settings.
+// NodeDescriptionBody : Coordinator/ worker properties.
 type NodeDescriptionBody struct {
 	// Node Type, r5, m, i..
 	NodeType *string `json:"node_type,omitempty"`
@@ -14611,7 +20292,7 @@ type OtherEngineDetailsBody struct {
 func (*WatsonxDataV2) NewOtherEngineDetailsBody(connectionString string, engineType string) (_model *OtherEngineDetailsBody, err error) {
 	_model = &OtherEngineDetailsBody{
 		ConnectionString: core.StringPtr(connectionString),
-		EngineType:       core.StringPtr(engineType),
+		EngineType: core.StringPtr(engineType),
 	}
 	err = core.ValidateStruct(_model, "required parameters")
 	if err != nil {
@@ -14631,6 +20312,24 @@ func UnmarshalOtherEngineDetailsBody(m map[string]json.RawMessage, result interf
 	err = core.UnmarshalPrimitive(m, "engine_type", &obj.EngineType)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "engine_type-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// Path : Bucket object size.
+type Path struct {
+	// object path.
+	Path *string `json:"path,omitempty"`
+}
+
+// UnmarshalPath unmarshals an instance of Path from the specified map of raw messages.
+func UnmarshalPath(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(Path)
+	err = core.UnmarshalPrimitive(m, "path", &obj.Path)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "path-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -14707,6 +20406,43 @@ func (_options *PausePrestoEngineOptions) SetAuthInstanceID(authInstanceID strin
 
 // SetHeaders : Allow user to set Headers
 func (options *PausePrestoEngineOptions) SetHeaders(param map[string]string) *PausePrestoEngineOptions {
+	options.Headers = param
+	return options
+}
+
+// PauseSparkEngineOptions : The PauseSparkEngine options.
+type PauseSparkEngineOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewPauseSparkEngineOptions : Instantiate PauseSparkEngineOptions
+func (*WatsonxDataV2) NewPauseSparkEngineOptions(engineID string) *PauseSparkEngineOptions {
+	return &PauseSparkEngineOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *PauseSparkEngineOptions) SetEngineID(engineID string) *PauseSparkEngineOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *PauseSparkEngineOptions) SetAuthInstanceID(authInstanceID string) *PauseSparkEngineOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *PauseSparkEngineOptions) SetHeaders(param map[string]string) *PauseSparkEngineOptions {
 	options.Headers = param
 	return options
 }
@@ -14788,7 +20524,7 @@ type PrestissimoEngine struct {
 	// watsonx.data build version.
 	BuildVersion *string `json:"build_version,omitempty"`
 
-	// Node details.
+	// coordinator/worker property settings.
 	Coordinator *PrestissimoNodeDescriptionBody `json:"coordinator,omitempty"`
 
 	// Created user name.
@@ -14854,7 +20590,7 @@ type PrestissimoEngine struct {
 	// Version of the engine.
 	Version *string `json:"version,omitempty"`
 
-	// Node details.
+	// coordinator/worker property settings.
 	Worker *PrestissimoNodeDescriptionBody `json:"worker,omitempty"`
 }
 
@@ -14870,7 +20606,7 @@ const (
 const (
 	PrestissimoEngine_Origin_Discover = "discover"
 	PrestissimoEngine_Origin_External = "external"
-	PrestissimoEngine_Origin_Native   = "native"
+	PrestissimoEngine_Origin_Native = "native"
 )
 
 // Constants associated with the PrestissimoEngine.Status property.
@@ -15044,7 +20780,7 @@ type PrestissimoEngineDetails struct {
 	// External engine connection string.
 	ConnectionString *string `json:"connection_string,omitempty"`
 
-	// Node details.
+	// coordinator/worker property settings.
 	Coordinator *PrestissimoNodeDescriptionBody `json:"coordinator,omitempty"`
 
 	// Endpoints.
@@ -15062,20 +20798,20 @@ type PrestissimoEngineDetails struct {
 	// Size config.
 	SizeConfig *string `json:"size_config,omitempty"`
 
-	// Node details.
+	// coordinator/worker property settings.
 	Worker *PrestissimoNodeDescriptionBody `json:"worker,omitempty"`
 }
 
 // Constants associated with the PrestissimoEngineDetails.SizeConfig property.
 // Size config.
 const (
-	PrestissimoEngineDetails_SizeConfig_CacheOptimized   = "cache_optimized"
+	PrestissimoEngineDetails_SizeConfig_CacheOptimized = "cache_optimized"
 	PrestissimoEngineDetails_SizeConfig_ComputeOptimized = "compute_optimized"
-	PrestissimoEngineDetails_SizeConfig_Custom           = "custom"
-	PrestissimoEngineDetails_SizeConfig_Large            = "large"
-	PrestissimoEngineDetails_SizeConfig_Medium           = "medium"
-	PrestissimoEngineDetails_SizeConfig_Small            = "small"
-	PrestissimoEngineDetails_SizeConfig_Starter          = "starter"
+	PrestissimoEngineDetails_SizeConfig_Custom = "custom"
+	PrestissimoEngineDetails_SizeConfig_Large = "large"
+	PrestissimoEngineDetails_SizeConfig_Medium = "medium"
+	PrestissimoEngineDetails_SizeConfig_Small = "small"
+	PrestissimoEngineDetails_SizeConfig_Starter = "starter"
 )
 
 // UnmarshalPrestissimoEngineDetails unmarshals an instance of PrestissimoEngineDetails from the specified map of raw messages.
@@ -15132,13 +20868,13 @@ func UnmarshalPrestissimoEngineDetails(m map[string]json.RawMessage, result inte
 
 // PrestissimoEngineEngineProperties : Engine properties.
 type PrestissimoEngineEngineProperties struct {
-	// catalog properties.
+	// Catalog settings.
 	Catalog *PrestissimoEnginePropertiesCatalog `json:"catalog,omitempty"`
 
 	// Configuration settings for the engine properties.
 	Configuration *EnginePropertiesOaiGenConfiguration `json:"configuration,omitempty"`
 
-	// velox properties.
+	// velox settings.
 	Velox *PrestissimoEnginePropertiesVelox `json:"velox,omitempty"`
 
 	// JVM settings.
@@ -15281,7 +21017,7 @@ func (prestissimoEnginePatch *PrestissimoEnginePatch) AsPatch() (_patch map[stri
 	return
 }
 
-// PrestissimoEnginePropertiesCatalog : catalog properties.
+// PrestissimoEnginePropertiesCatalog : Catalog settings.
 type PrestissimoEnginePropertiesCatalog struct {
 	// catalog name.
 	CatalogName []string `json:"catalog_name,omitempty"`
@@ -15311,7 +21047,7 @@ func (prestissimoEnginePropertiesCatalog *PrestissimoEnginePropertiesCatalog) as
 
 // PrestissimoEnginePropertiesOaiGen1Jvm : JVM settings.
 type PrestissimoEnginePropertiesOaiGen1Jvm struct {
-	// coordinator/worker property settings.
+	// Coordinator/ worker properties.
 	Coordinator *NodeDescriptionBody `json:"coordinator,omitempty"`
 }
 
@@ -15337,7 +21073,7 @@ func (prestissimoEnginePropertiesOaiGen1Jvm *PrestissimoEnginePropertiesOaiGen1J
 	return
 }
 
-// PrestissimoEnginePropertiesVelox : velox properties.
+// PrestissimoEnginePropertiesVelox : velox settings.
 type PrestissimoEnginePropertiesVelox struct {
 	// velox property.
 	VeloxProperty []string `json:"velox_property,omitempty"`
@@ -15365,7 +21101,7 @@ func (prestissimoEnginePropertiesVelox *PrestissimoEnginePropertiesVelox) asPatc
 	return
 }
 
-// PrestissimoNodeDescriptionBody : Node details.
+// PrestissimoNodeDescriptionBody : coordinator/worker property settings.
 type PrestissimoNodeDescriptionBody struct {
 	// Node Type, r5, m, i..
 	NodeType *string `json:"node_type,omitempty"`
@@ -15500,7 +21236,7 @@ const (
 const (
 	PrestoEngine_Origin_Discover = "discover"
 	PrestoEngine_Origin_External = "external"
-	PrestoEngine_Origin_Native   = "native"
+	PrestoEngine_Origin_Native = "native"
 )
 
 // Constants associated with the PrestoEngine.Status property.
@@ -15673,17 +21409,23 @@ func UnmarshalPrestoEngineCollection(m map[string]json.RawMessage, result interf
 
 // PrestoEngineEngineProperties : Engine properties.
 type PrestoEngineEngineProperties struct {
-	// Catalog configuration settings.
+	// Catalog settings.
 	Catalog *PrestoEnginePropertiesCatalog `json:"catalog,omitempty"`
 
 	// Configuration settings.
 	Configuration *EnginePropertiesOaiGen1Configuration `json:"configuration,omitempty"`
+
+	// Event Listener settings.
+	EventListener *PrestoEnginePropertiesEventListener `json:"event_listener,omitempty"`
 
 	// Global session is to accomodate all the custom properties that can be applicable for both coordinator and worker.
 	Global *PrestoEnginePropertiesGlobal `json:"global,omitempty"`
 
 	// JVM settings.
 	Jvm *EnginePropertiesOaiGen1Jvm `json:"jvm,omitempty"`
+
+	// Log Configuration settings.
+	LogConfig *EnginePropertiesLogConfiguration `json:"log_config,omitempty"`
 }
 
 // UnmarshalPrestoEngineEngineProperties unmarshals an instance of PrestoEngineEngineProperties from the specified map of raw messages.
@@ -15699,6 +21441,11 @@ func UnmarshalPrestoEngineEngineProperties(m map[string]json.RawMessage, result 
 		err = core.SDKErrorf(err, "", "configuration-error", common.GetComponentInfo())
 		return
 	}
+	err = core.UnmarshalModel(m, "event_listener", &obj.EventListener, UnmarshalPrestoEnginePropertiesEventListener)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "event_listener-error", common.GetComponentInfo())
+		return
+	}
 	err = core.UnmarshalModel(m, "global", &obj.Global, UnmarshalPrestoEnginePropertiesGlobal)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "global-error", common.GetComponentInfo())
@@ -15707,6 +21454,11 @@ func UnmarshalPrestoEngineEngineProperties(m map[string]json.RawMessage, result 
 	err = core.UnmarshalModel(m, "jvm", &obj.Jvm, UnmarshalEnginePropertiesOaiGen1Jvm)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "jvm-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "log_config", &obj.LogConfig, UnmarshalEnginePropertiesLogConfiguration)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "log_config-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -15722,11 +21474,17 @@ func (prestoEngineEngineProperties *PrestoEngineEngineProperties) asPatch() (_pa
 	if !core.IsNil(prestoEngineEngineProperties.Configuration) {
 		_patch["configuration"] = prestoEngineEngineProperties.Configuration.asPatch()
 	}
+	if !core.IsNil(prestoEngineEngineProperties.EventListener) {
+		_patch["event_listener"] = prestoEngineEngineProperties.EventListener.asPatch()
+	}
 	if !core.IsNil(prestoEngineEngineProperties.Global) {
 		_patch["global"] = prestoEngineEngineProperties.Global.asPatch()
 	}
 	if !core.IsNil(prestoEngineEngineProperties.Jvm) {
 		_patch["jvm"] = prestoEngineEngineProperties.Jvm.asPatch()
+	}
+	if !core.IsNil(prestoEngineEngineProperties.LogConfig) {
+		_patch["log_config"] = prestoEngineEngineProperties.LogConfig.asPatch()
 	}
 
 	return
@@ -15824,19 +21582,27 @@ func (prestoEnginePatch *PrestoEnginePatch) AsPatch() (_patch map[string]interfa
 
 // PrestoEnginePatchRemoveEngineProperties : RemoveEngine properties.
 type PrestoEnginePatchRemoveEngineProperties struct {
+	// Catalog settings.
+	Catalog *PrestoEnginePropertiesCatalog `json:"catalog,omitempty"`
+
 	// Configuration settings for removing engine properties.
 	Configuration *RemoveEnginePropertiesOaiGenConfiguration `json:"configuration,omitempty"`
 
 	// JVM properties.
 	Jvm *RemoveEnginePropertiesOaiGenJvm `json:"jvm,omitempty"`
 
-	// Catalog configuration settings.
-	Catalog *PrestoEnginePropertiesCatalog `json:"catalog,omitempty"`
+	// Event Listener properties.
+	EventListener []string `json:"event_listener,omitempty"`
 }
 
 // UnmarshalPrestoEnginePatchRemoveEngineProperties unmarshals an instance of PrestoEnginePatchRemoveEngineProperties from the specified map of raw messages.
 func UnmarshalPrestoEnginePatchRemoveEngineProperties(m map[string]json.RawMessage, result interface{}) (err error) {
 	obj := new(PrestoEnginePatchRemoveEngineProperties)
+	err = core.UnmarshalModel(m, "catalog", &obj.Catalog, UnmarshalPrestoEnginePropertiesCatalog)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "catalog-error", common.GetComponentInfo())
+		return
+	}
 	err = core.UnmarshalModel(m, "configuration", &obj.Configuration, UnmarshalRemoveEnginePropertiesOaiGenConfiguration)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "configuration-error", common.GetComponentInfo())
@@ -15847,9 +21613,9 @@ func UnmarshalPrestoEnginePatchRemoveEngineProperties(m map[string]json.RawMessa
 		err = core.SDKErrorf(err, "", "jvm-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalModel(m, "catalog", &obj.Catalog, UnmarshalPrestoEnginePropertiesCatalog)
+	err = core.UnmarshalPrimitive(m, "event_listener", &obj.EventListener)
 	if err != nil {
-		err = core.SDKErrorf(err, "", "catalog-error", common.GetComponentInfo())
+		err = core.SDKErrorf(err, "", "event_listener-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -15859,20 +21625,23 @@ func UnmarshalPrestoEnginePatchRemoveEngineProperties(m map[string]json.RawMessa
 // asPatch returns a generic map representation of the PrestoEnginePatchRemoveEngineProperties
 func (prestoEnginePatchRemoveEngineProperties *PrestoEnginePatchRemoveEngineProperties) asPatch() (_patch map[string]interface{}) {
 	_patch = map[string]interface{}{}
+	if !core.IsNil(prestoEnginePatchRemoveEngineProperties.Catalog) {
+		_patch["catalog"] = prestoEnginePatchRemoveEngineProperties.Catalog.asPatch()
+	}
 	if !core.IsNil(prestoEnginePatchRemoveEngineProperties.Configuration) {
 		_patch["configuration"] = prestoEnginePatchRemoveEngineProperties.Configuration.asPatch()
 	}
 	if !core.IsNil(prestoEnginePatchRemoveEngineProperties.Jvm) {
 		_patch["jvm"] = prestoEnginePatchRemoveEngineProperties.Jvm.asPatch()
 	}
-	if !core.IsNil(prestoEnginePatchRemoveEngineProperties.Catalog) {
-		_patch["catalog"] = prestoEnginePatchRemoveEngineProperties.Catalog.asPatch()
+	if !core.IsNil(prestoEnginePatchRemoveEngineProperties.EventListener) {
+		_patch["event_listener"] = prestoEnginePatchRemoveEngineProperties.EventListener
 	}
 
 	return
 }
 
-// PrestoEnginePropertiesCatalog : Catalog configuration settings.
+// PrestoEnginePropertiesCatalog : Catalog settings.
 type PrestoEnginePropertiesCatalog struct {
 	// Name of the catalog.
 	CatalogName *string `json:"catalog_name,omitempty"`
@@ -15895,6 +21664,34 @@ func (prestoEnginePropertiesCatalog *PrestoEnginePropertiesCatalog) asPatch() (_
 	_patch = map[string]interface{}{}
 	if !core.IsNil(prestoEnginePropertiesCatalog.CatalogName) {
 		_patch["catalog_name"] = prestoEnginePropertiesCatalog.CatalogName
+	}
+
+	return
+}
+
+// PrestoEnginePropertiesEventListener : Event Listener settings.
+type PrestoEnginePropertiesEventListener struct {
+	// Event listener properties.
+	EventListenerProperty *string `json:"event_listener_property,omitempty"`
+}
+
+// UnmarshalPrestoEnginePropertiesEventListener unmarshals an instance of PrestoEnginePropertiesEventListener from the specified map of raw messages.
+func UnmarshalPrestoEnginePropertiesEventListener(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(PrestoEnginePropertiesEventListener)
+	err = core.UnmarshalPrimitive(m, "event_listener_property", &obj.EventListenerProperty)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "event_listener_property-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// asPatch returns a generic map representation of the PrestoEnginePropertiesEventListener
+func (prestoEnginePropertiesEventListener *PrestoEnginePropertiesEventListener) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(prestoEnginePropertiesEventListener.EventListenerProperty) {
+		_patch["event_listener_property"] = prestoEnginePropertiesEventListener.EventListenerProperty
 	}
 
 	return
@@ -16112,14 +21909,14 @@ func UnmarshalPreviewIngestionFileRows(m map[string]json.RawMessage, result inte
 
 // RemoveEngineProperties : RemoveEngine properties.
 type RemoveEngineProperties struct {
-	// catalog properties.
+	// Catalog settings.
 	Catalog *PrestissimoEnginePropertiesCatalog `json:"catalog,omitempty"`
 
 	// remove engine properties configuration.
 	Configuration *RemoveEnginePropertiesConfiguration `json:"configuration,omitempty"`
 
-	// remove engine properties configuration.
-	Jvm *RemoveEnginePropertiesConfiguration `json:"jvm,omitempty"`
+	// JVM properties.
+	Jvm *RemoveEnginePropertiesPrestissimoOaiGenJvm `json:"jvm,omitempty"`
 
 	// velox description.
 	Velox []string `json:"velox,omitempty"`
@@ -16138,7 +21935,7 @@ func UnmarshalRemoveEngineProperties(m map[string]json.RawMessage, result interf
 		err = core.SDKErrorf(err, "", "configuration-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalModel(m, "jvm", &obj.Jvm, UnmarshalRemoveEnginePropertiesConfiguration)
+	err = core.UnmarshalModel(m, "jvm", &obj.Jvm, UnmarshalRemoveEnginePropertiesPrestissimoOaiGenJvm)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "jvm-error", common.GetComponentInfo())
 		return
@@ -16288,81 +22085,32 @@ func (removeEnginePropertiesOaiGenJvm *RemoveEnginePropertiesOaiGenJvm) asPatch(
 	return
 }
 
-// RenameTableOptions : The RenameTable options.
-type RenameTableOptions struct {
-	// catalog id.
-	CatalogID *string `json:"catalog_id" validate:"required,ne="`
-
-	// URL encoded schema name.
-	SchemaID *string `json:"schema_id" validate:"required,ne="`
-
-	// URL encoded table name.
-	TableID *string `json:"table_id" validate:"required,ne="`
-
-	// engine id.
-	EngineID *string `json:"engine_id" validate:"required"`
-
-	// Request body.
-	Body map[string]interface{} `json:"body" validate:"required"`
-
-	// CRN.
-	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
-
-	// Allows users to set headers on API requests.
-	Headers map[string]string
+// RemoveEnginePropertiesPrestissimoOaiGenJvm : JVM properties.
+type RemoveEnginePropertiesPrestissimoOaiGenJvm struct {
+	// List of coordinator properties.
+	Coordinator []string `json:"coordinator,omitempty"`
 }
 
-// NewRenameTableOptions : Instantiate RenameTableOptions
-func (*WatsonxDataV2) NewRenameTableOptions(catalogID string, schemaID string, tableID string, engineID string, body map[string]interface{}) *RenameTableOptions {
-	return &RenameTableOptions{
-		CatalogID: core.StringPtr(catalogID),
-		SchemaID:  core.StringPtr(schemaID),
-		TableID:   core.StringPtr(tableID),
-		EngineID:  core.StringPtr(engineID),
-		Body:      body,
+// UnmarshalRemoveEnginePropertiesPrestissimoOaiGenJvm unmarshals an instance of RemoveEnginePropertiesPrestissimoOaiGenJvm from the specified map of raw messages.
+func UnmarshalRemoveEnginePropertiesPrestissimoOaiGenJvm(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(RemoveEnginePropertiesPrestissimoOaiGenJvm)
+	err = core.UnmarshalPrimitive(m, "coordinator", &obj.Coordinator)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "coordinator-error", common.GetComponentInfo())
+		return
 	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
 }
 
-// SetCatalogID : Allow user to set CatalogID
-func (_options *RenameTableOptions) SetCatalogID(catalogID string) *RenameTableOptions {
-	_options.CatalogID = core.StringPtr(catalogID)
-	return _options
-}
+// asPatch returns a generic map representation of the RemoveEnginePropertiesPrestissimoOaiGenJvm
+func (removeEnginePropertiesPrestissimoOaiGenJvm *RemoveEnginePropertiesPrestissimoOaiGenJvm) asPatch() (_patch map[string]interface{}) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(removeEnginePropertiesPrestissimoOaiGenJvm.Coordinator) {
+		_patch["coordinator"] = removeEnginePropertiesPrestissimoOaiGenJvm.Coordinator
+	}
 
-// SetSchemaID : Allow user to set SchemaID
-func (_options *RenameTableOptions) SetSchemaID(schemaID string) *RenameTableOptions {
-	_options.SchemaID = core.StringPtr(schemaID)
-	return _options
-}
-
-// SetTableID : Allow user to set TableID
-func (_options *RenameTableOptions) SetTableID(tableID string) *RenameTableOptions {
-	_options.TableID = core.StringPtr(tableID)
-	return _options
-}
-
-// SetEngineID : Allow user to set EngineID
-func (_options *RenameTableOptions) SetEngineID(engineID string) *RenameTableOptions {
-	_options.EngineID = core.StringPtr(engineID)
-	return _options
-}
-
-// SetBody : Allow user to set Body
-func (_options *RenameTableOptions) SetBody(body map[string]interface{}) *RenameTableOptions {
-	_options.Body = body
-	return _options
-}
-
-// SetAuthInstanceID : Allow user to set AuthInstanceID
-func (_options *RenameTableOptions) SetAuthInstanceID(authInstanceID string) *RenameTableOptions {
-	_options.AuthInstanceID = core.StringPtr(authInstanceID)
-	return _options
-}
-
-// SetHeaders : Allow user to set Headers
-func (options *RenameTableOptions) SetHeaders(param map[string]string) *RenameTableOptions {
-	options.Headers = param
-	return options
+	return
 }
 
 // ReplaceSnapshotCreatedBody : success response.
@@ -16455,6 +22203,24 @@ func (_options *RestartPrestoEngineOptions) SetAuthInstanceID(authInstanceID str
 func (options *RestartPrestoEngineOptions) SetHeaders(param map[string]string) *RestartPrestoEngineOptions {
 	options.Headers = param
 	return options
+}
+
+// ResultExecuteQuery : ResultExecuteQuery OK.
+type ResultExecuteQuery struct {
+	// Query result in JSON format.
+	Result []map[string]string `json:"result,omitempty"`
+}
+
+// UnmarshalResultExecuteQuery unmarshals an instance of ResultExecuteQuery from the specified map of raw messages.
+func UnmarshalResultExecuteQuery(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(ResultExecuteQuery)
+	err = core.UnmarshalPrimitive(m, "result", &obj.Result)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "result-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
 }
 
 // ResultPrestissimoExplainStatement : ExplainStatement OK.
@@ -16567,6 +22333,43 @@ func (options *ResumePrestoEngineOptions) SetHeaders(param map[string]string) *R
 	return options
 }
 
+// ResumeSparkEngineOptions : The ResumeSparkEngine options.
+type ResumeSparkEngineOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewResumeSparkEngineOptions : Instantiate ResumeSparkEngineOptions
+func (*WatsonxDataV2) NewResumeSparkEngineOptions(engineID string) *ResumeSparkEngineOptions {
+	return &ResumeSparkEngineOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *ResumeSparkEngineOptions) SetEngineID(engineID string) *ResumeSparkEngineOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *ResumeSparkEngineOptions) SetAuthInstanceID(authInstanceID string) *ResumeSparkEngineOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *ResumeSparkEngineOptions) SetHeaders(param map[string]string) *ResumeSparkEngineOptions {
+	options.Headers = param
+	return options
+}
+
 // RollbackTableOptions : The RollbackTable options.
 type RollbackTableOptions struct {
 	// Engine name.
@@ -16594,10 +22397,10 @@ type RollbackTableOptions struct {
 // NewRollbackTableOptions : Instantiate RollbackTableOptions
 func (*WatsonxDataV2) NewRollbackTableOptions(engineID string, catalogID string, schemaID string, tableID string) *RollbackTableOptions {
 	return &RollbackTableOptions{
-		EngineID:  core.StringPtr(engineID),
+		EngineID: core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
-		SchemaID:  core.StringPtr(schemaID),
-		TableID:   core.StringPtr(tableID),
+		SchemaID: core.StringPtr(schemaID),
+		TableID: core.StringPtr(tableID),
 	}
 }
 
@@ -16690,7 +22493,7 @@ type RunExplainAnalyzeStatementOptions struct {
 // NewRunExplainAnalyzeStatementOptions : Instantiate RunExplainAnalyzeStatementOptions
 func (*WatsonxDataV2) NewRunExplainAnalyzeStatementOptions(engineID string, statement string) *RunExplainAnalyzeStatementOptions {
 	return &RunExplainAnalyzeStatementOptions{
-		EngineID:  core.StringPtr(engineID),
+		EngineID: core.StringPtr(engineID),
 		Statement: core.StringPtr(statement),
 	}
 }
@@ -16776,23 +22579,23 @@ type RunExplainStatementOptions struct {
 // Format.
 const (
 	RunExplainStatementOptions_Format_Graphviz = "graphviz"
-	RunExplainStatementOptions_Format_JSON     = "json"
-	RunExplainStatementOptions_Format_Text     = "text"
+	RunExplainStatementOptions_Format_JSON = "json"
+	RunExplainStatementOptions_Format_Text = "text"
 )
 
 // Constants associated with the RunExplainStatementOptions.Type property.
 // Type.
 const (
 	RunExplainStatementOptions_Type_Distributed = "distributed"
-	RunExplainStatementOptions_Type_Io          = "io"
-	RunExplainStatementOptions_Type_Logical     = "logical"
-	RunExplainStatementOptions_Type_Validate    = "validate"
+	RunExplainStatementOptions_Type_Io = "io"
+	RunExplainStatementOptions_Type_Logical = "logical"
+	RunExplainStatementOptions_Type_Validate = "validate"
 )
 
 // NewRunExplainStatementOptions : Instantiate RunExplainStatementOptions
 func (*WatsonxDataV2) NewRunExplainStatementOptions(engineID string, statement string) *RunExplainStatementOptions {
 	return &RunExplainStatementOptions{
-		EngineID:  core.StringPtr(engineID),
+		EngineID: core.StringPtr(engineID),
 		Statement: core.StringPtr(statement),
 	}
 }
@@ -16854,7 +22657,7 @@ type RunPrestissimoExplainAnalyzeStatementOptions struct {
 // NewRunPrestissimoExplainAnalyzeStatementOptions : Instantiate RunPrestissimoExplainAnalyzeStatementOptions
 func (*WatsonxDataV2) NewRunPrestissimoExplainAnalyzeStatementOptions(engineID string, statement string) *RunPrestissimoExplainAnalyzeStatementOptions {
 	return &RunPrestissimoExplainAnalyzeStatementOptions{
-		EngineID:  core.StringPtr(engineID),
+		EngineID: core.StringPtr(engineID),
 		Statement: core.StringPtr(statement),
 	}
 }
@@ -16914,23 +22717,23 @@ type RunPrestissimoExplainStatementOptions struct {
 // Format.
 const (
 	RunPrestissimoExplainStatementOptions_Format_Graphviz = "graphviz"
-	RunPrestissimoExplainStatementOptions_Format_JSON     = "json"
-	RunPrestissimoExplainStatementOptions_Format_Text     = "text"
+	RunPrestissimoExplainStatementOptions_Format_JSON = "json"
+	RunPrestissimoExplainStatementOptions_Format_Text = "text"
 )
 
 // Constants associated with the RunPrestissimoExplainStatementOptions.Type property.
 // Type.
 const (
 	RunPrestissimoExplainStatementOptions_Type_Distributed = "distributed"
-	RunPrestissimoExplainStatementOptions_Type_Io          = "io"
-	RunPrestissimoExplainStatementOptions_Type_Logical     = "logical"
-	RunPrestissimoExplainStatementOptions_Type_Validate    = "validate"
+	RunPrestissimoExplainStatementOptions_Type_Io = "io"
+	RunPrestissimoExplainStatementOptions_Type_Logical = "logical"
+	RunPrestissimoExplainStatementOptions_Type_Validate = "validate"
 )
 
 // NewRunPrestissimoExplainStatementOptions : Instantiate RunPrestissimoExplainStatementOptions
 func (*WatsonxDataV2) NewRunPrestissimoExplainStatementOptions(engineID string, statement string) *RunPrestissimoExplainStatementOptions {
 	return &RunPrestissimoExplainStatementOptions{
-		EngineID:  core.StringPtr(engineID),
+		EngineID: core.StringPtr(engineID),
 		Statement: core.StringPtr(statement),
 	}
 }
@@ -16971,15 +22774,837 @@ func (options *RunPrestissimoExplainStatementOptions) SetHeaders(param map[strin
 	return options
 }
 
+// SalIntegration : Sal Integration object.
+type SalIntegration struct {
+	// category UUID.
+	CategoryID *string `json:"category_id,omitempty"`
+
+	// engine id.
+	EngineID *string `json:"engine_id,omitempty"`
+
+	// errors.
+	Errors []ErrorObj `json:"errors,omitempty"`
+
+	// governance scope UUID.
+	GovernanceScopeID *string `json:"governance_scope_id,omitempty"`
+
+	// governance scope type.
+	GovernanceScopeType *string `json:"governance_scope_type,omitempty"`
+
+	// instance_id.
+	InstanceID *string `json:"instance_id,omitempty"`
+
+	// status of the integration.
+	Status *string `json:"status,omitempty"`
+
+	// COS resource CRN.
+	StorageResourceCrn *string `json:"storage_resource_crn,omitempty"`
+
+	// COS storage type.
+	StorageType *string `json:"storage_type,omitempty"`
+
+	// sal integration creation timestamp.
+	Timestamp *string `json:"timestamp,omitempty"`
+
+	// whether the integration is trial plan.
+	TrialPlan *bool `json:"trial_plan,omitempty"`
+
+	// user name.
+	Username *string `json:"username,omitempty"`
+}
+
+// UnmarshalSalIntegration unmarshals an instance of SalIntegration from the specified map of raw messages.
+func UnmarshalSalIntegration(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegration)
+	err = core.UnmarshalPrimitive(m, "category_id", &obj.CategoryID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "category_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "engine_id", &obj.EngineID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "engine_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "errors", &obj.Errors, UnmarshalErrorObj)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "errors-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "governance_scope_id", &obj.GovernanceScopeID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "governance_scope_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "governance_scope_type", &obj.GovernanceScopeType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "governance_scope_type-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "instance_id", &obj.InstanceID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "instance_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "status", &obj.Status)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "status-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "storage_resource_crn", &obj.StorageResourceCrn)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "storage_resource_crn-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "storage_type", &obj.StorageType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "storage_type-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "timestamp", &obj.Timestamp)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "timestamp-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "trial_plan", &obj.TrialPlan)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "trial_plan-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "username", &obj.Username)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "username-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SalIntegrationEnrichmentAssets : sal integration enrichment assets.
+type SalIntegrationEnrichmentAssets struct {
+	// Encrichment asset.
+	EnrichmentAsset *EnrichmentAsset `json:"enrichment_asset,omitempty"`
+}
+
+// UnmarshalSalIntegrationEnrichmentAssets unmarshals an instance of SalIntegrationEnrichmentAssets from the specified map of raw messages.
+func UnmarshalSalIntegrationEnrichmentAssets(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationEnrichmentAssets)
+	err = core.UnmarshalModel(m, "enrichment_asset", &obj.EnrichmentAsset, UnmarshalEnrichmentAsset)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "enrichment_asset-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SalIntegrationEnrichmentDataAsset : semantic enrichment data asset.
+type SalIntegrationEnrichmentDataAsset struct {
+	// name.
+	Asset *string `json:"asset,omitempty"`
+}
+
+// UnmarshalSalIntegrationEnrichmentDataAsset unmarshals an instance of SalIntegrationEnrichmentDataAsset from the specified map of raw messages.
+func UnmarshalSalIntegrationEnrichmentDataAsset(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationEnrichmentDataAsset)
+	err = core.UnmarshalPrimitive(m, "asset", &obj.Asset)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "asset-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SalIntegrationEnrichmentJobRun : semantic enrichment job run.
+type SalIntegrationEnrichmentJobRun struct {
+	// job run response.
+	Response *string `json:"response,omitempty"`
+}
+
+// UnmarshalSalIntegrationEnrichmentJobRun unmarshals an instance of SalIntegrationEnrichmentJobRun from the specified map of raw messages.
+func UnmarshalSalIntegrationEnrichmentJobRun(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationEnrichmentJobRun)
+	err = core.UnmarshalPrimitive(m, "response", &obj.Response)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "response-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SalIntegrationEnrichmentJobRunLogs : semantic enrichment job run logs.
+type SalIntegrationEnrichmentJobRunLogs struct {
+	// results.
+	Results []string `json:"results,omitempty"`
+
+	// name.
+	TotalCount *int64 `json:"total_count,omitempty"`
+}
+
+// UnmarshalSalIntegrationEnrichmentJobRunLogs unmarshals an instance of SalIntegrationEnrichmentJobRunLogs from the specified map of raw messages.
+func UnmarshalSalIntegrationEnrichmentJobRunLogs(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationEnrichmentJobRunLogs)
+	err = core.UnmarshalPrimitive(m, "results", &obj.Results)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "results-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "total_count", &obj.TotalCount)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "total_count-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SalIntegrationEnrichmentJobs : Sal Integration Mappings object.
+type SalIntegrationEnrichmentJobs struct {
+	// catalog name.
+	Jobs *SalIntegrationEnrichmentJobsProperties `json:"jobs,omitempty"`
+}
+
+// UnmarshalSalIntegrationEnrichmentJobs unmarshals an instance of SalIntegrationEnrichmentJobs from the specified map of raw messages.
+func UnmarshalSalIntegrationEnrichmentJobs(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationEnrichmentJobs)
+	err = core.UnmarshalModel(m, "jobs", &obj.Jobs, UnmarshalSalIntegrationEnrichmentJobsProperties)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "jobs-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SalIntegrationEnrichmentJobsProperties : catalog name.
+type SalIntegrationEnrichmentJobsProperties struct {
+	// Array of result items.
+	Results []SalIntegrationEnrichmentJobsResultItem `json:"results,omitempty"`
+
+	// Total number of rows.
+	TotalRows *int64 `json:"total_rows,omitempty"`
+}
+
+// UnmarshalSalIntegrationEnrichmentJobsProperties unmarshals an instance of SalIntegrationEnrichmentJobsProperties from the specified map of raw messages.
+func UnmarshalSalIntegrationEnrichmentJobsProperties(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationEnrichmentJobsProperties)
+	err = core.UnmarshalModel(m, "results", &obj.Results, UnmarshalSalIntegrationEnrichmentJobsResultItem)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "results-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "total_rows", &obj.TotalRows)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "total_rows-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SalIntegrationEnrichmentJobsResultItem : A single result item containing entity and metadata.
+type SalIntegrationEnrichmentJobsResultItem struct {
+	// Entity details including job information.
+	Entity *SalIntegrationEnrichmentJobsResultItemEntity `json:"entity,omitempty"`
+
+	// Metadata information about the job.
+	Metadata *SalIntegrationEnrichmentJobsResultItemMetadata `json:"metadata,omitempty"`
+}
+
+// UnmarshalSalIntegrationEnrichmentJobsResultItem unmarshals an instance of SalIntegrationEnrichmentJobsResultItem from the specified map of raw messages.
+func UnmarshalSalIntegrationEnrichmentJobsResultItem(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationEnrichmentJobsResultItem)
+	err = core.UnmarshalModel(m, "entity", &obj.Entity, UnmarshalSalIntegrationEnrichmentJobsResultItemEntity)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "entity-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "metadata", &obj.Metadata, UnmarshalSalIntegrationEnrichmentJobsResultItemMetadata)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "metadata-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SalIntegrationEnrichmentJobsResultItemEntity : Entity details including job information.
+type SalIntegrationEnrichmentJobsResultItemEntity struct {
+	// Details about the job.
+	Job *SalIntegrationEnrichmentJobsResultItemEntityJob `json:"job,omitempty"`
+}
+
+// UnmarshalSalIntegrationEnrichmentJobsResultItemEntity unmarshals an instance of SalIntegrationEnrichmentJobsResultItemEntity from the specified map of raw messages.
+func UnmarshalSalIntegrationEnrichmentJobsResultItemEntity(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationEnrichmentJobsResultItemEntity)
+	err = core.UnmarshalModel(m, "job", &obj.Job, UnmarshalSalIntegrationEnrichmentJobsResultItemEntityJob)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "job-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SalIntegrationEnrichmentJobsResultItemEntityJob : Details about the job.
+type SalIntegrationEnrichmentJobsResultItemEntityJob struct {
+	// Reference ID for the asset.
+	AssetRef *string `json:"asset_ref,omitempty"`
+
+	// Type of the asset reference.
+	AssetRefType *string `json:"asset_ref_type,omitempty"`
+
+	// Configuration settings for the job.
+	Configuration *SalIntegrationEnrichmentJobsResultItemEntityJobConfiguration `json:"configuration,omitempty"`
+
+	// Flag indicating if notifications are enabled for the job.
+	EnableNotifications *bool `json:"enable_notifications,omitempty"`
+
+	// List of future scheduled run times.
+	FutureScheduledRuns []string `json:"future_scheduled_runs,omitempty"`
+
+	// Initiator of the last run.
+	LastRunInitiator *string `json:"last_run_initiator,omitempty"`
+
+	// Status of the last run.
+	LastRunStatus *string `json:"last_run_status,omitempty"`
+
+	// Timestamp of the last run status.
+	LastRunStatusTimestamp *int64 `json:"last_run_status_timestamp,omitempty"`
+
+	// Time of the last run.
+	LastRunTime *string `json:"last_run_time,omitempty"`
+
+	// Name of the project associated with the job.
+	ProjectName *string `json:"project_name,omitempty"`
+
+	// ID of the creator of the schedule.
+	ScheduleCreatorID *string `json:"schedule_creator_id,omitempty"`
+
+	// ID of the schedule.
+	ScheduleID *string `json:"schedule_id,omitempty"`
+
+	// Information about the schedule.
+	ScheduleInfo *ScheduleInfo `json:"schedule_info,omitempty"`
+
+	// Credentials support information for the task.
+	TaskCredentialsSupport *SalIntegrationEnrichmentJobsResultItemEntityTaskCredentialsSupport `json:"task_credentials_support,omitempty"`
+}
+
+// UnmarshalSalIntegrationEnrichmentJobsResultItemEntityJob unmarshals an instance of SalIntegrationEnrichmentJobsResultItemEntityJob from the specified map of raw messages.
+func UnmarshalSalIntegrationEnrichmentJobsResultItemEntityJob(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationEnrichmentJobsResultItemEntityJob)
+	err = core.UnmarshalPrimitive(m, "asset_ref", &obj.AssetRef)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "asset_ref-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "asset_ref_type", &obj.AssetRefType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "asset_ref_type-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "configuration", &obj.Configuration, UnmarshalSalIntegrationEnrichmentJobsResultItemEntityJobConfiguration)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "configuration-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "enable_notifications", &obj.EnableNotifications)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "enable_notifications-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "future_scheduled_runs", &obj.FutureScheduledRuns)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "future_scheduled_runs-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "last_run_initiator", &obj.LastRunInitiator)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "last_run_initiator-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "last_run_status", &obj.LastRunStatus)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "last_run_status-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "last_run_status_timestamp", &obj.LastRunStatusTimestamp)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "last_run_status_timestamp-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "last_run_time", &obj.LastRunTime)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "last_run_time-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "project_name", &obj.ProjectName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "project_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "schedule_creator_id", &obj.ScheduleCreatorID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "schedule_creator_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "schedule_id", &obj.ScheduleID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "schedule_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "schedule_info", &obj.ScheduleInfo, UnmarshalScheduleInfo)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "schedule_info-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "task_credentials_support", &obj.TaskCredentialsSupport, UnmarshalSalIntegrationEnrichmentJobsResultItemEntityTaskCredentialsSupport)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "task_credentials_support-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SalIntegrationEnrichmentJobsResultItemEntityJobConfiguration : Configuration settings for the job.
+type SalIntegrationEnrichmentJobsResultItemEntityJobConfiguration struct {
+	// The environment type.
+	EnvType *string `json:"env_type,omitempty"`
+
+	// Environment variables for the job.
+	EnvVariables []string `json:"env_variables,omitempty"`
+}
+
+// UnmarshalSalIntegrationEnrichmentJobsResultItemEntityJobConfiguration unmarshals an instance of SalIntegrationEnrichmentJobsResultItemEntityJobConfiguration from the specified map of raw messages.
+func UnmarshalSalIntegrationEnrichmentJobsResultItemEntityJobConfiguration(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationEnrichmentJobsResultItemEntityJobConfiguration)
+	err = core.UnmarshalPrimitive(m, "env_type", &obj.EnvType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "env_type-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "env_variables", &obj.EnvVariables)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "env_variables-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SalIntegrationEnrichmentJobsResultItemEntityTaskCredentialsSupport : Credentials support information for the task.
+type SalIntegrationEnrichmentJobsResultItemEntityTaskCredentialsSupport struct {
+	// The account ID associated with the task.
+	AccountID *string `json:"account_id,omitempty"`
+
+	// Indicates if task credentials are enabled.
+	TaskCredentialsEnabled *bool `json:"task_credentials_enabled,omitempty"`
+
+	// The user ID associated with the task.
+	UserID *string `json:"user_id,omitempty"`
+}
+
+// UnmarshalSalIntegrationEnrichmentJobsResultItemEntityTaskCredentialsSupport unmarshals an instance of SalIntegrationEnrichmentJobsResultItemEntityTaskCredentialsSupport from the specified map of raw messages.
+func UnmarshalSalIntegrationEnrichmentJobsResultItemEntityTaskCredentialsSupport(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationEnrichmentJobsResultItemEntityTaskCredentialsSupport)
+	err = core.UnmarshalPrimitive(m, "account_id", &obj.AccountID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "account_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "task_credentials_enabled", &obj.TaskCredentialsEnabled)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "task_credentials_enabled-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "user_id", &obj.UserID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "user_id-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SalIntegrationEnrichmentJobsResultItemMetadata : Metadata information about the job.
+type SalIntegrationEnrichmentJobsResultItemMetadata struct {
+	// The ID of the asset.
+	AssetID *string `json:"asset_id,omitempty"`
+
+	// Name of the job.
+	Name *string `json:"name,omitempty"`
+
+	// ID of the owner of the job.
+	OwnerID *string `json:"owner_id,omitempty"`
+
+	// Version of the job.
+	Version *int64 `json:"version,omitempty"`
+}
+
+// UnmarshalSalIntegrationEnrichmentJobsResultItemMetadata unmarshals an instance of SalIntegrationEnrichmentJobsResultItemMetadata from the specified map of raw messages.
+func UnmarshalSalIntegrationEnrichmentJobsResultItemMetadata(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationEnrichmentJobsResultItemMetadata)
+	err = core.UnmarshalPrimitive(m, "asset_id", &obj.AssetID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "asset_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "name", &obj.Name)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "owner_id", &obj.OwnerID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "owner_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "version", &obj.Version)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "version-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SalIntegrationEnrichmentSettings : Sal Integration Enrichment Settings objects.
+type SalIntegrationEnrichmentSettings struct {
+	// semantic expansion.
+	SemanticExpansion *SalIntegrationEnrichmentSettingsSemanticExpansion `json:"semantic_expansion,omitempty"`
+
+	// semantic expansion.
+	TermAssignment *SalIntegrationEnrichmentSettingsTermAssignment `json:"term_assignment,omitempty"`
+}
+
+// UnmarshalSalIntegrationEnrichmentSettings unmarshals an instance of SalIntegrationEnrichmentSettings from the specified map of raw messages.
+func UnmarshalSalIntegrationEnrichmentSettings(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationEnrichmentSettings)
+	err = core.UnmarshalModel(m, "semantic_expansion", &obj.SemanticExpansion, UnmarshalSalIntegrationEnrichmentSettingsSemanticExpansion)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "semantic_expansion-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "term_assignment", &obj.TermAssignment, UnmarshalSalIntegrationEnrichmentSettingsTermAssignment)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "term_assignment-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SalIntegrationEnrichmentSettingsSemanticExpansion : semantic expansion.
+type SalIntegrationEnrichmentSettingsSemanticExpansion struct {
+	// description generation.
+	DescriptionGeneration *bool `json:"description_generation,omitempty"`
+
+	// description generation configuration.
+	DescriptionGenerationConfiguration *SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration `json:"description_generation_configuration,omitempty"`
+
+	// name expansion.
+	NameExpansion *bool `json:"name_expansion,omitempty"`
+
+	// name expansion configuration.
+	NameExpansionConfiguration *SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration `json:"name_expansion_configuration,omitempty"`
+}
+
+// UnmarshalSalIntegrationEnrichmentSettingsSemanticExpansion unmarshals an instance of SalIntegrationEnrichmentSettingsSemanticExpansion from the specified map of raw messages.
+func UnmarshalSalIntegrationEnrichmentSettingsSemanticExpansion(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationEnrichmentSettingsSemanticExpansion)
+	err = core.UnmarshalPrimitive(m, "description_generation", &obj.DescriptionGeneration)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "description_generation-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "description_generation_configuration", &obj.DescriptionGenerationConfiguration, UnmarshalSalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "description_generation_configuration-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "name_expansion", &obj.NameExpansion)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "name_expansion-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "name_expansion_configuration", &obj.NameExpansionConfiguration, UnmarshalSalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "name_expansion_configuration-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration : description generation configuration.
+type SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration struct {
+	// assignment threshold.
+	AssignmentThreshold *float64 `json:"assignment_threshold,omitempty"`
+
+	// suggestion threshold.
+	SuggestionThreshold *float64 `json:"suggestion_threshold,omitempty"`
+}
+
+// UnmarshalSalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration unmarshals an instance of SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration from the specified map of raw messages.
+func UnmarshalSalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration)
+	err = core.UnmarshalPrimitive(m, "assignment_threshold", &obj.AssignmentThreshold)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "assignment_threshold-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "suggestion_threshold", &obj.SuggestionThreshold)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "suggestion_threshold-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration : name expansion configuration.
+type SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration struct {
+	// assignment threshold.
+	AssignmentThreshold *float64 `json:"assignment_threshold,omitempty"`
+
+	// suggestion threshold.
+	SuggestionThreshold *float64 `json:"suggestion_threshold,omitempty"`
+}
+
+// UnmarshalSalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration unmarshals an instance of SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration from the specified map of raw messages.
+func UnmarshalSalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration)
+	err = core.UnmarshalPrimitive(m, "assignment_threshold", &obj.AssignmentThreshold)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "assignment_threshold-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "suggestion_threshold", &obj.SuggestionThreshold)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "suggestion_threshold-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SalIntegrationEnrichmentSettingsTermAssignment : semantic expansion.
+type SalIntegrationEnrichmentSettingsTermAssignment struct {
+	// class based assignments.
+	ClassBasedAssignments *bool `json:"class_based_assignments,omitempty"`
+
+	// evaluate negative assignments.
+	EvaluateNegativeAssignments *bool `json:"evaluate_negative_assignments,omitempty"`
+
+	// llm based assignments.
+	LlmBasedAssignments *bool `json:"llm_based_assignments,omitempty"`
+
+	// ml based assignments custom.
+	MlBasedAssignmentsCustom *bool `json:"ml_based_assignments_custom,omitempty"`
+
+	// ml based assignments default.
+	MlBasedAssignmentsDefault *bool `json:"ml_based_assignments_default,omitempty"`
+
+	// name matching.
+	NameMatching *bool `json:"name_matching,omitempty"`
+
+	// term assignment threshold.
+	TermAssignmentThreshold *float64 `json:"term_assignment_threshold,omitempty"`
+
+	// term suggestion threshold.
+	TermSuggestionThreshold *float64 `json:"term_suggestion_threshold,omitempty"`
+}
+
+// UnmarshalSalIntegrationEnrichmentSettingsTermAssignment unmarshals an instance of SalIntegrationEnrichmentSettingsTermAssignment from the specified map of raw messages.
+func UnmarshalSalIntegrationEnrichmentSettingsTermAssignment(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationEnrichmentSettingsTermAssignment)
+	err = core.UnmarshalPrimitive(m, "class_based_assignments", &obj.ClassBasedAssignments)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "class_based_assignments-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "evaluate_negative_assignments", &obj.EvaluateNegativeAssignments)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "evaluate_negative_assignments-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "llm_based_assignments", &obj.LlmBasedAssignments)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "llm_based_assignments-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "ml_based_assignments_custom", &obj.MlBasedAssignmentsCustom)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "ml_based_assignments_custom-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "ml_based_assignments_default", &obj.MlBasedAssignmentsDefault)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "ml_based_assignments_default-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "name_matching", &obj.NameMatching)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "name_matching-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "term_assignment_threshold", &obj.TermAssignmentThreshold)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "term_assignment_threshold-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "term_suggestion_threshold", &obj.TermSuggestionThreshold)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "term_suggestion_threshold-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SalIntegrationGlossaryTerms : Sal integration glossary terms.
+type SalIntegrationGlossaryTerms struct {
+	// glossary object.
+	GlossaryTerm *GlossaryObject `json:"glossary_term,omitempty"`
+}
+
+// UnmarshalSalIntegrationGlossaryTerms unmarshals an instance of SalIntegrationGlossaryTerms from the specified map of raw messages.
+func UnmarshalSalIntegrationGlossaryTerms(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationGlossaryTerms)
+	err = core.UnmarshalModel(m, "glossary_term", &obj.GlossaryTerm, UnmarshalGlossaryObject)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "glossary_term-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SalIntegrationMappings : Sal Integration Mappings object.
+type SalIntegrationMappings struct {
+	// catalog name.
+	WkcCatalogID *string `json:"wkc_catalog_id,omitempty"`
+
+	// operation type.
+	WkcProjectID *string `json:"wkc_project_id,omitempty"`
+}
+
+// UnmarshalSalIntegrationMappings unmarshals an instance of SalIntegrationMappings from the specified map of raw messages.
+func UnmarshalSalIntegrationMappings(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationMappings)
+	err = core.UnmarshalPrimitive(m, "wkc_catalog_id", &obj.WkcCatalogID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "wkc_catalog_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "wkc_project_id", &obj.WkcProjectID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "wkc_project_id-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SalIntegrationPatch : update sal integration.
+type SalIntegrationPatch struct {
+	// op.
+	Op *string `json:"op,omitempty"`
+
+	// path.
+	Path *string `json:"path,omitempty"`
+
+	// path.
+	Value *string `json:"value,omitempty"`
+}
+
+// UnmarshalSalIntegrationPatch unmarshals an instance of SalIntegrationPatch from the specified map of raw messages.
+func UnmarshalSalIntegrationPatch(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationPatch)
+	err = core.UnmarshalPrimitive(m, "op", &obj.Op)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "op-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "path", &obj.Path)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "path-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "value", &obj.Value)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "value-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// AsPatch returns a generic map representation of the SalIntegrationPatch
+func (salIntegrationPatch *SalIntegrationPatch) AsPatch() (_patch map[string]interface{}, err error) {
+	_patch = map[string]interface{}{}
+	if !core.IsNil(salIntegrationPatch.Op) {
+		_patch["op"] = salIntegrationPatch.Op
+	}
+	if !core.IsNil(salIntegrationPatch.Path) {
+		_patch["path"] = salIntegrationPatch.Path
+	}
+	if !core.IsNil(salIntegrationPatch.Value) {
+		_patch["value"] = salIntegrationPatch.Value
+	}
+
+	return
+}
+
+// SalIntegrationUploadGlossary : Sal Integration Upload Glossary.
+type SalIntegrationUploadGlossary struct {
+	// catalog name.
+	ProcessID *string `json:"process_id,omitempty"`
+}
+
+// UnmarshalSalIntegrationUploadGlossary unmarshals an instance of SalIntegrationUploadGlossary from the specified map of raw messages.
+func UnmarshalSalIntegrationUploadGlossary(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationUploadGlossary)
+	err = core.UnmarshalPrimitive(m, "process_id", &obj.ProcessID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "process_id-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// SalIntegrationUploadGlossaryStatus : Sal Integration Upload Glossary Status.
+type SalIntegrationUploadGlossaryStatus struct {
+	// catalog status.
+	Response *string `json:"response,omitempty"`
+}
+
+// UnmarshalSalIntegrationUploadGlossaryStatus unmarshals an instance of SalIntegrationUploadGlossaryStatus from the specified map of raw messages.
+func UnmarshalSalIntegrationUploadGlossaryStatus(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(SalIntegrationUploadGlossaryStatus)
+	err = core.UnmarshalPrimitive(m, "response", &obj.Response)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "response-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
 // ScalePrestissimoEngineOptions : The ScalePrestissimoEngine options.
 type ScalePrestissimoEngineOptions struct {
 	// engine id.
 	EngineID *string `json:"engine_id" validate:"required,ne="`
 
-	// Node details.
+	// coordinator/worker property settings.
 	Coordinator *PrestissimoNodeDescriptionBody `json:"coordinator,omitempty"`
 
-	// Node details.
+	// coordinator/worker property settings.
 	Worker *PrestissimoNodeDescriptionBody `json:"worker,omitempty"`
 
 	// CRN.
@@ -17079,6 +23704,70 @@ func (_options *ScalePrestoEngineOptions) SetAuthInstanceID(authInstanceID strin
 func (options *ScalePrestoEngineOptions) SetHeaders(param map[string]string) *ScalePrestoEngineOptions {
 	options.Headers = param
 	return options
+}
+
+// ScaleSparkEngineOptions : The ScaleSparkEngine options.
+type ScaleSparkEngineOptions struct {
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required,ne="`
+
+	// Node count.
+	NumberOfNodes *int64 `json:"number_of_nodes,omitempty"`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewScaleSparkEngineOptions : Instantiate ScaleSparkEngineOptions
+func (*WatsonxDataV2) NewScaleSparkEngineOptions(engineID string) *ScaleSparkEngineOptions {
+	return &ScaleSparkEngineOptions{
+		EngineID: core.StringPtr(engineID),
+	}
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *ScaleSparkEngineOptions) SetEngineID(engineID string) *ScaleSparkEngineOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetNumberOfNodes : Allow user to set NumberOfNodes
+func (_options *ScaleSparkEngineOptions) SetNumberOfNodes(numberOfNodes int64) *ScaleSparkEngineOptions {
+	_options.NumberOfNodes = core.Int64Ptr(numberOfNodes)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *ScaleSparkEngineOptions) SetAuthInstanceID(authInstanceID string) *ScaleSparkEngineOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *ScaleSparkEngineOptions) SetHeaders(param map[string]string) *ScaleSparkEngineOptions {
+	options.Headers = param
+	return options
+}
+
+// ScheduleInfo : Information about the schedule.
+type ScheduleInfo struct {
+	// Frequency of schedule execution (e.g., daily, weekly, monthly).
+	Frequency *string `json:"frequency,omitempty"`
+}
+
+// UnmarshalScheduleInfo unmarshals an instance of ScheduleInfo from the specified map of raw messages.
+func UnmarshalScheduleInfo(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(ScheduleInfo)
+	err = core.UnmarshalPrimitive(m, "frequency", &obj.Frequency)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "frequency-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
 }
 
 // SparkApplicationConfig : Spark applications details configuration.
@@ -17378,7 +24067,7 @@ type SparkEngine struct {
 const (
 	SparkEngine_Origin_Discover = "discover"
 	SparkEngine_Origin_External = "external"
-	SparkEngine_Origin_Native   = "native"
+	SparkEngine_Origin_Native = "native"
 )
 
 // Constants associated with the SparkEngine.Type property.
@@ -18221,6 +24910,103 @@ func (options *StartSparkEngineHistoryServerOptions) SetHeaders(param map[string
 	return options
 }
 
+// StorageDetails : storage details.
+type StorageDetails struct {
+	// Access key ID, encrypted during bucket registration.
+	AccessKey *string `json:"access_key,omitempty"`
+
+	// Application Id for bucket registration.
+	ApplicationID *string `json:"application_id,omitempty"`
+
+	// Auth mode types.
+	AuthMode *string `json:"auth_mode" validate:"required"`
+
+	// actual container name.
+	ContainerName *string `json:"container_name" validate:"required"`
+
+	// Directory Id for bucket registration.
+	DirectoryID *string `json:"directory_id,omitempty"`
+
+	// ADLS endpoint.
+	Endpoint *string `json:"endpoint" validate:"required"`
+
+	// sas token, encrypted during bucket registration.
+	SasToken *string `json:"sas_token,omitempty"`
+
+	// Secret access key, encrypted during bucket registration.
+	SecretKey *string `json:"secret_key,omitempty"`
+
+	// actual storage name.
+	StorageAccountName *string `json:"storage_account_name" validate:"required"`
+}
+
+// NewStorageDetails : Instantiate StorageDetails (Generic Model Constructor)
+func (*WatsonxDataV2) NewStorageDetails(authMode string, containerName string, endpoint string, storageAccountName string) (_model *StorageDetails, err error) {
+	_model = &StorageDetails{
+		AuthMode: core.StringPtr(authMode),
+		ContainerName: core.StringPtr(containerName),
+		Endpoint: core.StringPtr(endpoint),
+		StorageAccountName: core.StringPtr(storageAccountName),
+	}
+	err = core.ValidateStruct(_model, "required parameters")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "model-missing-required", common.GetComponentInfo())
+	}
+	return
+}
+
+// UnmarshalStorageDetails unmarshals an instance of StorageDetails from the specified map of raw messages.
+func UnmarshalStorageDetails(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(StorageDetails)
+	err = core.UnmarshalPrimitive(m, "access_key", &obj.AccessKey)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "access_key-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "application_id", &obj.ApplicationID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "application_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "auth_mode", &obj.AuthMode)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "auth_mode-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "container_name", &obj.ContainerName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "container_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "directory_id", &obj.DirectoryID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "directory_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "endpoint", &obj.Endpoint)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "endpoint-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "sas_token", &obj.SasToken)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "sas_token-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "secret_key", &obj.SecretKey)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "secret_key-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "storage_account_name", &obj.StorageAccountName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "storage_account_name-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
 // SuccessResponse : Response of success.
 type SuccessResponse struct {
 	// Message.
@@ -18250,23 +25036,10 @@ func UnmarshalSuccessResponse(m map[string]json.RawMessage, result interface{}) 
 // SyncCatalogs : catalogs definition.
 type SyncCatalogs struct {
 	// Auto add new table.
-	AutoAddNewTables *bool `json:"auto_add_new_tables" validate:"required"`
+	AutoAddNewTables *bool `json:"auto_add_new_tables,omitempty"`
 
 	// Sync iceberg metadata.
-	SyncIcebergMd *bool `json:"sync_iceberg_md" validate:"required"`
-}
-
-// NewSyncCatalogs : Instantiate SyncCatalogs (Generic Model Constructor)
-func (*WatsonxDataV2) NewSyncCatalogs(autoAddNewTables bool, syncIcebergMd bool) (_model *SyncCatalogs, err error) {
-	_model = &SyncCatalogs{
-		AutoAddNewTables: core.BoolPtr(autoAddNewTables),
-		SyncIcebergMd:    core.BoolPtr(syncIcebergMd),
-	}
-	err = core.ValidateStruct(_model, "required parameters")
-	if err != nil {
-		err = core.SDKErrorf(err, "", "model-missing-required", common.GetComponentInfo())
-	}
-	return
+	SyncIcebergMd *bool `json:"sync_iceberg_md,omitempty"`
 }
 
 // UnmarshalSyncCatalogs unmarshals an instance of SyncCatalogs from the specified map of raw messages.
@@ -18373,6 +25146,18 @@ func (tablePatch *TablePatch) AsPatch() (_patch map[string]interface{}, err erro
 
 // TableSnapshot : TableSnapshot.
 type TableSnapshot struct {
+	// Added data files.
+	AddedDataFiles *string `json:"added_data_files,omitempty"`
+
+	// Added files size.
+	AddedFilesSize *string `json:"added_files_size,omitempty"`
+
+	// Added records.
+	AddedRecords *string `json:"added_records,omitempty"`
+
+	// Changed partition count.
+	ChangedPartitionCount *string `json:"changed_partition_count,omitempty"`
+
 	// Committed at.
 	CommittedAt *string `json:"committed_at,omitempty"`
 
@@ -18382,13 +25167,45 @@ type TableSnapshot struct {
 	// Snapshot id.
 	SnapshotID *string `json:"snapshot_id,omitempty"`
 
-	// Summary.
-	Summary *string `json:"summary,omitempty"`
+	// Total data files.
+	TotalDataFiles *string `json:"total_data_files,omitempty"`
+
+	// Total delete files.
+	TotalDeleteFiles *string `json:"total_delete_files,omitempty"`
+
+	// Total equality deletes.
+	TotalEqualityDeletes *string `json:"total_equality_deletes,omitempty"`
+
+	// Total position deletes.
+	TotalPositionDeletes *string `json:"total_position_deletes,omitempty"`
+
+	// Total records.
+	TotalRecords *string `json:"total_records,omitempty"`
 }
 
 // UnmarshalTableSnapshot unmarshals an instance of TableSnapshot from the specified map of raw messages.
 func UnmarshalTableSnapshot(m map[string]json.RawMessage, result interface{}) (err error) {
 	obj := new(TableSnapshot)
+	err = core.UnmarshalPrimitive(m, "added_data_files", &obj.AddedDataFiles)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "added_data_files-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "added_files_size", &obj.AddedFilesSize)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "added_files_size-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "added_records", &obj.AddedRecords)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "added_records-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "changed_partition_count", &obj.ChangedPartitionCount)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "changed_partition_count-error", common.GetComponentInfo())
+		return
+	}
 	err = core.UnmarshalPrimitive(m, "committed_at", &obj.CommittedAt)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "committed_at-error", common.GetComponentInfo())
@@ -18404,9 +25221,29 @@ func UnmarshalTableSnapshot(m map[string]json.RawMessage, result interface{}) (e
 		err = core.SDKErrorf(err, "", "snapshot_id-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalPrimitive(m, "summary", &obj.Summary)
+	err = core.UnmarshalPrimitive(m, "total_data_files", &obj.TotalDataFiles)
 	if err != nil {
-		err = core.SDKErrorf(err, "", "summary-error", common.GetComponentInfo())
+		err = core.SDKErrorf(err, "", "total_data_files-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "total_delete_files", &obj.TotalDeleteFiles)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "total_delete_files-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "total_equality_deletes", &obj.TotalEqualityDeletes)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "total_equality_deletes-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "total_position_deletes", &obj.TotalPositionDeletes)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "total_position_deletes-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "total_records", &obj.TotalRecords)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "total_records-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -18439,7 +25276,7 @@ type UpdateBucketRegistrationOptions struct {
 	// Request body.
 	Body map[string]interface{} `json:"body" validate:"required"`
 
-	// CRN.
+	// Instance ID.
 	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
 
 	// Allows users to set headers on API requests.
@@ -18450,7 +25287,7 @@ type UpdateBucketRegistrationOptions struct {
 func (*WatsonxDataV2) NewUpdateBucketRegistrationOptions(bucketID string, body map[string]interface{}) *UpdateBucketRegistrationOptions {
 	return &UpdateBucketRegistrationOptions{
 		BucketID: core.StringPtr(bucketID),
-		Body:     body,
+		Body: body,
 	}
 }
 
@@ -18508,12 +25345,12 @@ type UpdateColumnOptions struct {
 // NewUpdateColumnOptions : Instantiate UpdateColumnOptions
 func (*WatsonxDataV2) NewUpdateColumnOptions(engineID string, catalogID string, schemaID string, tableID string, columnID string, body map[string]interface{}) *UpdateColumnOptions {
 	return &UpdateColumnOptions{
-		EngineID:  core.StringPtr(engineID),
+		EngineID: core.StringPtr(engineID),
 		CatalogID: core.StringPtr(catalogID),
-		SchemaID:  core.StringPtr(schemaID),
-		TableID:   core.StringPtr(tableID),
-		ColumnID:  core.StringPtr(columnID),
-		Body:      body,
+		SchemaID: core.StringPtr(schemaID),
+		TableID: core.StringPtr(tableID),
+		ColumnID: core.StringPtr(columnID),
+		Body: body,
 	}
 }
 
@@ -18584,7 +25421,7 @@ type UpdateDatabaseOptions struct {
 func (*WatsonxDataV2) NewUpdateDatabaseOptions(databaseID string, body map[string]interface{}) *UpdateDatabaseOptions {
 	return &UpdateDatabaseOptions{
 		DatabaseID: core.StringPtr(databaseID),
-		Body:       body,
+		Body: body,
 	}
 }
 
@@ -18631,7 +25468,7 @@ type UpdateDb2EngineOptions struct {
 func (*WatsonxDataV2) NewUpdateDb2EngineOptions(engineID string, body map[string]interface{}) *UpdateDb2EngineOptions {
 	return &UpdateDb2EngineOptions{
 		EngineID: core.StringPtr(engineID),
-		Body:     body,
+		Body: body,
 	}
 }
 
@@ -18659,6 +25496,100 @@ func (options *UpdateDb2EngineOptions) SetHeaders(param map[string]string) *Upda
 	return options
 }
 
+// UpdateDriverEnginesOptions : The UpdateDriverEngines options.
+type UpdateDriverEnginesOptions struct {
+	// driver id.
+	DriverID *string `json:"driver_id" validate:"required,ne="`
+
+	// Engine details.
+	Body map[string]interface{} `json:"body" validate:"required"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewUpdateDriverEnginesOptions : Instantiate UpdateDriverEnginesOptions
+func (*WatsonxDataV2) NewUpdateDriverEnginesOptions(driverID string, body map[string]interface{}) *UpdateDriverEnginesOptions {
+	return &UpdateDriverEnginesOptions{
+		DriverID: core.StringPtr(driverID),
+		Body: body,
+	}
+}
+
+// SetDriverID : Allow user to set DriverID
+func (_options *UpdateDriverEnginesOptions) SetDriverID(driverID string) *UpdateDriverEnginesOptions {
+	_options.DriverID = core.StringPtr(driverID)
+	return _options
+}
+
+// SetBody : Allow user to set Body
+func (_options *UpdateDriverEnginesOptions) SetBody(body map[string]interface{}) *UpdateDriverEnginesOptions {
+	_options.Body = body
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *UpdateDriverEnginesOptions) SetAuthInstanceID(authInstanceID string) *UpdateDriverEnginesOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *UpdateDriverEnginesOptions) SetHeaders(param map[string]string) *UpdateDriverEnginesOptions {
+	options.Headers = param
+	return options
+}
+
+// UpdateIntegrationOptions : The UpdateIntegration options.
+type UpdateIntegrationOptions struct {
+	// integration_id.
+	IntegrationID *string `json:"integration_id" validate:"required,ne="`
+
+	// Integration update parameters.
+	IntegrationPatch map[string]interface{} `json:"Integration_patch" validate:"required"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewUpdateIntegrationOptions : Instantiate UpdateIntegrationOptions
+func (*WatsonxDataV2) NewUpdateIntegrationOptions(integrationID string, integrationPatch map[string]interface{}) *UpdateIntegrationOptions {
+	return &UpdateIntegrationOptions{
+		IntegrationID: core.StringPtr(integrationID),
+		IntegrationPatch: integrationPatch,
+	}
+}
+
+// SetIntegrationID : Allow user to set IntegrationID
+func (_options *UpdateIntegrationOptions) SetIntegrationID(integrationID string) *UpdateIntegrationOptions {
+	_options.IntegrationID = core.StringPtr(integrationID)
+	return _options
+}
+
+// SetIntegrationPatch : Allow user to set IntegrationPatch
+func (_options *UpdateIntegrationOptions) SetIntegrationPatch(integrationPatch map[string]interface{}) *UpdateIntegrationOptions {
+	_options.IntegrationPatch = integrationPatch
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *UpdateIntegrationOptions) SetAuthInstanceID(authInstanceID string) *UpdateIntegrationOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *UpdateIntegrationOptions) SetHeaders(param map[string]string) *UpdateIntegrationOptions {
+	options.Headers = param
+	return options
+}
+
 // UpdateMilvusServiceOptions : The UpdateMilvusService options.
 type UpdateMilvusServiceOptions struct {
 	// service id.
@@ -18678,7 +25609,7 @@ type UpdateMilvusServiceOptions struct {
 func (*WatsonxDataV2) NewUpdateMilvusServiceOptions(serviceID string, body map[string]interface{}) *UpdateMilvusServiceOptions {
 	return &UpdateMilvusServiceOptions{
 		ServiceID: core.StringPtr(serviceID),
-		Body:      body,
+		Body: body,
 	}
 }
 
@@ -18725,7 +25656,7 @@ type UpdateNetezzaEngineOptions struct {
 func (*WatsonxDataV2) NewUpdateNetezzaEngineOptions(engineID string, body map[string]interface{}) *UpdateNetezzaEngineOptions {
 	return &UpdateNetezzaEngineOptions{
 		EngineID: core.StringPtr(engineID),
-		Body:     body,
+		Body: body,
 	}
 }
 
@@ -18772,7 +25703,7 @@ type UpdatePrestissimoEngineOptions struct {
 func (*WatsonxDataV2) NewUpdatePrestissimoEngineOptions(engineID string, body map[string]interface{}) *UpdatePrestissimoEngineOptions {
 	return &UpdatePrestissimoEngineOptions{
 		EngineID: core.StringPtr(engineID),
-		Body:     body,
+		Body: body,
 	}
 }
 
@@ -18819,7 +25750,7 @@ type UpdatePrestoEngineOptions struct {
 func (*WatsonxDataV2) NewUpdatePrestoEngineOptions(engineID string, body map[string]interface{}) *UpdatePrestoEngineOptions {
 	return &UpdatePrestoEngineOptions{
 		EngineID: core.StringPtr(engineID),
-		Body:     body,
+		Body: body,
 	}
 }
 
@@ -18843,6 +25774,43 @@ func (_options *UpdatePrestoEngineOptions) SetAuthInstanceID(authInstanceID stri
 
 // SetHeaders : Allow user to set Headers
 func (options *UpdatePrestoEngineOptions) SetHeaders(param map[string]string) *UpdatePrestoEngineOptions {
+	options.Headers = param
+	return options
+}
+
+// UpdateSalIntegrationOptions : The UpdateSalIntegration options.
+type UpdateSalIntegrationOptions struct {
+	// Request body.
+	Body map[string]interface{} `json:"body" validate:"required"`
+
+	// watsonx.data instance ID.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewUpdateSalIntegrationOptions : Instantiate UpdateSalIntegrationOptions
+func (*WatsonxDataV2) NewUpdateSalIntegrationOptions(body map[string]interface{}) *UpdateSalIntegrationOptions {
+	return &UpdateSalIntegrationOptions{
+		Body: body,
+	}
+}
+
+// SetBody : Allow user to set Body
+func (_options *UpdateSalIntegrationOptions) SetBody(body map[string]interface{}) *UpdateSalIntegrationOptions {
+	_options.Body = body
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *UpdateSalIntegrationOptions) SetAuthInstanceID(authInstanceID string) *UpdateSalIntegrationOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *UpdateSalIntegrationOptions) SetHeaders(param map[string]string) *UpdateSalIntegrationOptions {
 	options.Headers = param
 	return options
 }
@@ -18966,7 +25934,7 @@ type UpdateSparkEngineOptions struct {
 func (*WatsonxDataV2) NewUpdateSparkEngineOptions(engineID string, body map[string]interface{}) *UpdateSparkEngineOptions {
 	return &UpdateSparkEngineOptions{
 		EngineID: core.StringPtr(engineID),
-		Body:     body,
+		Body: body,
 	}
 }
 
@@ -19031,7 +25999,7 @@ type UpdateSyncCatalogOptions struct {
 func (*WatsonxDataV2) NewUpdateSyncCatalogOptions(catalogID string, body map[string]interface{}) *UpdateSyncCatalogOptions {
 	return &UpdateSyncCatalogOptions{
 		CatalogID: core.StringPtr(catalogID),
-		Body:      body,
+		Body: body,
 	}
 }
 
@@ -19057,4 +26025,184 @@ func (_options *UpdateSyncCatalogOptions) SetAuthInstanceID(authInstanceID strin
 func (options *UpdateSyncCatalogOptions) SetHeaders(param map[string]string) *UpdateSyncCatalogOptions {
 	options.Headers = param
 	return options
+}
+
+// UpdateTableOptions : The UpdateTable options.
+type UpdateTableOptions struct {
+	// catalog id.
+	CatalogID *string `json:"catalog_id" validate:"required,ne="`
+
+	// URL encoded schema name.
+	SchemaID *string `json:"schema_id" validate:"required,ne="`
+
+	// URL encoded table name.
+	TableID *string `json:"table_id" validate:"required,ne="`
+
+	// engine id.
+	EngineID *string `json:"engine_id" validate:"required"`
+
+	// Request body.
+	Body map[string]interface{} `json:"body" validate:"required"`
+
+	// URL encoded table type.
+	Type *string `json:"type,omitempty"`
+
+	// CRN.
+	AuthInstanceID *string `json:"AuthInstanceId,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewUpdateTableOptions : Instantiate UpdateTableOptions
+func (*WatsonxDataV2) NewUpdateTableOptions(catalogID string, schemaID string, tableID string, engineID string, body map[string]interface{}) *UpdateTableOptions {
+	return &UpdateTableOptions{
+		CatalogID: core.StringPtr(catalogID),
+		SchemaID: core.StringPtr(schemaID),
+		TableID: core.StringPtr(tableID),
+		EngineID: core.StringPtr(engineID),
+		Body: body,
+	}
+}
+
+// SetCatalogID : Allow user to set CatalogID
+func (_options *UpdateTableOptions) SetCatalogID(catalogID string) *UpdateTableOptions {
+	_options.CatalogID = core.StringPtr(catalogID)
+	return _options
+}
+
+// SetSchemaID : Allow user to set SchemaID
+func (_options *UpdateTableOptions) SetSchemaID(schemaID string) *UpdateTableOptions {
+	_options.SchemaID = core.StringPtr(schemaID)
+	return _options
+}
+
+// SetTableID : Allow user to set TableID
+func (_options *UpdateTableOptions) SetTableID(tableID string) *UpdateTableOptions {
+	_options.TableID = core.StringPtr(tableID)
+	return _options
+}
+
+// SetEngineID : Allow user to set EngineID
+func (_options *UpdateTableOptions) SetEngineID(engineID string) *UpdateTableOptions {
+	_options.EngineID = core.StringPtr(engineID)
+	return _options
+}
+
+// SetBody : Allow user to set Body
+func (_options *UpdateTableOptions) SetBody(body map[string]interface{}) *UpdateTableOptions {
+	_options.Body = body
+	return _options
+}
+
+// SetType : Allow user to set Type
+func (_options *UpdateTableOptions) SetType(typeVar string) *UpdateTableOptions {
+	_options.Type = core.StringPtr(typeVar)
+	return _options
+}
+
+// SetAuthInstanceID : Allow user to set AuthInstanceID
+func (_options *UpdateTableOptions) SetAuthInstanceID(authInstanceID string) *UpdateTableOptions {
+	_options.AuthInstanceID = core.StringPtr(authInstanceID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *UpdateTableOptions) SetHeaders(param map[string]string) *UpdateTableOptions {
+	options.Headers = param
+	return options
+}
+
+//
+// IngestionJobsPager can be used to simplify the use of the "ListIngestionJobs" method.
+//
+type IngestionJobsPager struct {
+	hasNext bool
+	options *ListIngestionJobsOptions
+	client  *WatsonxDataV2
+	pageContext struct {
+		next *string
+	}
+}
+
+// NewIngestionJobsPager returns a new IngestionJobsPager instance.
+func (watsonxData *WatsonxDataV2) NewIngestionJobsPager(options *ListIngestionJobsOptions) (pager *IngestionJobsPager, err error) {
+	if options.Start != nil && *options.Start != "" {
+		err = core.SDKErrorf(nil, "the 'options.Start' field should not be set", "no-query-setting", common.GetComponentInfo())
+		return
+	}
+
+	var optionsCopy ListIngestionJobsOptions = *options
+	pager = &IngestionJobsPager{
+		hasNext: true,
+		options: &optionsCopy,
+		client:  watsonxData,
+	}
+	return
+}
+
+// HasNext returns true if there are potentially more results to be retrieved.
+func (pager *IngestionJobsPager) HasNext() bool {
+	return pager.hasNext
+}
+
+// GetNextWithContext returns the next page of results using the specified Context.
+func (pager *IngestionJobsPager) GetNextWithContext(ctx context.Context) (page []IngestionJob, err error) {
+	if !pager.HasNext() {
+		return nil, fmt.Errorf("no more results available")
+	}
+
+	pager.options.Start = pager.pageContext.next
+
+	result, _, err := pager.client.ListIngestionJobsWithContext(ctx, pager.options)
+	if err != nil {
+		err = core.RepurposeSDKProblem(err, "error-getting-next-page")
+		return
+	}
+
+	var next *string
+	if result.Next != nil {
+		var start *string
+		start, err = core.GetQueryParam(result.Next.Href, "start")
+		if err != nil {
+			errMsg := fmt.Sprintf("error retrieving 'start' query parameter from URL '%s': %s", *result.Next.Href, err.Error())
+			err = core.SDKErrorf(err, errMsg, "get-query-error", common.GetComponentInfo())
+			return
+		}
+		next = start
+	}
+	pager.pageContext.next = next
+	pager.hasNext = (pager.pageContext.next != nil)
+	page = result.IngestionJobs
+
+	return
+}
+
+// GetAllWithContext returns all results by invoking GetNextWithContext() repeatedly
+// until all pages of results have been retrieved.
+func (pager *IngestionJobsPager) GetAllWithContext(ctx context.Context) (allItems []IngestionJob, err error) {
+	for pager.HasNext() {
+		var nextPage []IngestionJob
+		nextPage, err = pager.GetNextWithContext(ctx)
+		if err != nil {
+			err = core.RepurposeSDKProblem(err, "error-getting-next-page")
+			return
+		}
+		allItems = append(allItems, nextPage...)
+	}
+	return
+}
+
+// GetNext invokes GetNextWithContext() using context.Background() as the Context parameter.
+func (pager *IngestionJobsPager) GetNext() (page []IngestionJob, err error) {
+	page, err = pager.GetNextWithContext(context.Background())
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetAll invokes GetAllWithContext() using context.Background() as the Context parameter.
+func (pager *IngestionJobsPager) GetAll() (allItems []IngestionJob, err error) {
+	allItems, err = pager.GetAllWithContext(context.Background())
+	err = core.RepurposeSDKProblem(err, "")
+	return
 }

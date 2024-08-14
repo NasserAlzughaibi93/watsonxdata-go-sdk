@@ -231,7 +231,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"bucket_registrations": [{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "bucket_details": {"access_key": "b9cbf248ea5c4c96947e64407108559j", "bucket_name": "sample-bucket", "endpoint": "https://s3.<region>.cloud-object-storage.appdomain.cloud/", "secret_key": "13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87"}, "bucket_display_name": "sample-bucket-displayname", "bucket_id": "samplebucket123", "bucket_type": "ibm_cos", "created_by": "<username>@<domain>.com", "created_on": "1686120645", "description": "COS bucket for customer data", "managed_by": "ibm", "region": "us-south", "state": "active", "tags": ["Tags"]}]}`)
+					fmt.Fprintf(res, "%s", `{"bucket_registrations": [{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "bucket_details": {"access_key": "b9cbf248ea5c4c96947e64407108559j", "bucket_name": "sample-bucket", "endpoint": "https://s3.<region>.cloud-object-storage.appdomain.cloud/", "key_file": "key_file", "provider": "ibm_cos", "region": "us-south", "secret_key": "13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87"}, "bucket_display_name": "sample-bucket-displayname", "bucket_id": "samplebucket123", "bucket_type": "ibm_cos", "created_by": "<username>@<domain>.com", "created_on": "1686120645", "description": "COS bucket for customer data", "managed_by": "ibm", "region": "us-south", "state": "active", "storage_details": {"access_key": "<access_key>", "application_id": "<application_id>", "auth_mode": "<account_key/sas/service_principle>", "container_name": "sample-container", "directory_id": "<directory_id>", "endpoint": "abfss://<container_name>@<storage_account_name>.dfs.core.windows.net/", "sas_token": "<sas_token>", "secret_key": "secret_key", "storage_account_name": "sample-storage"}, "tags": ["Tags"]}]}`)
 				}))
 			})
 			It(`Invoke ListBucketRegistrations successfully with retries`, func() {
@@ -287,7 +287,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"bucket_registrations": [{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "bucket_details": {"access_key": "b9cbf248ea5c4c96947e64407108559j", "bucket_name": "sample-bucket", "endpoint": "https://s3.<region>.cloud-object-storage.appdomain.cloud/", "secret_key": "13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87"}, "bucket_display_name": "sample-bucket-displayname", "bucket_id": "samplebucket123", "bucket_type": "ibm_cos", "created_by": "<username>@<domain>.com", "created_on": "1686120645", "description": "COS bucket for customer data", "managed_by": "ibm", "region": "us-south", "state": "active", "tags": ["Tags"]}]}`)
+					fmt.Fprintf(res, "%s", `{"bucket_registrations": [{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "bucket_details": {"access_key": "b9cbf248ea5c4c96947e64407108559j", "bucket_name": "sample-bucket", "endpoint": "https://s3.<region>.cloud-object-storage.appdomain.cloud/", "key_file": "key_file", "provider": "ibm_cos", "region": "us-south", "secret_key": "13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87"}, "bucket_display_name": "sample-bucket-displayname", "bucket_id": "samplebucket123", "bucket_type": "ibm_cos", "created_by": "<username>@<domain>.com", "created_on": "1686120645", "description": "COS bucket for customer data", "managed_by": "ibm", "region": "us-south", "state": "active", "storage_details": {"access_key": "<access_key>", "application_id": "<application_id>", "auth_mode": "<account_key/sas/service_principle>", "container_name": "sample-container", "directory_id": "<directory_id>", "endpoint": "abfss://<container_name>@<storage_account_name>.dfs.core.windows.net/", "sas_token": "<sas_token>", "secret_key": "secret_key", "storage_account_name": "sample-storage"}, "tags": ["Tags"]}]}`)
 				}))
 			})
 			It(`Invoke ListBucketRegistrations successfully`, func() {
@@ -401,28 +401,44 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the BucketDetails model
-				bucketDetailsModel := new(watsonxdatav2.BucketDetails)
-				bucketDetailsModel.AccessKey = core.StringPtr("b9cbf248ea5c4c96947e64407108559j")
-				bucketDetailsModel.BucketName = core.StringPtr("sample-bucket")
-				bucketDetailsModel.Endpoint = core.StringPtr("https://s3.<region>.cloud-object-storage.appdomain.cloud/")
-				bucketDetailsModel.SecretKey = core.StringPtr("13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87")
-
 				// Construct an instance of the BucketCatalog model
 				bucketCatalogModel := new(watsonxdatav2.BucketCatalog)
 				bucketCatalogModel.CatalogName = core.StringPtr("sampleCatalog")
 				bucketCatalogModel.CatalogTags = []string{"catalog_tag_1", "catalog_tag_2"}
 				bucketCatalogModel.CatalogType = core.StringPtr("iceberg")
 
+				// Construct an instance of the BucketDetails model
+				bucketDetailsModel := new(watsonxdatav2.BucketDetails)
+				bucketDetailsModel.AccessKey = core.StringPtr("b9cbf248ea5c4c96947e64407108559j")
+				bucketDetailsModel.BucketName = core.StringPtr("sample-bucket")
+				bucketDetailsModel.Endpoint = core.StringPtr("https://s3.<region>.cloud-object-storage.appdomain.cloud/")
+				bucketDetailsModel.KeyFile = core.StringPtr("key_file")
+				bucketDetailsModel.Provider = core.StringPtr("ibm_cos")
+				bucketDetailsModel.Region = core.StringPtr("us-south")
+				bucketDetailsModel.SecretKey = core.StringPtr("13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87")
+
+				// Construct an instance of the StorageDetails model
+				storageDetailsModel := new(watsonxdatav2.StorageDetails)
+				storageDetailsModel.AccessKey = core.StringPtr("<access_key>")
+				storageDetailsModel.ApplicationID = core.StringPtr("<application_id>")
+				storageDetailsModel.AuthMode = core.StringPtr("<account_key/sas/service_principle>")
+				storageDetailsModel.ContainerName = core.StringPtr("sample-container")
+				storageDetailsModel.DirectoryID = core.StringPtr("<directory_id>")
+				storageDetailsModel.Endpoint = core.StringPtr("abfss://<container_name>@<storage_account_name>.dfs.core.windows.net/")
+				storageDetailsModel.SasToken = core.StringPtr("<sas_token>")
+				storageDetailsModel.SecretKey = core.StringPtr("secret_key")
+				storageDetailsModel.StorageAccountName = core.StringPtr("sample-storage")
+
 				// Construct an instance of the CreateBucketRegistrationOptions model
 				createBucketRegistrationOptionsModel := new(watsonxdatav2.CreateBucketRegistrationOptions)
-				createBucketRegistrationOptionsModel.BucketDetails = bucketDetailsModel
 				createBucketRegistrationOptionsModel.BucketType = core.StringPtr("ibm_cos")
 				createBucketRegistrationOptionsModel.Description = core.StringPtr("COS bucket for customer data")
 				createBucketRegistrationOptionsModel.ManagedBy = core.StringPtr("ibm")
 				createBucketRegistrationOptionsModel.AssociatedCatalog = bucketCatalogModel
+				createBucketRegistrationOptionsModel.BucketDetails = bucketDetailsModel
 				createBucketRegistrationOptionsModel.BucketDisplayName = core.StringPtr("sample-bucket-displayname")
 				createBucketRegistrationOptionsModel.Region = core.StringPtr("us-south")
+				createBucketRegistrationOptionsModel.StorageDetails = storageDetailsModel
 				createBucketRegistrationOptionsModel.Tags = []string{"bucket-tag1", "bucket-tag2"}
 				createBucketRegistrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				createBucketRegistrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
@@ -479,7 +495,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "bucket_details": {"access_key": "b9cbf248ea5c4c96947e64407108559j", "bucket_name": "sample-bucket", "endpoint": "https://s3.<region>.cloud-object-storage.appdomain.cloud/", "secret_key": "13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87"}, "bucket_display_name": "sample-bucket-displayname", "bucket_id": "samplebucket123", "bucket_type": "ibm_cos", "created_by": "<username>@<domain>.com", "created_on": "1686120645", "description": "COS bucket for customer data", "managed_by": "ibm", "region": "us-south", "state": "active", "tags": ["Tags"]}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "bucket_details": {"access_key": "b9cbf248ea5c4c96947e64407108559j", "bucket_name": "sample-bucket", "endpoint": "https://s3.<region>.cloud-object-storage.appdomain.cloud/", "key_file": "key_file", "provider": "ibm_cos", "region": "us-south", "secret_key": "13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87"}, "bucket_display_name": "sample-bucket-displayname", "bucket_id": "samplebucket123", "bucket_type": "ibm_cos", "created_by": "<username>@<domain>.com", "created_on": "1686120645", "description": "COS bucket for customer data", "managed_by": "ibm", "region": "us-south", "state": "active", "storage_details": {"access_key": "<access_key>", "application_id": "<application_id>", "auth_mode": "<account_key/sas/service_principle>", "container_name": "sample-container", "directory_id": "<directory_id>", "endpoint": "abfss://<container_name>@<storage_account_name>.dfs.core.windows.net/", "sas_token": "<sas_token>", "secret_key": "secret_key", "storage_account_name": "sample-storage"}, "tags": ["Tags"]}`)
 				}))
 			})
 			It(`Invoke CreateBucketRegistration successfully with retries`, func() {
@@ -491,28 +507,44 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(watsonxDataService).ToNot(BeNil())
 				watsonxDataService.EnableRetries(0, 0)
 
-				// Construct an instance of the BucketDetails model
-				bucketDetailsModel := new(watsonxdatav2.BucketDetails)
-				bucketDetailsModel.AccessKey = core.StringPtr("b9cbf248ea5c4c96947e64407108559j")
-				bucketDetailsModel.BucketName = core.StringPtr("sample-bucket")
-				bucketDetailsModel.Endpoint = core.StringPtr("https://s3.<region>.cloud-object-storage.appdomain.cloud/")
-				bucketDetailsModel.SecretKey = core.StringPtr("13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87")
-
 				// Construct an instance of the BucketCatalog model
 				bucketCatalogModel := new(watsonxdatav2.BucketCatalog)
 				bucketCatalogModel.CatalogName = core.StringPtr("sampleCatalog")
 				bucketCatalogModel.CatalogTags = []string{"catalog_tag_1", "catalog_tag_2"}
 				bucketCatalogModel.CatalogType = core.StringPtr("iceberg")
 
+				// Construct an instance of the BucketDetails model
+				bucketDetailsModel := new(watsonxdatav2.BucketDetails)
+				bucketDetailsModel.AccessKey = core.StringPtr("b9cbf248ea5c4c96947e64407108559j")
+				bucketDetailsModel.BucketName = core.StringPtr("sample-bucket")
+				bucketDetailsModel.Endpoint = core.StringPtr("https://s3.<region>.cloud-object-storage.appdomain.cloud/")
+				bucketDetailsModel.KeyFile = core.StringPtr("key_file")
+				bucketDetailsModel.Provider = core.StringPtr("ibm_cos")
+				bucketDetailsModel.Region = core.StringPtr("us-south")
+				bucketDetailsModel.SecretKey = core.StringPtr("13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87")
+
+				// Construct an instance of the StorageDetails model
+				storageDetailsModel := new(watsonxdatav2.StorageDetails)
+				storageDetailsModel.AccessKey = core.StringPtr("<access_key>")
+				storageDetailsModel.ApplicationID = core.StringPtr("<application_id>")
+				storageDetailsModel.AuthMode = core.StringPtr("<account_key/sas/service_principle>")
+				storageDetailsModel.ContainerName = core.StringPtr("sample-container")
+				storageDetailsModel.DirectoryID = core.StringPtr("<directory_id>")
+				storageDetailsModel.Endpoint = core.StringPtr("abfss://<container_name>@<storage_account_name>.dfs.core.windows.net/")
+				storageDetailsModel.SasToken = core.StringPtr("<sas_token>")
+				storageDetailsModel.SecretKey = core.StringPtr("secret_key")
+				storageDetailsModel.StorageAccountName = core.StringPtr("sample-storage")
+
 				// Construct an instance of the CreateBucketRegistrationOptions model
 				createBucketRegistrationOptionsModel := new(watsonxdatav2.CreateBucketRegistrationOptions)
-				createBucketRegistrationOptionsModel.BucketDetails = bucketDetailsModel
 				createBucketRegistrationOptionsModel.BucketType = core.StringPtr("ibm_cos")
 				createBucketRegistrationOptionsModel.Description = core.StringPtr("COS bucket for customer data")
 				createBucketRegistrationOptionsModel.ManagedBy = core.StringPtr("ibm")
 				createBucketRegistrationOptionsModel.AssociatedCatalog = bucketCatalogModel
+				createBucketRegistrationOptionsModel.BucketDetails = bucketDetailsModel
 				createBucketRegistrationOptionsModel.BucketDisplayName = core.StringPtr("sample-bucket-displayname")
 				createBucketRegistrationOptionsModel.Region = core.StringPtr("us-south")
+				createBucketRegistrationOptionsModel.StorageDetails = storageDetailsModel
 				createBucketRegistrationOptionsModel.Tags = []string{"bucket-tag1", "bucket-tag2"}
 				createBucketRegistrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				createBucketRegistrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
@@ -572,7 +604,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "bucket_details": {"access_key": "b9cbf248ea5c4c96947e64407108559j", "bucket_name": "sample-bucket", "endpoint": "https://s3.<region>.cloud-object-storage.appdomain.cloud/", "secret_key": "13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87"}, "bucket_display_name": "sample-bucket-displayname", "bucket_id": "samplebucket123", "bucket_type": "ibm_cos", "created_by": "<username>@<domain>.com", "created_on": "1686120645", "description": "COS bucket for customer data", "managed_by": "ibm", "region": "us-south", "state": "active", "tags": ["Tags"]}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "bucket_details": {"access_key": "b9cbf248ea5c4c96947e64407108559j", "bucket_name": "sample-bucket", "endpoint": "https://s3.<region>.cloud-object-storage.appdomain.cloud/", "key_file": "key_file", "provider": "ibm_cos", "region": "us-south", "secret_key": "13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87"}, "bucket_display_name": "sample-bucket-displayname", "bucket_id": "samplebucket123", "bucket_type": "ibm_cos", "created_by": "<username>@<domain>.com", "created_on": "1686120645", "description": "COS bucket for customer data", "managed_by": "ibm", "region": "us-south", "state": "active", "storage_details": {"access_key": "<access_key>", "application_id": "<application_id>", "auth_mode": "<account_key/sas/service_principle>", "container_name": "sample-container", "directory_id": "<directory_id>", "endpoint": "abfss://<container_name>@<storage_account_name>.dfs.core.windows.net/", "sas_token": "<sas_token>", "secret_key": "secret_key", "storage_account_name": "sample-storage"}, "tags": ["Tags"]}`)
 				}))
 			})
 			It(`Invoke CreateBucketRegistration successfully`, func() {
@@ -589,28 +621,44 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
 
-				// Construct an instance of the BucketDetails model
-				bucketDetailsModel := new(watsonxdatav2.BucketDetails)
-				bucketDetailsModel.AccessKey = core.StringPtr("b9cbf248ea5c4c96947e64407108559j")
-				bucketDetailsModel.BucketName = core.StringPtr("sample-bucket")
-				bucketDetailsModel.Endpoint = core.StringPtr("https://s3.<region>.cloud-object-storage.appdomain.cloud/")
-				bucketDetailsModel.SecretKey = core.StringPtr("13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87")
-
 				// Construct an instance of the BucketCatalog model
 				bucketCatalogModel := new(watsonxdatav2.BucketCatalog)
 				bucketCatalogModel.CatalogName = core.StringPtr("sampleCatalog")
 				bucketCatalogModel.CatalogTags = []string{"catalog_tag_1", "catalog_tag_2"}
 				bucketCatalogModel.CatalogType = core.StringPtr("iceberg")
 
+				// Construct an instance of the BucketDetails model
+				bucketDetailsModel := new(watsonxdatav2.BucketDetails)
+				bucketDetailsModel.AccessKey = core.StringPtr("b9cbf248ea5c4c96947e64407108559j")
+				bucketDetailsModel.BucketName = core.StringPtr("sample-bucket")
+				bucketDetailsModel.Endpoint = core.StringPtr("https://s3.<region>.cloud-object-storage.appdomain.cloud/")
+				bucketDetailsModel.KeyFile = core.StringPtr("key_file")
+				bucketDetailsModel.Provider = core.StringPtr("ibm_cos")
+				bucketDetailsModel.Region = core.StringPtr("us-south")
+				bucketDetailsModel.SecretKey = core.StringPtr("13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87")
+
+				// Construct an instance of the StorageDetails model
+				storageDetailsModel := new(watsonxdatav2.StorageDetails)
+				storageDetailsModel.AccessKey = core.StringPtr("<access_key>")
+				storageDetailsModel.ApplicationID = core.StringPtr("<application_id>")
+				storageDetailsModel.AuthMode = core.StringPtr("<account_key/sas/service_principle>")
+				storageDetailsModel.ContainerName = core.StringPtr("sample-container")
+				storageDetailsModel.DirectoryID = core.StringPtr("<directory_id>")
+				storageDetailsModel.Endpoint = core.StringPtr("abfss://<container_name>@<storage_account_name>.dfs.core.windows.net/")
+				storageDetailsModel.SasToken = core.StringPtr("<sas_token>")
+				storageDetailsModel.SecretKey = core.StringPtr("secret_key")
+				storageDetailsModel.StorageAccountName = core.StringPtr("sample-storage")
+
 				// Construct an instance of the CreateBucketRegistrationOptions model
 				createBucketRegistrationOptionsModel := new(watsonxdatav2.CreateBucketRegistrationOptions)
-				createBucketRegistrationOptionsModel.BucketDetails = bucketDetailsModel
 				createBucketRegistrationOptionsModel.BucketType = core.StringPtr("ibm_cos")
 				createBucketRegistrationOptionsModel.Description = core.StringPtr("COS bucket for customer data")
 				createBucketRegistrationOptionsModel.ManagedBy = core.StringPtr("ibm")
 				createBucketRegistrationOptionsModel.AssociatedCatalog = bucketCatalogModel
+				createBucketRegistrationOptionsModel.BucketDetails = bucketDetailsModel
 				createBucketRegistrationOptionsModel.BucketDisplayName = core.StringPtr("sample-bucket-displayname")
 				createBucketRegistrationOptionsModel.Region = core.StringPtr("us-south")
+				createBucketRegistrationOptionsModel.StorageDetails = storageDetailsModel
 				createBucketRegistrationOptionsModel.Tags = []string{"bucket-tag1", "bucket-tag2"}
 				createBucketRegistrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				createBucketRegistrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
@@ -630,28 +678,44 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the BucketDetails model
-				bucketDetailsModel := new(watsonxdatav2.BucketDetails)
-				bucketDetailsModel.AccessKey = core.StringPtr("b9cbf248ea5c4c96947e64407108559j")
-				bucketDetailsModel.BucketName = core.StringPtr("sample-bucket")
-				bucketDetailsModel.Endpoint = core.StringPtr("https://s3.<region>.cloud-object-storage.appdomain.cloud/")
-				bucketDetailsModel.SecretKey = core.StringPtr("13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87")
-
 				// Construct an instance of the BucketCatalog model
 				bucketCatalogModel := new(watsonxdatav2.BucketCatalog)
 				bucketCatalogModel.CatalogName = core.StringPtr("sampleCatalog")
 				bucketCatalogModel.CatalogTags = []string{"catalog_tag_1", "catalog_tag_2"}
 				bucketCatalogModel.CatalogType = core.StringPtr("iceberg")
 
+				// Construct an instance of the BucketDetails model
+				bucketDetailsModel := new(watsonxdatav2.BucketDetails)
+				bucketDetailsModel.AccessKey = core.StringPtr("b9cbf248ea5c4c96947e64407108559j")
+				bucketDetailsModel.BucketName = core.StringPtr("sample-bucket")
+				bucketDetailsModel.Endpoint = core.StringPtr("https://s3.<region>.cloud-object-storage.appdomain.cloud/")
+				bucketDetailsModel.KeyFile = core.StringPtr("key_file")
+				bucketDetailsModel.Provider = core.StringPtr("ibm_cos")
+				bucketDetailsModel.Region = core.StringPtr("us-south")
+				bucketDetailsModel.SecretKey = core.StringPtr("13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87")
+
+				// Construct an instance of the StorageDetails model
+				storageDetailsModel := new(watsonxdatav2.StorageDetails)
+				storageDetailsModel.AccessKey = core.StringPtr("<access_key>")
+				storageDetailsModel.ApplicationID = core.StringPtr("<application_id>")
+				storageDetailsModel.AuthMode = core.StringPtr("<account_key/sas/service_principle>")
+				storageDetailsModel.ContainerName = core.StringPtr("sample-container")
+				storageDetailsModel.DirectoryID = core.StringPtr("<directory_id>")
+				storageDetailsModel.Endpoint = core.StringPtr("abfss://<container_name>@<storage_account_name>.dfs.core.windows.net/")
+				storageDetailsModel.SasToken = core.StringPtr("<sas_token>")
+				storageDetailsModel.SecretKey = core.StringPtr("secret_key")
+				storageDetailsModel.StorageAccountName = core.StringPtr("sample-storage")
+
 				// Construct an instance of the CreateBucketRegistrationOptions model
 				createBucketRegistrationOptionsModel := new(watsonxdatav2.CreateBucketRegistrationOptions)
-				createBucketRegistrationOptionsModel.BucketDetails = bucketDetailsModel
 				createBucketRegistrationOptionsModel.BucketType = core.StringPtr("ibm_cos")
 				createBucketRegistrationOptionsModel.Description = core.StringPtr("COS bucket for customer data")
 				createBucketRegistrationOptionsModel.ManagedBy = core.StringPtr("ibm")
 				createBucketRegistrationOptionsModel.AssociatedCatalog = bucketCatalogModel
+				createBucketRegistrationOptionsModel.BucketDetails = bucketDetailsModel
 				createBucketRegistrationOptionsModel.BucketDisplayName = core.StringPtr("sample-bucket-displayname")
 				createBucketRegistrationOptionsModel.Region = core.StringPtr("us-south")
+				createBucketRegistrationOptionsModel.StorageDetails = storageDetailsModel
 				createBucketRegistrationOptionsModel.Tags = []string{"bucket-tag1", "bucket-tag2"}
 				createBucketRegistrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				createBucketRegistrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
@@ -692,28 +756,44 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the BucketDetails model
-				bucketDetailsModel := new(watsonxdatav2.BucketDetails)
-				bucketDetailsModel.AccessKey = core.StringPtr("b9cbf248ea5c4c96947e64407108559j")
-				bucketDetailsModel.BucketName = core.StringPtr("sample-bucket")
-				bucketDetailsModel.Endpoint = core.StringPtr("https://s3.<region>.cloud-object-storage.appdomain.cloud/")
-				bucketDetailsModel.SecretKey = core.StringPtr("13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87")
-
 				// Construct an instance of the BucketCatalog model
 				bucketCatalogModel := new(watsonxdatav2.BucketCatalog)
 				bucketCatalogModel.CatalogName = core.StringPtr("sampleCatalog")
 				bucketCatalogModel.CatalogTags = []string{"catalog_tag_1", "catalog_tag_2"}
 				bucketCatalogModel.CatalogType = core.StringPtr("iceberg")
 
+				// Construct an instance of the BucketDetails model
+				bucketDetailsModel := new(watsonxdatav2.BucketDetails)
+				bucketDetailsModel.AccessKey = core.StringPtr("b9cbf248ea5c4c96947e64407108559j")
+				bucketDetailsModel.BucketName = core.StringPtr("sample-bucket")
+				bucketDetailsModel.Endpoint = core.StringPtr("https://s3.<region>.cloud-object-storage.appdomain.cloud/")
+				bucketDetailsModel.KeyFile = core.StringPtr("key_file")
+				bucketDetailsModel.Provider = core.StringPtr("ibm_cos")
+				bucketDetailsModel.Region = core.StringPtr("us-south")
+				bucketDetailsModel.SecretKey = core.StringPtr("13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87")
+
+				// Construct an instance of the StorageDetails model
+				storageDetailsModel := new(watsonxdatav2.StorageDetails)
+				storageDetailsModel.AccessKey = core.StringPtr("<access_key>")
+				storageDetailsModel.ApplicationID = core.StringPtr("<application_id>")
+				storageDetailsModel.AuthMode = core.StringPtr("<account_key/sas/service_principle>")
+				storageDetailsModel.ContainerName = core.StringPtr("sample-container")
+				storageDetailsModel.DirectoryID = core.StringPtr("<directory_id>")
+				storageDetailsModel.Endpoint = core.StringPtr("abfss://<container_name>@<storage_account_name>.dfs.core.windows.net/")
+				storageDetailsModel.SasToken = core.StringPtr("<sas_token>")
+				storageDetailsModel.SecretKey = core.StringPtr("secret_key")
+				storageDetailsModel.StorageAccountName = core.StringPtr("sample-storage")
+
 				// Construct an instance of the CreateBucketRegistrationOptions model
 				createBucketRegistrationOptionsModel := new(watsonxdatav2.CreateBucketRegistrationOptions)
-				createBucketRegistrationOptionsModel.BucketDetails = bucketDetailsModel
 				createBucketRegistrationOptionsModel.BucketType = core.StringPtr("ibm_cos")
 				createBucketRegistrationOptionsModel.Description = core.StringPtr("COS bucket for customer data")
 				createBucketRegistrationOptionsModel.ManagedBy = core.StringPtr("ibm")
 				createBucketRegistrationOptionsModel.AssociatedCatalog = bucketCatalogModel
+				createBucketRegistrationOptionsModel.BucketDetails = bucketDetailsModel
 				createBucketRegistrationOptionsModel.BucketDisplayName = core.StringPtr("sample-bucket-displayname")
 				createBucketRegistrationOptionsModel.Region = core.StringPtr("us-south")
+				createBucketRegistrationOptionsModel.StorageDetails = storageDetailsModel
 				createBucketRegistrationOptionsModel.Tags = []string{"bucket-tag1", "bucket-tag2"}
 				createBucketRegistrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				createBucketRegistrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
@@ -798,7 +878,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "bucket_details": {"access_key": "b9cbf248ea5c4c96947e64407108559j", "bucket_name": "sample-bucket", "endpoint": "https://s3.<region>.cloud-object-storage.appdomain.cloud/", "secret_key": "13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87"}, "bucket_display_name": "sample-bucket-displayname", "bucket_id": "samplebucket123", "bucket_type": "ibm_cos", "created_by": "<username>@<domain>.com", "created_on": "1686120645", "description": "COS bucket for customer data", "managed_by": "ibm", "region": "us-south", "state": "active", "tags": ["Tags"]}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "bucket_details": {"access_key": "b9cbf248ea5c4c96947e64407108559j", "bucket_name": "sample-bucket", "endpoint": "https://s3.<region>.cloud-object-storage.appdomain.cloud/", "key_file": "key_file", "provider": "ibm_cos", "region": "us-south", "secret_key": "13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87"}, "bucket_display_name": "sample-bucket-displayname", "bucket_id": "samplebucket123", "bucket_type": "ibm_cos", "created_by": "<username>@<domain>.com", "created_on": "1686120645", "description": "COS bucket for customer data", "managed_by": "ibm", "region": "us-south", "state": "active", "storage_details": {"access_key": "<access_key>", "application_id": "<application_id>", "auth_mode": "<account_key/sas/service_principle>", "container_name": "sample-container", "directory_id": "<directory_id>", "endpoint": "abfss://<container_name>@<storage_account_name>.dfs.core.windows.net/", "sas_token": "<sas_token>", "secret_key": "secret_key", "storage_account_name": "sample-storage"}, "tags": ["Tags"]}`)
 				}))
 			})
 			It(`Invoke GetBucketRegistration successfully with retries`, func() {
@@ -855,7 +935,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "bucket_details": {"access_key": "b9cbf248ea5c4c96947e64407108559j", "bucket_name": "sample-bucket", "endpoint": "https://s3.<region>.cloud-object-storage.appdomain.cloud/", "secret_key": "13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87"}, "bucket_display_name": "sample-bucket-displayname", "bucket_id": "samplebucket123", "bucket_type": "ibm_cos", "created_by": "<username>@<domain>.com", "created_on": "1686120645", "description": "COS bucket for customer data", "managed_by": "ibm", "region": "us-south", "state": "active", "tags": ["Tags"]}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "bucket_details": {"access_key": "b9cbf248ea5c4c96947e64407108559j", "bucket_name": "sample-bucket", "endpoint": "https://s3.<region>.cloud-object-storage.appdomain.cloud/", "key_file": "key_file", "provider": "ibm_cos", "region": "us-south", "secret_key": "13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87"}, "bucket_display_name": "sample-bucket-displayname", "bucket_id": "samplebucket123", "bucket_type": "ibm_cos", "created_by": "<username>@<domain>.com", "created_on": "1686120645", "description": "COS bucket for customer data", "managed_by": "ibm", "region": "us-south", "state": "active", "storage_details": {"access_key": "<access_key>", "application_id": "<application_id>", "auth_mode": "<account_key/sas/service_principle>", "container_name": "sample-container", "directory_id": "<directory_id>", "endpoint": "abfss://<container_name>@<storage_account_name>.dfs.core.windows.net/", "sas_token": "<sas_token>", "secret_key": "secret_key", "storage_account_name": "sample-storage"}, "tags": ["Tags"]}`)
 				}))
 			})
 			It(`Invoke GetBucketRegistration successfully`, func() {
@@ -954,15 +1034,15 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			})
 		})
 	})
-	Describe(`DeregisterBucket(deregisterBucketOptions *DeregisterBucketOptions)`, func() {
-		deregisterBucketPath := "/bucket_registrations/testString"
+	Describe(`DeleteBucketRegistration(deleteBucketRegistrationOptions *DeleteBucketRegistrationOptions)`, func() {
+		deleteBucketRegistrationPath := "/bucket_registrations/testString"
 		Context(`Using mock server endpoint`, func() {
 			BeforeEach(func() {
 				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(deregisterBucketPath))
+					Expect(req.URL.EscapedPath()).To(Equal(deleteBucketRegistrationPath))
 					Expect(req.Method).To(Equal("DELETE"))
 
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
@@ -970,7 +1050,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					res.WriteHeader(204)
 				}))
 			})
-			It(`Invoke DeregisterBucket successfully`, func() {
+			It(`Invoke DeleteBucketRegistration successfully`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -979,22 +1059,22 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(watsonxDataService).ToNot(BeNil())
 
 				// Invoke operation with nil options model (negative test)
-				response, operationErr := watsonxDataService.DeregisterBucket(nil)
+				response, operationErr := watsonxDataService.DeleteBucketRegistration(nil)
 				Expect(operationErr).NotTo(BeNil())
 				Expect(response).To(BeNil())
 
-				// Construct an instance of the DeregisterBucketOptions model
-				deregisterBucketOptionsModel := new(watsonxdatav2.DeregisterBucketOptions)
-				deregisterBucketOptionsModel.BucketID = core.StringPtr("testString")
-				deregisterBucketOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				deregisterBucketOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the DeleteBucketRegistrationOptions model
+				deleteBucketRegistrationOptionsModel := new(watsonxdatav2.DeleteBucketRegistrationOptions)
+				deleteBucketRegistrationOptionsModel.BucketID = core.StringPtr("testString")
+				deleteBucketRegistrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				deleteBucketRegistrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with valid options model (positive test)
-				response, operationErr = watsonxDataService.DeregisterBucket(deregisterBucketOptionsModel)
+				response, operationErr = watsonxDataService.DeleteBucketRegistration(deleteBucketRegistrationOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 			})
-			It(`Invoke DeregisterBucket with error: Operation validation and request error`, func() {
+			It(`Invoke DeleteBucketRegistration with error: Operation validation and request error`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -1002,22 +1082,22 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the DeregisterBucketOptions model
-				deregisterBucketOptionsModel := new(watsonxdatav2.DeregisterBucketOptions)
-				deregisterBucketOptionsModel.BucketID = core.StringPtr("testString")
-				deregisterBucketOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				deregisterBucketOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the DeleteBucketRegistrationOptions model
+				deleteBucketRegistrationOptionsModel := new(watsonxdatav2.DeleteBucketRegistrationOptions)
+				deleteBucketRegistrationOptionsModel.BucketID = core.StringPtr("testString")
+				deleteBucketRegistrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				deleteBucketRegistrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
 				err := watsonxDataService.SetServiceURL("")
 				Expect(err).To(BeNil())
-				response, operationErr := watsonxDataService.DeregisterBucket(deregisterBucketOptionsModel)
+				response, operationErr := watsonxDataService.DeleteBucketRegistration(deleteBucketRegistrationOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
 				Expect(response).To(BeNil())
-				// Construct a second instance of the DeregisterBucketOptions model with no property values
-				deregisterBucketOptionsModelNew := new(watsonxdatav2.DeregisterBucketOptions)
+				// Construct a second instance of the DeleteBucketRegistrationOptions model with no property values
+				deleteBucketRegistrationOptionsModelNew := new(watsonxdatav2.DeleteBucketRegistrationOptions)
 				// Invoke operation with invalid model (negative test)
-				response, operationErr = watsonxDataService.DeregisterBucket(deregisterBucketOptionsModelNew)
+				response, operationErr = watsonxDataService.DeleteBucketRegistration(deleteBucketRegistrationOptionsModelNew)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).To(BeNil())
 			})
@@ -1056,6 +1136,9 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				bucketDetailsModel.AccessKey = core.StringPtr("b9cbf248ea5c4c96947e64407108559j")
 				bucketDetailsModel.BucketName = core.StringPtr("sample-bucket")
 				bucketDetailsModel.Endpoint = core.StringPtr("https://s3.<region>.cloud-object-storage.appdomain.cloud/")
+				bucketDetailsModel.KeyFile = core.StringPtr("key_file")
+				bucketDetailsModel.Provider = core.StringPtr("ibm_cos")
+				bucketDetailsModel.Region = core.StringPtr("us-south")
 				bucketDetailsModel.SecretKey = core.StringPtr("13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87")
 
 				// Construct an instance of the BucketRegistrationPatch model
@@ -1126,7 +1209,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "bucket_details": {"access_key": "b9cbf248ea5c4c96947e64407108559j", "bucket_name": "sample-bucket", "endpoint": "https://s3.<region>.cloud-object-storage.appdomain.cloud/", "secret_key": "13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87"}, "bucket_display_name": "sample-bucket-displayname", "bucket_id": "samplebucket123", "bucket_type": "ibm_cos", "created_by": "<username>@<domain>.com", "created_on": "1686120645", "description": "COS bucket for customer data", "managed_by": "ibm", "region": "us-south", "state": "active", "tags": ["Tags"]}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "bucket_details": {"access_key": "b9cbf248ea5c4c96947e64407108559j", "bucket_name": "sample-bucket", "endpoint": "https://s3.<region>.cloud-object-storage.appdomain.cloud/", "key_file": "key_file", "provider": "ibm_cos", "region": "us-south", "secret_key": "13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87"}, "bucket_display_name": "sample-bucket-displayname", "bucket_id": "samplebucket123", "bucket_type": "ibm_cos", "created_by": "<username>@<domain>.com", "created_on": "1686120645", "description": "COS bucket for customer data", "managed_by": "ibm", "region": "us-south", "state": "active", "storage_details": {"access_key": "<access_key>", "application_id": "<application_id>", "auth_mode": "<account_key/sas/service_principle>", "container_name": "sample-container", "directory_id": "<directory_id>", "endpoint": "abfss://<container_name>@<storage_account_name>.dfs.core.windows.net/", "sas_token": "<sas_token>", "secret_key": "secret_key", "storage_account_name": "sample-storage"}, "tags": ["Tags"]}`)
 				}))
 			})
 			It(`Invoke UpdateBucketRegistration successfully with retries`, func() {
@@ -1143,6 +1226,9 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				bucketDetailsModel.AccessKey = core.StringPtr("b9cbf248ea5c4c96947e64407108559j")
 				bucketDetailsModel.BucketName = core.StringPtr("sample-bucket")
 				bucketDetailsModel.Endpoint = core.StringPtr("https://s3.<region>.cloud-object-storage.appdomain.cloud/")
+				bucketDetailsModel.KeyFile = core.StringPtr("key_file")
+				bucketDetailsModel.Provider = core.StringPtr("ibm_cos")
+				bucketDetailsModel.Region = core.StringPtr("us-south")
 				bucketDetailsModel.SecretKey = core.StringPtr("13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87")
 
 				// Construct an instance of the BucketRegistrationPatch model
@@ -1216,7 +1302,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "bucket_details": {"access_key": "b9cbf248ea5c4c96947e64407108559j", "bucket_name": "sample-bucket", "endpoint": "https://s3.<region>.cloud-object-storage.appdomain.cloud/", "secret_key": "13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87"}, "bucket_display_name": "sample-bucket-displayname", "bucket_id": "samplebucket123", "bucket_type": "ibm_cos", "created_by": "<username>@<domain>.com", "created_on": "1686120645", "description": "COS bucket for customer data", "managed_by": "ibm", "region": "us-south", "state": "active", "tags": ["Tags"]}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "bucket_details": {"access_key": "b9cbf248ea5c4c96947e64407108559j", "bucket_name": "sample-bucket", "endpoint": "https://s3.<region>.cloud-object-storage.appdomain.cloud/", "key_file": "key_file", "provider": "ibm_cos", "region": "us-south", "secret_key": "13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87"}, "bucket_display_name": "sample-bucket-displayname", "bucket_id": "samplebucket123", "bucket_type": "ibm_cos", "created_by": "<username>@<domain>.com", "created_on": "1686120645", "description": "COS bucket for customer data", "managed_by": "ibm", "region": "us-south", "state": "active", "storage_details": {"access_key": "<access_key>", "application_id": "<application_id>", "auth_mode": "<account_key/sas/service_principle>", "container_name": "sample-container", "directory_id": "<directory_id>", "endpoint": "abfss://<container_name>@<storage_account_name>.dfs.core.windows.net/", "sas_token": "<sas_token>", "secret_key": "secret_key", "storage_account_name": "sample-storage"}, "tags": ["Tags"]}`)
 				}))
 			})
 			It(`Invoke UpdateBucketRegistration successfully`, func() {
@@ -1238,6 +1324,9 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				bucketDetailsModel.AccessKey = core.StringPtr("b9cbf248ea5c4c96947e64407108559j")
 				bucketDetailsModel.BucketName = core.StringPtr("sample-bucket")
 				bucketDetailsModel.Endpoint = core.StringPtr("https://s3.<region>.cloud-object-storage.appdomain.cloud/")
+				bucketDetailsModel.KeyFile = core.StringPtr("key_file")
+				bucketDetailsModel.Provider = core.StringPtr("ibm_cos")
+				bucketDetailsModel.Region = core.StringPtr("us-south")
 				bucketDetailsModel.SecretKey = core.StringPtr("13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87")
 
 				// Construct an instance of the BucketRegistrationPatch model
@@ -1276,6 +1365,9 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				bucketDetailsModel.AccessKey = core.StringPtr("b9cbf248ea5c4c96947e64407108559j")
 				bucketDetailsModel.BucketName = core.StringPtr("sample-bucket")
 				bucketDetailsModel.Endpoint = core.StringPtr("https://s3.<region>.cloud-object-storage.appdomain.cloud/")
+				bucketDetailsModel.KeyFile = core.StringPtr("key_file")
+				bucketDetailsModel.Provider = core.StringPtr("ibm_cos")
+				bucketDetailsModel.Region = core.StringPtr("us-south")
 				bucketDetailsModel.SecretKey = core.StringPtr("13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87")
 
 				// Construct an instance of the BucketRegistrationPatch model
@@ -1335,6 +1427,9 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				bucketDetailsModel.AccessKey = core.StringPtr("b9cbf248ea5c4c96947e64407108559j")
 				bucketDetailsModel.BucketName = core.StringPtr("sample-bucket")
 				bucketDetailsModel.Endpoint = core.StringPtr("https://s3.<region>.cloud-object-storage.appdomain.cloud/")
+				bucketDetailsModel.KeyFile = core.StringPtr("key_file")
+				bucketDetailsModel.Provider = core.StringPtr("ibm_cos")
+				bucketDetailsModel.Region = core.StringPtr("us-south")
 				bucketDetailsModel.SecretKey = core.StringPtr("13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87")
 
 				// Construct an instance of the BucketRegistrationPatch model
@@ -1673,6 +1768,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					Expect(req.Method).To(Equal("GET"))
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["path"]).To(Equal([]string{"testString"}))
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
 					fmt.Fprint(res, `} this is not valid json {`)
@@ -1690,6 +1786,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				listBucketObjectsOptionsModel := new(watsonxdatav2.ListBucketObjectsOptions)
 				listBucketObjectsOptionsModel.BucketID = core.StringPtr("testString")
 				listBucketObjectsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listBucketObjectsOptionsModel.Path = core.StringPtr("testString")
 				listBucketObjectsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Expect response parsing to fail since we are receiving a text/plain response
 				result, response, operationErr := watsonxDataService.ListBucketObjects(listBucketObjectsOptionsModel)
@@ -1722,6 +1819,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["path"]).To(Equal([]string{"testString"}))
 					// Sleep a short time to support a timeout test
 					time.Sleep(100 * time.Millisecond)
 
@@ -1744,6 +1842,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				listBucketObjectsOptionsModel := new(watsonxdatav2.ListBucketObjectsOptions)
 				listBucketObjectsOptionsModel.BucketID = core.StringPtr("testString")
 				listBucketObjectsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listBucketObjectsOptionsModel.Path = core.StringPtr("testString")
 				listBucketObjectsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with a Context to test a timeout error
@@ -1782,6 +1881,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["path"]).To(Equal([]string{"testString"}))
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
@@ -1806,6 +1906,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				listBucketObjectsOptionsModel := new(watsonxdatav2.ListBucketObjectsOptions)
 				listBucketObjectsOptionsModel.BucketID = core.StringPtr("testString")
 				listBucketObjectsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listBucketObjectsOptionsModel.Path = core.StringPtr("testString")
 				listBucketObjectsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with valid options model (positive test)
@@ -1827,6 +1928,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				listBucketObjectsOptionsModel := new(watsonxdatav2.ListBucketObjectsOptions)
 				listBucketObjectsOptionsModel.BucketID = core.StringPtr("testString")
 				listBucketObjectsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listBucketObjectsOptionsModel.Path = core.StringPtr("testString")
 				listBucketObjectsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
 				err := watsonxDataService.SetServiceURL("")
@@ -1869,10 +1971,604 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				listBucketObjectsOptionsModel := new(watsonxdatav2.ListBucketObjectsOptions)
 				listBucketObjectsOptionsModel.BucketID = core.StringPtr("testString")
 				listBucketObjectsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listBucketObjectsOptionsModel.Path = core.StringPtr("testString")
 				listBucketObjectsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation
 				result, response, operationErr := watsonxDataService.ListBucketObjects(listBucketObjectsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetBucketObjectProperties(getBucketObjectPropertiesOptions *GetBucketObjectPropertiesOptions) - Operation response error`, func() {
+		getBucketObjectPropertiesPath := "/bucket_registrations/testString/object_properties"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getBucketObjectPropertiesPath))
+					Expect(req.Method).To(Equal("POST"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke GetBucketObjectProperties with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the Path model
+				pathModel := new(watsonxdatav2.Path)
+				pathModel.Path = core.StringPtr("string")
+
+				// Construct an instance of the GetBucketObjectPropertiesOptions model
+				getBucketObjectPropertiesOptionsModel := new(watsonxdatav2.GetBucketObjectPropertiesOptions)
+				getBucketObjectPropertiesOptionsModel.BucketID = core.StringPtr("testString")
+				getBucketObjectPropertiesOptionsModel.Paths = []watsonxdatav2.Path{*pathModel}
+				getBucketObjectPropertiesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getBucketObjectPropertiesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.GetBucketObjectProperties(getBucketObjectPropertiesOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.GetBucketObjectProperties(getBucketObjectPropertiesOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetBucketObjectProperties(getBucketObjectPropertiesOptions *GetBucketObjectPropertiesOptions)`, func() {
+		getBucketObjectPropertiesPath := "/bucket_registrations/testString/object_properties"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getBucketObjectPropertiesPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"object_properties": [{"content_type": "string", "file_type": "string", "last_modified": "utc-2014-07", "metadata": {"mapKey": "Inner"}, "path": "abc/abc/data", "size": "1024"}]}`)
+				}))
+			})
+			It(`Invoke GetBucketObjectProperties successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the Path model
+				pathModel := new(watsonxdatav2.Path)
+				pathModel.Path = core.StringPtr("string")
+
+				// Construct an instance of the GetBucketObjectPropertiesOptions model
+				getBucketObjectPropertiesOptionsModel := new(watsonxdatav2.GetBucketObjectPropertiesOptions)
+				getBucketObjectPropertiesOptionsModel.BucketID = core.StringPtr("testString")
+				getBucketObjectPropertiesOptionsModel.Paths = []watsonxdatav2.Path{*pathModel}
+				getBucketObjectPropertiesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getBucketObjectPropertiesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.GetBucketObjectPropertiesWithContext(ctx, getBucketObjectPropertiesOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.GetBucketObjectProperties(getBucketObjectPropertiesOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.GetBucketObjectPropertiesWithContext(ctx, getBucketObjectPropertiesOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getBucketObjectPropertiesPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"object_properties": [{"content_type": "string", "file_type": "string", "last_modified": "utc-2014-07", "metadata": {"mapKey": "Inner"}, "path": "abc/abc/data", "size": "1024"}]}`)
+				}))
+			})
+			It(`Invoke GetBucketObjectProperties successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.GetBucketObjectProperties(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the Path model
+				pathModel := new(watsonxdatav2.Path)
+				pathModel.Path = core.StringPtr("string")
+
+				// Construct an instance of the GetBucketObjectPropertiesOptions model
+				getBucketObjectPropertiesOptionsModel := new(watsonxdatav2.GetBucketObjectPropertiesOptions)
+				getBucketObjectPropertiesOptionsModel.BucketID = core.StringPtr("testString")
+				getBucketObjectPropertiesOptionsModel.Paths = []watsonxdatav2.Path{*pathModel}
+				getBucketObjectPropertiesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getBucketObjectPropertiesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.GetBucketObjectProperties(getBucketObjectPropertiesOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke GetBucketObjectProperties with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the Path model
+				pathModel := new(watsonxdatav2.Path)
+				pathModel.Path = core.StringPtr("string")
+
+				// Construct an instance of the GetBucketObjectPropertiesOptions model
+				getBucketObjectPropertiesOptionsModel := new(watsonxdatav2.GetBucketObjectPropertiesOptions)
+				getBucketObjectPropertiesOptionsModel.BucketID = core.StringPtr("testString")
+				getBucketObjectPropertiesOptionsModel.Paths = []watsonxdatav2.Path{*pathModel}
+				getBucketObjectPropertiesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getBucketObjectPropertiesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.GetBucketObjectProperties(getBucketObjectPropertiesOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the GetBucketObjectPropertiesOptions model with no property values
+				getBucketObjectPropertiesOptionsModelNew := new(watsonxdatav2.GetBucketObjectPropertiesOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = watsonxDataService.GetBucketObjectProperties(getBucketObjectPropertiesOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(201)
+				}))
+			})
+			It(`Invoke GetBucketObjectProperties successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the Path model
+				pathModel := new(watsonxdatav2.Path)
+				pathModel.Path = core.StringPtr("string")
+
+				// Construct an instance of the GetBucketObjectPropertiesOptions model
+				getBucketObjectPropertiesOptionsModel := new(watsonxdatav2.GetBucketObjectPropertiesOptions)
+				getBucketObjectPropertiesOptionsModel.BucketID = core.StringPtr("testString")
+				getBucketObjectPropertiesOptionsModel.Paths = []watsonxdatav2.Path{*pathModel}
+				getBucketObjectPropertiesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getBucketObjectPropertiesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.GetBucketObjectProperties(getBucketObjectPropertiesOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateHdfsStorage(createHdfsStorageOptions *CreateHdfsStorageOptions) - Operation response error`, func() {
+		createHdfsStoragePath := "/storage_hdfs_registrations"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createHdfsStoragePath))
+					Expect(req.Method).To(Equal("POST"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke CreateHdfsStorage with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateHdfsStorageOptions model
+				createHdfsStorageOptionsModel := new(watsonxdatav2.CreateHdfsStorageOptions)
+				createHdfsStorageOptionsModel.BucketDisplayName = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.BucketType = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HmsThriftURI = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HmsThriftPort = core.Int64Ptr(int64(1))
+				createHdfsStorageOptionsModel.CoreSite = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HdfsSite = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.Kerberos = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.CatalogName = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.CatalogType = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.Krb5Config = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HiveKeytab = CreateMockReader("This is a mock file.")
+				createHdfsStorageOptionsModel.HiveKeytabContentType = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HdfsKeytab = CreateMockReader("This is a mock file.")
+				createHdfsStorageOptionsModel.HdfsKeytabContentType = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HiveServerPrincipal = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HiveClientPrincipal = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HdfsPrincipal = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.Description = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.CreatedOn = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.CreateHdfsStorage(createHdfsStorageOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.CreateHdfsStorage(createHdfsStorageOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateHdfsStorage(createHdfsStorageOptions *CreateHdfsStorageOptions)`, func() {
+		createHdfsStoragePath := "/storage_hdfs_registrations"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createHdfsStoragePath))
+					Expect(req.Method).To(Equal("POST"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "bucket_display_name": "sample hdfs displayname", "bucket_id": "hdfs123", "bucket_type": "hdfs", "created_by": "<username>@<domain>.com", "created_on": "1686120645", "description": "HDFS description for storage", "managed_by": "customer", "state": "active", "tags": ["Tags"]}`)
+				}))
+			})
+			It(`Invoke CreateHdfsStorage successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the CreateHdfsStorageOptions model
+				createHdfsStorageOptionsModel := new(watsonxdatav2.CreateHdfsStorageOptions)
+				createHdfsStorageOptionsModel.BucketDisplayName = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.BucketType = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HmsThriftURI = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HmsThriftPort = core.Int64Ptr(int64(1))
+				createHdfsStorageOptionsModel.CoreSite = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HdfsSite = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.Kerberos = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.CatalogName = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.CatalogType = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.Krb5Config = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HiveKeytab = CreateMockReader("This is a mock file.")
+				createHdfsStorageOptionsModel.HiveKeytabContentType = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HdfsKeytab = CreateMockReader("This is a mock file.")
+				createHdfsStorageOptionsModel.HdfsKeytabContentType = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HiveServerPrincipal = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HiveClientPrincipal = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HdfsPrincipal = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.Description = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.CreatedOn = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.CreateHdfsStorageWithContext(ctx, createHdfsStorageOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.CreateHdfsStorage(createHdfsStorageOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.CreateHdfsStorageWithContext(ctx, createHdfsStorageOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createHdfsStoragePath))
+					Expect(req.Method).To(Equal("POST"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "bucket_display_name": "sample hdfs displayname", "bucket_id": "hdfs123", "bucket_type": "hdfs", "created_by": "<username>@<domain>.com", "created_on": "1686120645", "description": "HDFS description for storage", "managed_by": "customer", "state": "active", "tags": ["Tags"]}`)
+				}))
+			})
+			It(`Invoke CreateHdfsStorage successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.CreateHdfsStorage(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the CreateHdfsStorageOptions model
+				createHdfsStorageOptionsModel := new(watsonxdatav2.CreateHdfsStorageOptions)
+				createHdfsStorageOptionsModel.BucketDisplayName = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.BucketType = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HmsThriftURI = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HmsThriftPort = core.Int64Ptr(int64(1))
+				createHdfsStorageOptionsModel.CoreSite = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HdfsSite = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.Kerberos = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.CatalogName = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.CatalogType = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.Krb5Config = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HiveKeytab = CreateMockReader("This is a mock file.")
+				createHdfsStorageOptionsModel.HiveKeytabContentType = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HdfsKeytab = CreateMockReader("This is a mock file.")
+				createHdfsStorageOptionsModel.HdfsKeytabContentType = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HiveServerPrincipal = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HiveClientPrincipal = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HdfsPrincipal = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.Description = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.CreatedOn = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.CreateHdfsStorage(createHdfsStorageOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke CreateHdfsStorage with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateHdfsStorageOptions model
+				createHdfsStorageOptionsModel := new(watsonxdatav2.CreateHdfsStorageOptions)
+				createHdfsStorageOptionsModel.BucketDisplayName = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.BucketType = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HmsThriftURI = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HmsThriftPort = core.Int64Ptr(int64(1))
+				createHdfsStorageOptionsModel.CoreSite = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HdfsSite = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.Kerberos = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.CatalogName = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.CatalogType = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.Krb5Config = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HiveKeytab = CreateMockReader("This is a mock file.")
+				createHdfsStorageOptionsModel.HiveKeytabContentType = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HdfsKeytab = CreateMockReader("This is a mock file.")
+				createHdfsStorageOptionsModel.HdfsKeytabContentType = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HiveServerPrincipal = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HiveClientPrincipal = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HdfsPrincipal = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.Description = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.CreatedOn = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.CreateHdfsStorage(createHdfsStorageOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the CreateHdfsStorageOptions model with no property values
+				createHdfsStorageOptionsModelNew := new(watsonxdatav2.CreateHdfsStorageOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = watsonxDataService.CreateHdfsStorage(createHdfsStorageOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(201)
+				}))
+			})
+			It(`Invoke CreateHdfsStorage successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateHdfsStorageOptions model
+				createHdfsStorageOptionsModel := new(watsonxdatav2.CreateHdfsStorageOptions)
+				createHdfsStorageOptionsModel.BucketDisplayName = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.BucketType = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HmsThriftURI = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HmsThriftPort = core.Int64Ptr(int64(1))
+				createHdfsStorageOptionsModel.CoreSite = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HdfsSite = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.Kerberos = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.CatalogName = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.CatalogType = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.Krb5Config = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HiveKeytab = CreateMockReader("This is a mock file.")
+				createHdfsStorageOptionsModel.HiveKeytabContentType = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HdfsKeytab = CreateMockReader("This is a mock file.")
+				createHdfsStorageOptionsModel.HdfsKeytabContentType = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HiveServerPrincipal = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HiveClientPrincipal = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.HdfsPrincipal = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.Description = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.CreatedOn = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createHdfsStorageOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.CreateHdfsStorage(createHdfsStorageOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 
@@ -1950,7 +2646,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"database_registrations": [{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "catalog_name": "sampleCatalog", "created_by": "user1@bim.com", "created_on": "1686792721", "database_details": {"certificate": "contents of a pem/crt file", "certificate_extension": "pem/crt", "database_name": "new_database", "hostname": "db2@<hostname>.com", "hostname_in_certificate": "samplehostname", "hosts": "abc.com:1234,xyz.com:4321", "password": "samplepassword", "port": 4553, "sasl": true, "ssl": true, "tables": "kafka_table_name", "username": "sampleuser", "validate_server_certificate": true}, "database_display_name": "new_database", "database_id": "new_database_id", "database_properties": [{"encrypt": true, "key": "hive.metastore", "value": "glue"}], "database_type": "netezza", "description": "Description of the external Database", "tags": ["Tags"]}]}`)
+					fmt.Fprintf(res, "%s", `{"database_registrations": [{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "catalog_name": "sampleCatalog", "created_by": "user1@bim.com", "created_on": "1686792721", "database_details": {"authentication_type": "LDAP", "broker_authentication_password": "samplepassword", "broker_authentication_type": "PASSWORD", "broker_authentication_user": "sampleuser", "certificate": "contents of a pem/crt file", "certificate_extension": "pem/crt", "connection_method": "basic, apikey", "connection_mode": "service_name", "connection_mode_value": "orclpdb", "connection_type": "JDBC, Arrow flight", "controller_authentication_password": "samplepassword", "controller_authentication_type": "PASSWORD", "controller_authentication_user": "sampleuser", "cpd_hostname": "samplecpdhostname", "credentials_key": "eyJ0eXBlIjoic2VydmljZV9hY2NvdW50IiwicHJvamVjdF9pZCI6ImNvbm9wcy1iaWdxdWVyeSIsInByaXZhdGVfa2V5X2lkIjoiMGY3......", "database_name": "new_database", "hostname": "db2@<hostname>.com", "hostname_in_certificate": "samplehostname", "hosts": "abc.com:1234,xyz.com:4321", "informix_server": "ol_informix1410", "password": "samplepassword", "port": 4553, "project_id": "conops-bigquery", "sasl": true, "service_api_key": "sampleapikey", "service_hostname": "api.dataplatform.dev.cloud.ibm.com", "service_password": "samplepassword", "service_port": 443, "service_ssl": true, "service_token_url": "sampletoakenurl", "service_username": "sampleusername", "ssl": true, "tables": "kafka_table_name", "username": "sampleuser", "validate_server_certificate": true, "verify_host_name": true}, "database_display_name": "new_database", "database_id": "new_database_id", "database_properties": [{"encrypt": true, "key": "hive.metastore", "value": "glue"}], "database_type": "netezza", "description": "Description of the external database", "tags": ["Tags"], "topics": [{"created_on": "1686792721", "file_contents": "sample file content", "file_name": "sample file name", "topic_name": "customer"}]}]}`)
 				}))
 			})
 			It(`Invoke ListDatabaseRegistrations successfully with retries`, func() {
@@ -2006,7 +2702,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"database_registrations": [{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "catalog_name": "sampleCatalog", "created_by": "user1@bim.com", "created_on": "1686792721", "database_details": {"certificate": "contents of a pem/crt file", "certificate_extension": "pem/crt", "database_name": "new_database", "hostname": "db2@<hostname>.com", "hostname_in_certificate": "samplehostname", "hosts": "abc.com:1234,xyz.com:4321", "password": "samplepassword", "port": 4553, "sasl": true, "ssl": true, "tables": "kafka_table_name", "username": "sampleuser", "validate_server_certificate": true}, "database_display_name": "new_database", "database_id": "new_database_id", "database_properties": [{"encrypt": true, "key": "hive.metastore", "value": "glue"}], "database_type": "netezza", "description": "Description of the external Database", "tags": ["Tags"]}]}`)
+					fmt.Fprintf(res, "%s", `{"database_registrations": [{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "catalog_name": "sampleCatalog", "created_by": "user1@bim.com", "created_on": "1686792721", "database_details": {"authentication_type": "LDAP", "broker_authentication_password": "samplepassword", "broker_authentication_type": "PASSWORD", "broker_authentication_user": "sampleuser", "certificate": "contents of a pem/crt file", "certificate_extension": "pem/crt", "connection_method": "basic, apikey", "connection_mode": "service_name", "connection_mode_value": "orclpdb", "connection_type": "JDBC, Arrow flight", "controller_authentication_password": "samplepassword", "controller_authentication_type": "PASSWORD", "controller_authentication_user": "sampleuser", "cpd_hostname": "samplecpdhostname", "credentials_key": "eyJ0eXBlIjoic2VydmljZV9hY2NvdW50IiwicHJvamVjdF9pZCI6ImNvbm9wcy1iaWdxdWVyeSIsInByaXZhdGVfa2V5X2lkIjoiMGY3......", "database_name": "new_database", "hostname": "db2@<hostname>.com", "hostname_in_certificate": "samplehostname", "hosts": "abc.com:1234,xyz.com:4321", "informix_server": "ol_informix1410", "password": "samplepassword", "port": 4553, "project_id": "conops-bigquery", "sasl": true, "service_api_key": "sampleapikey", "service_hostname": "api.dataplatform.dev.cloud.ibm.com", "service_password": "samplepassword", "service_port": 443, "service_ssl": true, "service_token_url": "sampletoakenurl", "service_username": "sampleusername", "ssl": true, "tables": "kafka_table_name", "username": "sampleuser", "validate_server_certificate": true, "verify_host_name": true}, "database_display_name": "new_database", "database_id": "new_database_id", "database_properties": [{"encrypt": true, "key": "hive.metastore", "value": "glue"}], "database_type": "netezza", "description": "Description of the external database", "tags": ["Tags"], "topics": [{"created_on": "1686792721", "file_contents": "sample file content", "file_name": "sample file name", "topic_name": "customer"}]}]}`)
 				}))
 			})
 			It(`Invoke ListDatabaseRegistrations successfully`, func() {
@@ -2128,19 +2824,42 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 				// Construct an instance of the DatabaseDetails model
 				databaseDetailsModel := new(watsonxdatav2.DatabaseDetails)
+				databaseDetailsModel.AuthenticationType = core.StringPtr("LDAP")
+				databaseDetailsModel.BrokerAuthenticationPassword = core.StringPtr("samplepassword")
+				databaseDetailsModel.BrokerAuthenticationType = core.StringPtr("PASSWORD")
+				databaseDetailsModel.BrokerAuthenticationUser = core.StringPtr("sampleuser")
 				databaseDetailsModel.Certificate = core.StringPtr("contents of a pem/crt file")
 				databaseDetailsModel.CertificateExtension = core.StringPtr("pem/crt")
+				databaseDetailsModel.ConnectionMethod = core.StringPtr("basic, apikey")
+				databaseDetailsModel.ConnectionMode = core.StringPtr("service_name")
+				databaseDetailsModel.ConnectionModeValue = core.StringPtr("orclpdb")
+				databaseDetailsModel.ConnectionType = core.StringPtr("JDBC, Arrow flight")
+				databaseDetailsModel.ControllerAuthenticationPassword = core.StringPtr("samplepassword")
+				databaseDetailsModel.ControllerAuthenticationType = core.StringPtr("PASSWORD")
+				databaseDetailsModel.ControllerAuthenticationUser = core.StringPtr("sampleuser")
+				databaseDetailsModel.CpdHostname = core.StringPtr("samplecpdhostname")
+				databaseDetailsModel.CredentialsKey = core.StringPtr("eyJ0eXBlIjoic2VydmljZV9hY2NvdW50IiwicHJvamVjdF9pZCI6ImNvbm9wcy1iaWdxdWVyeSIsInByaXZhdGVfa2V5X2lkIjoiMGY3......")
 				databaseDetailsModel.DatabaseName = core.StringPtr("new_database")
 				databaseDetailsModel.Hostname = core.StringPtr("db2@<hostname>.com")
 				databaseDetailsModel.HostnameInCertificate = core.StringPtr("samplehostname")
 				databaseDetailsModel.Hosts = core.StringPtr("abc.com:1234,xyz.com:4321")
+				databaseDetailsModel.InformixServer = core.StringPtr("ol_informix1410")
 				databaseDetailsModel.Password = core.StringPtr("samplepassword")
 				databaseDetailsModel.Port = core.Int64Ptr(int64(4553))
+				databaseDetailsModel.ProjectID = core.StringPtr("conops-bigquery")
 				databaseDetailsModel.Sasl = core.BoolPtr(true)
+				databaseDetailsModel.ServiceApiKey = core.StringPtr("sampleapikey")
+				databaseDetailsModel.ServiceHostname = core.StringPtr("api.dataplatform.dev.cloud.ibm.com")
+				databaseDetailsModel.ServicePassword = core.StringPtr("samplepassword")
+				databaseDetailsModel.ServicePort = core.Int64Ptr(int64(443))
+				databaseDetailsModel.ServiceSsl = core.BoolPtr(true)
+				databaseDetailsModel.ServiceTokenURL = core.StringPtr("sampletoakenurl")
+				databaseDetailsModel.ServiceUsername = core.StringPtr("sampleusername")
 				databaseDetailsModel.Ssl = core.BoolPtr(true)
 				databaseDetailsModel.Tables = core.StringPtr("kafka_table_name")
 				databaseDetailsModel.Username = core.StringPtr("sampleuser")
 				databaseDetailsModel.ValidateServerCertificate = core.BoolPtr(true)
+				databaseDetailsModel.VerifyHostName = core.BoolPtr(true)
 
 				// Construct an instance of the DatabaseRegistrationPrototypeDatabasePropertiesItems model
 				databaseRegistrationPrototypeDatabasePropertiesItemsModel := new(watsonxdatav2.DatabaseRegistrationPrototypeDatabasePropertiesItems)
@@ -2213,7 +2932,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "catalog_name": "sampleCatalog", "created_by": "user1@bim.com", "created_on": "1686792721", "database_details": {"certificate": "contents of a pem/crt file", "certificate_extension": "pem/crt", "database_name": "new_database", "hostname": "db2@<hostname>.com", "hostname_in_certificate": "samplehostname", "hosts": "abc.com:1234,xyz.com:4321", "password": "samplepassword", "port": 4553, "sasl": true, "ssl": true, "tables": "kafka_table_name", "username": "sampleuser", "validate_server_certificate": true}, "database_display_name": "new_database", "database_id": "new_database_id", "database_properties": [{"encrypt": true, "key": "hive.metastore", "value": "glue"}], "database_type": "netezza", "description": "Description of the external Database", "tags": ["Tags"]}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "catalog_name": "sampleCatalog", "created_by": "user1@bim.com", "created_on": "1686792721", "database_details": {"authentication_type": "LDAP", "broker_authentication_password": "samplepassword", "broker_authentication_type": "PASSWORD", "broker_authentication_user": "sampleuser", "certificate": "contents of a pem/crt file", "certificate_extension": "pem/crt", "connection_method": "basic, apikey", "connection_mode": "service_name", "connection_mode_value": "orclpdb", "connection_type": "JDBC, Arrow flight", "controller_authentication_password": "samplepassword", "controller_authentication_type": "PASSWORD", "controller_authentication_user": "sampleuser", "cpd_hostname": "samplecpdhostname", "credentials_key": "eyJ0eXBlIjoic2VydmljZV9hY2NvdW50IiwicHJvamVjdF9pZCI6ImNvbm9wcy1iaWdxdWVyeSIsInByaXZhdGVfa2V5X2lkIjoiMGY3......", "database_name": "new_database", "hostname": "db2@<hostname>.com", "hostname_in_certificate": "samplehostname", "hosts": "abc.com:1234,xyz.com:4321", "informix_server": "ol_informix1410", "password": "samplepassword", "port": 4553, "project_id": "conops-bigquery", "sasl": true, "service_api_key": "sampleapikey", "service_hostname": "api.dataplatform.dev.cloud.ibm.com", "service_password": "samplepassword", "service_port": 443, "service_ssl": true, "service_token_url": "sampletoakenurl", "service_username": "sampleusername", "ssl": true, "tables": "kafka_table_name", "username": "sampleuser", "validate_server_certificate": true, "verify_host_name": true}, "database_display_name": "new_database", "database_id": "new_database_id", "database_properties": [{"encrypt": true, "key": "hive.metastore", "value": "glue"}], "database_type": "netezza", "description": "Description of the external database", "tags": ["Tags"], "topics": [{"created_on": "1686792721", "file_contents": "sample file content", "file_name": "sample file name", "topic_name": "customer"}]}`)
 				}))
 			})
 			It(`Invoke CreateDatabaseRegistration successfully with retries`, func() {
@@ -2233,19 +2952,42 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 				// Construct an instance of the DatabaseDetails model
 				databaseDetailsModel := new(watsonxdatav2.DatabaseDetails)
+				databaseDetailsModel.AuthenticationType = core.StringPtr("LDAP")
+				databaseDetailsModel.BrokerAuthenticationPassword = core.StringPtr("samplepassword")
+				databaseDetailsModel.BrokerAuthenticationType = core.StringPtr("PASSWORD")
+				databaseDetailsModel.BrokerAuthenticationUser = core.StringPtr("sampleuser")
 				databaseDetailsModel.Certificate = core.StringPtr("contents of a pem/crt file")
 				databaseDetailsModel.CertificateExtension = core.StringPtr("pem/crt")
+				databaseDetailsModel.ConnectionMethod = core.StringPtr("basic, apikey")
+				databaseDetailsModel.ConnectionMode = core.StringPtr("service_name")
+				databaseDetailsModel.ConnectionModeValue = core.StringPtr("orclpdb")
+				databaseDetailsModel.ConnectionType = core.StringPtr("JDBC, Arrow flight")
+				databaseDetailsModel.ControllerAuthenticationPassword = core.StringPtr("samplepassword")
+				databaseDetailsModel.ControllerAuthenticationType = core.StringPtr("PASSWORD")
+				databaseDetailsModel.ControllerAuthenticationUser = core.StringPtr("sampleuser")
+				databaseDetailsModel.CpdHostname = core.StringPtr("samplecpdhostname")
+				databaseDetailsModel.CredentialsKey = core.StringPtr("eyJ0eXBlIjoic2VydmljZV9hY2NvdW50IiwicHJvamVjdF9pZCI6ImNvbm9wcy1iaWdxdWVyeSIsInByaXZhdGVfa2V5X2lkIjoiMGY3......")
 				databaseDetailsModel.DatabaseName = core.StringPtr("new_database")
 				databaseDetailsModel.Hostname = core.StringPtr("db2@<hostname>.com")
 				databaseDetailsModel.HostnameInCertificate = core.StringPtr("samplehostname")
 				databaseDetailsModel.Hosts = core.StringPtr("abc.com:1234,xyz.com:4321")
+				databaseDetailsModel.InformixServer = core.StringPtr("ol_informix1410")
 				databaseDetailsModel.Password = core.StringPtr("samplepassword")
 				databaseDetailsModel.Port = core.Int64Ptr(int64(4553))
+				databaseDetailsModel.ProjectID = core.StringPtr("conops-bigquery")
 				databaseDetailsModel.Sasl = core.BoolPtr(true)
+				databaseDetailsModel.ServiceApiKey = core.StringPtr("sampleapikey")
+				databaseDetailsModel.ServiceHostname = core.StringPtr("api.dataplatform.dev.cloud.ibm.com")
+				databaseDetailsModel.ServicePassword = core.StringPtr("samplepassword")
+				databaseDetailsModel.ServicePort = core.Int64Ptr(int64(443))
+				databaseDetailsModel.ServiceSsl = core.BoolPtr(true)
+				databaseDetailsModel.ServiceTokenURL = core.StringPtr("sampletoakenurl")
+				databaseDetailsModel.ServiceUsername = core.StringPtr("sampleusername")
 				databaseDetailsModel.Ssl = core.BoolPtr(true)
 				databaseDetailsModel.Tables = core.StringPtr("kafka_table_name")
 				databaseDetailsModel.Username = core.StringPtr("sampleuser")
 				databaseDetailsModel.ValidateServerCertificate = core.BoolPtr(true)
+				databaseDetailsModel.VerifyHostName = core.BoolPtr(true)
 
 				// Construct an instance of the DatabaseRegistrationPrototypeDatabasePropertiesItems model
 				databaseRegistrationPrototypeDatabasePropertiesItemsModel := new(watsonxdatav2.DatabaseRegistrationPrototypeDatabasePropertiesItems)
@@ -2321,7 +3063,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "catalog_name": "sampleCatalog", "created_by": "user1@bim.com", "created_on": "1686792721", "database_details": {"certificate": "contents of a pem/crt file", "certificate_extension": "pem/crt", "database_name": "new_database", "hostname": "db2@<hostname>.com", "hostname_in_certificate": "samplehostname", "hosts": "abc.com:1234,xyz.com:4321", "password": "samplepassword", "port": 4553, "sasl": true, "ssl": true, "tables": "kafka_table_name", "username": "sampleuser", "validate_server_certificate": true}, "database_display_name": "new_database", "database_id": "new_database_id", "database_properties": [{"encrypt": true, "key": "hive.metastore", "value": "glue"}], "database_type": "netezza", "description": "Description of the external Database", "tags": ["Tags"]}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "catalog_name": "sampleCatalog", "created_by": "user1@bim.com", "created_on": "1686792721", "database_details": {"authentication_type": "LDAP", "broker_authentication_password": "samplepassword", "broker_authentication_type": "PASSWORD", "broker_authentication_user": "sampleuser", "certificate": "contents of a pem/crt file", "certificate_extension": "pem/crt", "connection_method": "basic, apikey", "connection_mode": "service_name", "connection_mode_value": "orclpdb", "connection_type": "JDBC, Arrow flight", "controller_authentication_password": "samplepassword", "controller_authentication_type": "PASSWORD", "controller_authentication_user": "sampleuser", "cpd_hostname": "samplecpdhostname", "credentials_key": "eyJ0eXBlIjoic2VydmljZV9hY2NvdW50IiwicHJvamVjdF9pZCI6ImNvbm9wcy1iaWdxdWVyeSIsInByaXZhdGVfa2V5X2lkIjoiMGY3......", "database_name": "new_database", "hostname": "db2@<hostname>.com", "hostname_in_certificate": "samplehostname", "hosts": "abc.com:1234,xyz.com:4321", "informix_server": "ol_informix1410", "password": "samplepassword", "port": 4553, "project_id": "conops-bigquery", "sasl": true, "service_api_key": "sampleapikey", "service_hostname": "api.dataplatform.dev.cloud.ibm.com", "service_password": "samplepassword", "service_port": 443, "service_ssl": true, "service_token_url": "sampletoakenurl", "service_username": "sampleusername", "ssl": true, "tables": "kafka_table_name", "username": "sampleuser", "validate_server_certificate": true, "verify_host_name": true}, "database_display_name": "new_database", "database_id": "new_database_id", "database_properties": [{"encrypt": true, "key": "hive.metastore", "value": "glue"}], "database_type": "netezza", "description": "Description of the external database", "tags": ["Tags"], "topics": [{"created_on": "1686792721", "file_contents": "sample file content", "file_name": "sample file name", "topic_name": "customer"}]}`)
 				}))
 			})
 			It(`Invoke CreateDatabaseRegistration successfully`, func() {
@@ -2346,19 +3088,42 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 				// Construct an instance of the DatabaseDetails model
 				databaseDetailsModel := new(watsonxdatav2.DatabaseDetails)
+				databaseDetailsModel.AuthenticationType = core.StringPtr("LDAP")
+				databaseDetailsModel.BrokerAuthenticationPassword = core.StringPtr("samplepassword")
+				databaseDetailsModel.BrokerAuthenticationType = core.StringPtr("PASSWORD")
+				databaseDetailsModel.BrokerAuthenticationUser = core.StringPtr("sampleuser")
 				databaseDetailsModel.Certificate = core.StringPtr("contents of a pem/crt file")
 				databaseDetailsModel.CertificateExtension = core.StringPtr("pem/crt")
+				databaseDetailsModel.ConnectionMethod = core.StringPtr("basic, apikey")
+				databaseDetailsModel.ConnectionMode = core.StringPtr("service_name")
+				databaseDetailsModel.ConnectionModeValue = core.StringPtr("orclpdb")
+				databaseDetailsModel.ConnectionType = core.StringPtr("JDBC, Arrow flight")
+				databaseDetailsModel.ControllerAuthenticationPassword = core.StringPtr("samplepassword")
+				databaseDetailsModel.ControllerAuthenticationType = core.StringPtr("PASSWORD")
+				databaseDetailsModel.ControllerAuthenticationUser = core.StringPtr("sampleuser")
+				databaseDetailsModel.CpdHostname = core.StringPtr("samplecpdhostname")
+				databaseDetailsModel.CredentialsKey = core.StringPtr("eyJ0eXBlIjoic2VydmljZV9hY2NvdW50IiwicHJvamVjdF9pZCI6ImNvbm9wcy1iaWdxdWVyeSIsInByaXZhdGVfa2V5X2lkIjoiMGY3......")
 				databaseDetailsModel.DatabaseName = core.StringPtr("new_database")
 				databaseDetailsModel.Hostname = core.StringPtr("db2@<hostname>.com")
 				databaseDetailsModel.HostnameInCertificate = core.StringPtr("samplehostname")
 				databaseDetailsModel.Hosts = core.StringPtr("abc.com:1234,xyz.com:4321")
+				databaseDetailsModel.InformixServer = core.StringPtr("ol_informix1410")
 				databaseDetailsModel.Password = core.StringPtr("samplepassword")
 				databaseDetailsModel.Port = core.Int64Ptr(int64(4553))
+				databaseDetailsModel.ProjectID = core.StringPtr("conops-bigquery")
 				databaseDetailsModel.Sasl = core.BoolPtr(true)
+				databaseDetailsModel.ServiceApiKey = core.StringPtr("sampleapikey")
+				databaseDetailsModel.ServiceHostname = core.StringPtr("api.dataplatform.dev.cloud.ibm.com")
+				databaseDetailsModel.ServicePassword = core.StringPtr("samplepassword")
+				databaseDetailsModel.ServicePort = core.Int64Ptr(int64(443))
+				databaseDetailsModel.ServiceSsl = core.BoolPtr(true)
+				databaseDetailsModel.ServiceTokenURL = core.StringPtr("sampletoakenurl")
+				databaseDetailsModel.ServiceUsername = core.StringPtr("sampleusername")
 				databaseDetailsModel.Ssl = core.BoolPtr(true)
 				databaseDetailsModel.Tables = core.StringPtr("kafka_table_name")
 				databaseDetailsModel.Username = core.StringPtr("sampleuser")
 				databaseDetailsModel.ValidateServerCertificate = core.BoolPtr(true)
+				databaseDetailsModel.VerifyHostName = core.BoolPtr(true)
 
 				// Construct an instance of the DatabaseRegistrationPrototypeDatabasePropertiesItems model
 				databaseRegistrationPrototypeDatabasePropertiesItemsModel := new(watsonxdatav2.DatabaseRegistrationPrototypeDatabasePropertiesItems)
@@ -2402,19 +3167,42 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 				// Construct an instance of the DatabaseDetails model
 				databaseDetailsModel := new(watsonxdatav2.DatabaseDetails)
+				databaseDetailsModel.AuthenticationType = core.StringPtr("LDAP")
+				databaseDetailsModel.BrokerAuthenticationPassword = core.StringPtr("samplepassword")
+				databaseDetailsModel.BrokerAuthenticationType = core.StringPtr("PASSWORD")
+				databaseDetailsModel.BrokerAuthenticationUser = core.StringPtr("sampleuser")
 				databaseDetailsModel.Certificate = core.StringPtr("contents of a pem/crt file")
 				databaseDetailsModel.CertificateExtension = core.StringPtr("pem/crt")
+				databaseDetailsModel.ConnectionMethod = core.StringPtr("basic, apikey")
+				databaseDetailsModel.ConnectionMode = core.StringPtr("service_name")
+				databaseDetailsModel.ConnectionModeValue = core.StringPtr("orclpdb")
+				databaseDetailsModel.ConnectionType = core.StringPtr("JDBC, Arrow flight")
+				databaseDetailsModel.ControllerAuthenticationPassword = core.StringPtr("samplepassword")
+				databaseDetailsModel.ControllerAuthenticationType = core.StringPtr("PASSWORD")
+				databaseDetailsModel.ControllerAuthenticationUser = core.StringPtr("sampleuser")
+				databaseDetailsModel.CpdHostname = core.StringPtr("samplecpdhostname")
+				databaseDetailsModel.CredentialsKey = core.StringPtr("eyJ0eXBlIjoic2VydmljZV9hY2NvdW50IiwicHJvamVjdF9pZCI6ImNvbm9wcy1iaWdxdWVyeSIsInByaXZhdGVfa2V5X2lkIjoiMGY3......")
 				databaseDetailsModel.DatabaseName = core.StringPtr("new_database")
 				databaseDetailsModel.Hostname = core.StringPtr("db2@<hostname>.com")
 				databaseDetailsModel.HostnameInCertificate = core.StringPtr("samplehostname")
 				databaseDetailsModel.Hosts = core.StringPtr("abc.com:1234,xyz.com:4321")
+				databaseDetailsModel.InformixServer = core.StringPtr("ol_informix1410")
 				databaseDetailsModel.Password = core.StringPtr("samplepassword")
 				databaseDetailsModel.Port = core.Int64Ptr(int64(4553))
+				databaseDetailsModel.ProjectID = core.StringPtr("conops-bigquery")
 				databaseDetailsModel.Sasl = core.BoolPtr(true)
+				databaseDetailsModel.ServiceApiKey = core.StringPtr("sampleapikey")
+				databaseDetailsModel.ServiceHostname = core.StringPtr("api.dataplatform.dev.cloud.ibm.com")
+				databaseDetailsModel.ServicePassword = core.StringPtr("samplepassword")
+				databaseDetailsModel.ServicePort = core.Int64Ptr(int64(443))
+				databaseDetailsModel.ServiceSsl = core.BoolPtr(true)
+				databaseDetailsModel.ServiceTokenURL = core.StringPtr("sampletoakenurl")
+				databaseDetailsModel.ServiceUsername = core.StringPtr("sampleusername")
 				databaseDetailsModel.Ssl = core.BoolPtr(true)
 				databaseDetailsModel.Tables = core.StringPtr("kafka_table_name")
 				databaseDetailsModel.Username = core.StringPtr("sampleuser")
 				databaseDetailsModel.ValidateServerCertificate = core.BoolPtr(true)
+				databaseDetailsModel.VerifyHostName = core.BoolPtr(true)
 
 				// Construct an instance of the DatabaseRegistrationPrototypeDatabasePropertiesItems model
 				databaseRegistrationPrototypeDatabasePropertiesItemsModel := new(watsonxdatav2.DatabaseRegistrationPrototypeDatabasePropertiesItems)
@@ -2479,19 +3267,42 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 				// Construct an instance of the DatabaseDetails model
 				databaseDetailsModel := new(watsonxdatav2.DatabaseDetails)
+				databaseDetailsModel.AuthenticationType = core.StringPtr("LDAP")
+				databaseDetailsModel.BrokerAuthenticationPassword = core.StringPtr("samplepassword")
+				databaseDetailsModel.BrokerAuthenticationType = core.StringPtr("PASSWORD")
+				databaseDetailsModel.BrokerAuthenticationUser = core.StringPtr("sampleuser")
 				databaseDetailsModel.Certificate = core.StringPtr("contents of a pem/crt file")
 				databaseDetailsModel.CertificateExtension = core.StringPtr("pem/crt")
+				databaseDetailsModel.ConnectionMethod = core.StringPtr("basic, apikey")
+				databaseDetailsModel.ConnectionMode = core.StringPtr("service_name")
+				databaseDetailsModel.ConnectionModeValue = core.StringPtr("orclpdb")
+				databaseDetailsModel.ConnectionType = core.StringPtr("JDBC, Arrow flight")
+				databaseDetailsModel.ControllerAuthenticationPassword = core.StringPtr("samplepassword")
+				databaseDetailsModel.ControllerAuthenticationType = core.StringPtr("PASSWORD")
+				databaseDetailsModel.ControllerAuthenticationUser = core.StringPtr("sampleuser")
+				databaseDetailsModel.CpdHostname = core.StringPtr("samplecpdhostname")
+				databaseDetailsModel.CredentialsKey = core.StringPtr("eyJ0eXBlIjoic2VydmljZV9hY2NvdW50IiwicHJvamVjdF9pZCI6ImNvbm9wcy1iaWdxdWVyeSIsInByaXZhdGVfa2V5X2lkIjoiMGY3......")
 				databaseDetailsModel.DatabaseName = core.StringPtr("new_database")
 				databaseDetailsModel.Hostname = core.StringPtr("db2@<hostname>.com")
 				databaseDetailsModel.HostnameInCertificate = core.StringPtr("samplehostname")
 				databaseDetailsModel.Hosts = core.StringPtr("abc.com:1234,xyz.com:4321")
+				databaseDetailsModel.InformixServer = core.StringPtr("ol_informix1410")
 				databaseDetailsModel.Password = core.StringPtr("samplepassword")
 				databaseDetailsModel.Port = core.Int64Ptr(int64(4553))
+				databaseDetailsModel.ProjectID = core.StringPtr("conops-bigquery")
 				databaseDetailsModel.Sasl = core.BoolPtr(true)
+				databaseDetailsModel.ServiceApiKey = core.StringPtr("sampleapikey")
+				databaseDetailsModel.ServiceHostname = core.StringPtr("api.dataplatform.dev.cloud.ibm.com")
+				databaseDetailsModel.ServicePassword = core.StringPtr("samplepassword")
+				databaseDetailsModel.ServicePort = core.Int64Ptr(int64(443))
+				databaseDetailsModel.ServiceSsl = core.BoolPtr(true)
+				databaseDetailsModel.ServiceTokenURL = core.StringPtr("sampletoakenurl")
+				databaseDetailsModel.ServiceUsername = core.StringPtr("sampleusername")
 				databaseDetailsModel.Ssl = core.BoolPtr(true)
 				databaseDetailsModel.Tables = core.StringPtr("kafka_table_name")
 				databaseDetailsModel.Username = core.StringPtr("sampleuser")
 				databaseDetailsModel.ValidateServerCertificate = core.BoolPtr(true)
+				databaseDetailsModel.VerifyHostName = core.BoolPtr(true)
 
 				// Construct an instance of the DatabaseRegistrationPrototypeDatabasePropertiesItems model
 				databaseRegistrationPrototypeDatabasePropertiesItemsModel := new(watsonxdatav2.DatabaseRegistrationPrototypeDatabasePropertiesItems)
@@ -2592,7 +3403,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "catalog_name": "sampleCatalog", "created_by": "user1@bim.com", "created_on": "1686792721", "database_details": {"certificate": "contents of a pem/crt file", "certificate_extension": "pem/crt", "database_name": "new_database", "hostname": "db2@<hostname>.com", "hostname_in_certificate": "samplehostname", "hosts": "abc.com:1234,xyz.com:4321", "password": "samplepassword", "port": 4553, "sasl": true, "ssl": true, "tables": "kafka_table_name", "username": "sampleuser", "validate_server_certificate": true}, "database_display_name": "new_database", "database_id": "new_database_id", "database_properties": [{"encrypt": true, "key": "hive.metastore", "value": "glue"}], "database_type": "netezza", "description": "Description of the external Database", "tags": ["Tags"]}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "catalog_name": "sampleCatalog", "created_by": "user1@bim.com", "created_on": "1686792721", "database_details": {"authentication_type": "LDAP", "broker_authentication_password": "samplepassword", "broker_authentication_type": "PASSWORD", "broker_authentication_user": "sampleuser", "certificate": "contents of a pem/crt file", "certificate_extension": "pem/crt", "connection_method": "basic, apikey", "connection_mode": "service_name", "connection_mode_value": "orclpdb", "connection_type": "JDBC, Arrow flight", "controller_authentication_password": "samplepassword", "controller_authentication_type": "PASSWORD", "controller_authentication_user": "sampleuser", "cpd_hostname": "samplecpdhostname", "credentials_key": "eyJ0eXBlIjoic2VydmljZV9hY2NvdW50IiwicHJvamVjdF9pZCI6ImNvbm9wcy1iaWdxdWVyeSIsInByaXZhdGVfa2V5X2lkIjoiMGY3......", "database_name": "new_database", "hostname": "db2@<hostname>.com", "hostname_in_certificate": "samplehostname", "hosts": "abc.com:1234,xyz.com:4321", "informix_server": "ol_informix1410", "password": "samplepassword", "port": 4553, "project_id": "conops-bigquery", "sasl": true, "service_api_key": "sampleapikey", "service_hostname": "api.dataplatform.dev.cloud.ibm.com", "service_password": "samplepassword", "service_port": 443, "service_ssl": true, "service_token_url": "sampletoakenurl", "service_username": "sampleusername", "ssl": true, "tables": "kafka_table_name", "username": "sampleuser", "validate_server_certificate": true, "verify_host_name": true}, "database_display_name": "new_database", "database_id": "new_database_id", "database_properties": [{"encrypt": true, "key": "hive.metastore", "value": "glue"}], "database_type": "netezza", "description": "Description of the external database", "tags": ["Tags"], "topics": [{"created_on": "1686792721", "file_contents": "sample file content", "file_name": "sample file name", "topic_name": "customer"}]}`)
 				}))
 			})
 			It(`Invoke GetDatabase successfully with retries`, func() {
@@ -2649,7 +3460,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "catalog_name": "sampleCatalog", "created_by": "user1@bim.com", "created_on": "1686792721", "database_details": {"certificate": "contents of a pem/crt file", "certificate_extension": "pem/crt", "database_name": "new_database", "hostname": "db2@<hostname>.com", "hostname_in_certificate": "samplehostname", "hosts": "abc.com:1234,xyz.com:4321", "password": "samplepassword", "port": 4553, "sasl": true, "ssl": true, "tables": "kafka_table_name", "username": "sampleuser", "validate_server_certificate": true}, "database_display_name": "new_database", "database_id": "new_database_id", "database_properties": [{"encrypt": true, "key": "hive.metastore", "value": "glue"}], "database_type": "netezza", "description": "Description of the external Database", "tags": ["Tags"]}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "catalog_name": "sampleCatalog", "created_by": "user1@bim.com", "created_on": "1686792721", "database_details": {"authentication_type": "LDAP", "broker_authentication_password": "samplepassword", "broker_authentication_type": "PASSWORD", "broker_authentication_user": "sampleuser", "certificate": "contents of a pem/crt file", "certificate_extension": "pem/crt", "connection_method": "basic, apikey", "connection_mode": "service_name", "connection_mode_value": "orclpdb", "connection_type": "JDBC, Arrow flight", "controller_authentication_password": "samplepassword", "controller_authentication_type": "PASSWORD", "controller_authentication_user": "sampleuser", "cpd_hostname": "samplecpdhostname", "credentials_key": "eyJ0eXBlIjoic2VydmljZV9hY2NvdW50IiwicHJvamVjdF9pZCI6ImNvbm9wcy1iaWdxdWVyeSIsInByaXZhdGVfa2V5X2lkIjoiMGY3......", "database_name": "new_database", "hostname": "db2@<hostname>.com", "hostname_in_certificate": "samplehostname", "hosts": "abc.com:1234,xyz.com:4321", "informix_server": "ol_informix1410", "password": "samplepassword", "port": 4553, "project_id": "conops-bigquery", "sasl": true, "service_api_key": "sampleapikey", "service_hostname": "api.dataplatform.dev.cloud.ibm.com", "service_password": "samplepassword", "service_port": 443, "service_ssl": true, "service_token_url": "sampletoakenurl", "service_username": "sampleusername", "ssl": true, "tables": "kafka_table_name", "username": "sampleuser", "validate_server_certificate": true, "verify_host_name": true}, "database_display_name": "new_database", "database_id": "new_database_id", "database_properties": [{"encrypt": true, "key": "hive.metastore", "value": "glue"}], "database_type": "netezza", "description": "Description of the external database", "tags": ["Tags"], "topics": [{"created_on": "1686792721", "file_contents": "sample file content", "file_name": "sample file name", "topic_name": "customer"}]}`)
 				}))
 			})
 			It(`Invoke GetDatabase successfully`, func() {
@@ -2850,12 +3661,20 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				databaseRegistrationPatchDatabaseDetailsModel.Password = core.StringPtr("samplepassword")
 				databaseRegistrationPatchDatabaseDetailsModel.Username = core.StringPtr("sampleuser")
 
+				// Construct an instance of the DatabaseRegistrationPatchTopicsItems model
+				databaseRegistrationPatchTopicsItemsModel := new(watsonxdatav2.DatabaseRegistrationPatchTopicsItems)
+				databaseRegistrationPatchTopicsItemsModel.CreatedOn = core.StringPtr("1686792721")
+				databaseRegistrationPatchTopicsItemsModel.FileContents = core.StringPtr("sample file contents")
+				databaseRegistrationPatchTopicsItemsModel.FileName = core.StringPtr("sample file name")
+				databaseRegistrationPatchTopicsItemsModel.TopicName = core.StringPtr("customer")
+
 				// Construct an instance of the DatabaseRegistrationPatch model
 				databaseRegistrationPatchModel := new(watsonxdatav2.DatabaseRegistrationPatch)
 				databaseRegistrationPatchModel.DatabaseDetails = databaseRegistrationPatchDatabaseDetailsModel
 				databaseRegistrationPatchModel.DatabaseDisplayName = core.StringPtr("new_database")
 				databaseRegistrationPatchModel.Description = core.StringPtr("External database description")
 				databaseRegistrationPatchModel.Tags = []string{"testdatabase", "userdatabase"}
+				databaseRegistrationPatchModel.Topics = []watsonxdatav2.DatabaseRegistrationPatchTopicsItems{*databaseRegistrationPatchTopicsItemsModel}
 				databaseRegistrationPatchModelAsPatch, asPatchErr := databaseRegistrationPatchModel.AsPatch()
 				Expect(asPatchErr).To(BeNil())
 
@@ -2918,7 +3737,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "catalog_name": "sampleCatalog", "created_by": "user1@bim.com", "created_on": "1686792721", "database_details": {"certificate": "contents of a pem/crt file", "certificate_extension": "pem/crt", "database_name": "new_database", "hostname": "db2@<hostname>.com", "hostname_in_certificate": "samplehostname", "hosts": "abc.com:1234,xyz.com:4321", "password": "samplepassword", "port": 4553, "sasl": true, "ssl": true, "tables": "kafka_table_name", "username": "sampleuser", "validate_server_certificate": true}, "database_display_name": "new_database", "database_id": "new_database_id", "database_properties": [{"encrypt": true, "key": "hive.metastore", "value": "glue"}], "database_type": "netezza", "description": "Description of the external Database", "tags": ["Tags"]}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "catalog_name": "sampleCatalog", "created_by": "user1@bim.com", "created_on": "1686792721", "database_details": {"authentication_type": "LDAP", "broker_authentication_password": "samplepassword", "broker_authentication_type": "PASSWORD", "broker_authentication_user": "sampleuser", "certificate": "contents of a pem/crt file", "certificate_extension": "pem/crt", "connection_method": "basic, apikey", "connection_mode": "service_name", "connection_mode_value": "orclpdb", "connection_type": "JDBC, Arrow flight", "controller_authentication_password": "samplepassword", "controller_authentication_type": "PASSWORD", "controller_authentication_user": "sampleuser", "cpd_hostname": "samplecpdhostname", "credentials_key": "eyJ0eXBlIjoic2VydmljZV9hY2NvdW50IiwicHJvamVjdF9pZCI6ImNvbm9wcy1iaWdxdWVyeSIsInByaXZhdGVfa2V5X2lkIjoiMGY3......", "database_name": "new_database", "hostname": "db2@<hostname>.com", "hostname_in_certificate": "samplehostname", "hosts": "abc.com:1234,xyz.com:4321", "informix_server": "ol_informix1410", "password": "samplepassword", "port": 4553, "project_id": "conops-bigquery", "sasl": true, "service_api_key": "sampleapikey", "service_hostname": "api.dataplatform.dev.cloud.ibm.com", "service_password": "samplepassword", "service_port": 443, "service_ssl": true, "service_token_url": "sampletoakenurl", "service_username": "sampleusername", "ssl": true, "tables": "kafka_table_name", "username": "sampleuser", "validate_server_certificate": true, "verify_host_name": true}, "database_display_name": "new_database", "database_id": "new_database_id", "database_properties": [{"encrypt": true, "key": "hive.metastore", "value": "glue"}], "database_type": "netezza", "description": "Description of the external database", "tags": ["Tags"], "topics": [{"created_on": "1686792721", "file_contents": "sample file content", "file_name": "sample file name", "topic_name": "customer"}]}`)
 				}))
 			})
 			It(`Invoke UpdateDatabase successfully with retries`, func() {
@@ -2935,12 +3754,20 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				databaseRegistrationPatchDatabaseDetailsModel.Password = core.StringPtr("samplepassword")
 				databaseRegistrationPatchDatabaseDetailsModel.Username = core.StringPtr("sampleuser")
 
+				// Construct an instance of the DatabaseRegistrationPatchTopicsItems model
+				databaseRegistrationPatchTopicsItemsModel := new(watsonxdatav2.DatabaseRegistrationPatchTopicsItems)
+				databaseRegistrationPatchTopicsItemsModel.CreatedOn = core.StringPtr("1686792721")
+				databaseRegistrationPatchTopicsItemsModel.FileContents = core.StringPtr("sample file contents")
+				databaseRegistrationPatchTopicsItemsModel.FileName = core.StringPtr("sample file name")
+				databaseRegistrationPatchTopicsItemsModel.TopicName = core.StringPtr("customer")
+
 				// Construct an instance of the DatabaseRegistrationPatch model
 				databaseRegistrationPatchModel := new(watsonxdatav2.DatabaseRegistrationPatch)
 				databaseRegistrationPatchModel.DatabaseDetails = databaseRegistrationPatchDatabaseDetailsModel
 				databaseRegistrationPatchModel.DatabaseDisplayName = core.StringPtr("new_database")
 				databaseRegistrationPatchModel.Description = core.StringPtr("External database description")
 				databaseRegistrationPatchModel.Tags = []string{"testdatabase", "userdatabase"}
+				databaseRegistrationPatchModel.Topics = []watsonxdatav2.DatabaseRegistrationPatchTopicsItems{*databaseRegistrationPatchTopicsItemsModel}
 				databaseRegistrationPatchModelAsPatch, asPatchErr := databaseRegistrationPatchModel.AsPatch()
 				Expect(asPatchErr).To(BeNil())
 
@@ -3006,7 +3833,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "catalog_name": "sampleCatalog", "created_by": "user1@bim.com", "created_on": "1686792721", "database_details": {"certificate": "contents of a pem/crt file", "certificate_extension": "pem/crt", "database_name": "new_database", "hostname": "db2@<hostname>.com", "hostname_in_certificate": "samplehostname", "hosts": "abc.com:1234,xyz.com:4321", "password": "samplepassword", "port": 4553, "sasl": true, "ssl": true, "tables": "kafka_table_name", "username": "sampleuser", "validate_server_certificate": true}, "database_display_name": "new_database", "database_id": "new_database_id", "database_properties": [{"encrypt": true, "key": "hive.metastore", "value": "glue"}], "database_type": "netezza", "description": "Description of the external Database", "tags": ["Tags"]}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalog": {"catalog_name": "sampleCatalog", "catalog_tags": ["CatalogTags"], "catalog_type": "iceberg"}, "catalog_name": "sampleCatalog", "created_by": "user1@bim.com", "created_on": "1686792721", "database_details": {"authentication_type": "LDAP", "broker_authentication_password": "samplepassword", "broker_authentication_type": "PASSWORD", "broker_authentication_user": "sampleuser", "certificate": "contents of a pem/crt file", "certificate_extension": "pem/crt", "connection_method": "basic, apikey", "connection_mode": "service_name", "connection_mode_value": "orclpdb", "connection_type": "JDBC, Arrow flight", "controller_authentication_password": "samplepassword", "controller_authentication_type": "PASSWORD", "controller_authentication_user": "sampleuser", "cpd_hostname": "samplecpdhostname", "credentials_key": "eyJ0eXBlIjoic2VydmljZV9hY2NvdW50IiwicHJvamVjdF9pZCI6ImNvbm9wcy1iaWdxdWVyeSIsInByaXZhdGVfa2V5X2lkIjoiMGY3......", "database_name": "new_database", "hostname": "db2@<hostname>.com", "hostname_in_certificate": "samplehostname", "hosts": "abc.com:1234,xyz.com:4321", "informix_server": "ol_informix1410", "password": "samplepassword", "port": 4553, "project_id": "conops-bigquery", "sasl": true, "service_api_key": "sampleapikey", "service_hostname": "api.dataplatform.dev.cloud.ibm.com", "service_password": "samplepassword", "service_port": 443, "service_ssl": true, "service_token_url": "sampletoakenurl", "service_username": "sampleusername", "ssl": true, "tables": "kafka_table_name", "username": "sampleuser", "validate_server_certificate": true, "verify_host_name": true}, "database_display_name": "new_database", "database_id": "new_database_id", "database_properties": [{"encrypt": true, "key": "hive.metastore", "value": "glue"}], "database_type": "netezza", "description": "Description of the external database", "tags": ["Tags"], "topics": [{"created_on": "1686792721", "file_contents": "sample file content", "file_name": "sample file name", "topic_name": "customer"}]}`)
 				}))
 			})
 			It(`Invoke UpdateDatabase successfully`, func() {
@@ -3028,12 +3855,20 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				databaseRegistrationPatchDatabaseDetailsModel.Password = core.StringPtr("samplepassword")
 				databaseRegistrationPatchDatabaseDetailsModel.Username = core.StringPtr("sampleuser")
 
+				// Construct an instance of the DatabaseRegistrationPatchTopicsItems model
+				databaseRegistrationPatchTopicsItemsModel := new(watsonxdatav2.DatabaseRegistrationPatchTopicsItems)
+				databaseRegistrationPatchTopicsItemsModel.CreatedOn = core.StringPtr("1686792721")
+				databaseRegistrationPatchTopicsItemsModel.FileContents = core.StringPtr("sample file contents")
+				databaseRegistrationPatchTopicsItemsModel.FileName = core.StringPtr("sample file name")
+				databaseRegistrationPatchTopicsItemsModel.TopicName = core.StringPtr("customer")
+
 				// Construct an instance of the DatabaseRegistrationPatch model
 				databaseRegistrationPatchModel := new(watsonxdatav2.DatabaseRegistrationPatch)
 				databaseRegistrationPatchModel.DatabaseDetails = databaseRegistrationPatchDatabaseDetailsModel
 				databaseRegistrationPatchModel.DatabaseDisplayName = core.StringPtr("new_database")
 				databaseRegistrationPatchModel.Description = core.StringPtr("External database description")
 				databaseRegistrationPatchModel.Tags = []string{"testdatabase", "userdatabase"}
+				databaseRegistrationPatchModel.Topics = []watsonxdatav2.DatabaseRegistrationPatchTopicsItems{*databaseRegistrationPatchTopicsItemsModel}
 				databaseRegistrationPatchModelAsPatch, asPatchErr := databaseRegistrationPatchModel.AsPatch()
 				Expect(asPatchErr).To(BeNil())
 
@@ -3064,12 +3899,20 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				databaseRegistrationPatchDatabaseDetailsModel.Password = core.StringPtr("samplepassword")
 				databaseRegistrationPatchDatabaseDetailsModel.Username = core.StringPtr("sampleuser")
 
+				// Construct an instance of the DatabaseRegistrationPatchTopicsItems model
+				databaseRegistrationPatchTopicsItemsModel := new(watsonxdatav2.DatabaseRegistrationPatchTopicsItems)
+				databaseRegistrationPatchTopicsItemsModel.CreatedOn = core.StringPtr("1686792721")
+				databaseRegistrationPatchTopicsItemsModel.FileContents = core.StringPtr("sample file contents")
+				databaseRegistrationPatchTopicsItemsModel.FileName = core.StringPtr("sample file name")
+				databaseRegistrationPatchTopicsItemsModel.TopicName = core.StringPtr("customer")
+
 				// Construct an instance of the DatabaseRegistrationPatch model
 				databaseRegistrationPatchModel := new(watsonxdatav2.DatabaseRegistrationPatch)
 				databaseRegistrationPatchModel.DatabaseDetails = databaseRegistrationPatchDatabaseDetailsModel
 				databaseRegistrationPatchModel.DatabaseDisplayName = core.StringPtr("new_database")
 				databaseRegistrationPatchModel.Description = core.StringPtr("External database description")
 				databaseRegistrationPatchModel.Tags = []string{"testdatabase", "userdatabase"}
+				databaseRegistrationPatchModel.Topics = []watsonxdatav2.DatabaseRegistrationPatchTopicsItems{*databaseRegistrationPatchTopicsItemsModel}
 				databaseRegistrationPatchModelAsPatch, asPatchErr := databaseRegistrationPatchModel.AsPatch()
 				Expect(asPatchErr).To(BeNil())
 
@@ -3121,12 +3964,20 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				databaseRegistrationPatchDatabaseDetailsModel.Password = core.StringPtr("samplepassword")
 				databaseRegistrationPatchDatabaseDetailsModel.Username = core.StringPtr("sampleuser")
 
+				// Construct an instance of the DatabaseRegistrationPatchTopicsItems model
+				databaseRegistrationPatchTopicsItemsModel := new(watsonxdatav2.DatabaseRegistrationPatchTopicsItems)
+				databaseRegistrationPatchTopicsItemsModel.CreatedOn = core.StringPtr("1686792721")
+				databaseRegistrationPatchTopicsItemsModel.FileContents = core.StringPtr("sample file contents")
+				databaseRegistrationPatchTopicsItemsModel.FileName = core.StringPtr("sample file name")
+				databaseRegistrationPatchTopicsItemsModel.TopicName = core.StringPtr("customer")
+
 				// Construct an instance of the DatabaseRegistrationPatch model
 				databaseRegistrationPatchModel := new(watsonxdatav2.DatabaseRegistrationPatch)
 				databaseRegistrationPatchModel.DatabaseDetails = databaseRegistrationPatchDatabaseDetailsModel
 				databaseRegistrationPatchModel.DatabaseDisplayName = core.StringPtr("new_database")
 				databaseRegistrationPatchModel.Description = core.StringPtr("External database description")
 				databaseRegistrationPatchModel.Tags = []string{"testdatabase", "userdatabase"}
+				databaseRegistrationPatchModel.Topics = []watsonxdatav2.DatabaseRegistrationPatchTopicsItems{*databaseRegistrationPatchTopicsItemsModel}
 				databaseRegistrationPatchModelAsPatch, asPatchErr := databaseRegistrationPatchModel.AsPatch()
 				Expect(asPatchErr).To(BeNil())
 
@@ -3139,6 +3990,897 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 				// Invoke operation
 				result, response, operationErr := watsonxDataService.UpdateDatabase(updateDatabaseOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`ListDriverRegistration(listDriverRegistrationOptions *ListDriverRegistrationOptions) - Operation response error`, func() {
+		listDriverRegistrationPath := "/driver_registrations"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(listDriverRegistrationPath))
+					Expect(req.Method).To(Equal("GET"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke ListDriverRegistration with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the ListDriverRegistrationOptions model
+				listDriverRegistrationOptionsModel := new(watsonxdatav2.ListDriverRegistrationOptions)
+				listDriverRegistrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listDriverRegistrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.ListDriverRegistration(listDriverRegistrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.ListDriverRegistration(listDriverRegistrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`ListDriverRegistration(listDriverRegistrationOptions *ListDriverRegistrationOptions)`, func() {
+		listDriverRegistrationPath := "/driver_registrations"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(listDriverRegistrationPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"driver_registrations": [{"associated_engines": ["AssociatedEngines"], "connection_type": "connection-type", "driver_id": "sample-driver-123", "driver_name": "sample-driver-name", "modified_at": "1686792721", "modified_by": "user1@bim.com", "status": "validating", "version": "123-dev"}]}`)
+				}))
+			})
+			It(`Invoke ListDriverRegistration successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the ListDriverRegistrationOptions model
+				listDriverRegistrationOptionsModel := new(watsonxdatav2.ListDriverRegistrationOptions)
+				listDriverRegistrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listDriverRegistrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.ListDriverRegistrationWithContext(ctx, listDriverRegistrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.ListDriverRegistration(listDriverRegistrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.ListDriverRegistrationWithContext(ctx, listDriverRegistrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(listDriverRegistrationPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"driver_registrations": [{"associated_engines": ["AssociatedEngines"], "connection_type": "connection-type", "driver_id": "sample-driver-123", "driver_name": "sample-driver-name", "modified_at": "1686792721", "modified_by": "user1@bim.com", "status": "validating", "version": "123-dev"}]}`)
+				}))
+			})
+			It(`Invoke ListDriverRegistration successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.ListDriverRegistration(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the ListDriverRegistrationOptions model
+				listDriverRegistrationOptionsModel := new(watsonxdatav2.ListDriverRegistrationOptions)
+				listDriverRegistrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listDriverRegistrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.ListDriverRegistration(listDriverRegistrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke ListDriverRegistration with error: Operation request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the ListDriverRegistrationOptions model
+				listDriverRegistrationOptionsModel := new(watsonxdatav2.ListDriverRegistrationOptions)
+				listDriverRegistrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listDriverRegistrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.ListDriverRegistration(listDriverRegistrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke ListDriverRegistration successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the ListDriverRegistrationOptions model
+				listDriverRegistrationOptionsModel := new(watsonxdatav2.ListDriverRegistrationOptions)
+				listDriverRegistrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listDriverRegistrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.ListDriverRegistration(listDriverRegistrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateDriverRegistration(createDriverRegistrationOptions *CreateDriverRegistrationOptions) - Operation response error`, func() {
+		createDriverRegistrationPath := "/driver_registrations"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createDriverRegistrationPath))
+					Expect(req.Method).To(Equal("POST"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke CreateDriverRegistration with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateDriverRegistrationOptions model
+				createDriverRegistrationOptionsModel := new(watsonxdatav2.CreateDriverRegistrationOptions)
+				createDriverRegistrationOptionsModel.Driver = CreateMockReader("This is a mock file.")
+				createDriverRegistrationOptionsModel.DriverName = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.ConnectionType = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.DriverContentType = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.Version = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.CreateDriverRegistration(createDriverRegistrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.CreateDriverRegistration(createDriverRegistrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateDriverRegistration(createDriverRegistrationOptions *CreateDriverRegistrationOptions)`, func() {
+		createDriverRegistrationPath := "/driver_registrations"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createDriverRegistrationPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"associated_engines": ["AssociatedEngines"], "connection_type": "connection-type", "driver_id": "sample-driver-123", "driver_name": "sample-driver-name", "modified_at": "1686792721", "modified_by": "user1@bim.com", "status": "validating", "version": "123-dev"}`)
+				}))
+			})
+			It(`Invoke CreateDriverRegistration successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the CreateDriverRegistrationOptions model
+				createDriverRegistrationOptionsModel := new(watsonxdatav2.CreateDriverRegistrationOptions)
+				createDriverRegistrationOptionsModel.Driver = CreateMockReader("This is a mock file.")
+				createDriverRegistrationOptionsModel.DriverName = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.ConnectionType = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.DriverContentType = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.Version = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.CreateDriverRegistrationWithContext(ctx, createDriverRegistrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.CreateDriverRegistration(createDriverRegistrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.CreateDriverRegistrationWithContext(ctx, createDriverRegistrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createDriverRegistrationPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"associated_engines": ["AssociatedEngines"], "connection_type": "connection-type", "driver_id": "sample-driver-123", "driver_name": "sample-driver-name", "modified_at": "1686792721", "modified_by": "user1@bim.com", "status": "validating", "version": "123-dev"}`)
+				}))
+			})
+			It(`Invoke CreateDriverRegistration successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.CreateDriverRegistration(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the CreateDriverRegistrationOptions model
+				createDriverRegistrationOptionsModel := new(watsonxdatav2.CreateDriverRegistrationOptions)
+				createDriverRegistrationOptionsModel.Driver = CreateMockReader("This is a mock file.")
+				createDriverRegistrationOptionsModel.DriverName = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.ConnectionType = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.DriverContentType = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.Version = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.CreateDriverRegistration(createDriverRegistrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke CreateDriverRegistration with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateDriverRegistrationOptions model
+				createDriverRegistrationOptionsModel := new(watsonxdatav2.CreateDriverRegistrationOptions)
+				createDriverRegistrationOptionsModel.Driver = CreateMockReader("This is a mock file.")
+				createDriverRegistrationOptionsModel.DriverName = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.ConnectionType = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.DriverContentType = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.Version = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.CreateDriverRegistration(createDriverRegistrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the CreateDriverRegistrationOptions model with no property values
+				createDriverRegistrationOptionsModelNew := new(watsonxdatav2.CreateDriverRegistrationOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = watsonxDataService.CreateDriverRegistration(createDriverRegistrationOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(201)
+				}))
+			})
+			It(`Invoke CreateDriverRegistration successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateDriverRegistrationOptions model
+				createDriverRegistrationOptionsModel := new(watsonxdatav2.CreateDriverRegistrationOptions)
+				createDriverRegistrationOptionsModel.Driver = CreateMockReader("This is a mock file.")
+				createDriverRegistrationOptionsModel.DriverName = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.ConnectionType = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.DriverContentType = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.Version = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createDriverRegistrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.CreateDriverRegistration(createDriverRegistrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`DeleteDriverRegistration(deleteDriverRegistrationOptions *DeleteDriverRegistrationOptions)`, func() {
+		deleteDriverRegistrationPath := "/driver_registrations/testString"
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(deleteDriverRegistrationPath))
+					Expect(req.Method).To(Equal("DELETE"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.WriteHeader(204)
+				}))
+			})
+			It(`Invoke DeleteDriverRegistration successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				response, operationErr := watsonxDataService.DeleteDriverRegistration(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+
+				// Construct an instance of the DeleteDriverRegistrationOptions model
+				deleteDriverRegistrationOptionsModel := new(watsonxdatav2.DeleteDriverRegistrationOptions)
+				deleteDriverRegistrationOptionsModel.DriverID = core.StringPtr("testString")
+				deleteDriverRegistrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				deleteDriverRegistrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				response, operationErr = watsonxDataService.DeleteDriverRegistration(deleteDriverRegistrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+			})
+			It(`Invoke DeleteDriverRegistration with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the DeleteDriverRegistrationOptions model
+				deleteDriverRegistrationOptionsModel := new(watsonxdatav2.DeleteDriverRegistrationOptions)
+				deleteDriverRegistrationOptionsModel.DriverID = core.StringPtr("testString")
+				deleteDriverRegistrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				deleteDriverRegistrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				response, operationErr := watsonxDataService.DeleteDriverRegistration(deleteDriverRegistrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				// Construct a second instance of the DeleteDriverRegistrationOptions model with no property values
+				deleteDriverRegistrationOptionsModelNew := new(watsonxdatav2.DeleteDriverRegistrationOptions)
+				// Invoke operation with invalid model (negative test)
+				response, operationErr = watsonxDataService.DeleteDriverRegistration(deleteDriverRegistrationOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`DeleteDriverEngines(deleteDriverEnginesOptions *DeleteDriverEnginesOptions)`, func() {
+		deleteDriverEnginesPath := "/driver_registrations/testString/engines"
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(deleteDriverEnginesPath))
+					Expect(req.Method).To(Equal("DELETE"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["engine_ids"]).To(Equal([]string{"testString"}))
+					res.WriteHeader(204)
+				}))
+			})
+			It(`Invoke DeleteDriverEngines successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				response, operationErr := watsonxDataService.DeleteDriverEngines(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+
+				// Construct an instance of the DeleteDriverEnginesOptions model
+				deleteDriverEnginesOptionsModel := new(watsonxdatav2.DeleteDriverEnginesOptions)
+				deleteDriverEnginesOptionsModel.DriverID = core.StringPtr("testString")
+				deleteDriverEnginesOptionsModel.EngineIds = core.StringPtr("testString")
+				deleteDriverEnginesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				deleteDriverEnginesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				response, operationErr = watsonxDataService.DeleteDriverEngines(deleteDriverEnginesOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+			})
+			It(`Invoke DeleteDriverEngines with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the DeleteDriverEnginesOptions model
+				deleteDriverEnginesOptionsModel := new(watsonxdatav2.DeleteDriverEnginesOptions)
+				deleteDriverEnginesOptionsModel.DriverID = core.StringPtr("testString")
+				deleteDriverEnginesOptionsModel.EngineIds = core.StringPtr("testString")
+				deleteDriverEnginesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				deleteDriverEnginesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				response, operationErr := watsonxDataService.DeleteDriverEngines(deleteDriverEnginesOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				// Construct a second instance of the DeleteDriverEnginesOptions model with no property values
+				deleteDriverEnginesOptionsModelNew := new(watsonxdatav2.DeleteDriverEnginesOptions)
+				// Invoke operation with invalid model (negative test)
+				response, operationErr = watsonxDataService.DeleteDriverEngines(deleteDriverEnginesOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`UpdateDriverEngines(updateDriverEnginesOptions *UpdateDriverEnginesOptions) - Operation response error`, func() {
+		updateDriverEnginesPath := "/driver_registrations/testString/engines"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(updateDriverEnginesPath))
+					Expect(req.Method).To(Equal("PATCH"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke UpdateDriverEngines with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the DriverRegistrationEnginePrototype model
+				driverRegistrationEnginePrototypeModel := new(watsonxdatav2.DriverRegistrationEnginePrototype)
+				driverRegistrationEnginePrototypeModel.Engines = []string{"testString"}
+				driverRegistrationEnginePrototypeModelAsPatch, asPatchErr := driverRegistrationEnginePrototypeModel.AsPatch()
+				Expect(asPatchErr).To(BeNil())
+
+				// Construct an instance of the UpdateDriverEnginesOptions model
+				updateDriverEnginesOptionsModel := new(watsonxdatav2.UpdateDriverEnginesOptions)
+				updateDriverEnginesOptionsModel.DriverID = core.StringPtr("testString")
+				updateDriverEnginesOptionsModel.Body = driverRegistrationEnginePrototypeModelAsPatch
+				updateDriverEnginesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				updateDriverEnginesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.UpdateDriverEngines(updateDriverEnginesOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.UpdateDriverEngines(updateDriverEnginesOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`UpdateDriverEngines(updateDriverEnginesOptions *UpdateDriverEnginesOptions)`, func() {
+		updateDriverEnginesPath := "/driver_registrations/testString/engines"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(updateDriverEnginesPath))
+					Expect(req.Method).To(Equal("PATCH"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"engines": ["Engines"]}`)
+				}))
+			})
+			It(`Invoke UpdateDriverEngines successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the DriverRegistrationEnginePrototype model
+				driverRegistrationEnginePrototypeModel := new(watsonxdatav2.DriverRegistrationEnginePrototype)
+				driverRegistrationEnginePrototypeModel.Engines = []string{"testString"}
+				driverRegistrationEnginePrototypeModelAsPatch, asPatchErr := driverRegistrationEnginePrototypeModel.AsPatch()
+				Expect(asPatchErr).To(BeNil())
+
+				// Construct an instance of the UpdateDriverEnginesOptions model
+				updateDriverEnginesOptionsModel := new(watsonxdatav2.UpdateDriverEnginesOptions)
+				updateDriverEnginesOptionsModel.DriverID = core.StringPtr("testString")
+				updateDriverEnginesOptionsModel.Body = driverRegistrationEnginePrototypeModelAsPatch
+				updateDriverEnginesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				updateDriverEnginesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.UpdateDriverEnginesWithContext(ctx, updateDriverEnginesOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.UpdateDriverEngines(updateDriverEnginesOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.UpdateDriverEnginesWithContext(ctx, updateDriverEnginesOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(updateDriverEnginesPath))
+					Expect(req.Method).To(Equal("PATCH"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"engines": ["Engines"]}`)
+				}))
+			})
+			It(`Invoke UpdateDriverEngines successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.UpdateDriverEngines(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the DriverRegistrationEnginePrototype model
+				driverRegistrationEnginePrototypeModel := new(watsonxdatav2.DriverRegistrationEnginePrototype)
+				driverRegistrationEnginePrototypeModel.Engines = []string{"testString"}
+				driverRegistrationEnginePrototypeModelAsPatch, asPatchErr := driverRegistrationEnginePrototypeModel.AsPatch()
+				Expect(asPatchErr).To(BeNil())
+
+				// Construct an instance of the UpdateDriverEnginesOptions model
+				updateDriverEnginesOptionsModel := new(watsonxdatav2.UpdateDriverEnginesOptions)
+				updateDriverEnginesOptionsModel.DriverID = core.StringPtr("testString")
+				updateDriverEnginesOptionsModel.Body = driverRegistrationEnginePrototypeModelAsPatch
+				updateDriverEnginesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				updateDriverEnginesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.UpdateDriverEngines(updateDriverEnginesOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke UpdateDriverEngines with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the DriverRegistrationEnginePrototype model
+				driverRegistrationEnginePrototypeModel := new(watsonxdatav2.DriverRegistrationEnginePrototype)
+				driverRegistrationEnginePrototypeModel.Engines = []string{"testString"}
+				driverRegistrationEnginePrototypeModelAsPatch, asPatchErr := driverRegistrationEnginePrototypeModel.AsPatch()
+				Expect(asPatchErr).To(BeNil())
+
+				// Construct an instance of the UpdateDriverEnginesOptions model
+				updateDriverEnginesOptionsModel := new(watsonxdatav2.UpdateDriverEnginesOptions)
+				updateDriverEnginesOptionsModel.DriverID = core.StringPtr("testString")
+				updateDriverEnginesOptionsModel.Body = driverRegistrationEnginePrototypeModelAsPatch
+				updateDriverEnginesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				updateDriverEnginesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.UpdateDriverEngines(updateDriverEnginesOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the UpdateDriverEnginesOptions model with no property values
+				updateDriverEnginesOptionsModelNew := new(watsonxdatav2.UpdateDriverEnginesOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = watsonxDataService.UpdateDriverEngines(updateDriverEnginesOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke UpdateDriverEngines successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the DriverRegistrationEnginePrototype model
+				driverRegistrationEnginePrototypeModel := new(watsonxdatav2.DriverRegistrationEnginePrototype)
+				driverRegistrationEnginePrototypeModel.Engines = []string{"testString"}
+				driverRegistrationEnginePrototypeModelAsPatch, asPatchErr := driverRegistrationEnginePrototypeModel.AsPatch()
+				Expect(asPatchErr).To(BeNil())
+
+				// Construct an instance of the UpdateDriverEnginesOptions model
+				updateDriverEnginesOptionsModel := new(watsonxdatav2.UpdateDriverEnginesOptions)
+				updateDriverEnginesOptionsModel.DriverID = core.StringPtr("testString")
+				updateDriverEnginesOptionsModel.Body = driverRegistrationEnginePrototypeModelAsPatch
+				updateDriverEnginesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				updateDriverEnginesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.UpdateDriverEngines(updateDriverEnginesOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 
@@ -3398,7 +5140,6 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				createOtherEngineOptionsModel.Description = core.StringPtr("external engine description")
 				createOtherEngineOptionsModel.Origin = core.StringPtr("external")
 				createOtherEngineOptionsModel.Tags = []string{"tag1", "tag2"}
-				createOtherEngineOptionsModel.Type = core.StringPtr("netezza")
 				createOtherEngineOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				createOtherEngineOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Expect response parsing to fail since we are receiving a text/plain response
@@ -3478,7 +5219,6 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				createOtherEngineOptionsModel.Description = core.StringPtr("external engine description")
 				createOtherEngineOptionsModel.Origin = core.StringPtr("external")
 				createOtherEngineOptionsModel.Tags = []string{"tag1", "tag2"}
-				createOtherEngineOptionsModel.Type = core.StringPtr("netezza")
 				createOtherEngineOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				createOtherEngineOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -3566,7 +5306,6 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				createOtherEngineOptionsModel.Description = core.StringPtr("external engine description")
 				createOtherEngineOptionsModel.Origin = core.StringPtr("external")
 				createOtherEngineOptionsModel.Tags = []string{"tag1", "tag2"}
-				createOtherEngineOptionsModel.Type = core.StringPtr("netezza")
 				createOtherEngineOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				createOtherEngineOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -3597,7 +5336,6 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				createOtherEngineOptionsModel.Description = core.StringPtr("external engine description")
 				createOtherEngineOptionsModel.Origin = core.StringPtr("external")
 				createOtherEngineOptionsModel.Tags = []string{"tag1", "tag2"}
-				createOtherEngineOptionsModel.Type = core.StringPtr("netezza")
 				createOtherEngineOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				createOtherEngineOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
@@ -3649,7 +5387,6 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				createOtherEngineOptionsModel.Description = core.StringPtr("external engine description")
 				createOtherEngineOptionsModel.Origin = core.StringPtr("external")
 				createOtherEngineOptionsModel.Tags = []string{"tag1", "tag2"}
-				createOtherEngineOptionsModel.Type = core.StringPtr("netezza")
 				createOtherEngineOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				createOtherEngineOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -3732,6 +5469,1150 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				response, operationErr = watsonxDataService.DeleteOtherEngine(deleteOtherEngineOptionsModelNew)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`ListAllIntegrations(listAllIntegrationsOptions *ListAllIntegrationsOptions) - Operation response error`, func() {
+		listAllIntegrationsPath := "/integrations"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(listAllIntegrationsPath))
+					Expect(req.Method).To(Equal("GET"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.Header["Secret"]).ToNot(BeNil())
+					Expect(req.Header["Secret"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["service_type"]).To(Equal([]string{"testString"}))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke ListAllIntegrations with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the ListAllIntegrationsOptions model
+				listAllIntegrationsOptionsModel := new(watsonxdatav2.ListAllIntegrationsOptions)
+				listAllIntegrationsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listAllIntegrationsOptionsModel.Secret = core.StringPtr("testString")
+				listAllIntegrationsOptionsModel.ServiceType = core.StringPtr("testString")
+				listAllIntegrationsOptionsModel.State = []string{"testString"}
+				listAllIntegrationsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.ListAllIntegrations(listAllIntegrationsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.ListAllIntegrations(listAllIntegrationsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`ListAllIntegrations(listAllIntegrationsOptions *ListAllIntegrationsOptions)`, func() {
+		listAllIntegrationsPath := "/integrations"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(listAllIntegrationsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.Header["Secret"]).ToNot(BeNil())
+					Expect(req.Header["Secret"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["service_type"]).To(Equal([]string{"testString"}))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"integrations": [{"apikey": "apikey", "config_properties": "ikc-env.password=ibmlhenc__0001__uMkFATDDZNnxJ7z6BA/QqA==\nikc-env.url=ikc\nikc-enabled-catalogs=\nikc-username=\nlh-unique-identifier=1711796957622126\nlh-crn=1711796957622126", "enable_data_policy_within_wxd": false, "governance_properties": "query-governance.name=external", "integration_id": "presto01", "modified_at": 10, "modified_by": "<username>@<domain>.com", "password": "password", "resource": "presto01", "service_type": "ikc", "state": "active", "storage_catalogs": ["StorageCatalogs"], "url": "ikc.url", "username": "username@email.com"}]}`)
+				}))
+			})
+			It(`Invoke ListAllIntegrations successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the ListAllIntegrationsOptions model
+				listAllIntegrationsOptionsModel := new(watsonxdatav2.ListAllIntegrationsOptions)
+				listAllIntegrationsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listAllIntegrationsOptionsModel.Secret = core.StringPtr("testString")
+				listAllIntegrationsOptionsModel.ServiceType = core.StringPtr("testString")
+				listAllIntegrationsOptionsModel.State = []string{"testString"}
+				listAllIntegrationsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.ListAllIntegrationsWithContext(ctx, listAllIntegrationsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.ListAllIntegrations(listAllIntegrationsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.ListAllIntegrationsWithContext(ctx, listAllIntegrationsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(listAllIntegrationsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.Header["Secret"]).ToNot(BeNil())
+					Expect(req.Header["Secret"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["service_type"]).To(Equal([]string{"testString"}))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"integrations": [{"apikey": "apikey", "config_properties": "ikc-env.password=ibmlhenc__0001__uMkFATDDZNnxJ7z6BA/QqA==\nikc-env.url=ikc\nikc-enabled-catalogs=\nikc-username=\nlh-unique-identifier=1711796957622126\nlh-crn=1711796957622126", "enable_data_policy_within_wxd": false, "governance_properties": "query-governance.name=external", "integration_id": "presto01", "modified_at": 10, "modified_by": "<username>@<domain>.com", "password": "password", "resource": "presto01", "service_type": "ikc", "state": "active", "storage_catalogs": ["StorageCatalogs"], "url": "ikc.url", "username": "username@email.com"}]}`)
+				}))
+			})
+			It(`Invoke ListAllIntegrations successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.ListAllIntegrations(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the ListAllIntegrationsOptions model
+				listAllIntegrationsOptionsModel := new(watsonxdatav2.ListAllIntegrationsOptions)
+				listAllIntegrationsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listAllIntegrationsOptionsModel.Secret = core.StringPtr("testString")
+				listAllIntegrationsOptionsModel.ServiceType = core.StringPtr("testString")
+				listAllIntegrationsOptionsModel.State = []string{"testString"}
+				listAllIntegrationsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.ListAllIntegrations(listAllIntegrationsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke ListAllIntegrations with error: Operation request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the ListAllIntegrationsOptions model
+				listAllIntegrationsOptionsModel := new(watsonxdatav2.ListAllIntegrationsOptions)
+				listAllIntegrationsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listAllIntegrationsOptionsModel.Secret = core.StringPtr("testString")
+				listAllIntegrationsOptionsModel.ServiceType = core.StringPtr("testString")
+				listAllIntegrationsOptionsModel.State = []string{"testString"}
+				listAllIntegrationsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.ListAllIntegrations(listAllIntegrationsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke ListAllIntegrations successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the ListAllIntegrationsOptions model
+				listAllIntegrationsOptionsModel := new(watsonxdatav2.ListAllIntegrationsOptions)
+				listAllIntegrationsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listAllIntegrationsOptionsModel.Secret = core.StringPtr("testString")
+				listAllIntegrationsOptionsModel.ServiceType = core.StringPtr("testString")
+				listAllIntegrationsOptionsModel.State = []string{"testString"}
+				listAllIntegrationsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.ListAllIntegrations(listAllIntegrationsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateIntegration(createIntegrationOptions *CreateIntegrationOptions) - Operation response error`, func() {
+		createIntegrationPath := "/integrations"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createIntegrationPath))
+					Expect(req.Method).To(Equal("POST"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke CreateIntegration with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateIntegrationOptions model
+				createIntegrationOptionsModel := new(watsonxdatav2.CreateIntegrationOptions)
+				createIntegrationOptionsModel.Apikey = core.StringPtr("testString")
+				createIntegrationOptionsModel.EnableDataPolicyWithinWxd = core.BoolPtr(false)
+				createIntegrationOptionsModel.Password = core.StringPtr("password")
+				createIntegrationOptionsModel.Resource = core.StringPtr("resource_name")
+				createIntegrationOptionsModel.ServiceType = core.StringPtr("ranger")
+				createIntegrationOptionsModel.StorageCatalogs = []string{"testString"}
+				createIntegrationOptionsModel.URL = core.StringPtr("http://abcd.efgh.com:9876/")
+				createIntegrationOptionsModel.Username = core.StringPtr("username")
+				createIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.CreateIntegration(createIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.CreateIntegration(createIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateIntegration(createIntegrationOptions *CreateIntegrationOptions)`, func() {
+		createIntegrationPath := "/integrations"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createIntegrationPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"apikey": "apikey", "config_properties": "ikc-env.password=ibmlhenc__0001__uMkFATDDZNnxJ7z6BA/QqA==\nikc-env.url=ikc\nikc-enabled-catalogs=\nikc-username=\nlh-unique-identifier=1711796957622126\nlh-crn=1711796957622126", "enable_data_policy_within_wxd": false, "governance_properties": "query-governance.name=external", "integration_id": "presto01", "modified_at": 10, "modified_by": "<username>@<domain>.com", "password": "password", "resource": "presto01", "service_type": "ikc", "state": "active", "storage_catalogs": ["StorageCatalogs"], "url": "ikc.url", "username": "username@email.com"}`)
+				}))
+			})
+			It(`Invoke CreateIntegration successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the CreateIntegrationOptions model
+				createIntegrationOptionsModel := new(watsonxdatav2.CreateIntegrationOptions)
+				createIntegrationOptionsModel.Apikey = core.StringPtr("testString")
+				createIntegrationOptionsModel.EnableDataPolicyWithinWxd = core.BoolPtr(false)
+				createIntegrationOptionsModel.Password = core.StringPtr("password")
+				createIntegrationOptionsModel.Resource = core.StringPtr("resource_name")
+				createIntegrationOptionsModel.ServiceType = core.StringPtr("ranger")
+				createIntegrationOptionsModel.StorageCatalogs = []string{"testString"}
+				createIntegrationOptionsModel.URL = core.StringPtr("http://abcd.efgh.com:9876/")
+				createIntegrationOptionsModel.Username = core.StringPtr("username")
+				createIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.CreateIntegrationWithContext(ctx, createIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.CreateIntegration(createIntegrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.CreateIntegrationWithContext(ctx, createIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createIntegrationPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"apikey": "apikey", "config_properties": "ikc-env.password=ibmlhenc__0001__uMkFATDDZNnxJ7z6BA/QqA==\nikc-env.url=ikc\nikc-enabled-catalogs=\nikc-username=\nlh-unique-identifier=1711796957622126\nlh-crn=1711796957622126", "enable_data_policy_within_wxd": false, "governance_properties": "query-governance.name=external", "integration_id": "presto01", "modified_at": 10, "modified_by": "<username>@<domain>.com", "password": "password", "resource": "presto01", "service_type": "ikc", "state": "active", "storage_catalogs": ["StorageCatalogs"], "url": "ikc.url", "username": "username@email.com"}`)
+				}))
+			})
+			It(`Invoke CreateIntegration successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.CreateIntegration(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the CreateIntegrationOptions model
+				createIntegrationOptionsModel := new(watsonxdatav2.CreateIntegrationOptions)
+				createIntegrationOptionsModel.Apikey = core.StringPtr("testString")
+				createIntegrationOptionsModel.EnableDataPolicyWithinWxd = core.BoolPtr(false)
+				createIntegrationOptionsModel.Password = core.StringPtr("password")
+				createIntegrationOptionsModel.Resource = core.StringPtr("resource_name")
+				createIntegrationOptionsModel.ServiceType = core.StringPtr("ranger")
+				createIntegrationOptionsModel.StorageCatalogs = []string{"testString"}
+				createIntegrationOptionsModel.URL = core.StringPtr("http://abcd.efgh.com:9876/")
+				createIntegrationOptionsModel.Username = core.StringPtr("username")
+				createIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.CreateIntegration(createIntegrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke CreateIntegration with error: Operation request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateIntegrationOptions model
+				createIntegrationOptionsModel := new(watsonxdatav2.CreateIntegrationOptions)
+				createIntegrationOptionsModel.Apikey = core.StringPtr("testString")
+				createIntegrationOptionsModel.EnableDataPolicyWithinWxd = core.BoolPtr(false)
+				createIntegrationOptionsModel.Password = core.StringPtr("password")
+				createIntegrationOptionsModel.Resource = core.StringPtr("resource_name")
+				createIntegrationOptionsModel.ServiceType = core.StringPtr("ranger")
+				createIntegrationOptionsModel.StorageCatalogs = []string{"testString"}
+				createIntegrationOptionsModel.URL = core.StringPtr("http://abcd.efgh.com:9876/")
+				createIntegrationOptionsModel.Username = core.StringPtr("username")
+				createIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.CreateIntegration(createIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(201)
+				}))
+			})
+			It(`Invoke CreateIntegration successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateIntegrationOptions model
+				createIntegrationOptionsModel := new(watsonxdatav2.CreateIntegrationOptions)
+				createIntegrationOptionsModel.Apikey = core.StringPtr("testString")
+				createIntegrationOptionsModel.EnableDataPolicyWithinWxd = core.BoolPtr(false)
+				createIntegrationOptionsModel.Password = core.StringPtr("password")
+				createIntegrationOptionsModel.Resource = core.StringPtr("resource_name")
+				createIntegrationOptionsModel.ServiceType = core.StringPtr("ranger")
+				createIntegrationOptionsModel.StorageCatalogs = []string{"testString"}
+				createIntegrationOptionsModel.URL = core.StringPtr("http://abcd.efgh.com:9876/")
+				createIntegrationOptionsModel.Username = core.StringPtr("username")
+				createIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.CreateIntegration(createIntegrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetIntegrations(getIntegrationsOptions *GetIntegrationsOptions) - Operation response error`, func() {
+		getIntegrationsPath := "/integrations/testString"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getIntegrationsPath))
+					Expect(req.Method).To(Equal("GET"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.Header["Secret"]).ToNot(BeNil())
+					Expect(req.Header["Secret"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke GetIntegrations with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetIntegrationsOptions model
+				getIntegrationsOptionsModel := new(watsonxdatav2.GetIntegrationsOptions)
+				getIntegrationsOptionsModel.IntegrationID = core.StringPtr("testString")
+				getIntegrationsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getIntegrationsOptionsModel.Secret = core.StringPtr("testString")
+				getIntegrationsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.GetIntegrations(getIntegrationsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.GetIntegrations(getIntegrationsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetIntegrations(getIntegrationsOptions *GetIntegrationsOptions)`, func() {
+		getIntegrationsPath := "/integrations/testString"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getIntegrationsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.Header["Secret"]).ToNot(BeNil())
+					Expect(req.Header["Secret"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"apikey": "apikey", "config_properties": "ikc-env.password=ibmlhenc__0001__uMkFATDDZNnxJ7z6BA/QqA==\nikc-env.url=ikc\nikc-enabled-catalogs=\nikc-username=\nlh-unique-identifier=1711796957622126\nlh-crn=1711796957622126", "enable_data_policy_within_wxd": false, "governance_properties": "query-governance.name=external", "integration_id": "presto01", "modified_at": 10, "modified_by": "<username>@<domain>.com", "password": "password", "resource": "presto01", "service_type": "ikc", "state": "active", "storage_catalogs": ["StorageCatalogs"], "url": "ikc.url", "username": "username@email.com"}`)
+				}))
+			})
+			It(`Invoke GetIntegrations successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the GetIntegrationsOptions model
+				getIntegrationsOptionsModel := new(watsonxdatav2.GetIntegrationsOptions)
+				getIntegrationsOptionsModel.IntegrationID = core.StringPtr("testString")
+				getIntegrationsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getIntegrationsOptionsModel.Secret = core.StringPtr("testString")
+				getIntegrationsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.GetIntegrationsWithContext(ctx, getIntegrationsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.GetIntegrations(getIntegrationsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.GetIntegrationsWithContext(ctx, getIntegrationsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getIntegrationsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.Header["Secret"]).ToNot(BeNil())
+					Expect(req.Header["Secret"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"apikey": "apikey", "config_properties": "ikc-env.password=ibmlhenc__0001__uMkFATDDZNnxJ7z6BA/QqA==\nikc-env.url=ikc\nikc-enabled-catalogs=\nikc-username=\nlh-unique-identifier=1711796957622126\nlh-crn=1711796957622126", "enable_data_policy_within_wxd": false, "governance_properties": "query-governance.name=external", "integration_id": "presto01", "modified_at": 10, "modified_by": "<username>@<domain>.com", "password": "password", "resource": "presto01", "service_type": "ikc", "state": "active", "storage_catalogs": ["StorageCatalogs"], "url": "ikc.url", "username": "username@email.com"}`)
+				}))
+			})
+			It(`Invoke GetIntegrations successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.GetIntegrations(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the GetIntegrationsOptions model
+				getIntegrationsOptionsModel := new(watsonxdatav2.GetIntegrationsOptions)
+				getIntegrationsOptionsModel.IntegrationID = core.StringPtr("testString")
+				getIntegrationsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getIntegrationsOptionsModel.Secret = core.StringPtr("testString")
+				getIntegrationsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.GetIntegrations(getIntegrationsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke GetIntegrations with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetIntegrationsOptions model
+				getIntegrationsOptionsModel := new(watsonxdatav2.GetIntegrationsOptions)
+				getIntegrationsOptionsModel.IntegrationID = core.StringPtr("testString")
+				getIntegrationsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getIntegrationsOptionsModel.Secret = core.StringPtr("testString")
+				getIntegrationsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.GetIntegrations(getIntegrationsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the GetIntegrationsOptions model with no property values
+				getIntegrationsOptionsModelNew := new(watsonxdatav2.GetIntegrationsOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = watsonxDataService.GetIntegrations(getIntegrationsOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke GetIntegrations successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetIntegrationsOptions model
+				getIntegrationsOptionsModel := new(watsonxdatav2.GetIntegrationsOptions)
+				getIntegrationsOptionsModel.IntegrationID = core.StringPtr("testString")
+				getIntegrationsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getIntegrationsOptionsModel.Secret = core.StringPtr("testString")
+				getIntegrationsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.GetIntegrations(getIntegrationsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`DeleteIntegration(deleteIntegrationOptions *DeleteIntegrationOptions)`, func() {
+		deleteIntegrationPath := "/integrations/testString"
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(deleteIntegrationPath))
+					Expect(req.Method).To(Equal("DELETE"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.WriteHeader(204)
+				}))
+			})
+			It(`Invoke DeleteIntegration successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				response, operationErr := watsonxDataService.DeleteIntegration(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+
+				// Construct an instance of the DeleteIntegrationOptions model
+				deleteIntegrationOptionsModel := new(watsonxdatav2.DeleteIntegrationOptions)
+				deleteIntegrationOptionsModel.IntegrationID = core.StringPtr("testString")
+				deleteIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				deleteIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				response, operationErr = watsonxDataService.DeleteIntegration(deleteIntegrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+			})
+			It(`Invoke DeleteIntegration with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the DeleteIntegrationOptions model
+				deleteIntegrationOptionsModel := new(watsonxdatav2.DeleteIntegrationOptions)
+				deleteIntegrationOptionsModel.IntegrationID = core.StringPtr("testString")
+				deleteIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				deleteIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				response, operationErr := watsonxDataService.DeleteIntegration(deleteIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				// Construct a second instance of the DeleteIntegrationOptions model with no property values
+				deleteIntegrationOptionsModelNew := new(watsonxdatav2.DeleteIntegrationOptions)
+				// Invoke operation with invalid model (negative test)
+				response, operationErr = watsonxDataService.DeleteIntegration(deleteIntegrationOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`UpdateIntegration(updateIntegrationOptions *UpdateIntegrationOptions) - Operation response error`, func() {
+		updateIntegrationPath := "/integrations/testString"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(updateIntegrationPath))
+					Expect(req.Method).To(Equal("PATCH"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke UpdateIntegration with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the IntegrationPatch model
+				integrationPatchModel := new(watsonxdatav2.IntegrationPatch)
+				integrationPatchModel.Apikey = core.StringPtr("apikey")
+				integrationPatchModel.EnableDataPolicyWithinWxd = core.BoolPtr(true)
+				integrationPatchModel.Password = core.StringPtr("password")
+				integrationPatchModel.Resource = core.StringPtr("resource_name")
+				integrationPatchModel.StorageCatalogs = []string{"iceberg_data", "hive_data"}
+				integrationPatchModel.URL = core.StringPtr("http://abcd.efgh.com:9876/")
+				integrationPatchModel.Username = core.StringPtr("username")
+				integrationPatchModelAsPatch, asPatchErr := integrationPatchModel.AsPatch()
+				Expect(asPatchErr).To(BeNil())
+
+				// Construct an instance of the UpdateIntegrationOptions model
+				updateIntegrationOptionsModel := new(watsonxdatav2.UpdateIntegrationOptions)
+				updateIntegrationOptionsModel.IntegrationID = core.StringPtr("testString")
+				updateIntegrationOptionsModel.IntegrationPatch = integrationPatchModelAsPatch
+				updateIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				updateIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.UpdateIntegration(updateIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.UpdateIntegration(updateIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`UpdateIntegration(updateIntegrationOptions *UpdateIntegrationOptions)`, func() {
+		updateIntegrationPath := "/integrations/testString"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(updateIntegrationPath))
+					Expect(req.Method).To(Equal("PATCH"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"apikey": "apikey", "config_properties": "ikc-env.password=ibmlhenc__0001__uMkFATDDZNnxJ7z6BA/QqA==\nikc-env.url=ikc\nikc-enabled-catalogs=\nikc-username=\nlh-unique-identifier=1711796957622126\nlh-crn=1711796957622126", "enable_data_policy_within_wxd": false, "governance_properties": "query-governance.name=external", "integration_id": "presto01", "modified_at": 10, "modified_by": "<username>@<domain>.com", "password": "password", "resource": "presto01", "service_type": "ikc", "state": "active", "storage_catalogs": ["StorageCatalogs"], "url": "ikc.url", "username": "username@email.com"}`)
+				}))
+			})
+			It(`Invoke UpdateIntegration successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the IntegrationPatch model
+				integrationPatchModel := new(watsonxdatav2.IntegrationPatch)
+				integrationPatchModel.Apikey = core.StringPtr("apikey")
+				integrationPatchModel.EnableDataPolicyWithinWxd = core.BoolPtr(true)
+				integrationPatchModel.Password = core.StringPtr("password")
+				integrationPatchModel.Resource = core.StringPtr("resource_name")
+				integrationPatchModel.StorageCatalogs = []string{"iceberg_data", "hive_data"}
+				integrationPatchModel.URL = core.StringPtr("http://abcd.efgh.com:9876/")
+				integrationPatchModel.Username = core.StringPtr("username")
+				integrationPatchModelAsPatch, asPatchErr := integrationPatchModel.AsPatch()
+				Expect(asPatchErr).To(BeNil())
+
+				// Construct an instance of the UpdateIntegrationOptions model
+				updateIntegrationOptionsModel := new(watsonxdatav2.UpdateIntegrationOptions)
+				updateIntegrationOptionsModel.IntegrationID = core.StringPtr("testString")
+				updateIntegrationOptionsModel.IntegrationPatch = integrationPatchModelAsPatch
+				updateIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				updateIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.UpdateIntegrationWithContext(ctx, updateIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.UpdateIntegration(updateIntegrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.UpdateIntegrationWithContext(ctx, updateIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(updateIntegrationPath))
+					Expect(req.Method).To(Equal("PATCH"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"apikey": "apikey", "config_properties": "ikc-env.password=ibmlhenc__0001__uMkFATDDZNnxJ7z6BA/QqA==\nikc-env.url=ikc\nikc-enabled-catalogs=\nikc-username=\nlh-unique-identifier=1711796957622126\nlh-crn=1711796957622126", "enable_data_policy_within_wxd": false, "governance_properties": "query-governance.name=external", "integration_id": "presto01", "modified_at": 10, "modified_by": "<username>@<domain>.com", "password": "password", "resource": "presto01", "service_type": "ikc", "state": "active", "storage_catalogs": ["StorageCatalogs"], "url": "ikc.url", "username": "username@email.com"}`)
+				}))
+			})
+			It(`Invoke UpdateIntegration successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.UpdateIntegration(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the IntegrationPatch model
+				integrationPatchModel := new(watsonxdatav2.IntegrationPatch)
+				integrationPatchModel.Apikey = core.StringPtr("apikey")
+				integrationPatchModel.EnableDataPolicyWithinWxd = core.BoolPtr(true)
+				integrationPatchModel.Password = core.StringPtr("password")
+				integrationPatchModel.Resource = core.StringPtr("resource_name")
+				integrationPatchModel.StorageCatalogs = []string{"iceberg_data", "hive_data"}
+				integrationPatchModel.URL = core.StringPtr("http://abcd.efgh.com:9876/")
+				integrationPatchModel.Username = core.StringPtr("username")
+				integrationPatchModelAsPatch, asPatchErr := integrationPatchModel.AsPatch()
+				Expect(asPatchErr).To(BeNil())
+
+				// Construct an instance of the UpdateIntegrationOptions model
+				updateIntegrationOptionsModel := new(watsonxdatav2.UpdateIntegrationOptions)
+				updateIntegrationOptionsModel.IntegrationID = core.StringPtr("testString")
+				updateIntegrationOptionsModel.IntegrationPatch = integrationPatchModelAsPatch
+				updateIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				updateIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.UpdateIntegration(updateIntegrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke UpdateIntegration with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the IntegrationPatch model
+				integrationPatchModel := new(watsonxdatav2.IntegrationPatch)
+				integrationPatchModel.Apikey = core.StringPtr("apikey")
+				integrationPatchModel.EnableDataPolicyWithinWxd = core.BoolPtr(true)
+				integrationPatchModel.Password = core.StringPtr("password")
+				integrationPatchModel.Resource = core.StringPtr("resource_name")
+				integrationPatchModel.StorageCatalogs = []string{"iceberg_data", "hive_data"}
+				integrationPatchModel.URL = core.StringPtr("http://abcd.efgh.com:9876/")
+				integrationPatchModel.Username = core.StringPtr("username")
+				integrationPatchModelAsPatch, asPatchErr := integrationPatchModel.AsPatch()
+				Expect(asPatchErr).To(BeNil())
+
+				// Construct an instance of the UpdateIntegrationOptions model
+				updateIntegrationOptionsModel := new(watsonxdatav2.UpdateIntegrationOptions)
+				updateIntegrationOptionsModel.IntegrationID = core.StringPtr("testString")
+				updateIntegrationOptionsModel.IntegrationPatch = integrationPatchModelAsPatch
+				updateIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				updateIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.UpdateIntegration(updateIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the UpdateIntegrationOptions model with no property values
+				updateIntegrationOptionsModelNew := new(watsonxdatav2.UpdateIntegrationOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = watsonxDataService.UpdateIntegration(updateIntegrationOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke UpdateIntegration successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the IntegrationPatch model
+				integrationPatchModel := new(watsonxdatav2.IntegrationPatch)
+				integrationPatchModel.Apikey = core.StringPtr("apikey")
+				integrationPatchModel.EnableDataPolicyWithinWxd = core.BoolPtr(true)
+				integrationPatchModel.Password = core.StringPtr("password")
+				integrationPatchModel.Resource = core.StringPtr("resource_name")
+				integrationPatchModel.StorageCatalogs = []string{"iceberg_data", "hive_data"}
+				integrationPatchModel.URL = core.StringPtr("http://abcd.efgh.com:9876/")
+				integrationPatchModel.Username = core.StringPtr("username")
+				integrationPatchModelAsPatch, asPatchErr := integrationPatchModel.AsPatch()
+				Expect(asPatchErr).To(BeNil())
+
+				// Construct an instance of the UpdateIntegrationOptions model
+				updateIntegrationOptionsModel := new(watsonxdatav2.UpdateIntegrationOptions)
+				updateIntegrationOptionsModel.IntegrationID = core.StringPtr("testString")
+				updateIntegrationOptionsModel.IntegrationPatch = integrationPatchModelAsPatch
+				updateIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				updateIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.UpdateIntegration(updateIntegrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
 			})
 			AfterEach(func() {
 				testServer.Close()
@@ -5494,6 +8375,276 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			})
 		})
 	})
+	Describe(`CreateExecuteQuery(createExecuteQueryOptions *CreateExecuteQueryOptions) - Operation response error`, func() {
+		createExecuteQueryPath := "/queries/execute/testString"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createExecuteQueryPath))
+					Expect(req.Method).To(Equal("POST"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke CreateExecuteQuery with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateExecuteQueryOptions model
+				createExecuteQueryOptionsModel := new(watsonxdatav2.CreateExecuteQueryOptions)
+				createExecuteQueryOptionsModel.EngineID = core.StringPtr("testString")
+				createExecuteQueryOptionsModel.SqlString = core.StringPtr("select expenses from expenditure")
+				createExecuteQueryOptionsModel.CatalogName = core.StringPtr("sampleCatalog")
+				createExecuteQueryOptionsModel.SchemaName = core.StringPtr("SampleSchema1")
+				createExecuteQueryOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createExecuteQueryOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.CreateExecuteQuery(createExecuteQueryOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.CreateExecuteQuery(createExecuteQueryOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateExecuteQuery(createExecuteQueryOptions *CreateExecuteQueryOptions)`, func() {
+		createExecuteQueryPath := "/queries/execute/testString"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createExecuteQueryPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"response": {"result": [{"mapKey": "Inner"}]}}`)
+				}))
+			})
+			It(`Invoke CreateExecuteQuery successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the CreateExecuteQueryOptions model
+				createExecuteQueryOptionsModel := new(watsonxdatav2.CreateExecuteQueryOptions)
+				createExecuteQueryOptionsModel.EngineID = core.StringPtr("testString")
+				createExecuteQueryOptionsModel.SqlString = core.StringPtr("select expenses from expenditure")
+				createExecuteQueryOptionsModel.CatalogName = core.StringPtr("sampleCatalog")
+				createExecuteQueryOptionsModel.SchemaName = core.StringPtr("SampleSchema1")
+				createExecuteQueryOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createExecuteQueryOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.CreateExecuteQueryWithContext(ctx, createExecuteQueryOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.CreateExecuteQuery(createExecuteQueryOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.CreateExecuteQueryWithContext(ctx, createExecuteQueryOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createExecuteQueryPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"response": {"result": [{"mapKey": "Inner"}]}}`)
+				}))
+			})
+			It(`Invoke CreateExecuteQuery successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.CreateExecuteQuery(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the CreateExecuteQueryOptions model
+				createExecuteQueryOptionsModel := new(watsonxdatav2.CreateExecuteQueryOptions)
+				createExecuteQueryOptionsModel.EngineID = core.StringPtr("testString")
+				createExecuteQueryOptionsModel.SqlString = core.StringPtr("select expenses from expenditure")
+				createExecuteQueryOptionsModel.CatalogName = core.StringPtr("sampleCatalog")
+				createExecuteQueryOptionsModel.SchemaName = core.StringPtr("SampleSchema1")
+				createExecuteQueryOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createExecuteQueryOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.CreateExecuteQuery(createExecuteQueryOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke CreateExecuteQuery with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateExecuteQueryOptions model
+				createExecuteQueryOptionsModel := new(watsonxdatav2.CreateExecuteQueryOptions)
+				createExecuteQueryOptionsModel.EngineID = core.StringPtr("testString")
+				createExecuteQueryOptionsModel.SqlString = core.StringPtr("select expenses from expenditure")
+				createExecuteQueryOptionsModel.CatalogName = core.StringPtr("sampleCatalog")
+				createExecuteQueryOptionsModel.SchemaName = core.StringPtr("SampleSchema1")
+				createExecuteQueryOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createExecuteQueryOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.CreateExecuteQuery(createExecuteQueryOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the CreateExecuteQueryOptions model with no property values
+				createExecuteQueryOptionsModelNew := new(watsonxdatav2.CreateExecuteQueryOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = watsonxDataService.CreateExecuteQuery(createExecuteQueryOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(201)
+				}))
+			})
+			It(`Invoke CreateExecuteQuery successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateExecuteQueryOptions model
+				createExecuteQueryOptionsModel := new(watsonxdatav2.CreateExecuteQueryOptions)
+				createExecuteQueryOptionsModel.EngineID = core.StringPtr("testString")
+				createExecuteQueryOptionsModel.SqlString = core.StringPtr("select expenses from expenditure")
+				createExecuteQueryOptionsModel.CatalogName = core.StringPtr("sampleCatalog")
+				createExecuteQueryOptionsModel.SchemaName = core.StringPtr("SampleSchema1")
+				createExecuteQueryOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createExecuteQueryOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.CreateExecuteQuery(createExecuteQueryOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
 	Describe(`ListPrestissimoEngines(listPrestissimoEnginesOptions *ListPrestissimoEnginesOptions) - Operation response error`, func() {
 		listPrestissimoEnginesPath := "/prestissimo_engines"
 		Context(`Using mock server endpoint with invalid JSON response`, func() {
@@ -5560,7 +8711,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"prestissimo_engines": [{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "prestissimo engine for running sql queries", "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "endpoints": {"applications_api": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications/<application_id>", "history_server_endpoint": "$HOST/v2/spark/v3/instances/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_history_server", "spark_access_endpoint": "$HOST/analytics-engine/details/spark-<instance_id>", "spark_jobs_v4_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications", "spark_kernel_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/jkg/api/kernels", "view_history_server": "ViewHistoryServer", "wxd_application_endpoint": "$HOST/v1/1698311655308796/engines/spark817/applications"}, "instance_id": "instance_id", "managed_by": "fully/self", "metastore_host": "1.2.3.4", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "velox": {"velox_property": ["VeloxProperty"]}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "xyz-prestissimo-01-prestissimo-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "velox": ["Velox"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "prestissimo", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}]}`)
+					fmt.Fprintf(res, "%s", `{"prestissimo_engines": [{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "prestissimo engine for running sql queries", "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "endpoints": {"applications_api": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications/<application_id>", "history_server_endpoint": "$HOST/v2/spark/v3/instances/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_history_server", "spark_access_endpoint": "$HOST/analytics-engine/details/spark-<instance_id>", "spark_jobs_v4_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications", "spark_kernel_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/jkg/api/kernels", "view_history_server": "ViewHistoryServer", "wxd_application_endpoint": "$HOST/v1/1698311655308796/engines/spark817/applications"}, "instance_id": "instance_id", "managed_by": "fully/self", "metastore_host": "1.2.3.4", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "velox": {"velox_property": ["VeloxProperty"]}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "xyz-prestissimo-01-prestissimo-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"]}, "velox": ["Velox"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "prestissimo", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}]}`)
 				}))
 			})
 			It(`Invoke ListPrestissimoEngines successfully with retries`, func() {
@@ -5616,7 +8767,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"prestissimo_engines": [{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "prestissimo engine for running sql queries", "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "endpoints": {"applications_api": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications/<application_id>", "history_server_endpoint": "$HOST/v2/spark/v3/instances/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_history_server", "spark_access_endpoint": "$HOST/analytics-engine/details/spark-<instance_id>", "spark_jobs_v4_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications", "spark_kernel_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/jkg/api/kernels", "view_history_server": "ViewHistoryServer", "wxd_application_endpoint": "$HOST/v1/1698311655308796/engines/spark817/applications"}, "instance_id": "instance_id", "managed_by": "fully/self", "metastore_host": "1.2.3.4", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "velox": {"velox_property": ["VeloxProperty"]}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "xyz-prestissimo-01-prestissimo-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "velox": ["Velox"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "prestissimo", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}]}`)
+					fmt.Fprintf(res, "%s", `{"prestissimo_engines": [{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "prestissimo engine for running sql queries", "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "endpoints": {"applications_api": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications/<application_id>", "history_server_endpoint": "$HOST/v2/spark/v3/instances/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_history_server", "spark_access_endpoint": "$HOST/analytics-engine/details/spark-<instance_id>", "spark_jobs_v4_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications", "spark_kernel_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/jkg/api/kernels", "view_history_server": "ViewHistoryServer", "wxd_application_endpoint": "$HOST/v1/1698311655308796/engines/spark817/applications"}, "instance_id": "instance_id", "managed_by": "fully/self", "metastore_host": "1.2.3.4", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "velox": {"velox_property": ["VeloxProperty"]}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "xyz-prestissimo-01-prestissimo-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"]}, "velox": ["Velox"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "prestissimo", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}]}`)
 				}))
 			})
 			It(`Invoke ListPrestissimoEngines successfully`, func() {
@@ -5822,7 +8973,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "prestissimo engine for running sql queries", "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "endpoints": {"applications_api": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications/<application_id>", "history_server_endpoint": "$HOST/v2/spark/v3/instances/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_history_server", "spark_access_endpoint": "$HOST/analytics-engine/details/spark-<instance_id>", "spark_jobs_v4_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications", "spark_kernel_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/jkg/api/kernels", "view_history_server": "ViewHistoryServer", "wxd_application_endpoint": "$HOST/v1/1698311655308796/engines/spark817/applications"}, "instance_id": "instance_id", "managed_by": "fully/self", "metastore_host": "1.2.3.4", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "velox": {"velox_property": ["VeloxProperty"]}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "xyz-prestissimo-01-prestissimo-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "velox": ["Velox"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "prestissimo", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "prestissimo engine for running sql queries", "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "endpoints": {"applications_api": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications/<application_id>", "history_server_endpoint": "$HOST/v2/spark/v3/instances/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_history_server", "spark_access_endpoint": "$HOST/analytics-engine/details/spark-<instance_id>", "spark_jobs_v4_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications", "spark_kernel_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/jkg/api/kernels", "view_history_server": "ViewHistoryServer", "wxd_application_endpoint": "$HOST/v1/1698311655308796/engines/spark817/applications"}, "instance_id": "instance_id", "managed_by": "fully/self", "metastore_host": "1.2.3.4", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "velox": {"velox_property": ["VeloxProperty"]}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "xyz-prestissimo-01-prestissimo-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"]}, "velox": ["Velox"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "prestissimo", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
 				}))
 			})
 			It(`Invoke CreatePrestissimoEngine successfully with retries`, func() {
@@ -5929,7 +9080,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "prestissimo engine for running sql queries", "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "endpoints": {"applications_api": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications/<application_id>", "history_server_endpoint": "$HOST/v2/spark/v3/instances/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_history_server", "spark_access_endpoint": "$HOST/analytics-engine/details/spark-<instance_id>", "spark_jobs_v4_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications", "spark_kernel_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/jkg/api/kernels", "view_history_server": "ViewHistoryServer", "wxd_application_endpoint": "$HOST/v1/1698311655308796/engines/spark817/applications"}, "instance_id": "instance_id", "managed_by": "fully/self", "metastore_host": "1.2.3.4", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "velox": {"velox_property": ["VeloxProperty"]}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "xyz-prestissimo-01-prestissimo-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "velox": ["Velox"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "prestissimo", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "prestissimo engine for running sql queries", "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "endpoints": {"applications_api": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications/<application_id>", "history_server_endpoint": "$HOST/v2/spark/v3/instances/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_history_server", "spark_access_endpoint": "$HOST/analytics-engine/details/spark-<instance_id>", "spark_jobs_v4_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications", "spark_kernel_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/jkg/api/kernels", "view_history_server": "ViewHistoryServer", "wxd_application_endpoint": "$HOST/v1/1698311655308796/engines/spark817/applications"}, "instance_id": "instance_id", "managed_by": "fully/self", "metastore_host": "1.2.3.4", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "velox": {"velox_property": ["VeloxProperty"]}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "xyz-prestissimo-01-prestissimo-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"]}, "velox": ["Velox"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "prestissimo", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
 				}))
 			})
 			It(`Invoke CreatePrestissimoEngine successfully`, func() {
@@ -6197,7 +9348,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "prestissimo engine for running sql queries", "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "endpoints": {"applications_api": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications/<application_id>", "history_server_endpoint": "$HOST/v2/spark/v3/instances/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_history_server", "spark_access_endpoint": "$HOST/analytics-engine/details/spark-<instance_id>", "spark_jobs_v4_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications", "spark_kernel_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/jkg/api/kernels", "view_history_server": "ViewHistoryServer", "wxd_application_endpoint": "$HOST/v1/1698311655308796/engines/spark817/applications"}, "instance_id": "instance_id", "managed_by": "fully/self", "metastore_host": "1.2.3.4", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "velox": {"velox_property": ["VeloxProperty"]}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "xyz-prestissimo-01-prestissimo-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "velox": ["Velox"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "prestissimo", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "prestissimo engine for running sql queries", "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "endpoints": {"applications_api": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications/<application_id>", "history_server_endpoint": "$HOST/v2/spark/v3/instances/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_history_server", "spark_access_endpoint": "$HOST/analytics-engine/details/spark-<instance_id>", "spark_jobs_v4_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications", "spark_kernel_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/jkg/api/kernels", "view_history_server": "ViewHistoryServer", "wxd_application_endpoint": "$HOST/v1/1698311655308796/engines/spark817/applications"}, "instance_id": "instance_id", "managed_by": "fully/self", "metastore_host": "1.2.3.4", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "velox": {"velox_property": ["VeloxProperty"]}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "xyz-prestissimo-01-prestissimo-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"]}, "velox": ["Velox"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "prestissimo", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
 				}))
 			})
 			It(`Invoke GetPrestissimoEngine successfully with retries`, func() {
@@ -6254,7 +9405,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "prestissimo engine for running sql queries", "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "endpoints": {"applications_api": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications/<application_id>", "history_server_endpoint": "$HOST/v2/spark/v3/instances/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_history_server", "spark_access_endpoint": "$HOST/analytics-engine/details/spark-<instance_id>", "spark_jobs_v4_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications", "spark_kernel_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/jkg/api/kernels", "view_history_server": "ViewHistoryServer", "wxd_application_endpoint": "$HOST/v1/1698311655308796/engines/spark817/applications"}, "instance_id": "instance_id", "managed_by": "fully/self", "metastore_host": "1.2.3.4", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "velox": {"velox_property": ["VeloxProperty"]}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "xyz-prestissimo-01-prestissimo-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "velox": ["Velox"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "prestissimo", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "prestissimo engine for running sql queries", "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "endpoints": {"applications_api": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications/<application_id>", "history_server_endpoint": "$HOST/v2/spark/v3/instances/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_history_server", "spark_access_endpoint": "$HOST/analytics-engine/details/spark-<instance_id>", "spark_jobs_v4_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications", "spark_kernel_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/jkg/api/kernels", "view_history_server": "ViewHistoryServer", "wxd_application_endpoint": "$HOST/v1/1698311655308796/engines/spark817/applications"}, "instance_id": "instance_id", "managed_by": "fully/self", "metastore_host": "1.2.3.4", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "velox": {"velox_property": ["VeloxProperty"]}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "xyz-prestissimo-01-prestissimo-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"]}, "velox": ["Velox"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "prestissimo", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
 				}))
 			})
 			It(`Invoke GetPrestissimoEngine successfully`, func() {
@@ -6489,11 +9640,15 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				removeEnginePropertiesConfigurationModel.Coordinator = []string{"testString"}
 				removeEnginePropertiesConfigurationModel.Worker = []string{"testString"}
 
+				// Construct an instance of the RemoveEnginePropertiesPrestissimoOaiGenJvm model
+				removeEnginePropertiesPrestissimoOaiGenJvmModel := new(watsonxdatav2.RemoveEnginePropertiesPrestissimoOaiGenJvm)
+				removeEnginePropertiesPrestissimoOaiGenJvmModel.Coordinator = []string{"testString"}
+
 				// Construct an instance of the RemoveEngineProperties model
 				removeEnginePropertiesModel := new(watsonxdatav2.RemoveEngineProperties)
 				removeEnginePropertiesModel.Catalog = prestissimoEnginePropertiesCatalogModel
 				removeEnginePropertiesModel.Configuration = removeEnginePropertiesConfigurationModel
-				removeEnginePropertiesModel.Jvm = removeEnginePropertiesConfigurationModel
+				removeEnginePropertiesModel.Jvm = removeEnginePropertiesPrestissimoOaiGenJvmModel
 				removeEnginePropertiesModel.Velox = []string{"testString"}
 
 				// Construct an instance of the PrestissimoEnginePatch model
@@ -6566,7 +9721,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "prestissimo engine for running sql queries", "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "endpoints": {"applications_api": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications/<application_id>", "history_server_endpoint": "$HOST/v2/spark/v3/instances/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_history_server", "spark_access_endpoint": "$HOST/analytics-engine/details/spark-<instance_id>", "spark_jobs_v4_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications", "spark_kernel_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/jkg/api/kernels", "view_history_server": "ViewHistoryServer", "wxd_application_endpoint": "$HOST/v1/1698311655308796/engines/spark817/applications"}, "instance_id": "instance_id", "managed_by": "fully/self", "metastore_host": "1.2.3.4", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "velox": {"velox_property": ["VeloxProperty"]}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "xyz-prestissimo-01-prestissimo-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "velox": ["Velox"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "prestissimo", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "prestissimo engine for running sql queries", "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "endpoints": {"applications_api": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications/<application_id>", "history_server_endpoint": "$HOST/v2/spark/v3/instances/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_history_server", "spark_access_endpoint": "$HOST/analytics-engine/details/spark-<instance_id>", "spark_jobs_v4_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications", "spark_kernel_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/jkg/api/kernels", "view_history_server": "ViewHistoryServer", "wxd_application_endpoint": "$HOST/v1/1698311655308796/engines/spark817/applications"}, "instance_id": "instance_id", "managed_by": "fully/self", "metastore_host": "1.2.3.4", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "velox": {"velox_property": ["VeloxProperty"]}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "xyz-prestissimo-01-prestissimo-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"]}, "velox": ["Velox"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "prestissimo", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
 				}))
 			})
 			It(`Invoke UpdatePrestissimoEngine successfully with retries`, func() {
@@ -6617,11 +9772,15 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				removeEnginePropertiesConfigurationModel.Coordinator = []string{"testString"}
 				removeEnginePropertiesConfigurationModel.Worker = []string{"testString"}
 
+				// Construct an instance of the RemoveEnginePropertiesPrestissimoOaiGenJvm model
+				removeEnginePropertiesPrestissimoOaiGenJvmModel := new(watsonxdatav2.RemoveEnginePropertiesPrestissimoOaiGenJvm)
+				removeEnginePropertiesPrestissimoOaiGenJvmModel.Coordinator = []string{"testString"}
+
 				// Construct an instance of the RemoveEngineProperties model
 				removeEnginePropertiesModel := new(watsonxdatav2.RemoveEngineProperties)
 				removeEnginePropertiesModel.Catalog = prestissimoEnginePropertiesCatalogModel
 				removeEnginePropertiesModel.Configuration = removeEnginePropertiesConfigurationModel
-				removeEnginePropertiesModel.Jvm = removeEnginePropertiesConfigurationModel
+				removeEnginePropertiesModel.Jvm = removeEnginePropertiesPrestissimoOaiGenJvmModel
 				removeEnginePropertiesModel.Velox = []string{"testString"}
 
 				// Construct an instance of the PrestissimoEnginePatch model
@@ -6697,7 +9856,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "prestissimo engine for running sql queries", "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "endpoints": {"applications_api": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications/<application_id>", "history_server_endpoint": "$HOST/v2/spark/v3/instances/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_history_server", "spark_access_endpoint": "$HOST/analytics-engine/details/spark-<instance_id>", "spark_jobs_v4_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications", "spark_kernel_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/jkg/api/kernels", "view_history_server": "ViewHistoryServer", "wxd_application_endpoint": "$HOST/v1/1698311655308796/engines/spark817/applications"}, "instance_id": "instance_id", "managed_by": "fully/self", "metastore_host": "1.2.3.4", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "velox": {"velox_property": ["VeloxProperty"]}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "xyz-prestissimo-01-prestissimo-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "velox": ["Velox"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "prestissimo", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "prestissimo engine for running sql queries", "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "endpoints": {"applications_api": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications/<application_id>", "history_server_endpoint": "$HOST/v2/spark/v3/instances/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_history_server", "spark_access_endpoint": "$HOST/analytics-engine/details/spark-<instance_id>", "spark_jobs_v4_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/spark_applications", "spark_kernel_endpoint": "$HOST/v4/analytics_engines/c7b3fccf-badb-46b0-b1ef-9b3154424021/jkg/api/kernels", "view_history_server": "ViewHistoryServer", "wxd_application_endpoint": "$HOST/v1/1698311655308796/engines/spark817/applications"}, "instance_id": "instance_id", "managed_by": "fully/self", "metastore_host": "1.2.3.4", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "velox": {"velox_property": ["VeloxProperty"]}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "xyz-prestissimo-01-prestissimo-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": ["CatalogName"]}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"]}, "velox": ["Velox"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "prestissimo", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
 				}))
 			})
 			It(`Invoke UpdatePrestissimoEngine successfully`, func() {
@@ -6753,11 +9912,15 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				removeEnginePropertiesConfigurationModel.Coordinator = []string{"testString"}
 				removeEnginePropertiesConfigurationModel.Worker = []string{"testString"}
 
+				// Construct an instance of the RemoveEnginePropertiesPrestissimoOaiGenJvm model
+				removeEnginePropertiesPrestissimoOaiGenJvmModel := new(watsonxdatav2.RemoveEnginePropertiesPrestissimoOaiGenJvm)
+				removeEnginePropertiesPrestissimoOaiGenJvmModel.Coordinator = []string{"testString"}
+
 				// Construct an instance of the RemoveEngineProperties model
 				removeEnginePropertiesModel := new(watsonxdatav2.RemoveEngineProperties)
 				removeEnginePropertiesModel.Catalog = prestissimoEnginePropertiesCatalogModel
 				removeEnginePropertiesModel.Configuration = removeEnginePropertiesConfigurationModel
-				removeEnginePropertiesModel.Jvm = removeEnginePropertiesConfigurationModel
+				removeEnginePropertiesModel.Jvm = removeEnginePropertiesPrestissimoOaiGenJvmModel
 				removeEnginePropertiesModel.Velox = []string{"testString"}
 
 				// Construct an instance of the PrestissimoEnginePatch model
@@ -6832,11 +9995,15 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				removeEnginePropertiesConfigurationModel.Coordinator = []string{"testString"}
 				removeEnginePropertiesConfigurationModel.Worker = []string{"testString"}
 
+				// Construct an instance of the RemoveEnginePropertiesPrestissimoOaiGenJvm model
+				removeEnginePropertiesPrestissimoOaiGenJvmModel := new(watsonxdatav2.RemoveEnginePropertiesPrestissimoOaiGenJvm)
+				removeEnginePropertiesPrestissimoOaiGenJvmModel.Coordinator = []string{"testString"}
+
 				// Construct an instance of the RemoveEngineProperties model
 				removeEnginePropertiesModel := new(watsonxdatav2.RemoveEngineProperties)
 				removeEnginePropertiesModel.Catalog = prestissimoEnginePropertiesCatalogModel
 				removeEnginePropertiesModel.Configuration = removeEnginePropertiesConfigurationModel
-				removeEnginePropertiesModel.Jvm = removeEnginePropertiesConfigurationModel
+				removeEnginePropertiesModel.Jvm = removeEnginePropertiesPrestissimoOaiGenJvmModel
 				removeEnginePropertiesModel.Velox = []string{"testString"}
 
 				// Construct an instance of the PrestissimoEnginePatch model
@@ -6932,11 +10099,15 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				removeEnginePropertiesConfigurationModel.Coordinator = []string{"testString"}
 				removeEnginePropertiesConfigurationModel.Worker = []string{"testString"}
 
+				// Construct an instance of the RemoveEnginePropertiesPrestissimoOaiGenJvm model
+				removeEnginePropertiesPrestissimoOaiGenJvmModel := new(watsonxdatav2.RemoveEnginePropertiesPrestissimoOaiGenJvm)
+				removeEnginePropertiesPrestissimoOaiGenJvmModel.Coordinator = []string{"testString"}
+
 				// Construct an instance of the RemoveEngineProperties model
 				removeEnginePropertiesModel := new(watsonxdatav2.RemoveEngineProperties)
 				removeEnginePropertiesModel.Catalog = prestissimoEnginePropertiesCatalogModel
 				removeEnginePropertiesModel.Configuration = removeEnginePropertiesConfigurationModel
-				removeEnginePropertiesModel.Jvm = removeEnginePropertiesConfigurationModel
+				removeEnginePropertiesModel.Jvm = removeEnginePropertiesPrestissimoOaiGenJvmModel
 				removeEnginePropertiesModel.Velox = []string{"testString"}
 
 				// Construct an instance of the PrestissimoEnginePatch model
@@ -7193,15 +10364,15 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			})
 		})
 	})
-	Describe(`AddPrestissimoEngineCatalogs(addPrestissimoEngineCatalogsOptions *AddPrestissimoEngineCatalogsOptions) - Operation response error`, func() {
-		addPrestissimoEngineCatalogsPath := "/prestissimo_engines/testString/catalogs"
+	Describe(`CreatePrestissimoEngineCatalogs(createPrestissimoEngineCatalogsOptions *CreatePrestissimoEngineCatalogsOptions) - Operation response error`, func() {
+		createPrestissimoEngineCatalogsPath := "/prestissimo_engines/testString/catalogs"
 		Context(`Using mock server endpoint with invalid JSON response`, func() {
 			BeforeEach(func() {
 				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(addPrestissimoEngineCatalogsPath))
+					Expect(req.URL.EscapedPath()).To(Equal(createPrestissimoEngineCatalogsPath))
 					Expect(req.Method).To(Equal("POST"))
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
@@ -7210,7 +10381,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					fmt.Fprint(res, `} this is not valid json {`)
 				}))
 			})
-			It(`Invoke AddPrestissimoEngineCatalogs with error: Operation response processing error`, func() {
+			It(`Invoke CreatePrestissimoEngineCatalogs with error: Operation response processing error`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -7218,21 +10389,21 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the AddPrestissimoEngineCatalogsOptions model
-				addPrestissimoEngineCatalogsOptionsModel := new(watsonxdatav2.AddPrestissimoEngineCatalogsOptions)
-				addPrestissimoEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
-				addPrestissimoEngineCatalogsOptionsModel.CatalogNames = core.StringPtr("testString")
-				addPrestissimoEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				addPrestissimoEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the CreatePrestissimoEngineCatalogsOptions model
+				createPrestissimoEngineCatalogsOptionsModel := new(watsonxdatav2.CreatePrestissimoEngineCatalogsOptions)
+				createPrestissimoEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
+				createPrestissimoEngineCatalogsOptionsModel.CatalogName = core.StringPtr("testString")
+				createPrestissimoEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createPrestissimoEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Expect response parsing to fail since we are receiving a text/plain response
-				result, response, operationErr := watsonxDataService.AddPrestissimoEngineCatalogs(addPrestissimoEngineCatalogsOptionsModel)
+				result, response, operationErr := watsonxDataService.CreatePrestissimoEngineCatalogs(createPrestissimoEngineCatalogsOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).To(BeNil())
 
 				// Enable retries and test again
 				watsonxDataService.EnableRetries(0, 0)
-				result, response, operationErr = watsonxDataService.AddPrestissimoEngineCatalogs(addPrestissimoEngineCatalogsOptionsModel)
+				result, response, operationErr = watsonxDataService.CreatePrestissimoEngineCatalogs(createPrestissimoEngineCatalogsOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).To(BeNil())
@@ -7242,15 +10413,15 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			})
 		})
 	})
-	Describe(`AddPrestissimoEngineCatalogs(addPrestissimoEngineCatalogsOptions *AddPrestissimoEngineCatalogsOptions)`, func() {
-		addPrestissimoEngineCatalogsPath := "/prestissimo_engines/testString/catalogs"
+	Describe(`CreatePrestissimoEngineCatalogs(createPrestissimoEngineCatalogsOptions *CreatePrestissimoEngineCatalogsOptions)`, func() {
+		createPrestissimoEngineCatalogsPath := "/prestissimo_engines/testString/catalogs"
 		Context(`Using mock server endpoint with timeout`, func() {
 			BeforeEach(func() {
 				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(addPrestissimoEngineCatalogsPath))
+					Expect(req.URL.EscapedPath()).To(Equal(createPrestissimoEngineCatalogsPath))
 					Expect(req.Method).To(Equal("POST"))
 
 					// For gzip-disabled operation, verify Content-Encoding is not set.
@@ -7277,10 +10448,10 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"catalogs": [{"actions": ["Actions"], "associated_buckets": ["AssociatedBuckets"], "associated_databases": ["AssociatedDatabases"], "associated_engines": ["AssociatedEngines"], "catalog_name": "sampleCatalog", "catalog_type": "iceberg", "created_by": "<username>@<domain>.com", "created_on": "1602839833", "description": "Iceberg catalog description", "hostname": "s3a://samplehost.com", "last_sync_at": "1602839833", "managed_by": "ibm", "metastore": "glue", "port": "3232", "status": "running", "sync_description": "Table registration was successful", "sync_exception": ["SyncException"], "sync_status": "SUCCESS", "tags": ["Tags"], "thrift_uri": "thrift://samplehost-catalog:4354"}]}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_buckets": ["AssociatedBuckets"], "associated_databases": ["AssociatedDatabases"], "associated_engines": ["AssociatedEngines"], "catalog_name": "sampleCatalog", "catalog_type": "iceberg", "created_by": "<username>@<domain>.com", "created_on": "1602839833", "description": "Iceberg catalog description", "hostname": "s3a://samplehost.com", "last_sync_at": "1602839833", "managed_by": "ibm", "metastore": "glue", "port": "3232", "status": "running", "sync_description": "Table registration was successful", "sync_exception": ["SyncException"], "sync_status": "SUCCESS", "tags": ["Tags"], "thrift_uri": "thrift://samplehost-catalog:4354"}`)
 				}))
 			})
-			It(`Invoke AddPrestissimoEngineCatalogs successfully with retries`, func() {
+			It(`Invoke CreatePrestissimoEngineCatalogs successfully with retries`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -7289,23 +10460,23 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(watsonxDataService).ToNot(BeNil())
 				watsonxDataService.EnableRetries(0, 0)
 
-				// Construct an instance of the AddPrestissimoEngineCatalogsOptions model
-				addPrestissimoEngineCatalogsOptionsModel := new(watsonxdatav2.AddPrestissimoEngineCatalogsOptions)
-				addPrestissimoEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
-				addPrestissimoEngineCatalogsOptionsModel.CatalogNames = core.StringPtr("testString")
-				addPrestissimoEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				addPrestissimoEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the CreatePrestissimoEngineCatalogsOptions model
+				createPrestissimoEngineCatalogsOptionsModel := new(watsonxdatav2.CreatePrestissimoEngineCatalogsOptions)
+				createPrestissimoEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
+				createPrestissimoEngineCatalogsOptionsModel.CatalogName = core.StringPtr("testString")
+				createPrestissimoEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createPrestissimoEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with a Context to test a timeout error
 				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
 				defer cancelFunc()
-				_, _, operationErr := watsonxDataService.AddPrestissimoEngineCatalogsWithContext(ctx, addPrestissimoEngineCatalogsOptionsModel)
+				_, _, operationErr := watsonxDataService.CreatePrestissimoEngineCatalogsWithContext(ctx, createPrestissimoEngineCatalogsOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
 
 				// Disable retries and test again
 				watsonxDataService.DisableRetries()
-				result, response, operationErr := watsonxDataService.AddPrestissimoEngineCatalogs(addPrestissimoEngineCatalogsOptionsModel)
+				result, response, operationErr := watsonxDataService.CreatePrestissimoEngineCatalogs(createPrestissimoEngineCatalogsOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).ToNot(BeNil())
@@ -7313,7 +10484,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				// Re-test the timeout error with retries disabled
 				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
 				defer cancelFunc2()
-				_, _, operationErr = watsonxDataService.AddPrestissimoEngineCatalogsWithContext(ctx, addPrestissimoEngineCatalogsOptionsModel)
+				_, _, operationErr = watsonxDataService.CreatePrestissimoEngineCatalogsWithContext(ctx, createPrestissimoEngineCatalogsOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
 			})
@@ -7327,7 +10498,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(addPrestissimoEngineCatalogsPath))
+					Expect(req.URL.EscapedPath()).To(Equal(createPrestissimoEngineCatalogsPath))
 					Expect(req.Method).To(Equal("POST"))
 
 					// For gzip-disabled operation, verify Content-Encoding is not set.
@@ -7351,10 +10522,10 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"catalogs": [{"actions": ["Actions"], "associated_buckets": ["AssociatedBuckets"], "associated_databases": ["AssociatedDatabases"], "associated_engines": ["AssociatedEngines"], "catalog_name": "sampleCatalog", "catalog_type": "iceberg", "created_by": "<username>@<domain>.com", "created_on": "1602839833", "description": "Iceberg catalog description", "hostname": "s3a://samplehost.com", "last_sync_at": "1602839833", "managed_by": "ibm", "metastore": "glue", "port": "3232", "status": "running", "sync_description": "Table registration was successful", "sync_exception": ["SyncException"], "sync_status": "SUCCESS", "tags": ["Tags"], "thrift_uri": "thrift://samplehost-catalog:4354"}]}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_buckets": ["AssociatedBuckets"], "associated_databases": ["AssociatedDatabases"], "associated_engines": ["AssociatedEngines"], "catalog_name": "sampleCatalog", "catalog_type": "iceberg", "created_by": "<username>@<domain>.com", "created_on": "1602839833", "description": "Iceberg catalog description", "hostname": "s3a://samplehost.com", "last_sync_at": "1602839833", "managed_by": "ibm", "metastore": "glue", "port": "3232", "status": "running", "sync_description": "Table registration was successful", "sync_exception": ["SyncException"], "sync_status": "SUCCESS", "tags": ["Tags"], "thrift_uri": "thrift://samplehost-catalog:4354"}`)
 				}))
 			})
-			It(`Invoke AddPrestissimoEngineCatalogs successfully`, func() {
+			It(`Invoke CreatePrestissimoEngineCatalogs successfully`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -7363,26 +10534,26 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(watsonxDataService).ToNot(BeNil())
 
 				// Invoke operation with nil options model (negative test)
-				result, response, operationErr := watsonxDataService.AddPrestissimoEngineCatalogs(nil)
+				result, response, operationErr := watsonxDataService.CreatePrestissimoEngineCatalogs(nil)
 				Expect(operationErr).NotTo(BeNil())
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
 
-				// Construct an instance of the AddPrestissimoEngineCatalogsOptions model
-				addPrestissimoEngineCatalogsOptionsModel := new(watsonxdatav2.AddPrestissimoEngineCatalogsOptions)
-				addPrestissimoEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
-				addPrestissimoEngineCatalogsOptionsModel.CatalogNames = core.StringPtr("testString")
-				addPrestissimoEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				addPrestissimoEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the CreatePrestissimoEngineCatalogsOptions model
+				createPrestissimoEngineCatalogsOptionsModel := new(watsonxdatav2.CreatePrestissimoEngineCatalogsOptions)
+				createPrestissimoEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
+				createPrestissimoEngineCatalogsOptionsModel.CatalogName = core.StringPtr("testString")
+				createPrestissimoEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createPrestissimoEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with valid options model (positive test)
-				result, response, operationErr = watsonxDataService.AddPrestissimoEngineCatalogs(addPrestissimoEngineCatalogsOptionsModel)
+				result, response, operationErr = watsonxDataService.CreatePrestissimoEngineCatalogs(createPrestissimoEngineCatalogsOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).ToNot(BeNil())
 
 			})
-			It(`Invoke AddPrestissimoEngineCatalogs with error: Operation validation and request error`, func() {
+			It(`Invoke CreatePrestissimoEngineCatalogs with error: Operation validation and request error`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -7390,24 +10561,24 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the AddPrestissimoEngineCatalogsOptions model
-				addPrestissimoEngineCatalogsOptionsModel := new(watsonxdatav2.AddPrestissimoEngineCatalogsOptions)
-				addPrestissimoEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
-				addPrestissimoEngineCatalogsOptionsModel.CatalogNames = core.StringPtr("testString")
-				addPrestissimoEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				addPrestissimoEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the CreatePrestissimoEngineCatalogsOptions model
+				createPrestissimoEngineCatalogsOptionsModel := new(watsonxdatav2.CreatePrestissimoEngineCatalogsOptions)
+				createPrestissimoEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
+				createPrestissimoEngineCatalogsOptionsModel.CatalogName = core.StringPtr("testString")
+				createPrestissimoEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createPrestissimoEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
 				err := watsonxDataService.SetServiceURL("")
 				Expect(err).To(BeNil())
-				result, response, operationErr := watsonxDataService.AddPrestissimoEngineCatalogs(addPrestissimoEngineCatalogsOptionsModel)
+				result, response, operationErr := watsonxDataService.CreatePrestissimoEngineCatalogs(createPrestissimoEngineCatalogsOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
-				// Construct a second instance of the AddPrestissimoEngineCatalogsOptions model with no property values
-				addPrestissimoEngineCatalogsOptionsModelNew := new(watsonxdatav2.AddPrestissimoEngineCatalogsOptions)
+				// Construct a second instance of the CreatePrestissimoEngineCatalogsOptions model with no property values
+				createPrestissimoEngineCatalogsOptionsModelNew := new(watsonxdatav2.CreatePrestissimoEngineCatalogsOptions)
 				// Invoke operation with invalid model (negative test)
-				result, response, operationErr = watsonxDataService.AddPrestissimoEngineCatalogs(addPrestissimoEngineCatalogsOptionsModelNew)
+				result, response, operationErr = watsonxDataService.CreatePrestissimoEngineCatalogs(createPrestissimoEngineCatalogsOptionsModelNew)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
@@ -7425,7 +10596,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					res.WriteHeader(201)
 				}))
 			})
-			It(`Invoke AddPrestissimoEngineCatalogs successfully`, func() {
+			It(`Invoke CreatePrestissimoEngineCatalogs successfully`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -7433,15 +10604,15 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the AddPrestissimoEngineCatalogsOptions model
-				addPrestissimoEngineCatalogsOptionsModel := new(watsonxdatav2.AddPrestissimoEngineCatalogsOptions)
-				addPrestissimoEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
-				addPrestissimoEngineCatalogsOptionsModel.CatalogNames = core.StringPtr("testString")
-				addPrestissimoEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				addPrestissimoEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the CreatePrestissimoEngineCatalogsOptions model
+				createPrestissimoEngineCatalogsOptionsModel := new(watsonxdatav2.CreatePrestissimoEngineCatalogsOptions)
+				createPrestissimoEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
+				createPrestissimoEngineCatalogsOptionsModel.CatalogName = core.StringPtr("testString")
+				createPrestissimoEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createPrestissimoEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation
-				result, response, operationErr := watsonxDataService.AddPrestissimoEngineCatalogs(addPrestissimoEngineCatalogsOptionsModel)
+				result, response, operationErr := watsonxDataService.CreatePrestissimoEngineCatalogs(createPrestissimoEngineCatalogsOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 
@@ -9316,7 +12487,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"presto_engines": [{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "presto engine for running sql queries", "drivers": [{"connection_type": "saphana", "driver_id": "saphanadriver123", "driver_name": "saphanadriver-1.2.3", "driver_version": "1.2.3"}], "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "instance_id": "instance_id", "managed_by": "fully/self", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "global": {"global_property": "enable-mixed-case-support:true"}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "ibm-lh-lakehouse-presto-01-presto-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "catalog": {"catalog_name": "CatalogName"}}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "presto", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}]}`)
+					fmt.Fprintf(res, "%s", `{"presto_engines": [{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "presto engine for running sql queries", "drivers": [{"connection_type": "saphana", "driver_id": "saphanadriver123", "driver_name": "saphanadriver-1.2.3", "driver_version": "1.2.3"}], "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "instance_id": "instance_id", "managed_by": "fully/self", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "event_listener": {"event_listener_property": "EventListenerProperty"}, "global": {"global_property": "enable-mixed-case-support:true"}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "log_config": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "ibm-lh-lakehouse-presto-01-presto-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "event_listener": ["EventListener"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "presto", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}]}`)
 				}))
 			})
 			It(`Invoke ListPrestoEngines successfully with retries`, func() {
@@ -9372,7 +12543,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"presto_engines": [{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "presto engine for running sql queries", "drivers": [{"connection_type": "saphana", "driver_id": "saphanadriver123", "driver_name": "saphanadriver-1.2.3", "driver_version": "1.2.3"}], "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "instance_id": "instance_id", "managed_by": "fully/self", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "global": {"global_property": "enable-mixed-case-support:true"}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "ibm-lh-lakehouse-presto-01-presto-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "catalog": {"catalog_name": "CatalogName"}}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "presto", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}]}`)
+					fmt.Fprintf(res, "%s", `{"presto_engines": [{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "presto engine for running sql queries", "drivers": [{"connection_type": "saphana", "driver_id": "saphanadriver123", "driver_name": "saphanadriver-1.2.3", "driver_version": "1.2.3"}], "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "instance_id": "instance_id", "managed_by": "fully/self", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "event_listener": {"event_listener_property": "EventListenerProperty"}, "global": {"global_property": "enable-mixed-case-support:true"}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "log_config": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "ibm-lh-lakehouse-presto-01-presto-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "event_listener": ["EventListener"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "presto", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}]}`)
 				}))
 			})
 			It(`Invoke ListPrestoEngines successfully`, func() {
@@ -9566,7 +12737,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "presto engine for running sql queries", "drivers": [{"connection_type": "saphana", "driver_id": "saphanadriver123", "driver_name": "saphanadriver-1.2.3", "driver_version": "1.2.3"}], "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "instance_id": "instance_id", "managed_by": "fully/self", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "global": {"global_property": "enable-mixed-case-support:true"}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "ibm-lh-lakehouse-presto-01-presto-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "catalog": {"catalog_name": "CatalogName"}}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "presto", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "presto engine for running sql queries", "drivers": [{"connection_type": "saphana", "driver_id": "saphanadriver123", "driver_name": "saphanadriver-1.2.3", "driver_version": "1.2.3"}], "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "instance_id": "instance_id", "managed_by": "fully/self", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "event_listener": {"event_listener_property": "EventListenerProperty"}, "global": {"global_property": "enable-mixed-case-support:true"}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "log_config": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "ibm-lh-lakehouse-presto-01-presto-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "event_listener": ["EventListener"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "presto", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
 				}))
 			})
 			It(`Invoke CreatePrestoEngine successfully with retries`, func() {
@@ -9661,7 +12832,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "presto engine for running sql queries", "drivers": [{"connection_type": "saphana", "driver_id": "saphanadriver123", "driver_name": "saphanadriver-1.2.3", "driver_version": "1.2.3"}], "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "instance_id": "instance_id", "managed_by": "fully/self", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "global": {"global_property": "enable-mixed-case-support:true"}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "ibm-lh-lakehouse-presto-01-presto-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "catalog": {"catalog_name": "CatalogName"}}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "presto", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "presto engine for running sql queries", "drivers": [{"connection_type": "saphana", "driver_id": "saphanadriver123", "driver_name": "saphanadriver-1.2.3", "driver_version": "1.2.3"}], "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "instance_id": "instance_id", "managed_by": "fully/self", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "event_listener": {"event_listener_property": "EventListenerProperty"}, "global": {"global_property": "enable-mixed-case-support:true"}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "log_config": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "ibm-lh-lakehouse-presto-01-presto-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "event_listener": ["EventListener"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "presto", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
 				}))
 			})
 			It(`Invoke CreatePrestoEngine successfully`, func() {
@@ -9893,7 +13064,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "presto engine for running sql queries", "drivers": [{"connection_type": "saphana", "driver_id": "saphanadriver123", "driver_name": "saphanadriver-1.2.3", "driver_version": "1.2.3"}], "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "instance_id": "instance_id", "managed_by": "fully/self", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "global": {"global_property": "enable-mixed-case-support:true"}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "ibm-lh-lakehouse-presto-01-presto-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "catalog": {"catalog_name": "CatalogName"}}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "presto", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "presto engine for running sql queries", "drivers": [{"connection_type": "saphana", "driver_id": "saphanadriver123", "driver_name": "saphanadriver-1.2.3", "driver_version": "1.2.3"}], "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "instance_id": "instance_id", "managed_by": "fully/self", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "event_listener": {"event_listener_property": "EventListenerProperty"}, "global": {"global_property": "enable-mixed-case-support:true"}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "log_config": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "ibm-lh-lakehouse-presto-01-presto-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "event_listener": ["EventListener"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "presto", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
 				}))
 			})
 			It(`Invoke GetPrestoEngine successfully with retries`, func() {
@@ -9950,7 +13121,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "presto engine for running sql queries", "drivers": [{"connection_type": "saphana", "driver_id": "saphanadriver123", "driver_name": "saphanadriver-1.2.3", "driver_version": "1.2.3"}], "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "instance_id": "instance_id", "managed_by": "fully/self", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "global": {"global_property": "enable-mixed-case-support:true"}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "ibm-lh-lakehouse-presto-01-presto-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "catalog": {"catalog_name": "CatalogName"}}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "presto", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "presto engine for running sql queries", "drivers": [{"connection_type": "saphana", "driver_id": "saphanadriver123", "driver_name": "saphanadriver-1.2.3", "driver_version": "1.2.3"}], "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "instance_id": "instance_id", "managed_by": "fully/self", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "event_listener": {"event_listener_property": "EventListenerProperty"}, "global": {"global_property": "enable-mixed-case-support:true"}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "log_config": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "ibm-lh-lakehouse-presto-01-presto-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "event_listener": ["EventListener"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "presto", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
 				}))
 			})
 			It(`Invoke GetPrestoEngine successfully`, func() {
@@ -10160,6 +13331,10 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				enginePropertiesOaiGen1ConfigurationModel.Coordinator = nodeDescriptionBodyModel
 				enginePropertiesOaiGen1ConfigurationModel.Worker = nodeDescriptionBodyModel
 
+				// Construct an instance of the PrestoEnginePropertiesEventListener model
+				prestoEnginePropertiesEventListenerModel := new(watsonxdatav2.PrestoEnginePropertiesEventListener)
+				prestoEnginePropertiesEventListenerModel.EventListenerProperty = core.StringPtr("testString")
+
 				// Construct an instance of the PrestoEnginePropertiesGlobal model
 				prestoEnginePropertiesGlobalModel := new(watsonxdatav2.PrestoEnginePropertiesGlobal)
 				prestoEnginePropertiesGlobalModel.GlobalProperty = core.StringPtr("enable-mixed-case-support:true")
@@ -10169,12 +13344,19 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				enginePropertiesOaiGen1JvmModel.Coordinator = nodeDescriptionBodyModel
 				enginePropertiesOaiGen1JvmModel.Worker = nodeDescriptionBodyModel
 
+				// Construct an instance of the EnginePropertiesLogConfiguration model
+				enginePropertiesLogConfigurationModel := new(watsonxdatav2.EnginePropertiesLogConfiguration)
+				enginePropertiesLogConfigurationModel.Coordinator = nodeDescriptionBodyModel
+				enginePropertiesLogConfigurationModel.Worker = nodeDescriptionBodyModel
+
 				// Construct an instance of the PrestoEngineEngineProperties model
 				prestoEngineEnginePropertiesModel := new(watsonxdatav2.PrestoEngineEngineProperties)
 				prestoEngineEnginePropertiesModel.Catalog = prestoEnginePropertiesCatalogModel
 				prestoEngineEnginePropertiesModel.Configuration = enginePropertiesOaiGen1ConfigurationModel
+				prestoEngineEnginePropertiesModel.EventListener = prestoEnginePropertiesEventListenerModel
 				prestoEngineEnginePropertiesModel.Global = prestoEnginePropertiesGlobalModel
 				prestoEngineEnginePropertiesModel.Jvm = enginePropertiesOaiGen1JvmModel
+				prestoEngineEnginePropertiesModel.LogConfig = enginePropertiesLogConfigurationModel
 
 				// Construct an instance of the RemoveEnginePropertiesOaiGenConfiguration model
 				removeEnginePropertiesOaiGenConfigurationModel := new(watsonxdatav2.RemoveEnginePropertiesOaiGenConfiguration)
@@ -10188,9 +13370,10 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 				// Construct an instance of the PrestoEnginePatchRemoveEngineProperties model
 				prestoEnginePatchRemoveEnginePropertiesModel := new(watsonxdatav2.PrestoEnginePatchRemoveEngineProperties)
+				prestoEnginePatchRemoveEnginePropertiesModel.Catalog = prestoEnginePropertiesCatalogModel
 				prestoEnginePatchRemoveEnginePropertiesModel.Configuration = removeEnginePropertiesOaiGenConfigurationModel
 				prestoEnginePatchRemoveEnginePropertiesModel.Jvm = removeEnginePropertiesOaiGenJvmModel
-				prestoEnginePatchRemoveEnginePropertiesModel.Catalog = prestoEnginePropertiesCatalogModel
+				prestoEnginePatchRemoveEnginePropertiesModel.EventListener = []string{}
 
 				// Construct an instance of the PrestoEnginePatch model
 				prestoEnginePatchModel := new(watsonxdatav2.PrestoEnginePatch)
@@ -10262,7 +13445,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "presto engine for running sql queries", "drivers": [{"connection_type": "saphana", "driver_id": "saphanadriver123", "driver_name": "saphanadriver-1.2.3", "driver_version": "1.2.3"}], "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "instance_id": "instance_id", "managed_by": "fully/self", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "global": {"global_property": "enable-mixed-case-support:true"}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "ibm-lh-lakehouse-presto-01-presto-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "catalog": {"catalog_name": "CatalogName"}}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "presto", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "presto engine for running sql queries", "drivers": [{"connection_type": "saphana", "driver_id": "saphanadriver123", "driver_name": "saphanadriver-1.2.3", "driver_version": "1.2.3"}], "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "instance_id": "instance_id", "managed_by": "fully/self", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "event_listener": {"event_listener_property": "EventListenerProperty"}, "global": {"global_property": "enable-mixed-case-support:true"}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "log_config": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "ibm-lh-lakehouse-presto-01-presto-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "event_listener": ["EventListener"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "presto", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
 				}))
 			})
 			It(`Invoke UpdatePrestoEngine successfully with retries`, func() {
@@ -10288,6 +13471,10 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				enginePropertiesOaiGen1ConfigurationModel.Coordinator = nodeDescriptionBodyModel
 				enginePropertiesOaiGen1ConfigurationModel.Worker = nodeDescriptionBodyModel
 
+				// Construct an instance of the PrestoEnginePropertiesEventListener model
+				prestoEnginePropertiesEventListenerModel := new(watsonxdatav2.PrestoEnginePropertiesEventListener)
+				prestoEnginePropertiesEventListenerModel.EventListenerProperty = core.StringPtr("testString")
+
 				// Construct an instance of the PrestoEnginePropertiesGlobal model
 				prestoEnginePropertiesGlobalModel := new(watsonxdatav2.PrestoEnginePropertiesGlobal)
 				prestoEnginePropertiesGlobalModel.GlobalProperty = core.StringPtr("enable-mixed-case-support:true")
@@ -10297,12 +13484,19 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				enginePropertiesOaiGen1JvmModel.Coordinator = nodeDescriptionBodyModel
 				enginePropertiesOaiGen1JvmModel.Worker = nodeDescriptionBodyModel
 
+				// Construct an instance of the EnginePropertiesLogConfiguration model
+				enginePropertiesLogConfigurationModel := new(watsonxdatav2.EnginePropertiesLogConfiguration)
+				enginePropertiesLogConfigurationModel.Coordinator = nodeDescriptionBodyModel
+				enginePropertiesLogConfigurationModel.Worker = nodeDescriptionBodyModel
+
 				// Construct an instance of the PrestoEngineEngineProperties model
 				prestoEngineEnginePropertiesModel := new(watsonxdatav2.PrestoEngineEngineProperties)
 				prestoEngineEnginePropertiesModel.Catalog = prestoEnginePropertiesCatalogModel
 				prestoEngineEnginePropertiesModel.Configuration = enginePropertiesOaiGen1ConfigurationModel
+				prestoEngineEnginePropertiesModel.EventListener = prestoEnginePropertiesEventListenerModel
 				prestoEngineEnginePropertiesModel.Global = prestoEnginePropertiesGlobalModel
 				prestoEngineEnginePropertiesModel.Jvm = enginePropertiesOaiGen1JvmModel
+				prestoEngineEnginePropertiesModel.LogConfig = enginePropertiesLogConfigurationModel
 
 				// Construct an instance of the RemoveEnginePropertiesOaiGenConfiguration model
 				removeEnginePropertiesOaiGenConfigurationModel := new(watsonxdatav2.RemoveEnginePropertiesOaiGenConfiguration)
@@ -10316,9 +13510,10 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 				// Construct an instance of the PrestoEnginePatchRemoveEngineProperties model
 				prestoEnginePatchRemoveEnginePropertiesModel := new(watsonxdatav2.PrestoEnginePatchRemoveEngineProperties)
+				prestoEnginePatchRemoveEnginePropertiesModel.Catalog = prestoEnginePropertiesCatalogModel
 				prestoEnginePatchRemoveEnginePropertiesModel.Configuration = removeEnginePropertiesOaiGenConfigurationModel
 				prestoEnginePatchRemoveEnginePropertiesModel.Jvm = removeEnginePropertiesOaiGenJvmModel
-				prestoEnginePatchRemoveEnginePropertiesModel.Catalog = prestoEnginePropertiesCatalogModel
+				prestoEnginePatchRemoveEnginePropertiesModel.EventListener = []string{}
 
 				// Construct an instance of the PrestoEnginePatch model
 				prestoEnginePatchModel := new(watsonxdatav2.PrestoEnginePatch)
@@ -10393,7 +13588,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "presto engine for running sql queries", "drivers": [{"connection_type": "saphana", "driver_id": "saphanadriver123", "driver_name": "saphanadriver-1.2.3", "driver_version": "1.2.3"}], "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "instance_id": "instance_id", "managed_by": "fully/self", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "global": {"global_property": "enable-mixed-case-support:true"}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "ibm-lh-lakehouse-presto-01-presto-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "catalog": {"catalog_name": "CatalogName"}}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "presto", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_catalogs": ["AssociatedCatalogs"], "build_version": "1.0.3.0.0", "coordinator": {"node_type": "worker", "quantity": 8}, "created_by": "<username>@<domain>.com", "created_on": 9, "description": "presto engine for running sql queries", "drivers": [{"connection_type": "saphana", "driver_id": "saphanadriver123", "driver_name": "saphanadriver-1.2.3", "driver_version": "1.2.3"}], "engine_details": {"api_key": "<api_key>", "connection_string": "1.2.3.4", "coordinator": {"node_type": "worker", "quantity": 8}, "instance_id": "instance_id", "managed_by": "fully/self", "size_config": "starter", "worker": {"node_type": "worker", "quantity": 8}}, "engine_display_name": "sampleEngine", "engine_id": "sampleEngine123", "engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "event_listener": {"event_listener_property": "EventListenerProperty"}, "global": {"global_property": "enable-mixed-case-support:true"}, "jvm": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}, "log_config": {"coordinator": {"node_type": "worker", "quantity": 8}, "worker": {"node_type": "worker", "quantity": 8}}}, "engine_restart": "force", "external_host_name": "your-hostname.apps.your-domain.com", "group_id": "new_group_id", "host_name": "ibm-lh-lakehouse-presto-01-presto-svc", "origin": "native", "port": 4, "region": "us-south", "remove_engine_properties": {"catalog": {"catalog_name": "CatalogName"}, "configuration": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "jvm": {"coordinator": ["Coordinator"], "worker": ["Worker"]}, "event_listener": ["EventListener"]}, "size_config": "starter", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "presto", "version": "1.2.0", "worker": {"node_type": "worker", "quantity": 8}}`)
 				}))
 			})
 			It(`Invoke UpdatePrestoEngine successfully`, func() {
@@ -10424,6 +13619,10 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				enginePropertiesOaiGen1ConfigurationModel.Coordinator = nodeDescriptionBodyModel
 				enginePropertiesOaiGen1ConfigurationModel.Worker = nodeDescriptionBodyModel
 
+				// Construct an instance of the PrestoEnginePropertiesEventListener model
+				prestoEnginePropertiesEventListenerModel := new(watsonxdatav2.PrestoEnginePropertiesEventListener)
+				prestoEnginePropertiesEventListenerModel.EventListenerProperty = core.StringPtr("testString")
+
 				// Construct an instance of the PrestoEnginePropertiesGlobal model
 				prestoEnginePropertiesGlobalModel := new(watsonxdatav2.PrestoEnginePropertiesGlobal)
 				prestoEnginePropertiesGlobalModel.GlobalProperty = core.StringPtr("enable-mixed-case-support:true")
@@ -10433,12 +13632,19 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				enginePropertiesOaiGen1JvmModel.Coordinator = nodeDescriptionBodyModel
 				enginePropertiesOaiGen1JvmModel.Worker = nodeDescriptionBodyModel
 
+				// Construct an instance of the EnginePropertiesLogConfiguration model
+				enginePropertiesLogConfigurationModel := new(watsonxdatav2.EnginePropertiesLogConfiguration)
+				enginePropertiesLogConfigurationModel.Coordinator = nodeDescriptionBodyModel
+				enginePropertiesLogConfigurationModel.Worker = nodeDescriptionBodyModel
+
 				// Construct an instance of the PrestoEngineEngineProperties model
 				prestoEngineEnginePropertiesModel := new(watsonxdatav2.PrestoEngineEngineProperties)
 				prestoEngineEnginePropertiesModel.Catalog = prestoEnginePropertiesCatalogModel
 				prestoEngineEnginePropertiesModel.Configuration = enginePropertiesOaiGen1ConfigurationModel
+				prestoEngineEnginePropertiesModel.EventListener = prestoEnginePropertiesEventListenerModel
 				prestoEngineEnginePropertiesModel.Global = prestoEnginePropertiesGlobalModel
 				prestoEngineEnginePropertiesModel.Jvm = enginePropertiesOaiGen1JvmModel
+				prestoEngineEnginePropertiesModel.LogConfig = enginePropertiesLogConfigurationModel
 
 				// Construct an instance of the RemoveEnginePropertiesOaiGenConfiguration model
 				removeEnginePropertiesOaiGenConfigurationModel := new(watsonxdatav2.RemoveEnginePropertiesOaiGenConfiguration)
@@ -10452,9 +13658,10 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 				// Construct an instance of the PrestoEnginePatchRemoveEngineProperties model
 				prestoEnginePatchRemoveEnginePropertiesModel := new(watsonxdatav2.PrestoEnginePatchRemoveEngineProperties)
+				prestoEnginePatchRemoveEnginePropertiesModel.Catalog = prestoEnginePropertiesCatalogModel
 				prestoEnginePatchRemoveEnginePropertiesModel.Configuration = removeEnginePropertiesOaiGenConfigurationModel
 				prestoEnginePatchRemoveEnginePropertiesModel.Jvm = removeEnginePropertiesOaiGenJvmModel
-				prestoEnginePatchRemoveEnginePropertiesModel.Catalog = prestoEnginePropertiesCatalogModel
+				prestoEnginePatchRemoveEnginePropertiesModel.EventListener = []string{}
 
 				// Construct an instance of the PrestoEnginePatch model
 				prestoEnginePatchModel := new(watsonxdatav2.PrestoEnginePatch)
@@ -10503,6 +13710,10 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				enginePropertiesOaiGen1ConfigurationModel.Coordinator = nodeDescriptionBodyModel
 				enginePropertiesOaiGen1ConfigurationModel.Worker = nodeDescriptionBodyModel
 
+				// Construct an instance of the PrestoEnginePropertiesEventListener model
+				prestoEnginePropertiesEventListenerModel := new(watsonxdatav2.PrestoEnginePropertiesEventListener)
+				prestoEnginePropertiesEventListenerModel.EventListenerProperty = core.StringPtr("testString")
+
 				// Construct an instance of the PrestoEnginePropertiesGlobal model
 				prestoEnginePropertiesGlobalModel := new(watsonxdatav2.PrestoEnginePropertiesGlobal)
 				prestoEnginePropertiesGlobalModel.GlobalProperty = core.StringPtr("enable-mixed-case-support:true")
@@ -10512,12 +13723,19 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				enginePropertiesOaiGen1JvmModel.Coordinator = nodeDescriptionBodyModel
 				enginePropertiesOaiGen1JvmModel.Worker = nodeDescriptionBodyModel
 
+				// Construct an instance of the EnginePropertiesLogConfiguration model
+				enginePropertiesLogConfigurationModel := new(watsonxdatav2.EnginePropertiesLogConfiguration)
+				enginePropertiesLogConfigurationModel.Coordinator = nodeDescriptionBodyModel
+				enginePropertiesLogConfigurationModel.Worker = nodeDescriptionBodyModel
+
 				// Construct an instance of the PrestoEngineEngineProperties model
 				prestoEngineEnginePropertiesModel := new(watsonxdatav2.PrestoEngineEngineProperties)
 				prestoEngineEnginePropertiesModel.Catalog = prestoEnginePropertiesCatalogModel
 				prestoEngineEnginePropertiesModel.Configuration = enginePropertiesOaiGen1ConfigurationModel
+				prestoEngineEnginePropertiesModel.EventListener = prestoEnginePropertiesEventListenerModel
 				prestoEngineEnginePropertiesModel.Global = prestoEnginePropertiesGlobalModel
 				prestoEngineEnginePropertiesModel.Jvm = enginePropertiesOaiGen1JvmModel
+				prestoEngineEnginePropertiesModel.LogConfig = enginePropertiesLogConfigurationModel
 
 				// Construct an instance of the RemoveEnginePropertiesOaiGenConfiguration model
 				removeEnginePropertiesOaiGenConfigurationModel := new(watsonxdatav2.RemoveEnginePropertiesOaiGenConfiguration)
@@ -10531,9 +13749,10 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 				// Construct an instance of the PrestoEnginePatchRemoveEngineProperties model
 				prestoEnginePatchRemoveEnginePropertiesModel := new(watsonxdatav2.PrestoEnginePatchRemoveEngineProperties)
+				prestoEnginePatchRemoveEnginePropertiesModel.Catalog = prestoEnginePropertiesCatalogModel
 				prestoEnginePatchRemoveEnginePropertiesModel.Configuration = removeEnginePropertiesOaiGenConfigurationModel
 				prestoEnginePatchRemoveEnginePropertiesModel.Jvm = removeEnginePropertiesOaiGenJvmModel
-				prestoEnginePatchRemoveEnginePropertiesModel.Catalog = prestoEnginePropertiesCatalogModel
+				prestoEnginePatchRemoveEnginePropertiesModel.EventListener = []string{}
 
 				// Construct an instance of the PrestoEnginePatch model
 				prestoEnginePatchModel := new(watsonxdatav2.PrestoEnginePatch)
@@ -10603,6 +13822,10 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				enginePropertiesOaiGen1ConfigurationModel.Coordinator = nodeDescriptionBodyModel
 				enginePropertiesOaiGen1ConfigurationModel.Worker = nodeDescriptionBodyModel
 
+				// Construct an instance of the PrestoEnginePropertiesEventListener model
+				prestoEnginePropertiesEventListenerModel := new(watsonxdatav2.PrestoEnginePropertiesEventListener)
+				prestoEnginePropertiesEventListenerModel.EventListenerProperty = core.StringPtr("testString")
+
 				// Construct an instance of the PrestoEnginePropertiesGlobal model
 				prestoEnginePropertiesGlobalModel := new(watsonxdatav2.PrestoEnginePropertiesGlobal)
 				prestoEnginePropertiesGlobalModel.GlobalProperty = core.StringPtr("enable-mixed-case-support:true")
@@ -10612,12 +13835,19 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				enginePropertiesOaiGen1JvmModel.Coordinator = nodeDescriptionBodyModel
 				enginePropertiesOaiGen1JvmModel.Worker = nodeDescriptionBodyModel
 
+				// Construct an instance of the EnginePropertiesLogConfiguration model
+				enginePropertiesLogConfigurationModel := new(watsonxdatav2.EnginePropertiesLogConfiguration)
+				enginePropertiesLogConfigurationModel.Coordinator = nodeDescriptionBodyModel
+				enginePropertiesLogConfigurationModel.Worker = nodeDescriptionBodyModel
+
 				// Construct an instance of the PrestoEngineEngineProperties model
 				prestoEngineEnginePropertiesModel := new(watsonxdatav2.PrestoEngineEngineProperties)
 				prestoEngineEnginePropertiesModel.Catalog = prestoEnginePropertiesCatalogModel
 				prestoEngineEnginePropertiesModel.Configuration = enginePropertiesOaiGen1ConfigurationModel
+				prestoEngineEnginePropertiesModel.EventListener = prestoEnginePropertiesEventListenerModel
 				prestoEngineEnginePropertiesModel.Global = prestoEnginePropertiesGlobalModel
 				prestoEngineEnginePropertiesModel.Jvm = enginePropertiesOaiGen1JvmModel
+				prestoEngineEnginePropertiesModel.LogConfig = enginePropertiesLogConfigurationModel
 
 				// Construct an instance of the RemoveEnginePropertiesOaiGenConfiguration model
 				removeEnginePropertiesOaiGenConfigurationModel := new(watsonxdatav2.RemoveEnginePropertiesOaiGenConfiguration)
@@ -10631,9 +13861,10 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 				// Construct an instance of the PrestoEnginePatchRemoveEngineProperties model
 				prestoEnginePatchRemoveEnginePropertiesModel := new(watsonxdatav2.PrestoEnginePatchRemoveEngineProperties)
+				prestoEnginePatchRemoveEnginePropertiesModel.Catalog = prestoEnginePropertiesCatalogModel
 				prestoEnginePatchRemoveEnginePropertiesModel.Configuration = removeEnginePropertiesOaiGenConfigurationModel
 				prestoEnginePatchRemoveEnginePropertiesModel.Jvm = removeEnginePropertiesOaiGenJvmModel
-				prestoEnginePatchRemoveEnginePropertiesModel.Catalog = prestoEnginePropertiesCatalogModel
+				prestoEnginePatchRemoveEnginePropertiesModel.EventListener = []string{}
 
 				// Construct an instance of the PrestoEnginePatch model
 				prestoEnginePatchModel := new(watsonxdatav2.PrestoEnginePatch)
@@ -10889,15 +14120,15 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			})
 		})
 	})
-	Describe(`AddPrestoEngineCatalogs(addPrestoEngineCatalogsOptions *AddPrestoEngineCatalogsOptions) - Operation response error`, func() {
-		addPrestoEngineCatalogsPath := "/presto_engines/testString/catalogs"
+	Describe(`CreatePrestoEngineCatalogs(createPrestoEngineCatalogsOptions *CreatePrestoEngineCatalogsOptions) - Operation response error`, func() {
+		createPrestoEngineCatalogsPath := "/presto_engines/testString/catalogs"
 		Context(`Using mock server endpoint with invalid JSON response`, func() {
 			BeforeEach(func() {
 				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(addPrestoEngineCatalogsPath))
+					Expect(req.URL.EscapedPath()).To(Equal(createPrestoEngineCatalogsPath))
 					Expect(req.Method).To(Equal("POST"))
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
@@ -10906,7 +14137,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					fmt.Fprint(res, `} this is not valid json {`)
 				}))
 			})
-			It(`Invoke AddPrestoEngineCatalogs with error: Operation response processing error`, func() {
+			It(`Invoke CreatePrestoEngineCatalogs with error: Operation response processing error`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -10914,21 +14145,21 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the AddPrestoEngineCatalogsOptions model
-				addPrestoEngineCatalogsOptionsModel := new(watsonxdatav2.AddPrestoEngineCatalogsOptions)
-				addPrestoEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
-				addPrestoEngineCatalogsOptionsModel.CatalogNames = core.StringPtr("testString")
-				addPrestoEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				addPrestoEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the CreatePrestoEngineCatalogsOptions model
+				createPrestoEngineCatalogsOptionsModel := new(watsonxdatav2.CreatePrestoEngineCatalogsOptions)
+				createPrestoEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
+				createPrestoEngineCatalogsOptionsModel.CatalogName = core.StringPtr("testString")
+				createPrestoEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createPrestoEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Expect response parsing to fail since we are receiving a text/plain response
-				result, response, operationErr := watsonxDataService.AddPrestoEngineCatalogs(addPrestoEngineCatalogsOptionsModel)
+				result, response, operationErr := watsonxDataService.CreatePrestoEngineCatalogs(createPrestoEngineCatalogsOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).To(BeNil())
 
 				// Enable retries and test again
 				watsonxDataService.EnableRetries(0, 0)
-				result, response, operationErr = watsonxDataService.AddPrestoEngineCatalogs(addPrestoEngineCatalogsOptionsModel)
+				result, response, operationErr = watsonxDataService.CreatePrestoEngineCatalogs(createPrestoEngineCatalogsOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).To(BeNil())
@@ -10938,15 +14169,15 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			})
 		})
 	})
-	Describe(`AddPrestoEngineCatalogs(addPrestoEngineCatalogsOptions *AddPrestoEngineCatalogsOptions)`, func() {
-		addPrestoEngineCatalogsPath := "/presto_engines/testString/catalogs"
+	Describe(`CreatePrestoEngineCatalogs(createPrestoEngineCatalogsOptions *CreatePrestoEngineCatalogsOptions)`, func() {
+		createPrestoEngineCatalogsPath := "/presto_engines/testString/catalogs"
 		Context(`Using mock server endpoint with timeout`, func() {
 			BeforeEach(func() {
 				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(addPrestoEngineCatalogsPath))
+					Expect(req.URL.EscapedPath()).To(Equal(createPrestoEngineCatalogsPath))
 					Expect(req.Method).To(Equal("POST"))
 
 					// For gzip-disabled operation, verify Content-Encoding is not set.
@@ -10973,10 +14204,10 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"catalogs": [{"actions": ["Actions"], "associated_buckets": ["AssociatedBuckets"], "associated_databases": ["AssociatedDatabases"], "associated_engines": ["AssociatedEngines"], "catalog_name": "sampleCatalog", "catalog_type": "iceberg", "created_by": "<username>@<domain>.com", "created_on": "1602839833", "description": "Iceberg catalog description", "hostname": "s3a://samplehost.com", "last_sync_at": "1602839833", "managed_by": "ibm", "metastore": "glue", "port": "3232", "status": "running", "sync_description": "Table registration was successful", "sync_exception": ["SyncException"], "sync_status": "SUCCESS", "tags": ["Tags"], "thrift_uri": "thrift://samplehost-catalog:4354"}]}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_buckets": ["AssociatedBuckets"], "associated_databases": ["AssociatedDatabases"], "associated_engines": ["AssociatedEngines"], "catalog_name": "sampleCatalog", "catalog_type": "iceberg", "created_by": "<username>@<domain>.com", "created_on": "1602839833", "description": "Iceberg catalog description", "hostname": "s3a://samplehost.com", "last_sync_at": "1602839833", "managed_by": "ibm", "metastore": "glue", "port": "3232", "status": "running", "sync_description": "Table registration was successful", "sync_exception": ["SyncException"], "sync_status": "SUCCESS", "tags": ["Tags"], "thrift_uri": "thrift://samplehost-catalog:4354"}`)
 				}))
 			})
-			It(`Invoke AddPrestoEngineCatalogs successfully with retries`, func() {
+			It(`Invoke CreatePrestoEngineCatalogs successfully with retries`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -10985,23 +14216,23 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(watsonxDataService).ToNot(BeNil())
 				watsonxDataService.EnableRetries(0, 0)
 
-				// Construct an instance of the AddPrestoEngineCatalogsOptions model
-				addPrestoEngineCatalogsOptionsModel := new(watsonxdatav2.AddPrestoEngineCatalogsOptions)
-				addPrestoEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
-				addPrestoEngineCatalogsOptionsModel.CatalogNames = core.StringPtr("testString")
-				addPrestoEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				addPrestoEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the CreatePrestoEngineCatalogsOptions model
+				createPrestoEngineCatalogsOptionsModel := new(watsonxdatav2.CreatePrestoEngineCatalogsOptions)
+				createPrestoEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
+				createPrestoEngineCatalogsOptionsModel.CatalogName = core.StringPtr("testString")
+				createPrestoEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createPrestoEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with a Context to test a timeout error
 				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
 				defer cancelFunc()
-				_, _, operationErr := watsonxDataService.AddPrestoEngineCatalogsWithContext(ctx, addPrestoEngineCatalogsOptionsModel)
+				_, _, operationErr := watsonxDataService.CreatePrestoEngineCatalogsWithContext(ctx, createPrestoEngineCatalogsOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
 
 				// Disable retries and test again
 				watsonxDataService.DisableRetries()
-				result, response, operationErr := watsonxDataService.AddPrestoEngineCatalogs(addPrestoEngineCatalogsOptionsModel)
+				result, response, operationErr := watsonxDataService.CreatePrestoEngineCatalogs(createPrestoEngineCatalogsOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).ToNot(BeNil())
@@ -11009,7 +14240,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				// Re-test the timeout error with retries disabled
 				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
 				defer cancelFunc2()
-				_, _, operationErr = watsonxDataService.AddPrestoEngineCatalogsWithContext(ctx, addPrestoEngineCatalogsOptionsModel)
+				_, _, operationErr = watsonxDataService.CreatePrestoEngineCatalogsWithContext(ctx, createPrestoEngineCatalogsOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
 			})
@@ -11023,7 +14254,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(addPrestoEngineCatalogsPath))
+					Expect(req.URL.EscapedPath()).To(Equal(createPrestoEngineCatalogsPath))
 					Expect(req.Method).To(Equal("POST"))
 
 					// For gzip-disabled operation, verify Content-Encoding is not set.
@@ -11047,10 +14278,10 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"catalogs": [{"actions": ["Actions"], "associated_buckets": ["AssociatedBuckets"], "associated_databases": ["AssociatedDatabases"], "associated_engines": ["AssociatedEngines"], "catalog_name": "sampleCatalog", "catalog_type": "iceberg", "created_by": "<username>@<domain>.com", "created_on": "1602839833", "description": "Iceberg catalog description", "hostname": "s3a://samplehost.com", "last_sync_at": "1602839833", "managed_by": "ibm", "metastore": "glue", "port": "3232", "status": "running", "sync_description": "Table registration was successful", "sync_exception": ["SyncException"], "sync_status": "SUCCESS", "tags": ["Tags"], "thrift_uri": "thrift://samplehost-catalog:4354"}]}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_buckets": ["AssociatedBuckets"], "associated_databases": ["AssociatedDatabases"], "associated_engines": ["AssociatedEngines"], "catalog_name": "sampleCatalog", "catalog_type": "iceberg", "created_by": "<username>@<domain>.com", "created_on": "1602839833", "description": "Iceberg catalog description", "hostname": "s3a://samplehost.com", "last_sync_at": "1602839833", "managed_by": "ibm", "metastore": "glue", "port": "3232", "status": "running", "sync_description": "Table registration was successful", "sync_exception": ["SyncException"], "sync_status": "SUCCESS", "tags": ["Tags"], "thrift_uri": "thrift://samplehost-catalog:4354"}`)
 				}))
 			})
-			It(`Invoke AddPrestoEngineCatalogs successfully`, func() {
+			It(`Invoke CreatePrestoEngineCatalogs successfully`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -11059,26 +14290,26 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(watsonxDataService).ToNot(BeNil())
 
 				// Invoke operation with nil options model (negative test)
-				result, response, operationErr := watsonxDataService.AddPrestoEngineCatalogs(nil)
+				result, response, operationErr := watsonxDataService.CreatePrestoEngineCatalogs(nil)
 				Expect(operationErr).NotTo(BeNil())
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
 
-				// Construct an instance of the AddPrestoEngineCatalogsOptions model
-				addPrestoEngineCatalogsOptionsModel := new(watsonxdatav2.AddPrestoEngineCatalogsOptions)
-				addPrestoEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
-				addPrestoEngineCatalogsOptionsModel.CatalogNames = core.StringPtr("testString")
-				addPrestoEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				addPrestoEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the CreatePrestoEngineCatalogsOptions model
+				createPrestoEngineCatalogsOptionsModel := new(watsonxdatav2.CreatePrestoEngineCatalogsOptions)
+				createPrestoEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
+				createPrestoEngineCatalogsOptionsModel.CatalogName = core.StringPtr("testString")
+				createPrestoEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createPrestoEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with valid options model (positive test)
-				result, response, operationErr = watsonxDataService.AddPrestoEngineCatalogs(addPrestoEngineCatalogsOptionsModel)
+				result, response, operationErr = watsonxDataService.CreatePrestoEngineCatalogs(createPrestoEngineCatalogsOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).ToNot(BeNil())
 
 			})
-			It(`Invoke AddPrestoEngineCatalogs with error: Operation validation and request error`, func() {
+			It(`Invoke CreatePrestoEngineCatalogs with error: Operation validation and request error`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -11086,24 +14317,24 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the AddPrestoEngineCatalogsOptions model
-				addPrestoEngineCatalogsOptionsModel := new(watsonxdatav2.AddPrestoEngineCatalogsOptions)
-				addPrestoEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
-				addPrestoEngineCatalogsOptionsModel.CatalogNames = core.StringPtr("testString")
-				addPrestoEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				addPrestoEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the CreatePrestoEngineCatalogsOptions model
+				createPrestoEngineCatalogsOptionsModel := new(watsonxdatav2.CreatePrestoEngineCatalogsOptions)
+				createPrestoEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
+				createPrestoEngineCatalogsOptionsModel.CatalogName = core.StringPtr("testString")
+				createPrestoEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createPrestoEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
 				err := watsonxDataService.SetServiceURL("")
 				Expect(err).To(BeNil())
-				result, response, operationErr := watsonxDataService.AddPrestoEngineCatalogs(addPrestoEngineCatalogsOptionsModel)
+				result, response, operationErr := watsonxDataService.CreatePrestoEngineCatalogs(createPrestoEngineCatalogsOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
-				// Construct a second instance of the AddPrestoEngineCatalogsOptions model with no property values
-				addPrestoEngineCatalogsOptionsModelNew := new(watsonxdatav2.AddPrestoEngineCatalogsOptions)
+				// Construct a second instance of the CreatePrestoEngineCatalogsOptions model with no property values
+				createPrestoEngineCatalogsOptionsModelNew := new(watsonxdatav2.CreatePrestoEngineCatalogsOptions)
 				// Invoke operation with invalid model (negative test)
-				result, response, operationErr = watsonxDataService.AddPrestoEngineCatalogs(addPrestoEngineCatalogsOptionsModelNew)
+				result, response, operationErr = watsonxDataService.CreatePrestoEngineCatalogs(createPrestoEngineCatalogsOptionsModelNew)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
@@ -11121,7 +14352,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					res.WriteHeader(201)
 				}))
 			})
-			It(`Invoke AddPrestoEngineCatalogs successfully`, func() {
+			It(`Invoke CreatePrestoEngineCatalogs successfully`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -11129,15 +14360,15 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the AddPrestoEngineCatalogsOptions model
-				addPrestoEngineCatalogsOptionsModel := new(watsonxdatav2.AddPrestoEngineCatalogsOptions)
-				addPrestoEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
-				addPrestoEngineCatalogsOptionsModel.CatalogNames = core.StringPtr("testString")
-				addPrestoEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				addPrestoEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the CreatePrestoEngineCatalogsOptions model
+				createPrestoEngineCatalogsOptionsModel := new(watsonxdatav2.CreatePrestoEngineCatalogsOptions)
+				createPrestoEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
+				createPrestoEngineCatalogsOptionsModel.CatalogName = core.StringPtr("testString")
+				createPrestoEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createPrestoEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation
-				result, response, operationErr := watsonxDataService.AddPrestoEngineCatalogs(addPrestoEngineCatalogsOptionsModel)
+				result, response, operationErr := watsonxDataService.CreatePrestoEngineCatalogs(createPrestoEngineCatalogsOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 
@@ -12935,6 +16166,3933 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 				// Invoke operation
 				result, response, operationErr := watsonxDataService.ScalePrestoEngine(scalePrestoEngineOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegration(getSalIntegrationOptions *GetSalIntegrationOptions) - Operation response error`, func() {
+		getSalIntegrationPath := "/sal_integrations"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationPath))
+					Expect(req.Method).To(Equal("GET"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke GetSalIntegration with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationOptions model
+				getSalIntegrationOptionsModel := new(watsonxdatav2.GetSalIntegrationOptions)
+				getSalIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.GetSalIntegration(getSalIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.GetSalIntegration(getSalIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegration(getSalIntegrationOptions *GetSalIntegrationOptions)`, func() {
+		getSalIntegrationPath := "/sal_integrations"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"category_id": "10e64285-bf37-4d5d-b759-bc6a46589234", "engine_id": "presto-01", "errors": [{"code": "unable_to_perform", "message": "Failed to process integration settings for watsonx.data instance"}], "governance_scope_id": "10e64285-bf37-4d5d-b759-bc6a46589234", "governance_scope_type": "category", "instance_id": "18b49d7a-9519-4539-8db5-ff080623c226", "status": "provisioning", "storage_resource_crn": "crn:v1:staging:public:cloud-object-storage:global:a/04e9bc47612523rr19ac22759cb69bebd:asd23df-6ada-45ff-bfe8-4343222", "storage_type": "bmcos_object_storage", "timestamp": "1715056266", "trial_plan": false, "username": "xyz@abc.com"}`)
+				}))
+			})
+			It(`Invoke GetSalIntegration successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the GetSalIntegrationOptions model
+				getSalIntegrationOptionsModel := new(watsonxdatav2.GetSalIntegrationOptions)
+				getSalIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.GetSalIntegrationWithContext(ctx, getSalIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.GetSalIntegration(getSalIntegrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.GetSalIntegrationWithContext(ctx, getSalIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"category_id": "10e64285-bf37-4d5d-b759-bc6a46589234", "engine_id": "presto-01", "errors": [{"code": "unable_to_perform", "message": "Failed to process integration settings for watsonx.data instance"}], "governance_scope_id": "10e64285-bf37-4d5d-b759-bc6a46589234", "governance_scope_type": "category", "instance_id": "18b49d7a-9519-4539-8db5-ff080623c226", "status": "provisioning", "storage_resource_crn": "crn:v1:staging:public:cloud-object-storage:global:a/04e9bc47612523rr19ac22759cb69bebd:asd23df-6ada-45ff-bfe8-4343222", "storage_type": "bmcos_object_storage", "timestamp": "1715056266", "trial_plan": false, "username": "xyz@abc.com"}`)
+				}))
+			})
+			It(`Invoke GetSalIntegration successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.GetSalIntegration(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the GetSalIntegrationOptions model
+				getSalIntegrationOptionsModel := new(watsonxdatav2.GetSalIntegrationOptions)
+				getSalIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.GetSalIntegration(getSalIntegrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke GetSalIntegration with error: Operation request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationOptions model
+				getSalIntegrationOptionsModel := new(watsonxdatav2.GetSalIntegrationOptions)
+				getSalIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.GetSalIntegration(getSalIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke GetSalIntegration successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationOptions model
+				getSalIntegrationOptionsModel := new(watsonxdatav2.GetSalIntegrationOptions)
+				getSalIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.GetSalIntegration(getSalIntegrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateSalIntegration(createSalIntegrationOptions *CreateSalIntegrationOptions) - Operation response error`, func() {
+		createSalIntegrationPath := "/sal_integrations"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createSalIntegrationPath))
+					Expect(req.Method).To(Equal("POST"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke CreateSalIntegration with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateSalIntegrationOptions model
+				createSalIntegrationOptionsModel := new(watsonxdatav2.CreateSalIntegrationOptions)
+				createSalIntegrationOptionsModel.Apikey = core.StringPtr("12efd3raq")
+				createSalIntegrationOptionsModel.EngineID = core.StringPtr("presto-01")
+				createSalIntegrationOptionsModel.StorageResourceCrn = core.StringPtr("crn:v1:staging:public:cloud-object-storage:global:a/a7026b374f39f570d20984c1ac6ecf63:5778e94f-c8c7-46a8-9878-d5eeadb51161")
+				createSalIntegrationOptionsModel.StorageType = core.StringPtr("bmcos_object_storage")
+				createSalIntegrationOptionsModel.TrialPlan = core.BoolPtr(true)
+				createSalIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSalIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.CreateSalIntegration(createSalIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.CreateSalIntegration(createSalIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateSalIntegration(createSalIntegrationOptions *CreateSalIntegrationOptions)`, func() {
+		createSalIntegrationPath := "/sal_integrations"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createSalIntegrationPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"category_id": "10e64285-bf37-4d5d-b759-bc6a46589234", "engine_id": "presto-01", "errors": [{"code": "unable_to_perform", "message": "Failed to process integration settings for watsonx.data instance"}], "governance_scope_id": "10e64285-bf37-4d5d-b759-bc6a46589234", "governance_scope_type": "category", "instance_id": "18b49d7a-9519-4539-8db5-ff080623c226", "status": "provisioning", "storage_resource_crn": "crn:v1:staging:public:cloud-object-storage:global:a/04e9bc47612523rr19ac22759cb69bebd:asd23df-6ada-45ff-bfe8-4343222", "storage_type": "bmcos_object_storage", "timestamp": "1715056266", "trial_plan": false, "username": "xyz@abc.com"}`)
+				}))
+			})
+			It(`Invoke CreateSalIntegration successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the CreateSalIntegrationOptions model
+				createSalIntegrationOptionsModel := new(watsonxdatav2.CreateSalIntegrationOptions)
+				createSalIntegrationOptionsModel.Apikey = core.StringPtr("12efd3raq")
+				createSalIntegrationOptionsModel.EngineID = core.StringPtr("presto-01")
+				createSalIntegrationOptionsModel.StorageResourceCrn = core.StringPtr("crn:v1:staging:public:cloud-object-storage:global:a/a7026b374f39f570d20984c1ac6ecf63:5778e94f-c8c7-46a8-9878-d5eeadb51161")
+				createSalIntegrationOptionsModel.StorageType = core.StringPtr("bmcos_object_storage")
+				createSalIntegrationOptionsModel.TrialPlan = core.BoolPtr(true)
+				createSalIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSalIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.CreateSalIntegrationWithContext(ctx, createSalIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.CreateSalIntegration(createSalIntegrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.CreateSalIntegrationWithContext(ctx, createSalIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createSalIntegrationPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"category_id": "10e64285-bf37-4d5d-b759-bc6a46589234", "engine_id": "presto-01", "errors": [{"code": "unable_to_perform", "message": "Failed to process integration settings for watsonx.data instance"}], "governance_scope_id": "10e64285-bf37-4d5d-b759-bc6a46589234", "governance_scope_type": "category", "instance_id": "18b49d7a-9519-4539-8db5-ff080623c226", "status": "provisioning", "storage_resource_crn": "crn:v1:staging:public:cloud-object-storage:global:a/04e9bc47612523rr19ac22759cb69bebd:asd23df-6ada-45ff-bfe8-4343222", "storage_type": "bmcos_object_storage", "timestamp": "1715056266", "trial_plan": false, "username": "xyz@abc.com"}`)
+				}))
+			})
+			It(`Invoke CreateSalIntegration successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.CreateSalIntegration(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the CreateSalIntegrationOptions model
+				createSalIntegrationOptionsModel := new(watsonxdatav2.CreateSalIntegrationOptions)
+				createSalIntegrationOptionsModel.Apikey = core.StringPtr("12efd3raq")
+				createSalIntegrationOptionsModel.EngineID = core.StringPtr("presto-01")
+				createSalIntegrationOptionsModel.StorageResourceCrn = core.StringPtr("crn:v1:staging:public:cloud-object-storage:global:a/a7026b374f39f570d20984c1ac6ecf63:5778e94f-c8c7-46a8-9878-d5eeadb51161")
+				createSalIntegrationOptionsModel.StorageType = core.StringPtr("bmcos_object_storage")
+				createSalIntegrationOptionsModel.TrialPlan = core.BoolPtr(true)
+				createSalIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSalIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.CreateSalIntegration(createSalIntegrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke CreateSalIntegration with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateSalIntegrationOptions model
+				createSalIntegrationOptionsModel := new(watsonxdatav2.CreateSalIntegrationOptions)
+				createSalIntegrationOptionsModel.Apikey = core.StringPtr("12efd3raq")
+				createSalIntegrationOptionsModel.EngineID = core.StringPtr("presto-01")
+				createSalIntegrationOptionsModel.StorageResourceCrn = core.StringPtr("crn:v1:staging:public:cloud-object-storage:global:a/a7026b374f39f570d20984c1ac6ecf63:5778e94f-c8c7-46a8-9878-d5eeadb51161")
+				createSalIntegrationOptionsModel.StorageType = core.StringPtr("bmcos_object_storage")
+				createSalIntegrationOptionsModel.TrialPlan = core.BoolPtr(true)
+				createSalIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSalIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.CreateSalIntegration(createSalIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the CreateSalIntegrationOptions model with no property values
+				createSalIntegrationOptionsModelNew := new(watsonxdatav2.CreateSalIntegrationOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = watsonxDataService.CreateSalIntegration(createSalIntegrationOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(201)
+				}))
+			})
+			It(`Invoke CreateSalIntegration successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateSalIntegrationOptions model
+				createSalIntegrationOptionsModel := new(watsonxdatav2.CreateSalIntegrationOptions)
+				createSalIntegrationOptionsModel.Apikey = core.StringPtr("12efd3raq")
+				createSalIntegrationOptionsModel.EngineID = core.StringPtr("presto-01")
+				createSalIntegrationOptionsModel.StorageResourceCrn = core.StringPtr("crn:v1:staging:public:cloud-object-storage:global:a/a7026b374f39f570d20984c1ac6ecf63:5778e94f-c8c7-46a8-9878-d5eeadb51161")
+				createSalIntegrationOptionsModel.StorageType = core.StringPtr("bmcos_object_storage")
+				createSalIntegrationOptionsModel.TrialPlan = core.BoolPtr(true)
+				createSalIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSalIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.CreateSalIntegration(createSalIntegrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`DeleteSalIntegration(deleteSalIntegrationOptions *DeleteSalIntegrationOptions)`, func() {
+		deleteSalIntegrationPath := "/sal_integrations"
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(deleteSalIntegrationPath))
+					Expect(req.Method).To(Equal("DELETE"))
+
+					res.WriteHeader(204)
+				}))
+			})
+			It(`Invoke DeleteSalIntegration successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				response, operationErr := watsonxDataService.DeleteSalIntegration(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+
+				// Construct an instance of the DeleteSalIntegrationOptions model
+				deleteSalIntegrationOptionsModel := new(watsonxdatav2.DeleteSalIntegrationOptions)
+				deleteSalIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				response, operationErr = watsonxDataService.DeleteSalIntegration(deleteSalIntegrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+			})
+			It(`Invoke DeleteSalIntegration with error: Operation request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the DeleteSalIntegrationOptions model
+				deleteSalIntegrationOptionsModel := new(watsonxdatav2.DeleteSalIntegrationOptions)
+				deleteSalIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				response, operationErr := watsonxDataService.DeleteSalIntegration(deleteSalIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`UpdateSalIntegration(updateSalIntegrationOptions *UpdateSalIntegrationOptions) - Operation response error`, func() {
+		updateSalIntegrationPath := "/sal_integrations"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(updateSalIntegrationPath))
+					Expect(req.Method).To(Equal("PATCH"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke UpdateSalIntegration with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the SalIntegrationPatch model
+				salIntegrationPatchModel := new(watsonxdatav2.SalIntegrationPatch)
+				salIntegrationPatchModel.Op = core.StringPtr("add")
+				salIntegrationPatchModel.Path = core.StringPtr("storage")
+				salIntegrationPatchModel.Value = core.StringPtr("new-apikey")
+				salIntegrationPatchModelAsPatch, asPatchErr := salIntegrationPatchModel.AsPatch()
+				Expect(asPatchErr).To(BeNil())
+
+				// Construct an instance of the UpdateSalIntegrationOptions model
+				updateSalIntegrationOptionsModel := new(watsonxdatav2.UpdateSalIntegrationOptions)
+				updateSalIntegrationOptionsModel.Body = salIntegrationPatchModelAsPatch
+				updateSalIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				updateSalIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.UpdateSalIntegration(updateSalIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.UpdateSalIntegration(updateSalIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`UpdateSalIntegration(updateSalIntegrationOptions *UpdateSalIntegrationOptions)`, func() {
+		updateSalIntegrationPath := "/sal_integrations"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(updateSalIntegrationPath))
+					Expect(req.Method).To(Equal("PATCH"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"category_id": "10e64285-bf37-4d5d-b759-bc6a46589234", "engine_id": "presto-01", "errors": [{"code": "unable_to_perform", "message": "Failed to process integration settings for watsonx.data instance"}], "governance_scope_id": "10e64285-bf37-4d5d-b759-bc6a46589234", "governance_scope_type": "category", "instance_id": "18b49d7a-9519-4539-8db5-ff080623c226", "status": "provisioning", "storage_resource_crn": "crn:v1:staging:public:cloud-object-storage:global:a/04e9bc47612523rr19ac22759cb69bebd:asd23df-6ada-45ff-bfe8-4343222", "storage_type": "bmcos_object_storage", "timestamp": "1715056266", "trial_plan": false, "username": "xyz@abc.com"}`)
+				}))
+			})
+			It(`Invoke UpdateSalIntegration successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the SalIntegrationPatch model
+				salIntegrationPatchModel := new(watsonxdatav2.SalIntegrationPatch)
+				salIntegrationPatchModel.Op = core.StringPtr("add")
+				salIntegrationPatchModel.Path = core.StringPtr("storage")
+				salIntegrationPatchModel.Value = core.StringPtr("new-apikey")
+				salIntegrationPatchModelAsPatch, asPatchErr := salIntegrationPatchModel.AsPatch()
+				Expect(asPatchErr).To(BeNil())
+
+				// Construct an instance of the UpdateSalIntegrationOptions model
+				updateSalIntegrationOptionsModel := new(watsonxdatav2.UpdateSalIntegrationOptions)
+				updateSalIntegrationOptionsModel.Body = salIntegrationPatchModelAsPatch
+				updateSalIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				updateSalIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.UpdateSalIntegrationWithContext(ctx, updateSalIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.UpdateSalIntegration(updateSalIntegrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.UpdateSalIntegrationWithContext(ctx, updateSalIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(updateSalIntegrationPath))
+					Expect(req.Method).To(Equal("PATCH"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"category_id": "10e64285-bf37-4d5d-b759-bc6a46589234", "engine_id": "presto-01", "errors": [{"code": "unable_to_perform", "message": "Failed to process integration settings for watsonx.data instance"}], "governance_scope_id": "10e64285-bf37-4d5d-b759-bc6a46589234", "governance_scope_type": "category", "instance_id": "18b49d7a-9519-4539-8db5-ff080623c226", "status": "provisioning", "storage_resource_crn": "crn:v1:staging:public:cloud-object-storage:global:a/04e9bc47612523rr19ac22759cb69bebd:asd23df-6ada-45ff-bfe8-4343222", "storage_type": "bmcos_object_storage", "timestamp": "1715056266", "trial_plan": false, "username": "xyz@abc.com"}`)
+				}))
+			})
+			It(`Invoke UpdateSalIntegration successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.UpdateSalIntegration(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the SalIntegrationPatch model
+				salIntegrationPatchModel := new(watsonxdatav2.SalIntegrationPatch)
+				salIntegrationPatchModel.Op = core.StringPtr("add")
+				salIntegrationPatchModel.Path = core.StringPtr("storage")
+				salIntegrationPatchModel.Value = core.StringPtr("new-apikey")
+				salIntegrationPatchModelAsPatch, asPatchErr := salIntegrationPatchModel.AsPatch()
+				Expect(asPatchErr).To(BeNil())
+
+				// Construct an instance of the UpdateSalIntegrationOptions model
+				updateSalIntegrationOptionsModel := new(watsonxdatav2.UpdateSalIntegrationOptions)
+				updateSalIntegrationOptionsModel.Body = salIntegrationPatchModelAsPatch
+				updateSalIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				updateSalIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.UpdateSalIntegration(updateSalIntegrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke UpdateSalIntegration with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the SalIntegrationPatch model
+				salIntegrationPatchModel := new(watsonxdatav2.SalIntegrationPatch)
+				salIntegrationPatchModel.Op = core.StringPtr("add")
+				salIntegrationPatchModel.Path = core.StringPtr("storage")
+				salIntegrationPatchModel.Value = core.StringPtr("new-apikey")
+				salIntegrationPatchModelAsPatch, asPatchErr := salIntegrationPatchModel.AsPatch()
+				Expect(asPatchErr).To(BeNil())
+
+				// Construct an instance of the UpdateSalIntegrationOptions model
+				updateSalIntegrationOptionsModel := new(watsonxdatav2.UpdateSalIntegrationOptions)
+				updateSalIntegrationOptionsModel.Body = salIntegrationPatchModelAsPatch
+				updateSalIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				updateSalIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.UpdateSalIntegration(updateSalIntegrationOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the UpdateSalIntegrationOptions model with no property values
+				updateSalIntegrationOptionsModelNew := new(watsonxdatav2.UpdateSalIntegrationOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = watsonxDataService.UpdateSalIntegration(updateSalIntegrationOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke UpdateSalIntegration successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the SalIntegrationPatch model
+				salIntegrationPatchModel := new(watsonxdatav2.SalIntegrationPatch)
+				salIntegrationPatchModel.Op = core.StringPtr("add")
+				salIntegrationPatchModel.Path = core.StringPtr("storage")
+				salIntegrationPatchModel.Value = core.StringPtr("new-apikey")
+				salIntegrationPatchModelAsPatch, asPatchErr := salIntegrationPatchModel.AsPatch()
+				Expect(asPatchErr).To(BeNil())
+
+				// Construct an instance of the UpdateSalIntegrationOptions model
+				updateSalIntegrationOptionsModel := new(watsonxdatav2.UpdateSalIntegrationOptions)
+				updateSalIntegrationOptionsModel.Body = salIntegrationPatchModelAsPatch
+				updateSalIntegrationOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				updateSalIntegrationOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.UpdateSalIntegration(updateSalIntegrationOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateSalIntegrationEnrichment(createSalIntegrationEnrichmentOptions *CreateSalIntegrationEnrichmentOptions)`, func() {
+		createSalIntegrationEnrichmentPath := "/sal_integrations/enrichment"
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createSalIntegrationEnrichmentPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.WriteHeader(204)
+				}))
+			})
+			It(`Invoke CreateSalIntegrationEnrichment successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				response, operationErr := watsonxDataService.CreateSalIntegrationEnrichment(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+
+				// Construct an instance of the EnrichmentObj model
+				enrichmentObjModel := new(watsonxdatav2.EnrichmentObj)
+				enrichmentObjModel.Catalog = core.StringPtr("iceberg_data")
+				enrichmentObjModel.Operation = core.StringPtr("create")
+				enrichmentObjModel.Schema = core.StringPtr("testString")
+				enrichmentObjModel.Tables = []string{"testString"}
+
+				// Construct an instance of the CreateSalIntegrationEnrichmentOptions model
+				createSalIntegrationEnrichmentOptionsModel := new(watsonxdatav2.CreateSalIntegrationEnrichmentOptions)
+				createSalIntegrationEnrichmentOptionsModel.EnrichmentPrototype = enrichmentObjModel
+				createSalIntegrationEnrichmentOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSalIntegrationEnrichmentOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				response, operationErr = watsonxDataService.CreateSalIntegrationEnrichment(createSalIntegrationEnrichmentOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+			})
+			It(`Invoke CreateSalIntegrationEnrichment with error: Operation request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the EnrichmentObj model
+				enrichmentObjModel := new(watsonxdatav2.EnrichmentObj)
+				enrichmentObjModel.Catalog = core.StringPtr("iceberg_data")
+				enrichmentObjModel.Operation = core.StringPtr("create")
+				enrichmentObjModel.Schema = core.StringPtr("testString")
+				enrichmentObjModel.Tables = []string{"testString"}
+
+				// Construct an instance of the CreateSalIntegrationEnrichmentOptions model
+				createSalIntegrationEnrichmentOptionsModel := new(watsonxdatav2.CreateSalIntegrationEnrichmentOptions)
+				createSalIntegrationEnrichmentOptionsModel.EnrichmentPrototype = enrichmentObjModel
+				createSalIntegrationEnrichmentOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSalIntegrationEnrichmentOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				response, operationErr := watsonxDataService.CreateSalIntegrationEnrichment(createSalIntegrationEnrichmentOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegrationEnrichmentAssets(getSalIntegrationEnrichmentAssetsOptions *GetSalIntegrationEnrichmentAssetsOptions) - Operation response error`, func() {
+		getSalIntegrationEnrichmentAssetsPath := "/sal_integrations/enrichment_assets"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationEnrichmentAssetsPath))
+					Expect(req.Method).To(Equal("GET"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["project_id"]).To(Equal([]string{"testString"}))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentAssets with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentAssetsOptions model
+				getSalIntegrationEnrichmentAssetsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentAssetsOptions)
+				getSalIntegrationEnrichmentAssetsOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentAssetsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentAssetsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentAssets(getSalIntegrationEnrichmentAssetsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.GetSalIntegrationEnrichmentAssets(getSalIntegrationEnrichmentAssetsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegrationEnrichmentAssets(getSalIntegrationEnrichmentAssetsOptions *GetSalIntegrationEnrichmentAssetsOptions)`, func() {
+		getSalIntegrationEnrichmentAssetsPath := "/sal_integrations/enrichment_assets"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationEnrichmentAssetsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["project_id"]).To(Equal([]string{"testString"}))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"enrichment_asset": {"asset_attributes": ["AssetAttributes"], "asset_id": "ee0383b9-dcab-4c1a-b03d-bf521837b6ed", "asset_name": "newtable", "resource_key": "0000:0000:0000:0000:0000:FFFF:9EB0:04E2|31134|:/iceberg_data/new_schema/sampletable", "schema_name": "sampleschema"}}`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentAssets successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the GetSalIntegrationEnrichmentAssetsOptions model
+				getSalIntegrationEnrichmentAssetsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentAssetsOptions)
+				getSalIntegrationEnrichmentAssetsOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentAssetsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentAssetsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.GetSalIntegrationEnrichmentAssetsWithContext(ctx, getSalIntegrationEnrichmentAssetsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentAssets(getSalIntegrationEnrichmentAssetsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.GetSalIntegrationEnrichmentAssetsWithContext(ctx, getSalIntegrationEnrichmentAssetsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationEnrichmentAssetsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["project_id"]).To(Equal([]string{"testString"}))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"enrichment_asset": {"asset_attributes": ["AssetAttributes"], "asset_id": "ee0383b9-dcab-4c1a-b03d-bf521837b6ed", "asset_name": "newtable", "resource_key": "0000:0000:0000:0000:0000:FFFF:9EB0:04E2|31134|:/iceberg_data/new_schema/sampletable", "schema_name": "sampleschema"}}`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentAssets successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentAssets(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentAssetsOptions model
+				getSalIntegrationEnrichmentAssetsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentAssetsOptions)
+				getSalIntegrationEnrichmentAssetsOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentAssetsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentAssetsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.GetSalIntegrationEnrichmentAssets(getSalIntegrationEnrichmentAssetsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke GetSalIntegrationEnrichmentAssets with error: Operation request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentAssetsOptions model
+				getSalIntegrationEnrichmentAssetsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentAssetsOptions)
+				getSalIntegrationEnrichmentAssetsOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentAssetsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentAssetsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentAssets(getSalIntegrationEnrichmentAssetsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentAssets successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentAssetsOptions model
+				getSalIntegrationEnrichmentAssetsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentAssetsOptions)
+				getSalIntegrationEnrichmentAssetsOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentAssetsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentAssetsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentAssets(getSalIntegrationEnrichmentAssetsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegrationEnrichmentDataAsset(getSalIntegrationEnrichmentDataAssetOptions *GetSalIntegrationEnrichmentDataAssetOptions) - Operation response error`, func() {
+		getSalIntegrationEnrichmentDataAssetPath := "/sal_integrations/enrichment_data_asset"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationEnrichmentDataAssetPath))
+					Expect(req.Method).To(Equal("GET"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["project_id"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["asset_id"]).To(Equal([]string{"testString"}))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentDataAsset with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentDataAssetOptions model
+				getSalIntegrationEnrichmentDataAssetOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentDataAssetOptions)
+				getSalIntegrationEnrichmentDataAssetOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentDataAssetOptionsModel.AssetID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentDataAssetOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentDataAssetOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentDataAsset(getSalIntegrationEnrichmentDataAssetOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.GetSalIntegrationEnrichmentDataAsset(getSalIntegrationEnrichmentDataAssetOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegrationEnrichmentDataAsset(getSalIntegrationEnrichmentDataAssetOptions *GetSalIntegrationEnrichmentDataAssetOptions)`, func() {
+		getSalIntegrationEnrichmentDataAssetPath := "/sal_integrations/enrichment_data_asset"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationEnrichmentDataAssetPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["project_id"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["asset_id"]).To(Equal([]string{"testString"}))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"asset": "{}"}`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentDataAsset successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the GetSalIntegrationEnrichmentDataAssetOptions model
+				getSalIntegrationEnrichmentDataAssetOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentDataAssetOptions)
+				getSalIntegrationEnrichmentDataAssetOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentDataAssetOptionsModel.AssetID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentDataAssetOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentDataAssetOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.GetSalIntegrationEnrichmentDataAssetWithContext(ctx, getSalIntegrationEnrichmentDataAssetOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentDataAsset(getSalIntegrationEnrichmentDataAssetOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.GetSalIntegrationEnrichmentDataAssetWithContext(ctx, getSalIntegrationEnrichmentDataAssetOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationEnrichmentDataAssetPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["project_id"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["asset_id"]).To(Equal([]string{"testString"}))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"asset": "{}"}`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentDataAsset successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentDataAsset(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentDataAssetOptions model
+				getSalIntegrationEnrichmentDataAssetOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentDataAssetOptions)
+				getSalIntegrationEnrichmentDataAssetOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentDataAssetOptionsModel.AssetID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentDataAssetOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentDataAssetOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.GetSalIntegrationEnrichmentDataAsset(getSalIntegrationEnrichmentDataAssetOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke GetSalIntegrationEnrichmentDataAsset with error: Operation request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentDataAssetOptions model
+				getSalIntegrationEnrichmentDataAssetOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentDataAssetOptions)
+				getSalIntegrationEnrichmentDataAssetOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentDataAssetOptionsModel.AssetID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentDataAssetOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentDataAssetOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentDataAsset(getSalIntegrationEnrichmentDataAssetOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentDataAsset successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentDataAssetOptions model
+				getSalIntegrationEnrichmentDataAssetOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentDataAssetOptions)
+				getSalIntegrationEnrichmentDataAssetOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentDataAssetOptionsModel.AssetID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentDataAssetOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentDataAssetOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentDataAsset(getSalIntegrationEnrichmentDataAssetOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegrationEnrichmentJobRunLogs(getSalIntegrationEnrichmentJobRunLogsOptions *GetSalIntegrationEnrichmentJobRunLogsOptions) - Operation response error`, func() {
+		getSalIntegrationEnrichmentJobRunLogsPath := "/sal_integrations/enrichment_job_run_logs"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationEnrichmentJobRunLogsPath))
+					Expect(req.Method).To(Equal("GET"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["job_id"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["job_run_id"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["project_id"]).To(Equal([]string{"testString"}))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentJobRunLogs with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentJobRunLogsOptions model
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentJobRunLogsOptions)
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.JobID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.JobRunID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentJobRunLogs(getSalIntegrationEnrichmentJobRunLogsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.GetSalIntegrationEnrichmentJobRunLogs(getSalIntegrationEnrichmentJobRunLogsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegrationEnrichmentJobRunLogs(getSalIntegrationEnrichmentJobRunLogsOptions *GetSalIntegrationEnrichmentJobRunLogsOptions)`, func() {
+		getSalIntegrationEnrichmentJobRunLogsPath := "/sal_integrations/enrichment_job_run_logs"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationEnrichmentJobRunLogsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["job_id"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["job_run_id"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["project_id"]).To(Equal([]string{"testString"}))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"results": ["Results"], "total_count": 12}`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentJobRunLogs successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the GetSalIntegrationEnrichmentJobRunLogsOptions model
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentJobRunLogsOptions)
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.JobID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.JobRunID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.GetSalIntegrationEnrichmentJobRunLogsWithContext(ctx, getSalIntegrationEnrichmentJobRunLogsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentJobRunLogs(getSalIntegrationEnrichmentJobRunLogsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.GetSalIntegrationEnrichmentJobRunLogsWithContext(ctx, getSalIntegrationEnrichmentJobRunLogsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationEnrichmentJobRunLogsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["job_id"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["job_run_id"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["project_id"]).To(Equal([]string{"testString"}))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"results": ["Results"], "total_count": 12}`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentJobRunLogs successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentJobRunLogs(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentJobRunLogsOptions model
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentJobRunLogsOptions)
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.JobID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.JobRunID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.GetSalIntegrationEnrichmentJobRunLogs(getSalIntegrationEnrichmentJobRunLogsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke GetSalIntegrationEnrichmentJobRunLogs with error: Operation request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentJobRunLogsOptions model
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentJobRunLogsOptions)
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.JobID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.JobRunID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentJobRunLogs(getSalIntegrationEnrichmentJobRunLogsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentJobRunLogs successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentJobRunLogsOptions model
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentJobRunLogsOptions)
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.JobID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.JobRunID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentJobRunLogs(getSalIntegrationEnrichmentJobRunLogsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegrationEnrichmentJobRuns(getSalIntegrationEnrichmentJobRunsOptions *GetSalIntegrationEnrichmentJobRunsOptions) - Operation response error`, func() {
+		getSalIntegrationEnrichmentJobRunsPath := "/sal_integrations/enrichment_job_runs"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationEnrichmentJobRunsPath))
+					Expect(req.Method).To(Equal("GET"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["job_id"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["project_id"]).To(Equal([]string{"testString"}))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentJobRuns with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentJobRunsOptions model
+				getSalIntegrationEnrichmentJobRunsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentJobRunsOptions)
+				getSalIntegrationEnrichmentJobRunsOptionsModel.JobID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunsOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentJobRuns(getSalIntegrationEnrichmentJobRunsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.GetSalIntegrationEnrichmentJobRuns(getSalIntegrationEnrichmentJobRunsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegrationEnrichmentJobRuns(getSalIntegrationEnrichmentJobRunsOptions *GetSalIntegrationEnrichmentJobRunsOptions)`, func() {
+		getSalIntegrationEnrichmentJobRunsPath := "/sal_integrations/enrichment_job_runs"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationEnrichmentJobRunsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["job_id"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["project_id"]).To(Equal([]string{"testString"}))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"response": "{}"}`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentJobRuns successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the GetSalIntegrationEnrichmentJobRunsOptions model
+				getSalIntegrationEnrichmentJobRunsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentJobRunsOptions)
+				getSalIntegrationEnrichmentJobRunsOptionsModel.JobID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunsOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.GetSalIntegrationEnrichmentJobRunsWithContext(ctx, getSalIntegrationEnrichmentJobRunsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentJobRuns(getSalIntegrationEnrichmentJobRunsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.GetSalIntegrationEnrichmentJobRunsWithContext(ctx, getSalIntegrationEnrichmentJobRunsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationEnrichmentJobRunsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["job_id"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["project_id"]).To(Equal([]string{"testString"}))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"response": "{}"}`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentJobRuns successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentJobRuns(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentJobRunsOptions model
+				getSalIntegrationEnrichmentJobRunsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentJobRunsOptions)
+				getSalIntegrationEnrichmentJobRunsOptionsModel.JobID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunsOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.GetSalIntegrationEnrichmentJobRuns(getSalIntegrationEnrichmentJobRunsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke GetSalIntegrationEnrichmentJobRuns with error: Operation request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentJobRunsOptions model
+				getSalIntegrationEnrichmentJobRunsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentJobRunsOptions)
+				getSalIntegrationEnrichmentJobRunsOptionsModel.JobID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunsOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentJobRuns(getSalIntegrationEnrichmentJobRunsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentJobRuns successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentJobRunsOptions model
+				getSalIntegrationEnrichmentJobRunsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentJobRunsOptions)
+				getSalIntegrationEnrichmentJobRunsOptionsModel.JobID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunsOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobRunsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentJobRuns(getSalIntegrationEnrichmentJobRunsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegrationEnrichmentJobs(getSalIntegrationEnrichmentJobsOptions *GetSalIntegrationEnrichmentJobsOptions) - Operation response error`, func() {
+		getSalIntegrationEnrichmentJobsPath := "/sal_integrations/enrichment_jobs"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationEnrichmentJobsPath))
+					Expect(req.Method).To(Equal("GET"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["wkc_project_id"]).To(Equal([]string{"testString"}))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentJobs with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentJobsOptions model
+				getSalIntegrationEnrichmentJobsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentJobsOptions)
+				getSalIntegrationEnrichmentJobsOptionsModel.WkcProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentJobs(getSalIntegrationEnrichmentJobsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.GetSalIntegrationEnrichmentJobs(getSalIntegrationEnrichmentJobsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegrationEnrichmentJobs(getSalIntegrationEnrichmentJobsOptions *GetSalIntegrationEnrichmentJobsOptions)`, func() {
+		getSalIntegrationEnrichmentJobsPath := "/sal_integrations/enrichment_jobs"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationEnrichmentJobsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["wkc_project_id"]).To(Equal([]string{"testString"}))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"jobs": {"results": [{"entity": {"job": {"asset_ref": "8688a3b6-a946-499e-a93c-b7d099db80dd", "asset_ref_type": "metadata_enrichment_area", "configuration": {"env_type": "EnvType", "env_variables": ["EnvVariables"]}, "enable_notifications": false, "future_scheduled_runs": ["FutureScheduledRuns"], "last_run_initiator": "deprecated field", "last_run_status": "deprecated field", "last_run_status_timestamp": 0, "last_run_time": "deprecated field", "project_name": "SAL Mapping /iceberg_data/new_schema 9aae5be3-87cf-4c31-b17d-9256ab42c14e", "schedule_creator_id": "ScheduleCreatorID", "schedule_id": "ScheduleID", "schedule_info": {"frequency": "Frequency"}, "task_credentials_support": {"account_id": "04e9bc4761254b719ac22759cb69bebd", "task_credentials_enabled": true, "user_id": "IBMid-55000832RK"}}}, "metadata": {"asset_id": "ea73ce44-8aa0-4c75-bd69-6ca7074a1030", "name": "SAL_MDE job", "owner_id": "IBMid-55000832RK", "version": 0}}], "total_rows": 1}}`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentJobs successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the GetSalIntegrationEnrichmentJobsOptions model
+				getSalIntegrationEnrichmentJobsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentJobsOptions)
+				getSalIntegrationEnrichmentJobsOptionsModel.WkcProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.GetSalIntegrationEnrichmentJobsWithContext(ctx, getSalIntegrationEnrichmentJobsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentJobs(getSalIntegrationEnrichmentJobsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.GetSalIntegrationEnrichmentJobsWithContext(ctx, getSalIntegrationEnrichmentJobsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationEnrichmentJobsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["wkc_project_id"]).To(Equal([]string{"testString"}))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"jobs": {"results": [{"entity": {"job": {"asset_ref": "8688a3b6-a946-499e-a93c-b7d099db80dd", "asset_ref_type": "metadata_enrichment_area", "configuration": {"env_type": "EnvType", "env_variables": ["EnvVariables"]}, "enable_notifications": false, "future_scheduled_runs": ["FutureScheduledRuns"], "last_run_initiator": "deprecated field", "last_run_status": "deprecated field", "last_run_status_timestamp": 0, "last_run_time": "deprecated field", "project_name": "SAL Mapping /iceberg_data/new_schema 9aae5be3-87cf-4c31-b17d-9256ab42c14e", "schedule_creator_id": "ScheduleCreatorID", "schedule_id": "ScheduleID", "schedule_info": {"frequency": "Frequency"}, "task_credentials_support": {"account_id": "04e9bc4761254b719ac22759cb69bebd", "task_credentials_enabled": true, "user_id": "IBMid-55000832RK"}}}, "metadata": {"asset_id": "ea73ce44-8aa0-4c75-bd69-6ca7074a1030", "name": "SAL_MDE job", "owner_id": "IBMid-55000832RK", "version": 0}}], "total_rows": 1}}`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentJobs successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentJobs(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentJobsOptions model
+				getSalIntegrationEnrichmentJobsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentJobsOptions)
+				getSalIntegrationEnrichmentJobsOptionsModel.WkcProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.GetSalIntegrationEnrichmentJobs(getSalIntegrationEnrichmentJobsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke GetSalIntegrationEnrichmentJobs with error: Operation request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentJobsOptions model
+				getSalIntegrationEnrichmentJobsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentJobsOptions)
+				getSalIntegrationEnrichmentJobsOptionsModel.WkcProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentJobs(getSalIntegrationEnrichmentJobsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentJobs successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentJobsOptions model
+				getSalIntegrationEnrichmentJobsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentJobsOptions)
+				getSalIntegrationEnrichmentJobsOptionsModel.WkcProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentJobs(getSalIntegrationEnrichmentJobsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegrationGlossaryTerms(getSalIntegrationGlossaryTermsOptions *GetSalIntegrationGlossaryTermsOptions) - Operation response error`, func() {
+		getSalIntegrationGlossaryTermsPath := "/sal_integrations/glossary_terms"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationGlossaryTermsPath))
+					Expect(req.Method).To(Equal("GET"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationGlossaryTerms with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationGlossaryTermsOptions model
+				getSalIntegrationGlossaryTermsOptionsModel := new(watsonxdatav2.GetSalIntegrationGlossaryTermsOptions)
+				getSalIntegrationGlossaryTermsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationGlossaryTermsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.GetSalIntegrationGlossaryTerms(getSalIntegrationGlossaryTermsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.GetSalIntegrationGlossaryTerms(getSalIntegrationGlossaryTermsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegrationGlossaryTerms(getSalIntegrationGlossaryTermsOptions *GetSalIntegrationGlossaryTermsOptions)`, func() {
+		getSalIntegrationGlossaryTermsPath := "/sal_integrations/glossary_terms"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationGlossaryTermsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"glossary_term": {"description": "First Name", "name": "Name"}}`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationGlossaryTerms successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the GetSalIntegrationGlossaryTermsOptions model
+				getSalIntegrationGlossaryTermsOptionsModel := new(watsonxdatav2.GetSalIntegrationGlossaryTermsOptions)
+				getSalIntegrationGlossaryTermsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationGlossaryTermsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.GetSalIntegrationGlossaryTermsWithContext(ctx, getSalIntegrationGlossaryTermsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.GetSalIntegrationGlossaryTerms(getSalIntegrationGlossaryTermsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.GetSalIntegrationGlossaryTermsWithContext(ctx, getSalIntegrationGlossaryTermsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationGlossaryTermsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"glossary_term": {"description": "First Name", "name": "Name"}}`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationGlossaryTerms successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.GetSalIntegrationGlossaryTerms(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the GetSalIntegrationGlossaryTermsOptions model
+				getSalIntegrationGlossaryTermsOptionsModel := new(watsonxdatav2.GetSalIntegrationGlossaryTermsOptions)
+				getSalIntegrationGlossaryTermsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationGlossaryTermsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.GetSalIntegrationGlossaryTerms(getSalIntegrationGlossaryTermsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke GetSalIntegrationGlossaryTerms with error: Operation request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationGlossaryTermsOptions model
+				getSalIntegrationGlossaryTermsOptionsModel := new(watsonxdatav2.GetSalIntegrationGlossaryTermsOptions)
+				getSalIntegrationGlossaryTermsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationGlossaryTermsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.GetSalIntegrationGlossaryTerms(getSalIntegrationGlossaryTermsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke GetSalIntegrationGlossaryTerms successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationGlossaryTermsOptions model
+				getSalIntegrationGlossaryTermsOptionsModel := new(watsonxdatav2.GetSalIntegrationGlossaryTermsOptions)
+				getSalIntegrationGlossaryTermsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationGlossaryTermsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.GetSalIntegrationGlossaryTerms(getSalIntegrationGlossaryTermsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegrationMappings(getSalIntegrationMappingsOptions *GetSalIntegrationMappingsOptions) - Operation response error`, func() {
+		getSalIntegrationMappingsPath := "/sal_integrations/mappings"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationMappingsPath))
+					Expect(req.Method).To(Equal("GET"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["catalog_name"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["schema_name"]).To(Equal([]string{"testString"}))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationMappings with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationMappingsOptions model
+				getSalIntegrationMappingsOptionsModel := new(watsonxdatav2.GetSalIntegrationMappingsOptions)
+				getSalIntegrationMappingsOptionsModel.CatalogName = core.StringPtr("testString")
+				getSalIntegrationMappingsOptionsModel.SchemaName = core.StringPtr("testString")
+				getSalIntegrationMappingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationMappingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.GetSalIntegrationMappings(getSalIntegrationMappingsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.GetSalIntegrationMappings(getSalIntegrationMappingsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegrationMappings(getSalIntegrationMappingsOptions *GetSalIntegrationMappingsOptions)`, func() {
+		getSalIntegrationMappingsPath := "/sal_integrations/mappings"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationMappingsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["catalog_name"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["schema_name"]).To(Equal([]string{"testString"}))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"wkc_catalog_id": "iceberg_data", "wkc_project_id": "create"}`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationMappings successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the GetSalIntegrationMappingsOptions model
+				getSalIntegrationMappingsOptionsModel := new(watsonxdatav2.GetSalIntegrationMappingsOptions)
+				getSalIntegrationMappingsOptionsModel.CatalogName = core.StringPtr("testString")
+				getSalIntegrationMappingsOptionsModel.SchemaName = core.StringPtr("testString")
+				getSalIntegrationMappingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationMappingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.GetSalIntegrationMappingsWithContext(ctx, getSalIntegrationMappingsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.GetSalIntegrationMappings(getSalIntegrationMappingsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.GetSalIntegrationMappingsWithContext(ctx, getSalIntegrationMappingsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationMappingsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["catalog_name"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["schema_name"]).To(Equal([]string{"testString"}))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"wkc_catalog_id": "iceberg_data", "wkc_project_id": "create"}`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationMappings successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.GetSalIntegrationMappings(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the GetSalIntegrationMappingsOptions model
+				getSalIntegrationMappingsOptionsModel := new(watsonxdatav2.GetSalIntegrationMappingsOptions)
+				getSalIntegrationMappingsOptionsModel.CatalogName = core.StringPtr("testString")
+				getSalIntegrationMappingsOptionsModel.SchemaName = core.StringPtr("testString")
+				getSalIntegrationMappingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationMappingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.GetSalIntegrationMappings(getSalIntegrationMappingsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke GetSalIntegrationMappings with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationMappingsOptions model
+				getSalIntegrationMappingsOptionsModel := new(watsonxdatav2.GetSalIntegrationMappingsOptions)
+				getSalIntegrationMappingsOptionsModel.CatalogName = core.StringPtr("testString")
+				getSalIntegrationMappingsOptionsModel.SchemaName = core.StringPtr("testString")
+				getSalIntegrationMappingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationMappingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.GetSalIntegrationMappings(getSalIntegrationMappingsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the GetSalIntegrationMappingsOptions model with no property values
+				getSalIntegrationMappingsOptionsModelNew := new(watsonxdatav2.GetSalIntegrationMappingsOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = watsonxDataService.GetSalIntegrationMappings(getSalIntegrationMappingsOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke GetSalIntegrationMappings successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationMappingsOptions model
+				getSalIntegrationMappingsOptionsModel := new(watsonxdatav2.GetSalIntegrationMappingsOptions)
+				getSalIntegrationMappingsOptionsModel.CatalogName = core.StringPtr("testString")
+				getSalIntegrationMappingsOptionsModel.SchemaName = core.StringPtr("testString")
+				getSalIntegrationMappingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationMappingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.GetSalIntegrationMappings(getSalIntegrationMappingsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegrationEnrichmentGlobalSettings(getSalIntegrationEnrichmentGlobalSettingsOptions *GetSalIntegrationEnrichmentGlobalSettingsOptions) - Operation response error`, func() {
+		getSalIntegrationEnrichmentGlobalSettingsPath := "/sal_integrations/metadata_enrichment_global_settings"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationEnrichmentGlobalSettingsPath))
+					Expect(req.Method).To(Equal("GET"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentGlobalSettings with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentGlobalSettingsOptions model
+				getSalIntegrationEnrichmentGlobalSettingsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentGlobalSettingsOptions)
+				getSalIntegrationEnrichmentGlobalSettingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentGlobalSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentGlobalSettings(getSalIntegrationEnrichmentGlobalSettingsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.GetSalIntegrationEnrichmentGlobalSettings(getSalIntegrationEnrichmentGlobalSettingsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegrationEnrichmentGlobalSettings(getSalIntegrationEnrichmentGlobalSettingsOptions *GetSalIntegrationEnrichmentGlobalSettingsOptions)`, func() {
+		getSalIntegrationEnrichmentGlobalSettingsPath := "/sal_integrations/metadata_enrichment_global_settings"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationEnrichmentGlobalSettingsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"semantic_expansion": {"description_generation": true, "description_generation_configuration": {"assignment_threshold": 0.14, "suggestion_threshold": 0.9}, "name_expansion": true, "name_expansion_configuration": {"assignment_threshold": 0.1, "suggestion_threshold": 0.1}}, "term_assignment": {"class_based_assignments": false, "evaluate_negative_assignments": false, "llm_based_assignments": false, "ml_based_assignments_custom": false, "ml_based_assignments_default": false, "name_matching": false, "term_assignment_threshold": 0.3, "term_suggestion_threshold": 0.4}}`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentGlobalSettings successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the GetSalIntegrationEnrichmentGlobalSettingsOptions model
+				getSalIntegrationEnrichmentGlobalSettingsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentGlobalSettingsOptions)
+				getSalIntegrationEnrichmentGlobalSettingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentGlobalSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.GetSalIntegrationEnrichmentGlobalSettingsWithContext(ctx, getSalIntegrationEnrichmentGlobalSettingsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentGlobalSettings(getSalIntegrationEnrichmentGlobalSettingsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.GetSalIntegrationEnrichmentGlobalSettingsWithContext(ctx, getSalIntegrationEnrichmentGlobalSettingsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationEnrichmentGlobalSettingsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"semantic_expansion": {"description_generation": true, "description_generation_configuration": {"assignment_threshold": 0.14, "suggestion_threshold": 0.9}, "name_expansion": true, "name_expansion_configuration": {"assignment_threshold": 0.1, "suggestion_threshold": 0.1}}, "term_assignment": {"class_based_assignments": false, "evaluate_negative_assignments": false, "llm_based_assignments": false, "ml_based_assignments_custom": false, "ml_based_assignments_default": false, "name_matching": false, "term_assignment_threshold": 0.3, "term_suggestion_threshold": 0.4}}`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentGlobalSettings successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentGlobalSettings(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentGlobalSettingsOptions model
+				getSalIntegrationEnrichmentGlobalSettingsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentGlobalSettingsOptions)
+				getSalIntegrationEnrichmentGlobalSettingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentGlobalSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.GetSalIntegrationEnrichmentGlobalSettings(getSalIntegrationEnrichmentGlobalSettingsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke GetSalIntegrationEnrichmentGlobalSettings with error: Operation request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentGlobalSettingsOptions model
+				getSalIntegrationEnrichmentGlobalSettingsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentGlobalSettingsOptions)
+				getSalIntegrationEnrichmentGlobalSettingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentGlobalSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentGlobalSettings(getSalIntegrationEnrichmentGlobalSettingsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentGlobalSettings successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentGlobalSettingsOptions model
+				getSalIntegrationEnrichmentGlobalSettingsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentGlobalSettingsOptions)
+				getSalIntegrationEnrichmentGlobalSettingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentGlobalSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentGlobalSettings(getSalIntegrationEnrichmentGlobalSettingsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateSalIntegrationEnrichmentGlobalSettings(createSalIntegrationEnrichmentGlobalSettingsOptions *CreateSalIntegrationEnrichmentGlobalSettingsOptions) - Operation response error`, func() {
+		createSalIntegrationEnrichmentGlobalSettingsPath := "/sal_integrations/metadata_enrichment_global_settings"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createSalIntegrationEnrichmentGlobalSettingsPath))
+					Expect(req.Method).To(Equal("POST"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke CreateSalIntegrationEnrichmentGlobalSettings with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration model
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration)
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.AssignmentThreshold = core.Float64Ptr(float64(0.14))
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.SuggestionThreshold = core.Float64Ptr(float64(0.9))
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration model
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration)
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.AssignmentThreshold = core.Float64Ptr(float64(0.1))
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.SuggestionThreshold = core.Float64Ptr(float64(0.1))
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansion model
+				salIntegrationEnrichmentSettingsSemanticExpansionModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansion)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGeneration = core.BoolPtr(true)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGenerationConfiguration = salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansion = core.BoolPtr(true)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansionConfiguration = salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsTermAssignment model
+				salIntegrationEnrichmentSettingsTermAssignmentModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsTermAssignment)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.ClassBasedAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.EvaluateNegativeAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.LlmBasedAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsCustom = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsDefault = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.NameMatching = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.TermAssignmentThreshold = core.Float64Ptr(float64(0.3))
+				salIntegrationEnrichmentSettingsTermAssignmentModel.TermSuggestionThreshold = core.Float64Ptr(float64(0.4))
+
+				// Construct an instance of the CreateSalIntegrationEnrichmentGlobalSettingsOptions model
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel := new(watsonxdatav2.CreateSalIntegrationEnrichmentGlobalSettingsOptions)
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.SemanticExpansion = salIntegrationEnrichmentSettingsSemanticExpansionModel
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.TermAssignment = salIntegrationEnrichmentSettingsTermAssignmentModel
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.CreateSalIntegrationEnrichmentGlobalSettings(createSalIntegrationEnrichmentGlobalSettingsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.CreateSalIntegrationEnrichmentGlobalSettings(createSalIntegrationEnrichmentGlobalSettingsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateSalIntegrationEnrichmentGlobalSettings(createSalIntegrationEnrichmentGlobalSettingsOptions *CreateSalIntegrationEnrichmentGlobalSettingsOptions)`, func() {
+		createSalIntegrationEnrichmentGlobalSettingsPath := "/sal_integrations/metadata_enrichment_global_settings"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createSalIntegrationEnrichmentGlobalSettingsPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"semantic_expansion": {"description_generation": true, "description_generation_configuration": {"assignment_threshold": 0.14, "suggestion_threshold": 0.9}, "name_expansion": true, "name_expansion_configuration": {"assignment_threshold": 0.1, "suggestion_threshold": 0.1}}, "term_assignment": {"class_based_assignments": false, "evaluate_negative_assignments": false, "llm_based_assignments": false, "ml_based_assignments_custom": false, "ml_based_assignments_default": false, "name_matching": false, "term_assignment_threshold": 0.3, "term_suggestion_threshold": 0.4}}`)
+				}))
+			})
+			It(`Invoke CreateSalIntegrationEnrichmentGlobalSettings successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration model
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration)
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.AssignmentThreshold = core.Float64Ptr(float64(0.14))
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.SuggestionThreshold = core.Float64Ptr(float64(0.9))
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration model
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration)
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.AssignmentThreshold = core.Float64Ptr(float64(0.1))
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.SuggestionThreshold = core.Float64Ptr(float64(0.1))
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansion model
+				salIntegrationEnrichmentSettingsSemanticExpansionModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansion)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGeneration = core.BoolPtr(true)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGenerationConfiguration = salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansion = core.BoolPtr(true)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansionConfiguration = salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsTermAssignment model
+				salIntegrationEnrichmentSettingsTermAssignmentModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsTermAssignment)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.ClassBasedAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.EvaluateNegativeAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.LlmBasedAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsCustom = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsDefault = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.NameMatching = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.TermAssignmentThreshold = core.Float64Ptr(float64(0.3))
+				salIntegrationEnrichmentSettingsTermAssignmentModel.TermSuggestionThreshold = core.Float64Ptr(float64(0.4))
+
+				// Construct an instance of the CreateSalIntegrationEnrichmentGlobalSettingsOptions model
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel := new(watsonxdatav2.CreateSalIntegrationEnrichmentGlobalSettingsOptions)
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.SemanticExpansion = salIntegrationEnrichmentSettingsSemanticExpansionModel
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.TermAssignment = salIntegrationEnrichmentSettingsTermAssignmentModel
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.CreateSalIntegrationEnrichmentGlobalSettingsWithContext(ctx, createSalIntegrationEnrichmentGlobalSettingsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.CreateSalIntegrationEnrichmentGlobalSettings(createSalIntegrationEnrichmentGlobalSettingsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.CreateSalIntegrationEnrichmentGlobalSettingsWithContext(ctx, createSalIntegrationEnrichmentGlobalSettingsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createSalIntegrationEnrichmentGlobalSettingsPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"semantic_expansion": {"description_generation": true, "description_generation_configuration": {"assignment_threshold": 0.14, "suggestion_threshold": 0.9}, "name_expansion": true, "name_expansion_configuration": {"assignment_threshold": 0.1, "suggestion_threshold": 0.1}}, "term_assignment": {"class_based_assignments": false, "evaluate_negative_assignments": false, "llm_based_assignments": false, "ml_based_assignments_custom": false, "ml_based_assignments_default": false, "name_matching": false, "term_assignment_threshold": 0.3, "term_suggestion_threshold": 0.4}}`)
+				}))
+			})
+			It(`Invoke CreateSalIntegrationEnrichmentGlobalSettings successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.CreateSalIntegrationEnrichmentGlobalSettings(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration model
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration)
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.AssignmentThreshold = core.Float64Ptr(float64(0.14))
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.SuggestionThreshold = core.Float64Ptr(float64(0.9))
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration model
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration)
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.AssignmentThreshold = core.Float64Ptr(float64(0.1))
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.SuggestionThreshold = core.Float64Ptr(float64(0.1))
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansion model
+				salIntegrationEnrichmentSettingsSemanticExpansionModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansion)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGeneration = core.BoolPtr(true)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGenerationConfiguration = salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansion = core.BoolPtr(true)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansionConfiguration = salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsTermAssignment model
+				salIntegrationEnrichmentSettingsTermAssignmentModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsTermAssignment)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.ClassBasedAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.EvaluateNegativeAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.LlmBasedAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsCustom = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsDefault = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.NameMatching = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.TermAssignmentThreshold = core.Float64Ptr(float64(0.3))
+				salIntegrationEnrichmentSettingsTermAssignmentModel.TermSuggestionThreshold = core.Float64Ptr(float64(0.4))
+
+				// Construct an instance of the CreateSalIntegrationEnrichmentGlobalSettingsOptions model
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel := new(watsonxdatav2.CreateSalIntegrationEnrichmentGlobalSettingsOptions)
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.SemanticExpansion = salIntegrationEnrichmentSettingsSemanticExpansionModel
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.TermAssignment = salIntegrationEnrichmentSettingsTermAssignmentModel
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.CreateSalIntegrationEnrichmentGlobalSettings(createSalIntegrationEnrichmentGlobalSettingsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke CreateSalIntegrationEnrichmentGlobalSettings with error: Operation request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration model
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration)
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.AssignmentThreshold = core.Float64Ptr(float64(0.14))
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.SuggestionThreshold = core.Float64Ptr(float64(0.9))
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration model
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration)
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.AssignmentThreshold = core.Float64Ptr(float64(0.1))
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.SuggestionThreshold = core.Float64Ptr(float64(0.1))
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansion model
+				salIntegrationEnrichmentSettingsSemanticExpansionModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansion)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGeneration = core.BoolPtr(true)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGenerationConfiguration = salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansion = core.BoolPtr(true)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansionConfiguration = salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsTermAssignment model
+				salIntegrationEnrichmentSettingsTermAssignmentModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsTermAssignment)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.ClassBasedAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.EvaluateNegativeAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.LlmBasedAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsCustom = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsDefault = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.NameMatching = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.TermAssignmentThreshold = core.Float64Ptr(float64(0.3))
+				salIntegrationEnrichmentSettingsTermAssignmentModel.TermSuggestionThreshold = core.Float64Ptr(float64(0.4))
+
+				// Construct an instance of the CreateSalIntegrationEnrichmentGlobalSettingsOptions model
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel := new(watsonxdatav2.CreateSalIntegrationEnrichmentGlobalSettingsOptions)
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.SemanticExpansion = salIntegrationEnrichmentSettingsSemanticExpansionModel
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.TermAssignment = salIntegrationEnrichmentSettingsTermAssignmentModel
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.CreateSalIntegrationEnrichmentGlobalSettings(createSalIntegrationEnrichmentGlobalSettingsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(201)
+				}))
+			})
+			It(`Invoke CreateSalIntegrationEnrichmentGlobalSettings successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration model
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration)
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.AssignmentThreshold = core.Float64Ptr(float64(0.14))
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.SuggestionThreshold = core.Float64Ptr(float64(0.9))
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration model
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration)
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.AssignmentThreshold = core.Float64Ptr(float64(0.1))
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.SuggestionThreshold = core.Float64Ptr(float64(0.1))
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansion model
+				salIntegrationEnrichmentSettingsSemanticExpansionModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansion)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGeneration = core.BoolPtr(true)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGenerationConfiguration = salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansion = core.BoolPtr(true)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansionConfiguration = salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsTermAssignment model
+				salIntegrationEnrichmentSettingsTermAssignmentModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsTermAssignment)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.ClassBasedAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.EvaluateNegativeAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.LlmBasedAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsCustom = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsDefault = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.NameMatching = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.TermAssignmentThreshold = core.Float64Ptr(float64(0.3))
+				salIntegrationEnrichmentSettingsTermAssignmentModel.TermSuggestionThreshold = core.Float64Ptr(float64(0.4))
+
+				// Construct an instance of the CreateSalIntegrationEnrichmentGlobalSettingsOptions model
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel := new(watsonxdatav2.CreateSalIntegrationEnrichmentGlobalSettingsOptions)
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.SemanticExpansion = salIntegrationEnrichmentSettingsSemanticExpansionModel
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.TermAssignment = salIntegrationEnrichmentSettingsTermAssignmentModel
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.CreateSalIntegrationEnrichmentGlobalSettings(createSalIntegrationEnrichmentGlobalSettingsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegrationEnrichmentSettings(getSalIntegrationEnrichmentSettingsOptions *GetSalIntegrationEnrichmentSettingsOptions) - Operation response error`, func() {
+		getSalIntegrationEnrichmentSettingsPath := "/sal_integrations/metadata_enrichment_settings"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationEnrichmentSettingsPath))
+					Expect(req.Method).To(Equal("GET"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["project_id"]).To(Equal([]string{"testString"}))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentSettings with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentSettingsOptions model
+				getSalIntegrationEnrichmentSettingsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentSettingsOptions)
+				getSalIntegrationEnrichmentSettingsOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentSettingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentSettings(getSalIntegrationEnrichmentSettingsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.GetSalIntegrationEnrichmentSettings(getSalIntegrationEnrichmentSettingsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegrationEnrichmentSettings(getSalIntegrationEnrichmentSettingsOptions *GetSalIntegrationEnrichmentSettingsOptions)`, func() {
+		getSalIntegrationEnrichmentSettingsPath := "/sal_integrations/metadata_enrichment_settings"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationEnrichmentSettingsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["project_id"]).To(Equal([]string{"testString"}))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"semantic_expansion": {"description_generation": true, "description_generation_configuration": {"assignment_threshold": 0.14, "suggestion_threshold": 0.9}, "name_expansion": true, "name_expansion_configuration": {"assignment_threshold": 0.1, "suggestion_threshold": 0.1}}, "term_assignment": {"class_based_assignments": false, "evaluate_negative_assignments": false, "llm_based_assignments": false, "ml_based_assignments_custom": false, "ml_based_assignments_default": false, "name_matching": false, "term_assignment_threshold": 0.3, "term_suggestion_threshold": 0.4}}`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentSettings successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the GetSalIntegrationEnrichmentSettingsOptions model
+				getSalIntegrationEnrichmentSettingsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentSettingsOptions)
+				getSalIntegrationEnrichmentSettingsOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentSettingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.GetSalIntegrationEnrichmentSettingsWithContext(ctx, getSalIntegrationEnrichmentSettingsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentSettings(getSalIntegrationEnrichmentSettingsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.GetSalIntegrationEnrichmentSettingsWithContext(ctx, getSalIntegrationEnrichmentSettingsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationEnrichmentSettingsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["project_id"]).To(Equal([]string{"testString"}))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"semantic_expansion": {"description_generation": true, "description_generation_configuration": {"assignment_threshold": 0.14, "suggestion_threshold": 0.9}, "name_expansion": true, "name_expansion_configuration": {"assignment_threshold": 0.1, "suggestion_threshold": 0.1}}, "term_assignment": {"class_based_assignments": false, "evaluate_negative_assignments": false, "llm_based_assignments": false, "ml_based_assignments_custom": false, "ml_based_assignments_default": false, "name_matching": false, "term_assignment_threshold": 0.3, "term_suggestion_threshold": 0.4}}`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentSettings successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentSettings(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentSettingsOptions model
+				getSalIntegrationEnrichmentSettingsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentSettingsOptions)
+				getSalIntegrationEnrichmentSettingsOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentSettingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.GetSalIntegrationEnrichmentSettings(getSalIntegrationEnrichmentSettingsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke GetSalIntegrationEnrichmentSettings with error: Operation request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentSettingsOptions model
+				getSalIntegrationEnrichmentSettingsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentSettingsOptions)
+				getSalIntegrationEnrichmentSettingsOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentSettingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentSettings(getSalIntegrationEnrichmentSettingsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke GetSalIntegrationEnrichmentSettings successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationEnrichmentSettingsOptions model
+				getSalIntegrationEnrichmentSettingsOptionsModel := new(watsonxdatav2.GetSalIntegrationEnrichmentSettingsOptions)
+				getSalIntegrationEnrichmentSettingsOptionsModel.ProjectID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentSettingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationEnrichmentSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.GetSalIntegrationEnrichmentSettings(getSalIntegrationEnrichmentSettingsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateSalIntegrationEnrichmentSettings(createSalIntegrationEnrichmentSettingsOptions *CreateSalIntegrationEnrichmentSettingsOptions)`, func() {
+		createSalIntegrationEnrichmentSettingsPath := "/sal_integrations/metadata_enrichment_settings"
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createSalIntegrationEnrichmentSettingsPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["project_id"]).To(Equal([]string{"testString"}))
+					res.WriteHeader(204)
+				}))
+			})
+			It(`Invoke CreateSalIntegrationEnrichmentSettings successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				response, operationErr := watsonxDataService.CreateSalIntegrationEnrichmentSettings(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration model
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration)
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.AssignmentThreshold = core.Float64Ptr(float64(0.14))
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.SuggestionThreshold = core.Float64Ptr(float64(0.9))
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration model
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration)
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.AssignmentThreshold = core.Float64Ptr(float64(0.1))
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.SuggestionThreshold = core.Float64Ptr(float64(0.1))
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansion model
+				salIntegrationEnrichmentSettingsSemanticExpansionModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansion)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGeneration = core.BoolPtr(true)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGenerationConfiguration = salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansion = core.BoolPtr(true)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansionConfiguration = salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsTermAssignment model
+				salIntegrationEnrichmentSettingsTermAssignmentModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsTermAssignment)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.ClassBasedAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.EvaluateNegativeAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.LlmBasedAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsCustom = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsDefault = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.NameMatching = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.TermAssignmentThreshold = core.Float64Ptr(float64(0.3))
+				salIntegrationEnrichmentSettingsTermAssignmentModel.TermSuggestionThreshold = core.Float64Ptr(float64(0.4))
+
+				// Construct an instance of the CreateSalIntegrationEnrichmentSettingsOptions model
+				createSalIntegrationEnrichmentSettingsOptionsModel := new(watsonxdatav2.CreateSalIntegrationEnrichmentSettingsOptions)
+				createSalIntegrationEnrichmentSettingsOptionsModel.SemanticExpansion = salIntegrationEnrichmentSettingsSemanticExpansionModel
+				createSalIntegrationEnrichmentSettingsOptionsModel.TermAssignment = salIntegrationEnrichmentSettingsTermAssignmentModel
+				createSalIntegrationEnrichmentSettingsOptionsModel.ProjectID = core.StringPtr("testString")
+				createSalIntegrationEnrichmentSettingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSalIntegrationEnrichmentSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				response, operationErr = watsonxDataService.CreateSalIntegrationEnrichmentSettings(createSalIntegrationEnrichmentSettingsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+			})
+			It(`Invoke CreateSalIntegrationEnrichmentSettings with error: Operation request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration model
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration)
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.AssignmentThreshold = core.Float64Ptr(float64(0.14))
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.SuggestionThreshold = core.Float64Ptr(float64(0.9))
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration model
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration)
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.AssignmentThreshold = core.Float64Ptr(float64(0.1))
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.SuggestionThreshold = core.Float64Ptr(float64(0.1))
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansion model
+				salIntegrationEnrichmentSettingsSemanticExpansionModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansion)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGeneration = core.BoolPtr(true)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGenerationConfiguration = salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansion = core.BoolPtr(true)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansionConfiguration = salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsTermAssignment model
+				salIntegrationEnrichmentSettingsTermAssignmentModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsTermAssignment)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.ClassBasedAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.EvaluateNegativeAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.LlmBasedAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsCustom = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsDefault = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.NameMatching = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.TermAssignmentThreshold = core.Float64Ptr(float64(0.3))
+				salIntegrationEnrichmentSettingsTermAssignmentModel.TermSuggestionThreshold = core.Float64Ptr(float64(0.4))
+
+				// Construct an instance of the CreateSalIntegrationEnrichmentSettingsOptions model
+				createSalIntegrationEnrichmentSettingsOptionsModel := new(watsonxdatav2.CreateSalIntegrationEnrichmentSettingsOptions)
+				createSalIntegrationEnrichmentSettingsOptionsModel.SemanticExpansion = salIntegrationEnrichmentSettingsSemanticExpansionModel
+				createSalIntegrationEnrichmentSettingsOptionsModel.TermAssignment = salIntegrationEnrichmentSettingsTermAssignmentModel
+				createSalIntegrationEnrichmentSettingsOptionsModel.ProjectID = core.StringPtr("testString")
+				createSalIntegrationEnrichmentSettingsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSalIntegrationEnrichmentSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				response, operationErr := watsonxDataService.CreateSalIntegrationEnrichmentSettings(createSalIntegrationEnrichmentSettingsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateSalIntegrationUploadGlossary(createSalIntegrationUploadGlossaryOptions *CreateSalIntegrationUploadGlossaryOptions) - Operation response error`, func() {
+		createSalIntegrationUploadGlossaryPath := "/sal_integrations/upload_glossary"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createSalIntegrationUploadGlossaryPath))
+					Expect(req.Method).To(Equal("POST"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke CreateSalIntegrationUploadGlossary with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateSalIntegrationUploadGlossaryOptions model
+				createSalIntegrationUploadGlossaryOptionsModel := new(watsonxdatav2.CreateSalIntegrationUploadGlossaryOptions)
+				createSalIntegrationUploadGlossaryOptionsModel.ReplaceOption = core.StringPtr("all")
+				createSalIntegrationUploadGlossaryOptionsModel.GlossaryCsv = CreateMockReader("This is a mock file.")
+				createSalIntegrationUploadGlossaryOptionsModel.GlossaryCsvContentType = core.StringPtr("testString")
+				createSalIntegrationUploadGlossaryOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSalIntegrationUploadGlossaryOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.CreateSalIntegrationUploadGlossary(createSalIntegrationUploadGlossaryOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.CreateSalIntegrationUploadGlossary(createSalIntegrationUploadGlossaryOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateSalIntegrationUploadGlossary(createSalIntegrationUploadGlossaryOptions *CreateSalIntegrationUploadGlossaryOptions)`, func() {
+		createSalIntegrationUploadGlossaryPath := "/sal_integrations/upload_glossary"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createSalIntegrationUploadGlossaryPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"process_id": "18b49d7a-9519-4539-8db5-ff080623c226"}`)
+				}))
+			})
+			It(`Invoke CreateSalIntegrationUploadGlossary successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the CreateSalIntegrationUploadGlossaryOptions model
+				createSalIntegrationUploadGlossaryOptionsModel := new(watsonxdatav2.CreateSalIntegrationUploadGlossaryOptions)
+				createSalIntegrationUploadGlossaryOptionsModel.ReplaceOption = core.StringPtr("all")
+				createSalIntegrationUploadGlossaryOptionsModel.GlossaryCsv = CreateMockReader("This is a mock file.")
+				createSalIntegrationUploadGlossaryOptionsModel.GlossaryCsvContentType = core.StringPtr("testString")
+				createSalIntegrationUploadGlossaryOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSalIntegrationUploadGlossaryOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.CreateSalIntegrationUploadGlossaryWithContext(ctx, createSalIntegrationUploadGlossaryOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.CreateSalIntegrationUploadGlossary(createSalIntegrationUploadGlossaryOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.CreateSalIntegrationUploadGlossaryWithContext(ctx, createSalIntegrationUploadGlossaryOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createSalIntegrationUploadGlossaryPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"process_id": "18b49d7a-9519-4539-8db5-ff080623c226"}`)
+				}))
+			})
+			It(`Invoke CreateSalIntegrationUploadGlossary successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.CreateSalIntegrationUploadGlossary(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the CreateSalIntegrationUploadGlossaryOptions model
+				createSalIntegrationUploadGlossaryOptionsModel := new(watsonxdatav2.CreateSalIntegrationUploadGlossaryOptions)
+				createSalIntegrationUploadGlossaryOptionsModel.ReplaceOption = core.StringPtr("all")
+				createSalIntegrationUploadGlossaryOptionsModel.GlossaryCsv = CreateMockReader("This is a mock file.")
+				createSalIntegrationUploadGlossaryOptionsModel.GlossaryCsvContentType = core.StringPtr("testString")
+				createSalIntegrationUploadGlossaryOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSalIntegrationUploadGlossaryOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.CreateSalIntegrationUploadGlossary(createSalIntegrationUploadGlossaryOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke CreateSalIntegrationUploadGlossary with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateSalIntegrationUploadGlossaryOptions model
+				createSalIntegrationUploadGlossaryOptionsModel := new(watsonxdatav2.CreateSalIntegrationUploadGlossaryOptions)
+				createSalIntegrationUploadGlossaryOptionsModel.ReplaceOption = core.StringPtr("all")
+				createSalIntegrationUploadGlossaryOptionsModel.GlossaryCsv = CreateMockReader("This is a mock file.")
+				createSalIntegrationUploadGlossaryOptionsModel.GlossaryCsvContentType = core.StringPtr("testString")
+				createSalIntegrationUploadGlossaryOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSalIntegrationUploadGlossaryOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.CreateSalIntegrationUploadGlossary(createSalIntegrationUploadGlossaryOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the CreateSalIntegrationUploadGlossaryOptions model with no property values
+				createSalIntegrationUploadGlossaryOptionsModelNew := new(watsonxdatav2.CreateSalIntegrationUploadGlossaryOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = watsonxDataService.CreateSalIntegrationUploadGlossary(createSalIntegrationUploadGlossaryOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(201)
+				}))
+			})
+			It(`Invoke CreateSalIntegrationUploadGlossary successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateSalIntegrationUploadGlossaryOptions model
+				createSalIntegrationUploadGlossaryOptionsModel := new(watsonxdatav2.CreateSalIntegrationUploadGlossaryOptions)
+				createSalIntegrationUploadGlossaryOptionsModel.ReplaceOption = core.StringPtr("all")
+				createSalIntegrationUploadGlossaryOptionsModel.GlossaryCsv = CreateMockReader("This is a mock file.")
+				createSalIntegrationUploadGlossaryOptionsModel.GlossaryCsvContentType = core.StringPtr("testString")
+				createSalIntegrationUploadGlossaryOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSalIntegrationUploadGlossaryOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.CreateSalIntegrationUploadGlossary(createSalIntegrationUploadGlossaryOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegrationUploadGlossaryStatus(getSalIntegrationUploadGlossaryStatusOptions *GetSalIntegrationUploadGlossaryStatusOptions) - Operation response error`, func() {
+		getSalIntegrationUploadGlossaryStatusPath := "/sal_integrations/upload_glossary_status"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationUploadGlossaryStatusPath))
+					Expect(req.Method).To(Equal("GET"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["process_id"]).To(Equal([]string{"testString"}))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationUploadGlossaryStatus with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationUploadGlossaryStatusOptions model
+				getSalIntegrationUploadGlossaryStatusOptionsModel := new(watsonxdatav2.GetSalIntegrationUploadGlossaryStatusOptions)
+				getSalIntegrationUploadGlossaryStatusOptionsModel.ProcessID = core.StringPtr("testString")
+				getSalIntegrationUploadGlossaryStatusOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationUploadGlossaryStatusOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.GetSalIntegrationUploadGlossaryStatus(getSalIntegrationUploadGlossaryStatusOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.GetSalIntegrationUploadGlossaryStatus(getSalIntegrationUploadGlossaryStatusOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetSalIntegrationUploadGlossaryStatus(getSalIntegrationUploadGlossaryStatusOptions *GetSalIntegrationUploadGlossaryStatusOptions)`, func() {
+		getSalIntegrationUploadGlossaryStatusPath := "/sal_integrations/upload_glossary_status"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationUploadGlossaryStatusPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["process_id"]).To(Equal([]string{"testString"}))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"response": "Import status available"}`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationUploadGlossaryStatus successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the GetSalIntegrationUploadGlossaryStatusOptions model
+				getSalIntegrationUploadGlossaryStatusOptionsModel := new(watsonxdatav2.GetSalIntegrationUploadGlossaryStatusOptions)
+				getSalIntegrationUploadGlossaryStatusOptionsModel.ProcessID = core.StringPtr("testString")
+				getSalIntegrationUploadGlossaryStatusOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationUploadGlossaryStatusOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.GetSalIntegrationUploadGlossaryStatusWithContext(ctx, getSalIntegrationUploadGlossaryStatusOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.GetSalIntegrationUploadGlossaryStatus(getSalIntegrationUploadGlossaryStatusOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.GetSalIntegrationUploadGlossaryStatusWithContext(ctx, getSalIntegrationUploadGlossaryStatusOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getSalIntegrationUploadGlossaryStatusPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					Expect(req.URL.Query()["process_id"]).To(Equal([]string{"testString"}))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"response": "Import status available"}`)
+				}))
+			})
+			It(`Invoke GetSalIntegrationUploadGlossaryStatus successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.GetSalIntegrationUploadGlossaryStatus(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the GetSalIntegrationUploadGlossaryStatusOptions model
+				getSalIntegrationUploadGlossaryStatusOptionsModel := new(watsonxdatav2.GetSalIntegrationUploadGlossaryStatusOptions)
+				getSalIntegrationUploadGlossaryStatusOptionsModel.ProcessID = core.StringPtr("testString")
+				getSalIntegrationUploadGlossaryStatusOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationUploadGlossaryStatusOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.GetSalIntegrationUploadGlossaryStatus(getSalIntegrationUploadGlossaryStatusOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke GetSalIntegrationUploadGlossaryStatus with error: Operation request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationUploadGlossaryStatusOptions model
+				getSalIntegrationUploadGlossaryStatusOptionsModel := new(watsonxdatav2.GetSalIntegrationUploadGlossaryStatusOptions)
+				getSalIntegrationUploadGlossaryStatusOptionsModel.ProcessID = core.StringPtr("testString")
+				getSalIntegrationUploadGlossaryStatusOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationUploadGlossaryStatusOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.GetSalIntegrationUploadGlossaryStatus(getSalIntegrationUploadGlossaryStatusOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke GetSalIntegrationUploadGlossaryStatus successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetSalIntegrationUploadGlossaryStatusOptions model
+				getSalIntegrationUploadGlossaryStatusOptionsModel := new(watsonxdatav2.GetSalIntegrationUploadGlossaryStatusOptions)
+				getSalIntegrationUploadGlossaryStatusOptionsModel.ProcessID = core.StringPtr("testString")
+				getSalIntegrationUploadGlossaryStatusOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getSalIntegrationUploadGlossaryStatusOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.GetSalIntegrationUploadGlossaryStatus(getSalIntegrationUploadGlossaryStatusOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 
@@ -15408,15 +22566,15 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			})
 		})
 	})
-	Describe(`AddSparkEngineCatalogs(addSparkEngineCatalogsOptions *AddSparkEngineCatalogsOptions) - Operation response error`, func() {
-		addSparkEngineCatalogsPath := "/spark_engines/testString/catalogs"
+	Describe(`CreateSparkEngineCatalogs(createSparkEngineCatalogsOptions *CreateSparkEngineCatalogsOptions) - Operation response error`, func() {
+		createSparkEngineCatalogsPath := "/spark_engines/testString/catalogs"
 		Context(`Using mock server endpoint with invalid JSON response`, func() {
 			BeforeEach(func() {
 				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(addSparkEngineCatalogsPath))
+					Expect(req.URL.EscapedPath()).To(Equal(createSparkEngineCatalogsPath))
 					Expect(req.Method).To(Equal("POST"))
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
@@ -15425,7 +22583,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					fmt.Fprint(res, `} this is not valid json {`)
 				}))
 			})
-			It(`Invoke AddSparkEngineCatalogs with error: Operation response processing error`, func() {
+			It(`Invoke CreateSparkEngineCatalogs with error: Operation response processing error`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -15433,21 +22591,21 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the AddSparkEngineCatalogsOptions model
-				addSparkEngineCatalogsOptionsModel := new(watsonxdatav2.AddSparkEngineCatalogsOptions)
-				addSparkEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
-				addSparkEngineCatalogsOptionsModel.CatalogNames = core.StringPtr("testString")
-				addSparkEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				addSparkEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the CreateSparkEngineCatalogsOptions model
+				createSparkEngineCatalogsOptionsModel := new(watsonxdatav2.CreateSparkEngineCatalogsOptions)
+				createSparkEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
+				createSparkEngineCatalogsOptionsModel.CatalogName = core.StringPtr("testString")
+				createSparkEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSparkEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Expect response parsing to fail since we are receiving a text/plain response
-				result, response, operationErr := watsonxDataService.AddSparkEngineCatalogs(addSparkEngineCatalogsOptionsModel)
+				result, response, operationErr := watsonxDataService.CreateSparkEngineCatalogs(createSparkEngineCatalogsOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).To(BeNil())
 
 				// Enable retries and test again
 				watsonxDataService.EnableRetries(0, 0)
-				result, response, operationErr = watsonxDataService.AddSparkEngineCatalogs(addSparkEngineCatalogsOptionsModel)
+				result, response, operationErr = watsonxDataService.CreateSparkEngineCatalogs(createSparkEngineCatalogsOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).To(BeNil())
@@ -15457,15 +22615,15 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			})
 		})
 	})
-	Describe(`AddSparkEngineCatalogs(addSparkEngineCatalogsOptions *AddSparkEngineCatalogsOptions)`, func() {
-		addSparkEngineCatalogsPath := "/spark_engines/testString/catalogs"
+	Describe(`CreateSparkEngineCatalogs(createSparkEngineCatalogsOptions *CreateSparkEngineCatalogsOptions)`, func() {
+		createSparkEngineCatalogsPath := "/spark_engines/testString/catalogs"
 		Context(`Using mock server endpoint with timeout`, func() {
 			BeforeEach(func() {
 				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(addSparkEngineCatalogsPath))
+					Expect(req.URL.EscapedPath()).To(Equal(createSparkEngineCatalogsPath))
 					Expect(req.Method).To(Equal("POST"))
 
 					// For gzip-disabled operation, verify Content-Encoding is not set.
@@ -15492,10 +22650,10 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"catalogs": [{"actions": ["Actions"], "associated_buckets": ["AssociatedBuckets"], "associated_databases": ["AssociatedDatabases"], "associated_engines": ["AssociatedEngines"], "catalog_name": "sampleCatalog", "catalog_type": "iceberg", "created_by": "<username>@<domain>.com", "created_on": "1602839833", "description": "Iceberg catalog description", "hostname": "s3a://samplehost.com", "last_sync_at": "1602839833", "managed_by": "ibm", "metastore": "glue", "port": "3232", "status": "running", "sync_description": "Table registration was successful", "sync_exception": ["SyncException"], "sync_status": "SUCCESS", "tags": ["Tags"], "thrift_uri": "thrift://samplehost-catalog:4354"}]}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_buckets": ["AssociatedBuckets"], "associated_databases": ["AssociatedDatabases"], "associated_engines": ["AssociatedEngines"], "catalog_name": "sampleCatalog", "catalog_type": "iceberg", "created_by": "<username>@<domain>.com", "created_on": "1602839833", "description": "Iceberg catalog description", "hostname": "s3a://samplehost.com", "last_sync_at": "1602839833", "managed_by": "ibm", "metastore": "glue", "port": "3232", "status": "running", "sync_description": "Table registration was successful", "sync_exception": ["SyncException"], "sync_status": "SUCCESS", "tags": ["Tags"], "thrift_uri": "thrift://samplehost-catalog:4354"}`)
 				}))
 			})
-			It(`Invoke AddSparkEngineCatalogs successfully with retries`, func() {
+			It(`Invoke CreateSparkEngineCatalogs successfully with retries`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -15504,23 +22662,23 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(watsonxDataService).ToNot(BeNil())
 				watsonxDataService.EnableRetries(0, 0)
 
-				// Construct an instance of the AddSparkEngineCatalogsOptions model
-				addSparkEngineCatalogsOptionsModel := new(watsonxdatav2.AddSparkEngineCatalogsOptions)
-				addSparkEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
-				addSparkEngineCatalogsOptionsModel.CatalogNames = core.StringPtr("testString")
-				addSparkEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				addSparkEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the CreateSparkEngineCatalogsOptions model
+				createSparkEngineCatalogsOptionsModel := new(watsonxdatav2.CreateSparkEngineCatalogsOptions)
+				createSparkEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
+				createSparkEngineCatalogsOptionsModel.CatalogName = core.StringPtr("testString")
+				createSparkEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSparkEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with a Context to test a timeout error
 				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
 				defer cancelFunc()
-				_, _, operationErr := watsonxDataService.AddSparkEngineCatalogsWithContext(ctx, addSparkEngineCatalogsOptionsModel)
+				_, _, operationErr := watsonxDataService.CreateSparkEngineCatalogsWithContext(ctx, createSparkEngineCatalogsOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
 
 				// Disable retries and test again
 				watsonxDataService.DisableRetries()
-				result, response, operationErr := watsonxDataService.AddSparkEngineCatalogs(addSparkEngineCatalogsOptionsModel)
+				result, response, operationErr := watsonxDataService.CreateSparkEngineCatalogs(createSparkEngineCatalogsOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).ToNot(BeNil())
@@ -15528,7 +22686,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				// Re-test the timeout error with retries disabled
 				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
 				defer cancelFunc2()
-				_, _, operationErr = watsonxDataService.AddSparkEngineCatalogsWithContext(ctx, addSparkEngineCatalogsOptionsModel)
+				_, _, operationErr = watsonxDataService.CreateSparkEngineCatalogsWithContext(ctx, createSparkEngineCatalogsOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
 			})
@@ -15542,7 +22700,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(addSparkEngineCatalogsPath))
+					Expect(req.URL.EscapedPath()).To(Equal(createSparkEngineCatalogsPath))
 					Expect(req.Method).To(Equal("POST"))
 
 					// For gzip-disabled operation, verify Content-Encoding is not set.
@@ -15566,10 +22724,10 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"catalogs": [{"actions": ["Actions"], "associated_buckets": ["AssociatedBuckets"], "associated_databases": ["AssociatedDatabases"], "associated_engines": ["AssociatedEngines"], "catalog_name": "sampleCatalog", "catalog_type": "iceberg", "created_by": "<username>@<domain>.com", "created_on": "1602839833", "description": "Iceberg catalog description", "hostname": "s3a://samplehost.com", "last_sync_at": "1602839833", "managed_by": "ibm", "metastore": "glue", "port": "3232", "status": "running", "sync_description": "Table registration was successful", "sync_exception": ["SyncException"], "sync_status": "SUCCESS", "tags": ["Tags"], "thrift_uri": "thrift://samplehost-catalog:4354"}]}`)
+					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "associated_buckets": ["AssociatedBuckets"], "associated_databases": ["AssociatedDatabases"], "associated_engines": ["AssociatedEngines"], "catalog_name": "sampleCatalog", "catalog_type": "iceberg", "created_by": "<username>@<domain>.com", "created_on": "1602839833", "description": "Iceberg catalog description", "hostname": "s3a://samplehost.com", "last_sync_at": "1602839833", "managed_by": "ibm", "metastore": "glue", "port": "3232", "status": "running", "sync_description": "Table registration was successful", "sync_exception": ["SyncException"], "sync_status": "SUCCESS", "tags": ["Tags"], "thrift_uri": "thrift://samplehost-catalog:4354"}`)
 				}))
 			})
-			It(`Invoke AddSparkEngineCatalogs successfully`, func() {
+			It(`Invoke CreateSparkEngineCatalogs successfully`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -15578,26 +22736,26 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(watsonxDataService).ToNot(BeNil())
 
 				// Invoke operation with nil options model (negative test)
-				result, response, operationErr := watsonxDataService.AddSparkEngineCatalogs(nil)
+				result, response, operationErr := watsonxDataService.CreateSparkEngineCatalogs(nil)
 				Expect(operationErr).NotTo(BeNil())
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
 
-				// Construct an instance of the AddSparkEngineCatalogsOptions model
-				addSparkEngineCatalogsOptionsModel := new(watsonxdatav2.AddSparkEngineCatalogsOptions)
-				addSparkEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
-				addSparkEngineCatalogsOptionsModel.CatalogNames = core.StringPtr("testString")
-				addSparkEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				addSparkEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the CreateSparkEngineCatalogsOptions model
+				createSparkEngineCatalogsOptionsModel := new(watsonxdatav2.CreateSparkEngineCatalogsOptions)
+				createSparkEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
+				createSparkEngineCatalogsOptionsModel.CatalogName = core.StringPtr("testString")
+				createSparkEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSparkEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with valid options model (positive test)
-				result, response, operationErr = watsonxDataService.AddSparkEngineCatalogs(addSparkEngineCatalogsOptionsModel)
+				result, response, operationErr = watsonxDataService.CreateSparkEngineCatalogs(createSparkEngineCatalogsOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).ToNot(BeNil())
 
 			})
-			It(`Invoke AddSparkEngineCatalogs with error: Operation validation and request error`, func() {
+			It(`Invoke CreateSparkEngineCatalogs with error: Operation validation and request error`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -15605,24 +22763,24 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the AddSparkEngineCatalogsOptions model
-				addSparkEngineCatalogsOptionsModel := new(watsonxdatav2.AddSparkEngineCatalogsOptions)
-				addSparkEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
-				addSparkEngineCatalogsOptionsModel.CatalogNames = core.StringPtr("testString")
-				addSparkEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				addSparkEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the CreateSparkEngineCatalogsOptions model
+				createSparkEngineCatalogsOptionsModel := new(watsonxdatav2.CreateSparkEngineCatalogsOptions)
+				createSparkEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
+				createSparkEngineCatalogsOptionsModel.CatalogName = core.StringPtr("testString")
+				createSparkEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSparkEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
 				err := watsonxDataService.SetServiceURL("")
 				Expect(err).To(BeNil())
-				result, response, operationErr := watsonxDataService.AddSparkEngineCatalogs(addSparkEngineCatalogsOptionsModel)
+				result, response, operationErr := watsonxDataService.CreateSparkEngineCatalogs(createSparkEngineCatalogsOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
-				// Construct a second instance of the AddSparkEngineCatalogsOptions model with no property values
-				addSparkEngineCatalogsOptionsModelNew := new(watsonxdatav2.AddSparkEngineCatalogsOptions)
+				// Construct a second instance of the CreateSparkEngineCatalogsOptions model with no property values
+				createSparkEngineCatalogsOptionsModelNew := new(watsonxdatav2.CreateSparkEngineCatalogsOptions)
 				// Invoke operation with invalid model (negative test)
-				result, response, operationErr = watsonxDataService.AddSparkEngineCatalogs(addSparkEngineCatalogsOptionsModelNew)
+				result, response, operationErr = watsonxDataService.CreateSparkEngineCatalogs(createSparkEngineCatalogsOptionsModelNew)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
@@ -15640,7 +22798,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					res.WriteHeader(201)
 				}))
 			})
-			It(`Invoke AddSparkEngineCatalogs successfully`, func() {
+			It(`Invoke CreateSparkEngineCatalogs successfully`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -15648,15 +22806,15 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the AddSparkEngineCatalogsOptions model
-				addSparkEngineCatalogsOptionsModel := new(watsonxdatav2.AddSparkEngineCatalogsOptions)
-				addSparkEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
-				addSparkEngineCatalogsOptionsModel.CatalogNames = core.StringPtr("testString")
-				addSparkEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				addSparkEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the CreateSparkEngineCatalogsOptions model
+				createSparkEngineCatalogsOptionsModel := new(watsonxdatav2.CreateSparkEngineCatalogsOptions)
+				createSparkEngineCatalogsOptionsModel.EngineID = core.StringPtr("testString")
+				createSparkEngineCatalogsOptionsModel.CatalogName = core.StringPtr("testString")
+				createSparkEngineCatalogsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createSparkEngineCatalogsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation
-				result, response, operationErr := watsonxDataService.AddSparkEngineCatalogs(addSparkEngineCatalogsOptionsModel)
+				result, response, operationErr := watsonxDataService.CreateSparkEngineCatalogs(createSparkEngineCatalogsOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 
@@ -16531,24 +23689,24 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			})
 		})
 	})
-	Describe(`CreateSparkEnginePause(createSparkEnginePauseOptions *CreateSparkEnginePauseOptions) - Operation response error`, func() {
-		createSparkEnginePausePath := "/spark_engines/testString/pause"
+	Describe(`PauseSparkEngine(pauseSparkEngineOptions *PauseSparkEngineOptions) - Operation response error`, func() {
+		pauseSparkEnginePath := "/spark_engines/testString/pause"
 		Context(`Using mock server endpoint with invalid JSON response`, func() {
 			BeforeEach(func() {
 				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(createSparkEnginePausePath))
+					Expect(req.URL.EscapedPath()).To(Equal(pauseSparkEnginePath))
 					Expect(req.Method).To(Equal("POST"))
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
 					res.Header().Set("Content-type", "application/json")
-					res.WriteHeader(201)
+					res.WriteHeader(200)
 					fmt.Fprint(res, `} this is not valid json {`)
 				}))
 			})
-			It(`Invoke CreateSparkEnginePause with error: Operation response processing error`, func() {
+			It(`Invoke PauseSparkEngine with error: Operation response processing error`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -16556,20 +23714,20 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the CreateSparkEnginePauseOptions model
-				createSparkEnginePauseOptionsModel := new(watsonxdatav2.CreateSparkEnginePauseOptions)
-				createSparkEnginePauseOptionsModel.EngineID = core.StringPtr("testString")
-				createSparkEnginePauseOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				createSparkEnginePauseOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the PauseSparkEngineOptions model
+				pauseSparkEngineOptionsModel := new(watsonxdatav2.PauseSparkEngineOptions)
+				pauseSparkEngineOptionsModel.EngineID = core.StringPtr("testString")
+				pauseSparkEngineOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				pauseSparkEngineOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Expect response parsing to fail since we are receiving a text/plain response
-				result, response, operationErr := watsonxDataService.CreateSparkEnginePause(createSparkEnginePauseOptionsModel)
+				result, response, operationErr := watsonxDataService.PauseSparkEngine(pauseSparkEngineOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).To(BeNil())
 
 				// Enable retries and test again
 				watsonxDataService.EnableRetries(0, 0)
-				result, response, operationErr = watsonxDataService.CreateSparkEnginePause(createSparkEnginePauseOptionsModel)
+				result, response, operationErr = watsonxDataService.PauseSparkEngine(pauseSparkEngineOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).To(BeNil())
@@ -16579,15 +23737,15 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			})
 		})
 	})
-	Describe(`CreateSparkEnginePause(createSparkEnginePauseOptions *CreateSparkEnginePauseOptions)`, func() {
-		createSparkEnginePausePath := "/spark_engines/testString/pause"
+	Describe(`PauseSparkEngine(pauseSparkEngineOptions *PauseSparkEngineOptions)`, func() {
+		pauseSparkEnginePath := "/spark_engines/testString/pause"
 		Context(`Using mock server endpoint with timeout`, func() {
 			BeforeEach(func() {
 				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(createSparkEnginePausePath))
+					Expect(req.URL.EscapedPath()).To(Equal(pauseSparkEnginePath))
 					Expect(req.Method).To(Equal("POST"))
 
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
@@ -16597,11 +23755,11 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
-					res.WriteHeader(201)
+					res.WriteHeader(200)
 					fmt.Fprintf(res, "%s", `{"message": "Message", "message_code": "MessageCode"}`)
 				}))
 			})
-			It(`Invoke CreateSparkEnginePause successfully with retries`, func() {
+			It(`Invoke PauseSparkEngine successfully with retries`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -16610,22 +23768,22 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(watsonxDataService).ToNot(BeNil())
 				watsonxDataService.EnableRetries(0, 0)
 
-				// Construct an instance of the CreateSparkEnginePauseOptions model
-				createSparkEnginePauseOptionsModel := new(watsonxdatav2.CreateSparkEnginePauseOptions)
-				createSparkEnginePauseOptionsModel.EngineID = core.StringPtr("testString")
-				createSparkEnginePauseOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				createSparkEnginePauseOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the PauseSparkEngineOptions model
+				pauseSparkEngineOptionsModel := new(watsonxdatav2.PauseSparkEngineOptions)
+				pauseSparkEngineOptionsModel.EngineID = core.StringPtr("testString")
+				pauseSparkEngineOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				pauseSparkEngineOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with a Context to test a timeout error
 				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
 				defer cancelFunc()
-				_, _, operationErr := watsonxDataService.CreateSparkEnginePauseWithContext(ctx, createSparkEnginePauseOptionsModel)
+				_, _, operationErr := watsonxDataService.PauseSparkEngineWithContext(ctx, pauseSparkEngineOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
 
 				// Disable retries and test again
 				watsonxDataService.DisableRetries()
-				result, response, operationErr := watsonxDataService.CreateSparkEnginePause(createSparkEnginePauseOptionsModel)
+				result, response, operationErr := watsonxDataService.PauseSparkEngine(pauseSparkEngineOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).ToNot(BeNil())
@@ -16633,7 +23791,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				// Re-test the timeout error with retries disabled
 				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
 				defer cancelFunc2()
-				_, _, operationErr = watsonxDataService.CreateSparkEnginePauseWithContext(ctx, createSparkEnginePauseOptionsModel)
+				_, _, operationErr = watsonxDataService.PauseSparkEngineWithContext(ctx, pauseSparkEngineOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
 			})
@@ -16647,18 +23805,18 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(createSparkEnginePausePath))
+					Expect(req.URL.EscapedPath()).To(Equal(pauseSparkEnginePath))
 					Expect(req.Method).To(Equal("POST"))
 
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
-					res.WriteHeader(201)
+					res.WriteHeader(200)
 					fmt.Fprintf(res, "%s", `{"message": "Message", "message_code": "MessageCode"}`)
 				}))
 			})
-			It(`Invoke CreateSparkEnginePause successfully`, func() {
+			It(`Invoke PauseSparkEngine successfully`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -16667,25 +23825,25 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(watsonxDataService).ToNot(BeNil())
 
 				// Invoke operation with nil options model (negative test)
-				result, response, operationErr := watsonxDataService.CreateSparkEnginePause(nil)
+				result, response, operationErr := watsonxDataService.PauseSparkEngine(nil)
 				Expect(operationErr).NotTo(BeNil())
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
 
-				// Construct an instance of the CreateSparkEnginePauseOptions model
-				createSparkEnginePauseOptionsModel := new(watsonxdatav2.CreateSparkEnginePauseOptions)
-				createSparkEnginePauseOptionsModel.EngineID = core.StringPtr("testString")
-				createSparkEnginePauseOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				createSparkEnginePauseOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the PauseSparkEngineOptions model
+				pauseSparkEngineOptionsModel := new(watsonxdatav2.PauseSparkEngineOptions)
+				pauseSparkEngineOptionsModel.EngineID = core.StringPtr("testString")
+				pauseSparkEngineOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				pauseSparkEngineOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with valid options model (positive test)
-				result, response, operationErr = watsonxDataService.CreateSparkEnginePause(createSparkEnginePauseOptionsModel)
+				result, response, operationErr = watsonxDataService.PauseSparkEngine(pauseSparkEngineOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).ToNot(BeNil())
 
 			})
-			It(`Invoke CreateSparkEnginePause with error: Operation validation and request error`, func() {
+			It(`Invoke PauseSparkEngine with error: Operation validation and request error`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -16693,23 +23851,23 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the CreateSparkEnginePauseOptions model
-				createSparkEnginePauseOptionsModel := new(watsonxdatav2.CreateSparkEnginePauseOptions)
-				createSparkEnginePauseOptionsModel.EngineID = core.StringPtr("testString")
-				createSparkEnginePauseOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				createSparkEnginePauseOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the PauseSparkEngineOptions model
+				pauseSparkEngineOptionsModel := new(watsonxdatav2.PauseSparkEngineOptions)
+				pauseSparkEngineOptionsModel.EngineID = core.StringPtr("testString")
+				pauseSparkEngineOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				pauseSparkEngineOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
 				err := watsonxDataService.SetServiceURL("")
 				Expect(err).To(BeNil())
-				result, response, operationErr := watsonxDataService.CreateSparkEnginePause(createSparkEnginePauseOptionsModel)
+				result, response, operationErr := watsonxDataService.PauseSparkEngine(pauseSparkEngineOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
-				// Construct a second instance of the CreateSparkEnginePauseOptions model with no property values
-				createSparkEnginePauseOptionsModelNew := new(watsonxdatav2.CreateSparkEnginePauseOptions)
+				// Construct a second instance of the PauseSparkEngineOptions model with no property values
+				pauseSparkEngineOptionsModelNew := new(watsonxdatav2.PauseSparkEngineOptions)
 				// Invoke operation with invalid model (negative test)
-				result, response, operationErr = watsonxDataService.CreateSparkEnginePause(createSparkEnginePauseOptionsModelNew)
+				result, response, operationErr = watsonxDataService.PauseSparkEngine(pauseSparkEngineOptionsModelNew)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
@@ -16724,10 +23882,10 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					defer GinkgoRecover()
 
 					// Set success status code with no respoonse body
-					res.WriteHeader(201)
+					res.WriteHeader(200)
 				}))
 			})
-			It(`Invoke CreateSparkEnginePause successfully`, func() {
+			It(`Invoke PauseSparkEngine successfully`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -16735,14 +23893,14 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the CreateSparkEnginePauseOptions model
-				createSparkEnginePauseOptionsModel := new(watsonxdatav2.CreateSparkEnginePauseOptions)
-				createSparkEnginePauseOptionsModel.EngineID = core.StringPtr("testString")
-				createSparkEnginePauseOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				createSparkEnginePauseOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the PauseSparkEngineOptions model
+				pauseSparkEngineOptionsModel := new(watsonxdatav2.PauseSparkEngineOptions)
+				pauseSparkEngineOptionsModel.EngineID = core.StringPtr("testString")
+				pauseSparkEngineOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				pauseSparkEngineOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation
-				result, response, operationErr := watsonxDataService.CreateSparkEnginePause(createSparkEnginePauseOptionsModel)
+				result, response, operationErr := watsonxDataService.PauseSparkEngine(pauseSparkEngineOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 
@@ -16754,24 +23912,24 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			})
 		})
 	})
-	Describe(`CreateSparkEngineResume(createSparkEngineResumeOptions *CreateSparkEngineResumeOptions) - Operation response error`, func() {
-		createSparkEngineResumePath := "/spark_engines/testString/resume"
+	Describe(`ResumeSparkEngine(resumeSparkEngineOptions *ResumeSparkEngineOptions) - Operation response error`, func() {
+		resumeSparkEnginePath := "/spark_engines/testString/resume"
 		Context(`Using mock server endpoint with invalid JSON response`, func() {
 			BeforeEach(func() {
 				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(createSparkEngineResumePath))
+					Expect(req.URL.EscapedPath()).To(Equal(resumeSparkEnginePath))
 					Expect(req.Method).To(Equal("POST"))
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
 					res.Header().Set("Content-type", "application/json")
-					res.WriteHeader(201)
+					res.WriteHeader(200)
 					fmt.Fprint(res, `} this is not valid json {`)
 				}))
 			})
-			It(`Invoke CreateSparkEngineResume with error: Operation response processing error`, func() {
+			It(`Invoke ResumeSparkEngine with error: Operation response processing error`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -16779,20 +23937,20 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the CreateSparkEngineResumeOptions model
-				createSparkEngineResumeOptionsModel := new(watsonxdatav2.CreateSparkEngineResumeOptions)
-				createSparkEngineResumeOptionsModel.EngineID = core.StringPtr("testString")
-				createSparkEngineResumeOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				createSparkEngineResumeOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the ResumeSparkEngineOptions model
+				resumeSparkEngineOptionsModel := new(watsonxdatav2.ResumeSparkEngineOptions)
+				resumeSparkEngineOptionsModel.EngineID = core.StringPtr("testString")
+				resumeSparkEngineOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				resumeSparkEngineOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Expect response parsing to fail since we are receiving a text/plain response
-				result, response, operationErr := watsonxDataService.CreateSparkEngineResume(createSparkEngineResumeOptionsModel)
+				result, response, operationErr := watsonxDataService.ResumeSparkEngine(resumeSparkEngineOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).To(BeNil())
 
 				// Enable retries and test again
 				watsonxDataService.EnableRetries(0, 0)
-				result, response, operationErr = watsonxDataService.CreateSparkEngineResume(createSparkEngineResumeOptionsModel)
+				result, response, operationErr = watsonxDataService.ResumeSparkEngine(resumeSparkEngineOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).To(BeNil())
@@ -16802,15 +23960,15 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			})
 		})
 	})
-	Describe(`CreateSparkEngineResume(createSparkEngineResumeOptions *CreateSparkEngineResumeOptions)`, func() {
-		createSparkEngineResumePath := "/spark_engines/testString/resume"
+	Describe(`ResumeSparkEngine(resumeSparkEngineOptions *ResumeSparkEngineOptions)`, func() {
+		resumeSparkEnginePath := "/spark_engines/testString/resume"
 		Context(`Using mock server endpoint with timeout`, func() {
 			BeforeEach(func() {
 				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(createSparkEngineResumePath))
+					Expect(req.URL.EscapedPath()).To(Equal(resumeSparkEnginePath))
 					Expect(req.Method).To(Equal("POST"))
 
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
@@ -16820,11 +23978,11 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
-					res.WriteHeader(201)
+					res.WriteHeader(200)
 					fmt.Fprintf(res, "%s", `{"message": "Message", "message_code": "MessageCode"}`)
 				}))
 			})
-			It(`Invoke CreateSparkEngineResume successfully with retries`, func() {
+			It(`Invoke ResumeSparkEngine successfully with retries`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -16833,22 +23991,22 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(watsonxDataService).ToNot(BeNil())
 				watsonxDataService.EnableRetries(0, 0)
 
-				// Construct an instance of the CreateSparkEngineResumeOptions model
-				createSparkEngineResumeOptionsModel := new(watsonxdatav2.CreateSparkEngineResumeOptions)
-				createSparkEngineResumeOptionsModel.EngineID = core.StringPtr("testString")
-				createSparkEngineResumeOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				createSparkEngineResumeOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the ResumeSparkEngineOptions model
+				resumeSparkEngineOptionsModel := new(watsonxdatav2.ResumeSparkEngineOptions)
+				resumeSparkEngineOptionsModel.EngineID = core.StringPtr("testString")
+				resumeSparkEngineOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				resumeSparkEngineOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with a Context to test a timeout error
 				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
 				defer cancelFunc()
-				_, _, operationErr := watsonxDataService.CreateSparkEngineResumeWithContext(ctx, createSparkEngineResumeOptionsModel)
+				_, _, operationErr := watsonxDataService.ResumeSparkEngineWithContext(ctx, resumeSparkEngineOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
 
 				// Disable retries and test again
 				watsonxDataService.DisableRetries()
-				result, response, operationErr := watsonxDataService.CreateSparkEngineResume(createSparkEngineResumeOptionsModel)
+				result, response, operationErr := watsonxDataService.ResumeSparkEngine(resumeSparkEngineOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).ToNot(BeNil())
@@ -16856,7 +24014,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				// Re-test the timeout error with retries disabled
 				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
 				defer cancelFunc2()
-				_, _, operationErr = watsonxDataService.CreateSparkEngineResumeWithContext(ctx, createSparkEngineResumeOptionsModel)
+				_, _, operationErr = watsonxDataService.ResumeSparkEngineWithContext(ctx, resumeSparkEngineOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
 			})
@@ -16870,18 +24028,18 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(createSparkEngineResumePath))
+					Expect(req.URL.EscapedPath()).To(Equal(resumeSparkEnginePath))
 					Expect(req.Method).To(Equal("POST"))
 
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
-					res.WriteHeader(201)
+					res.WriteHeader(200)
 					fmt.Fprintf(res, "%s", `{"message": "Message", "message_code": "MessageCode"}`)
 				}))
 			})
-			It(`Invoke CreateSparkEngineResume successfully`, func() {
+			It(`Invoke ResumeSparkEngine successfully`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -16890,25 +24048,25 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(watsonxDataService).ToNot(BeNil())
 
 				// Invoke operation with nil options model (negative test)
-				result, response, operationErr := watsonxDataService.CreateSparkEngineResume(nil)
+				result, response, operationErr := watsonxDataService.ResumeSparkEngine(nil)
 				Expect(operationErr).NotTo(BeNil())
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
 
-				// Construct an instance of the CreateSparkEngineResumeOptions model
-				createSparkEngineResumeOptionsModel := new(watsonxdatav2.CreateSparkEngineResumeOptions)
-				createSparkEngineResumeOptionsModel.EngineID = core.StringPtr("testString")
-				createSparkEngineResumeOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				createSparkEngineResumeOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the ResumeSparkEngineOptions model
+				resumeSparkEngineOptionsModel := new(watsonxdatav2.ResumeSparkEngineOptions)
+				resumeSparkEngineOptionsModel.EngineID = core.StringPtr("testString")
+				resumeSparkEngineOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				resumeSparkEngineOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with valid options model (positive test)
-				result, response, operationErr = watsonxDataService.CreateSparkEngineResume(createSparkEngineResumeOptionsModel)
+				result, response, operationErr = watsonxDataService.ResumeSparkEngine(resumeSparkEngineOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).ToNot(BeNil())
 
 			})
-			It(`Invoke CreateSparkEngineResume with error: Operation validation and request error`, func() {
+			It(`Invoke ResumeSparkEngine with error: Operation validation and request error`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -16916,23 +24074,23 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the CreateSparkEngineResumeOptions model
-				createSparkEngineResumeOptionsModel := new(watsonxdatav2.CreateSparkEngineResumeOptions)
-				createSparkEngineResumeOptionsModel.EngineID = core.StringPtr("testString")
-				createSparkEngineResumeOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				createSparkEngineResumeOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the ResumeSparkEngineOptions model
+				resumeSparkEngineOptionsModel := new(watsonxdatav2.ResumeSparkEngineOptions)
+				resumeSparkEngineOptionsModel.EngineID = core.StringPtr("testString")
+				resumeSparkEngineOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				resumeSparkEngineOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
 				err := watsonxDataService.SetServiceURL("")
 				Expect(err).To(BeNil())
-				result, response, operationErr := watsonxDataService.CreateSparkEngineResume(createSparkEngineResumeOptionsModel)
+				result, response, operationErr := watsonxDataService.ResumeSparkEngine(resumeSparkEngineOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
-				// Construct a second instance of the CreateSparkEngineResumeOptions model with no property values
-				createSparkEngineResumeOptionsModelNew := new(watsonxdatav2.CreateSparkEngineResumeOptions)
+				// Construct a second instance of the ResumeSparkEngineOptions model with no property values
+				resumeSparkEngineOptionsModelNew := new(watsonxdatav2.ResumeSparkEngineOptions)
 				// Invoke operation with invalid model (negative test)
-				result, response, operationErr = watsonxDataService.CreateSparkEngineResume(createSparkEngineResumeOptionsModelNew)
+				result, response, operationErr = watsonxDataService.ResumeSparkEngine(resumeSparkEngineOptionsModelNew)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
@@ -16947,10 +24105,10 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					defer GinkgoRecover()
 
 					// Set success status code with no respoonse body
-					res.WriteHeader(201)
+					res.WriteHeader(200)
 				}))
 			})
-			It(`Invoke CreateSparkEngineResume successfully`, func() {
+			It(`Invoke ResumeSparkEngine successfully`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -16958,14 +24116,14 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the CreateSparkEngineResumeOptions model
-				createSparkEngineResumeOptionsModel := new(watsonxdatav2.CreateSparkEngineResumeOptions)
-				createSparkEngineResumeOptionsModel.EngineID = core.StringPtr("testString")
-				createSparkEngineResumeOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				createSparkEngineResumeOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the ResumeSparkEngineOptions model
+				resumeSparkEngineOptionsModel := new(watsonxdatav2.ResumeSparkEngineOptions)
+				resumeSparkEngineOptionsModel.EngineID = core.StringPtr("testString")
+				resumeSparkEngineOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				resumeSparkEngineOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation
-				result, response, operationErr := watsonxDataService.CreateSparkEngineResume(createSparkEngineResumeOptionsModel)
+				result, response, operationErr := watsonxDataService.ResumeSparkEngine(resumeSparkEngineOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 
@@ -16977,24 +24135,24 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			})
 		})
 	})
-	Describe(`CreateSparkEngineScale(createSparkEngineScaleOptions *CreateSparkEngineScaleOptions) - Operation response error`, func() {
-		createSparkEngineScalePath := "/spark_engines/testString/scale"
+	Describe(`ScaleSparkEngine(scaleSparkEngineOptions *ScaleSparkEngineOptions) - Operation response error`, func() {
+		scaleSparkEnginePath := "/spark_engines/testString/scale"
 		Context(`Using mock server endpoint with invalid JSON response`, func() {
 			BeforeEach(func() {
 				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(createSparkEngineScalePath))
+					Expect(req.URL.EscapedPath()).To(Equal(scaleSparkEnginePath))
 					Expect(req.Method).To(Equal("POST"))
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
 					res.Header().Set("Content-type", "application/json")
-					res.WriteHeader(201)
+					res.WriteHeader(202)
 					fmt.Fprint(res, `} this is not valid json {`)
 				}))
 			})
-			It(`Invoke CreateSparkEngineScale with error: Operation response processing error`, func() {
+			It(`Invoke ScaleSparkEngine with error: Operation response processing error`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -17002,21 +24160,21 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the CreateSparkEngineScaleOptions model
-				createSparkEngineScaleOptionsModel := new(watsonxdatav2.CreateSparkEngineScaleOptions)
-				createSparkEngineScaleOptionsModel.EngineID = core.StringPtr("testString")
-				createSparkEngineScaleOptionsModel.NumberOfNodes = core.Int64Ptr(int64(2))
-				createSparkEngineScaleOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				createSparkEngineScaleOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the ScaleSparkEngineOptions model
+				scaleSparkEngineOptionsModel := new(watsonxdatav2.ScaleSparkEngineOptions)
+				scaleSparkEngineOptionsModel.EngineID = core.StringPtr("testString")
+				scaleSparkEngineOptionsModel.NumberOfNodes = core.Int64Ptr(int64(2))
+				scaleSparkEngineOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				scaleSparkEngineOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Expect response parsing to fail since we are receiving a text/plain response
-				result, response, operationErr := watsonxDataService.CreateSparkEngineScale(createSparkEngineScaleOptionsModel)
+				result, response, operationErr := watsonxDataService.ScaleSparkEngine(scaleSparkEngineOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).To(BeNil())
 
 				// Enable retries and test again
 				watsonxDataService.EnableRetries(0, 0)
-				result, response, operationErr = watsonxDataService.CreateSparkEngineScale(createSparkEngineScaleOptionsModel)
+				result, response, operationErr = watsonxDataService.ScaleSparkEngine(scaleSparkEngineOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).To(BeNil())
@@ -17026,15 +24184,15 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			})
 		})
 	})
-	Describe(`CreateSparkEngineScale(createSparkEngineScaleOptions *CreateSparkEngineScaleOptions)`, func() {
-		createSparkEngineScalePath := "/spark_engines/testString/scale"
+	Describe(`ScaleSparkEngine(scaleSparkEngineOptions *ScaleSparkEngineOptions)`, func() {
+		scaleSparkEnginePath := "/spark_engines/testString/scale"
 		Context(`Using mock server endpoint with timeout`, func() {
 			BeforeEach(func() {
 				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(createSparkEngineScalePath))
+					Expect(req.URL.EscapedPath()).To(Equal(scaleSparkEnginePath))
 					Expect(req.Method).To(Equal("POST"))
 
 					// For gzip-disabled operation, verify Content-Encoding is not set.
@@ -17060,11 +24218,11 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
-					res.WriteHeader(201)
+					res.WriteHeader(202)
 					fmt.Fprintf(res, "%s", `{"message": "Message", "message_code": "MessageCode"}`)
 				}))
 			})
-			It(`Invoke CreateSparkEngineScale successfully with retries`, func() {
+			It(`Invoke ScaleSparkEngine successfully with retries`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -17073,23 +24231,23 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(watsonxDataService).ToNot(BeNil())
 				watsonxDataService.EnableRetries(0, 0)
 
-				// Construct an instance of the CreateSparkEngineScaleOptions model
-				createSparkEngineScaleOptionsModel := new(watsonxdatav2.CreateSparkEngineScaleOptions)
-				createSparkEngineScaleOptionsModel.EngineID = core.StringPtr("testString")
-				createSparkEngineScaleOptionsModel.NumberOfNodes = core.Int64Ptr(int64(2))
-				createSparkEngineScaleOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				createSparkEngineScaleOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the ScaleSparkEngineOptions model
+				scaleSparkEngineOptionsModel := new(watsonxdatav2.ScaleSparkEngineOptions)
+				scaleSparkEngineOptionsModel.EngineID = core.StringPtr("testString")
+				scaleSparkEngineOptionsModel.NumberOfNodes = core.Int64Ptr(int64(2))
+				scaleSparkEngineOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				scaleSparkEngineOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with a Context to test a timeout error
 				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
 				defer cancelFunc()
-				_, _, operationErr := watsonxDataService.CreateSparkEngineScaleWithContext(ctx, createSparkEngineScaleOptionsModel)
+				_, _, operationErr := watsonxDataService.ScaleSparkEngineWithContext(ctx, scaleSparkEngineOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
 
 				// Disable retries and test again
 				watsonxDataService.DisableRetries()
-				result, response, operationErr := watsonxDataService.CreateSparkEngineScale(createSparkEngineScaleOptionsModel)
+				result, response, operationErr := watsonxDataService.ScaleSparkEngine(scaleSparkEngineOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).ToNot(BeNil())
@@ -17097,7 +24255,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				// Re-test the timeout error with retries disabled
 				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
 				defer cancelFunc2()
-				_, _, operationErr = watsonxDataService.CreateSparkEngineScaleWithContext(ctx, createSparkEngineScaleOptionsModel)
+				_, _, operationErr = watsonxDataService.ScaleSparkEngineWithContext(ctx, scaleSparkEngineOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
 			})
@@ -17111,7 +24269,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(createSparkEngineScalePath))
+					Expect(req.URL.EscapedPath()).To(Equal(scaleSparkEnginePath))
 					Expect(req.Method).To(Equal("POST"))
 
 					// For gzip-disabled operation, verify Content-Encoding is not set.
@@ -17134,11 +24292,11 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
-					res.WriteHeader(201)
+					res.WriteHeader(202)
 					fmt.Fprintf(res, "%s", `{"message": "Message", "message_code": "MessageCode"}`)
 				}))
 			})
-			It(`Invoke CreateSparkEngineScale successfully`, func() {
+			It(`Invoke ScaleSparkEngine successfully`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -17147,26 +24305,26 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(watsonxDataService).ToNot(BeNil())
 
 				// Invoke operation with nil options model (negative test)
-				result, response, operationErr := watsonxDataService.CreateSparkEngineScale(nil)
+				result, response, operationErr := watsonxDataService.ScaleSparkEngine(nil)
 				Expect(operationErr).NotTo(BeNil())
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
 
-				// Construct an instance of the CreateSparkEngineScaleOptions model
-				createSparkEngineScaleOptionsModel := new(watsonxdatav2.CreateSparkEngineScaleOptions)
-				createSparkEngineScaleOptionsModel.EngineID = core.StringPtr("testString")
-				createSparkEngineScaleOptionsModel.NumberOfNodes = core.Int64Ptr(int64(2))
-				createSparkEngineScaleOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				createSparkEngineScaleOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the ScaleSparkEngineOptions model
+				scaleSparkEngineOptionsModel := new(watsonxdatav2.ScaleSparkEngineOptions)
+				scaleSparkEngineOptionsModel.EngineID = core.StringPtr("testString")
+				scaleSparkEngineOptionsModel.NumberOfNodes = core.Int64Ptr(int64(2))
+				scaleSparkEngineOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				scaleSparkEngineOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with valid options model (positive test)
-				result, response, operationErr = watsonxDataService.CreateSparkEngineScale(createSparkEngineScaleOptionsModel)
+				result, response, operationErr = watsonxDataService.ScaleSparkEngine(scaleSparkEngineOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).ToNot(BeNil())
 
 			})
-			It(`Invoke CreateSparkEngineScale with error: Operation validation and request error`, func() {
+			It(`Invoke ScaleSparkEngine with error: Operation validation and request error`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -17174,24 +24332,24 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the CreateSparkEngineScaleOptions model
-				createSparkEngineScaleOptionsModel := new(watsonxdatav2.CreateSparkEngineScaleOptions)
-				createSparkEngineScaleOptionsModel.EngineID = core.StringPtr("testString")
-				createSparkEngineScaleOptionsModel.NumberOfNodes = core.Int64Ptr(int64(2))
-				createSparkEngineScaleOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				createSparkEngineScaleOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the ScaleSparkEngineOptions model
+				scaleSparkEngineOptionsModel := new(watsonxdatav2.ScaleSparkEngineOptions)
+				scaleSparkEngineOptionsModel.EngineID = core.StringPtr("testString")
+				scaleSparkEngineOptionsModel.NumberOfNodes = core.Int64Ptr(int64(2))
+				scaleSparkEngineOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				scaleSparkEngineOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
 				err := watsonxDataService.SetServiceURL("")
 				Expect(err).To(BeNil())
-				result, response, operationErr := watsonxDataService.CreateSparkEngineScale(createSparkEngineScaleOptionsModel)
+				result, response, operationErr := watsonxDataService.ScaleSparkEngine(scaleSparkEngineOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
-				// Construct a second instance of the CreateSparkEngineScaleOptions model with no property values
-				createSparkEngineScaleOptionsModelNew := new(watsonxdatav2.CreateSparkEngineScaleOptions)
+				// Construct a second instance of the ScaleSparkEngineOptions model with no property values
+				scaleSparkEngineOptionsModelNew := new(watsonxdatav2.ScaleSparkEngineOptions)
 				// Invoke operation with invalid model (negative test)
-				result, response, operationErr = watsonxDataService.CreateSparkEngineScale(createSparkEngineScaleOptionsModelNew)
+				result, response, operationErr = watsonxDataService.ScaleSparkEngine(scaleSparkEngineOptionsModelNew)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
@@ -17206,10 +24364,10 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					defer GinkgoRecover()
 
 					// Set success status code with no respoonse body
-					res.WriteHeader(201)
+					res.WriteHeader(202)
 				}))
 			})
-			It(`Invoke CreateSparkEngineScale successfully`, func() {
+			It(`Invoke ScaleSparkEngine successfully`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -17217,15 +24375,15 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(serviceErr).To(BeNil())
 				Expect(watsonxDataService).ToNot(BeNil())
 
-				// Construct an instance of the CreateSparkEngineScaleOptions model
-				createSparkEngineScaleOptionsModel := new(watsonxdatav2.CreateSparkEngineScaleOptions)
-				createSparkEngineScaleOptionsModel.EngineID = core.StringPtr("testString")
-				createSparkEngineScaleOptionsModel.NumberOfNodes = core.Int64Ptr(int64(2))
-				createSparkEngineScaleOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				createSparkEngineScaleOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the ScaleSparkEngineOptions model
+				scaleSparkEngineOptionsModel := new(watsonxdatav2.ScaleSparkEngineOptions)
+				scaleSparkEngineOptionsModel.EngineID = core.StringPtr("testString")
+				scaleSparkEngineOptionsModel.NumberOfNodes = core.Int64Ptr(int64(2))
+				scaleSparkEngineOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				scaleSparkEngineOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation
-				result, response, operationErr := watsonxDataService.CreateSparkEngineScale(createSparkEngineScaleOptionsModel)
+				result, response, operationErr := watsonxDataService.ScaleSparkEngine(scaleSparkEngineOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 
@@ -18146,6 +25304,8 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				createSchemaOptionsModel.CustomPath = core.StringPtr("sample-path")
 				createSchemaOptionsModel.SchemaName = core.StringPtr("SampleSchema1")
 				createSchemaOptionsModel.BucketName = core.StringPtr("sample-bucket")
+				createSchemaOptionsModel.Hostname = core.StringPtr("db2@hostname.com")
+				createSchemaOptionsModel.Port = core.Int64Ptr(int64(4553))
 				createSchemaOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				createSchemaOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Expect response parsing to fail since we are receiving a text/plain response
@@ -18221,6 +25381,8 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				createSchemaOptionsModel.CustomPath = core.StringPtr("sample-path")
 				createSchemaOptionsModel.SchemaName = core.StringPtr("SampleSchema1")
 				createSchemaOptionsModel.BucketName = core.StringPtr("sample-bucket")
+				createSchemaOptionsModel.Hostname = core.StringPtr("db2@hostname.com")
+				createSchemaOptionsModel.Port = core.Int64Ptr(int64(4553))
 				createSchemaOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				createSchemaOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -18304,6 +25466,8 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				createSchemaOptionsModel.CustomPath = core.StringPtr("sample-path")
 				createSchemaOptionsModel.SchemaName = core.StringPtr("SampleSchema1")
 				createSchemaOptionsModel.BucketName = core.StringPtr("sample-bucket")
+				createSchemaOptionsModel.Hostname = core.StringPtr("db2@hostname.com")
+				createSchemaOptionsModel.Port = core.Int64Ptr(int64(4553))
 				createSchemaOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				createSchemaOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -18329,6 +25493,8 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				createSchemaOptionsModel.CustomPath = core.StringPtr("sample-path")
 				createSchemaOptionsModel.SchemaName = core.StringPtr("SampleSchema1")
 				createSchemaOptionsModel.BucketName = core.StringPtr("sample-bucket")
+				createSchemaOptionsModel.Hostname = core.StringPtr("db2@hostname.com")
+				createSchemaOptionsModel.Port = core.Int64Ptr(int64(4553))
 				createSchemaOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				createSchemaOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
@@ -18375,6 +25541,8 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				createSchemaOptionsModel.CustomPath = core.StringPtr("sample-path")
 				createSchemaOptionsModel.SchemaName = core.StringPtr("SampleSchema1")
 				createSchemaOptionsModel.BucketName = core.StringPtr("sample-bucket")
+				createSchemaOptionsModel.Hostname = core.StringPtr("db2@hostname.com")
+				createSchemaOptionsModel.Port = core.Int64Ptr(int64(4553))
 				createSchemaOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				createSchemaOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -18717,6 +25885,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
 					Expect(req.URL.Query()["engine_id"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["type"]).To(Equal([]string{"testString"}))
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
 					fmt.Fprint(res, `} this is not valid json {`)
@@ -18736,6 +25905,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				getTableOptionsModel.SchemaID = core.StringPtr("testString")
 				getTableOptionsModel.TableID = core.StringPtr("testString")
 				getTableOptionsModel.EngineID = core.StringPtr("testString")
+				getTableOptionsModel.Type = core.StringPtr("testString")
 				getTableOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				getTableOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Expect response parsing to fail since we are receiving a text/plain response
@@ -18770,13 +25940,14 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
 					Expect(req.URL.Query()["engine_id"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["type"]).To(Equal([]string{"testString"}))
 					// Sleep a short time to support a timeout test
 					time.Sleep(100 * time.Millisecond)
 
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"columns": [{"column_name": "expenses", "comment": "expenses column", "extra": "varchar", "length": "30", "scale": "2", "type": "varchar"}], "table_name": "TableName"}`)
+					fmt.Fprintf(res, "%s", `{"columns": [{"column_name": "expenses", "comment": "expenses column", "extra": "varchar", "length": "30", "scale": "2", "precision": "10", "type": "varchar"}], "table_name": "TableName"}`)
 				}))
 			})
 			It(`Invoke GetTable successfully with retries`, func() {
@@ -18794,6 +25965,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				getTableOptionsModel.SchemaID = core.StringPtr("testString")
 				getTableOptionsModel.TableID = core.StringPtr("testString")
 				getTableOptionsModel.EngineID = core.StringPtr("testString")
+				getTableOptionsModel.Type = core.StringPtr("testString")
 				getTableOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				getTableOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -18834,10 +26006,11 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
 					Expect(req.URL.Query()["engine_id"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["type"]).To(Equal([]string{"testString"}))
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"columns": [{"column_name": "expenses", "comment": "expenses column", "extra": "varchar", "length": "30", "scale": "2", "type": "varchar"}], "table_name": "TableName"}`)
+					fmt.Fprintf(res, "%s", `{"columns": [{"column_name": "expenses", "comment": "expenses column", "extra": "varchar", "length": "30", "scale": "2", "precision": "10", "type": "varchar"}], "table_name": "TableName"}`)
 				}))
 			})
 			It(`Invoke GetTable successfully`, func() {
@@ -18860,6 +26033,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				getTableOptionsModel.SchemaID = core.StringPtr("testString")
 				getTableOptionsModel.TableID = core.StringPtr("testString")
 				getTableOptionsModel.EngineID = core.StringPtr("testString")
+				getTableOptionsModel.Type = core.StringPtr("testString")
 				getTableOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				getTableOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -18884,6 +26058,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				getTableOptionsModel.SchemaID = core.StringPtr("testString")
 				getTableOptionsModel.TableID = core.StringPtr("testString")
 				getTableOptionsModel.EngineID = core.StringPtr("testString")
+				getTableOptionsModel.Type = core.StringPtr("testString")
 				getTableOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				getTableOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
@@ -18929,6 +26104,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				getTableOptionsModel.SchemaID = core.StringPtr("testString")
 				getTableOptionsModel.TableID = core.StringPtr("testString")
 				getTableOptionsModel.EngineID = core.StringPtr("testString")
+				getTableOptionsModel.Type = core.StringPtr("testString")
 				getTableOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				getTableOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -18959,6 +26135,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
 					Expect(req.URL.Query()["engine_id"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["type"]).To(Equal([]string{"testString"}))
 					res.WriteHeader(204)
 				}))
 			})
@@ -18981,6 +26158,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				deleteTableOptionsModel.SchemaID = core.StringPtr("testString")
 				deleteTableOptionsModel.TableID = core.StringPtr("testString")
 				deleteTableOptionsModel.EngineID = core.StringPtr("testString")
+				deleteTableOptionsModel.Type = core.StringPtr("testString")
 				deleteTableOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				deleteTableOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -19003,6 +26181,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				deleteTableOptionsModel.SchemaID = core.StringPtr("testString")
 				deleteTableOptionsModel.TableID = core.StringPtr("testString")
 				deleteTableOptionsModel.EngineID = core.StringPtr("testString")
+				deleteTableOptionsModel.Type = core.StringPtr("testString")
 				deleteTableOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				deleteTableOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
@@ -19024,25 +26203,26 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			})
 		})
 	})
-	Describe(`RenameTable(renameTableOptions *RenameTableOptions) - Operation response error`, func() {
-		renameTablePath := "/catalogs/testString/schemas/testString/tables/testString"
+	Describe(`UpdateTable(updateTableOptions *UpdateTableOptions) - Operation response error`, func() {
+		updateTablePath := "/catalogs/testString/schemas/testString/tables/testString"
 		Context(`Using mock server endpoint with invalid JSON response`, func() {
 			BeforeEach(func() {
 				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(renameTablePath))
+					Expect(req.URL.EscapedPath()).To(Equal(updateTablePath))
 					Expect(req.Method).To(Equal("PATCH"))
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
 					Expect(req.URL.Query()["engine_id"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["type"]).To(Equal([]string{"testString"}))
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
 					fmt.Fprint(res, `} this is not valid json {`)
 				}))
 			})
-			It(`Invoke RenameTable with error: Operation response processing error`, func() {
+			It(`Invoke UpdateTable with error: Operation response processing error`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -19056,24 +26236,25 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				tablePatchModelAsPatch, asPatchErr := tablePatchModel.AsPatch()
 				Expect(asPatchErr).To(BeNil())
 
-				// Construct an instance of the RenameTableOptions model
-				renameTableOptionsModel := new(watsonxdatav2.RenameTableOptions)
-				renameTableOptionsModel.CatalogID = core.StringPtr("testString")
-				renameTableOptionsModel.SchemaID = core.StringPtr("testString")
-				renameTableOptionsModel.TableID = core.StringPtr("testString")
-				renameTableOptionsModel.EngineID = core.StringPtr("testString")
-				renameTableOptionsModel.Body = tablePatchModelAsPatch
-				renameTableOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				renameTableOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the UpdateTableOptions model
+				updateTableOptionsModel := new(watsonxdatav2.UpdateTableOptions)
+				updateTableOptionsModel.CatalogID = core.StringPtr("testString")
+				updateTableOptionsModel.SchemaID = core.StringPtr("testString")
+				updateTableOptionsModel.TableID = core.StringPtr("testString")
+				updateTableOptionsModel.EngineID = core.StringPtr("testString")
+				updateTableOptionsModel.Body = tablePatchModelAsPatch
+				updateTableOptionsModel.Type = core.StringPtr("testString")
+				updateTableOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				updateTableOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Expect response parsing to fail since we are receiving a text/plain response
-				result, response, operationErr := watsonxDataService.RenameTable(renameTableOptionsModel)
+				result, response, operationErr := watsonxDataService.UpdateTable(updateTableOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).To(BeNil())
 
 				// Enable retries and test again
 				watsonxDataService.EnableRetries(0, 0)
-				result, response, operationErr = watsonxDataService.RenameTable(renameTableOptionsModel)
+				result, response, operationErr = watsonxDataService.UpdateTable(updateTableOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).To(BeNil())
@@ -19083,15 +26264,15 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			})
 		})
 	})
-	Describe(`RenameTable(renameTableOptions *RenameTableOptions)`, func() {
-		renameTablePath := "/catalogs/testString/schemas/testString/tables/testString"
+	Describe(`UpdateTable(updateTableOptions *UpdateTableOptions)`, func() {
+		updateTablePath := "/catalogs/testString/schemas/testString/tables/testString"
 		Context(`Using mock server endpoint with timeout`, func() {
 			BeforeEach(func() {
 				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(renameTablePath))
+					Expect(req.URL.EscapedPath()).To(Equal(updateTablePath))
 					Expect(req.Method).To(Equal("PATCH"))
 
 					// For gzip-disabled operation, verify Content-Encoding is not set.
@@ -19113,16 +26294,17 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
 					Expect(req.URL.Query()["engine_id"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["type"]).To(Equal([]string{"testString"}))
 					// Sleep a short time to support a timeout test
 					time.Sleep(100 * time.Millisecond)
 
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"columns": [{"column_name": "expenses", "comment": "expenses column", "extra": "varchar", "length": "30", "scale": "2", "type": "varchar"}], "table_name": "TableName"}`)
+					fmt.Fprintf(res, "%s", `{"columns": [{"column_name": "expenses", "comment": "expenses column", "extra": "varchar", "length": "30", "scale": "2", "precision": "10", "type": "varchar"}], "table_name": "TableName"}`)
 				}))
 			})
-			It(`Invoke RenameTable successfully with retries`, func() {
+			It(`Invoke UpdateTable successfully with retries`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -19137,26 +26319,27 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				tablePatchModelAsPatch, asPatchErr := tablePatchModel.AsPatch()
 				Expect(asPatchErr).To(BeNil())
 
-				// Construct an instance of the RenameTableOptions model
-				renameTableOptionsModel := new(watsonxdatav2.RenameTableOptions)
-				renameTableOptionsModel.CatalogID = core.StringPtr("testString")
-				renameTableOptionsModel.SchemaID = core.StringPtr("testString")
-				renameTableOptionsModel.TableID = core.StringPtr("testString")
-				renameTableOptionsModel.EngineID = core.StringPtr("testString")
-				renameTableOptionsModel.Body = tablePatchModelAsPatch
-				renameTableOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				renameTableOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the UpdateTableOptions model
+				updateTableOptionsModel := new(watsonxdatav2.UpdateTableOptions)
+				updateTableOptionsModel.CatalogID = core.StringPtr("testString")
+				updateTableOptionsModel.SchemaID = core.StringPtr("testString")
+				updateTableOptionsModel.TableID = core.StringPtr("testString")
+				updateTableOptionsModel.EngineID = core.StringPtr("testString")
+				updateTableOptionsModel.Body = tablePatchModelAsPatch
+				updateTableOptionsModel.Type = core.StringPtr("testString")
+				updateTableOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				updateTableOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with a Context to test a timeout error
 				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
 				defer cancelFunc()
-				_, _, operationErr := watsonxDataService.RenameTableWithContext(ctx, renameTableOptionsModel)
+				_, _, operationErr := watsonxDataService.UpdateTableWithContext(ctx, updateTableOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
 
 				// Disable retries and test again
 				watsonxDataService.DisableRetries()
-				result, response, operationErr := watsonxDataService.RenameTable(renameTableOptionsModel)
+				result, response, operationErr := watsonxDataService.UpdateTable(updateTableOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).ToNot(BeNil())
@@ -19164,7 +26347,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				// Re-test the timeout error with retries disabled
 				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
 				defer cancelFunc2()
-				_, _, operationErr = watsonxDataService.RenameTableWithContext(ctx, renameTableOptionsModel)
+				_, _, operationErr = watsonxDataService.UpdateTableWithContext(ctx, updateTableOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
 			})
@@ -19178,7 +26361,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					defer GinkgoRecover()
 
 					// Verify the contents of the request
-					Expect(req.URL.EscapedPath()).To(Equal(renameTablePath))
+					Expect(req.URL.EscapedPath()).To(Equal(updateTablePath))
 					Expect(req.Method).To(Equal("PATCH"))
 
 					// For gzip-disabled operation, verify Content-Encoding is not set.
@@ -19200,13 +26383,14 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
 					Expect(req.URL.Query()["engine_id"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["type"]).To(Equal([]string{"testString"}))
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"columns": [{"column_name": "expenses", "comment": "expenses column", "extra": "varchar", "length": "30", "scale": "2", "type": "varchar"}], "table_name": "TableName"}`)
+					fmt.Fprintf(res, "%s", `{"columns": [{"column_name": "expenses", "comment": "expenses column", "extra": "varchar", "length": "30", "scale": "2", "precision": "10", "type": "varchar"}], "table_name": "TableName"}`)
 				}))
 			})
-			It(`Invoke RenameTable successfully`, func() {
+			It(`Invoke UpdateTable successfully`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -19215,7 +26399,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(watsonxDataService).ToNot(BeNil())
 
 				// Invoke operation with nil options model (negative test)
-				result, response, operationErr := watsonxDataService.RenameTable(nil)
+				result, response, operationErr := watsonxDataService.UpdateTable(nil)
 				Expect(operationErr).NotTo(BeNil())
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
@@ -19226,24 +26410,25 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				tablePatchModelAsPatch, asPatchErr := tablePatchModel.AsPatch()
 				Expect(asPatchErr).To(BeNil())
 
-				// Construct an instance of the RenameTableOptions model
-				renameTableOptionsModel := new(watsonxdatav2.RenameTableOptions)
-				renameTableOptionsModel.CatalogID = core.StringPtr("testString")
-				renameTableOptionsModel.SchemaID = core.StringPtr("testString")
-				renameTableOptionsModel.TableID = core.StringPtr("testString")
-				renameTableOptionsModel.EngineID = core.StringPtr("testString")
-				renameTableOptionsModel.Body = tablePatchModelAsPatch
-				renameTableOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				renameTableOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the UpdateTableOptions model
+				updateTableOptionsModel := new(watsonxdatav2.UpdateTableOptions)
+				updateTableOptionsModel.CatalogID = core.StringPtr("testString")
+				updateTableOptionsModel.SchemaID = core.StringPtr("testString")
+				updateTableOptionsModel.TableID = core.StringPtr("testString")
+				updateTableOptionsModel.EngineID = core.StringPtr("testString")
+				updateTableOptionsModel.Body = tablePatchModelAsPatch
+				updateTableOptionsModel.Type = core.StringPtr("testString")
+				updateTableOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				updateTableOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with valid options model (positive test)
-				result, response, operationErr = watsonxDataService.RenameTable(renameTableOptionsModel)
+				result, response, operationErr = watsonxDataService.UpdateTable(updateTableOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 				Expect(result).ToNot(BeNil())
 
 			})
-			It(`Invoke RenameTable with error: Operation validation and request error`, func() {
+			It(`Invoke UpdateTable with error: Operation validation and request error`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -19257,27 +26442,28 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				tablePatchModelAsPatch, asPatchErr := tablePatchModel.AsPatch()
 				Expect(asPatchErr).To(BeNil())
 
-				// Construct an instance of the RenameTableOptions model
-				renameTableOptionsModel := new(watsonxdatav2.RenameTableOptions)
-				renameTableOptionsModel.CatalogID = core.StringPtr("testString")
-				renameTableOptionsModel.SchemaID = core.StringPtr("testString")
-				renameTableOptionsModel.TableID = core.StringPtr("testString")
-				renameTableOptionsModel.EngineID = core.StringPtr("testString")
-				renameTableOptionsModel.Body = tablePatchModelAsPatch
-				renameTableOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				renameTableOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the UpdateTableOptions model
+				updateTableOptionsModel := new(watsonxdatav2.UpdateTableOptions)
+				updateTableOptionsModel.CatalogID = core.StringPtr("testString")
+				updateTableOptionsModel.SchemaID = core.StringPtr("testString")
+				updateTableOptionsModel.TableID = core.StringPtr("testString")
+				updateTableOptionsModel.EngineID = core.StringPtr("testString")
+				updateTableOptionsModel.Body = tablePatchModelAsPatch
+				updateTableOptionsModel.Type = core.StringPtr("testString")
+				updateTableOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				updateTableOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
 				err := watsonxDataService.SetServiceURL("")
 				Expect(err).To(BeNil())
-				result, response, operationErr := watsonxDataService.RenameTable(renameTableOptionsModel)
+				result, response, operationErr := watsonxDataService.UpdateTable(updateTableOptionsModel)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
-				// Construct a second instance of the RenameTableOptions model with no property values
-				renameTableOptionsModelNew := new(watsonxdatav2.RenameTableOptions)
+				// Construct a second instance of the UpdateTableOptions model with no property values
+				updateTableOptionsModelNew := new(watsonxdatav2.UpdateTableOptions)
 				// Invoke operation with invalid model (negative test)
-				result, response, operationErr = watsonxDataService.RenameTable(renameTableOptionsModelNew)
+				result, response, operationErr = watsonxDataService.UpdateTable(updateTableOptionsModelNew)
 				Expect(operationErr).ToNot(BeNil())
 				Expect(response).To(BeNil())
 				Expect(result).To(BeNil())
@@ -19295,7 +26481,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					res.WriteHeader(200)
 				}))
 			})
-			It(`Invoke RenameTable successfully`, func() {
+			It(`Invoke UpdateTable successfully`, func() {
 				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 					URL:           testServer.URL,
 					Authenticator: &core.NoAuthAuthenticator{},
@@ -19309,18 +26495,19 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				tablePatchModelAsPatch, asPatchErr := tablePatchModel.AsPatch()
 				Expect(asPatchErr).To(BeNil())
 
-				// Construct an instance of the RenameTableOptions model
-				renameTableOptionsModel := new(watsonxdatav2.RenameTableOptions)
-				renameTableOptionsModel.CatalogID = core.StringPtr("testString")
-				renameTableOptionsModel.SchemaID = core.StringPtr("testString")
-				renameTableOptionsModel.TableID = core.StringPtr("testString")
-				renameTableOptionsModel.EngineID = core.StringPtr("testString")
-				renameTableOptionsModel.Body = tablePatchModelAsPatch
-				renameTableOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				renameTableOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Construct an instance of the UpdateTableOptions model
+				updateTableOptionsModel := new(watsonxdatav2.UpdateTableOptions)
+				updateTableOptionsModel.CatalogID = core.StringPtr("testString")
+				updateTableOptionsModel.SchemaID = core.StringPtr("testString")
+				updateTableOptionsModel.TableID = core.StringPtr("testString")
+				updateTableOptionsModel.EngineID = core.StringPtr("testString")
+				updateTableOptionsModel.Body = tablePatchModelAsPatch
+				updateTableOptionsModel.Type = core.StringPtr("testString")
+				updateTableOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				updateTableOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation
-				result, response, operationErr := watsonxDataService.RenameTable(renameTableOptionsModel)
+				result, response, operationErr := watsonxDataService.UpdateTable(updateTableOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 
@@ -19404,7 +26591,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"columns": [{"column_name": "expenses", "comment": "expenses column", "extra": "varchar", "length": "30", "scale": "2", "type": "varchar"}]}`)
+					fmt.Fprintf(res, "%s", `{"columns": [{"column_name": "expenses", "comment": "expenses column", "extra": "varchar", "length": "30", "scale": "2", "precision": "10", "type": "varchar"}]}`)
 				}))
 			})
 			It(`Invoke ListColumns successfully with retries`, func() {
@@ -19465,7 +26652,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"columns": [{"column_name": "expenses", "comment": "expenses column", "extra": "varchar", "length": "30", "scale": "2", "type": "varchar"}]}`)
+					fmt.Fprintf(res, "%s", `{"columns": [{"column_name": "expenses", "comment": "expenses column", "extra": "varchar", "length": "30", "scale": "2", "precision": "10", "type": "varchar"}]}`)
 				}))
 			})
 			It(`Invoke ListColumns successfully`, func() {
@@ -19606,6 +26793,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				columnModel.Extra = core.StringPtr("varchar")
 				columnModel.Length = core.StringPtr("30")
 				columnModel.Scale = core.StringPtr("2")
+				columnModel.Precision = core.StringPtr("10")
 				columnModel.Type = core.StringPtr("varchar")
 
 				// Construct an instance of the CreateColumnsOptions model
@@ -19671,7 +26859,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"columns": [{"column_name": "expenses", "comment": "expenses column", "extra": "varchar", "length": "30", "scale": "2", "type": "varchar"}]}`)
+					fmt.Fprintf(res, "%s", `{"columns": [{"column_name": "expenses", "comment": "expenses column", "extra": "varchar", "length": "30", "scale": "2", "precision": "10", "type": "varchar"}]}`)
 				}))
 			})
 			It(`Invoke CreateColumns successfully with retries`, func() {
@@ -19690,6 +26878,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				columnModel.Extra = core.StringPtr("varchar")
 				columnModel.Length = core.StringPtr("30")
 				columnModel.Scale = core.StringPtr("2")
+				columnModel.Precision = core.StringPtr("10")
 				columnModel.Type = core.StringPtr("varchar")
 
 				// Construct an instance of the CreateColumnsOptions model
@@ -19758,7 +26947,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"columns": [{"column_name": "expenses", "comment": "expenses column", "extra": "varchar", "length": "30", "scale": "2", "type": "varchar"}]}`)
+					fmt.Fprintf(res, "%s", `{"columns": [{"column_name": "expenses", "comment": "expenses column", "extra": "varchar", "length": "30", "scale": "2", "precision": "10", "type": "varchar"}]}`)
 				}))
 			})
 			It(`Invoke CreateColumns successfully`, func() {
@@ -19782,6 +26971,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				columnModel.Extra = core.StringPtr("varchar")
 				columnModel.Length = core.StringPtr("30")
 				columnModel.Scale = core.StringPtr("2")
+				columnModel.Precision = core.StringPtr("10")
 				columnModel.Type = core.StringPtr("varchar")
 
 				// Construct an instance of the CreateColumnsOptions model
@@ -19816,6 +27006,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				columnModel.Extra = core.StringPtr("varchar")
 				columnModel.Length = core.StringPtr("30")
 				columnModel.Scale = core.StringPtr("2")
+				columnModel.Precision = core.StringPtr("10")
 				columnModel.Type = core.StringPtr("varchar")
 
 				// Construct an instance of the CreateColumnsOptions model
@@ -19871,6 +27062,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				columnModel.Extra = core.StringPtr("varchar")
 				columnModel.Length = core.StringPtr("30")
 				columnModel.Scale = core.StringPtr("2")
+				columnModel.Precision = core.StringPtr("10")
 				columnModel.Type = core.StringPtr("varchar")
 
 				// Construct an instance of the CreateColumnsOptions model
@@ -20073,7 +27265,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"column_name": "expenses", "comment": "expenses column", "extra": "varchar", "length": "30", "scale": "2", "type": "varchar"}`)
+					fmt.Fprintf(res, "%s", `{"column_name": "expenses", "comment": "expenses column", "extra": "varchar", "length": "30", "scale": "2", "precision": "10", "type": "varchar"}`)
 				}))
 			})
 			It(`Invoke UpdateColumn successfully with retries`, func() {
@@ -20158,7 +27350,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"column_name": "expenses", "comment": "expenses column", "extra": "varchar", "length": "30", "scale": "2", "type": "varchar"}`)
+					fmt.Fprintf(res, "%s", `{"column_name": "expenses", "comment": "expenses column", "extra": "varchar", "length": "30", "scale": "2", "precision": "10", "type": "varchar"}`)
 				}))
 			})
 			It(`Invoke UpdateColumn successfully`, func() {
@@ -20362,7 +27554,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"snapshots": [{"committed_at": "1609379392", "operation": "alter", "snapshot_id": "2332342122211222", "summary": "Summary"}]}`)
+					fmt.Fprintf(res, "%s", `{"snapshots": [{"added_data_files": "1", "added_files_size": "17425", "added_records": "3277", "changed_partition_count": "1", "committed_at": "1609379392", "operation": "alter", "snapshot_id": "2332342122211222", "total_data_files": "2", "total_delete_files": "0", "total_equality_deletes": "0", "total_position_deletes": "0", "total_records": "5000"}]}`)
 				}))
 			})
 			It(`Invoke ListTableSnapshots successfully with retries`, func() {
@@ -20423,7 +27615,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"snapshots": [{"committed_at": "1609379392", "operation": "alter", "snapshot_id": "2332342122211222", "summary": "Summary"}]}`)
+					fmt.Fprintf(res, "%s", `{"snapshots": [{"added_data_files": "1", "added_files_size": "17425", "added_records": "3277", "changed_partition_count": "1", "committed_at": "1609379392", "operation": "alter", "snapshot_id": "2332342122211222", "total_data_files": "2", "total_delete_files": "0", "total_equality_deletes": "0", "total_position_deletes": "0", "total_records": "5000"}]}`)
 				}))
 			})
 			It(`Invoke ListTableSnapshots successfully`, func() {
@@ -21170,7 +28362,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"milvus_services": [{"actions": ["Actions"], "created_by": "<username>@<domain>.com", "created_on": 9, "description": "milvus service for running sql queries", "grpc_host": "example.grpc.host", "grpc_port": 8, "host_name": "sampleMilvus", "https_host": "example.https.host", "https_port": 9, "origin": "native", "service_display_name": "sampleService", "service_id": "sampleService123", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "milvus"}]}`)
+					fmt.Fprintf(res, "%s", `{"milvus_services": [{"access_key": "Sample bucket access key", "actions": ["Actions"], "bucket_name": "Sample bucket name", "bucket_type": "Sample bucket type", "created_by": "<username>@<domain>.com", "created_on": 9, "description": "milvus service for running sql queries", "endpoint": "Sample bucket type", "grpc_host": "example.grpc.host", "grpc_port": 8, "host_name": "sampleMilvus", "https_host": "example.https.host", "https_port": 9, "origin": "native", "root_path": "Sample path", "secret_key": "Sample bucket secret access key", "service_display_name": "sampleService", "service_id": "sampleService123", "status": "running", "status_code": 10, "tags": ["Tags"], "tshirt_size": "small", "type": "milvus"}]}`)
 				}))
 			})
 			It(`Invoke ListMilvusServices successfully with retries`, func() {
@@ -21226,7 +28418,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"milvus_services": [{"actions": ["Actions"], "created_by": "<username>@<domain>.com", "created_on": 9, "description": "milvus service for running sql queries", "grpc_host": "example.grpc.host", "grpc_port": 8, "host_name": "sampleMilvus", "https_host": "example.https.host", "https_port": 9, "origin": "native", "service_display_name": "sampleService", "service_id": "sampleService123", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "milvus"}]}`)
+					fmt.Fprintf(res, "%s", `{"milvus_services": [{"access_key": "Sample bucket access key", "actions": ["Actions"], "bucket_name": "Sample bucket name", "bucket_type": "Sample bucket type", "created_by": "<username>@<domain>.com", "created_on": 9, "description": "milvus service for running sql queries", "endpoint": "Sample bucket type", "grpc_host": "example.grpc.host", "grpc_port": 8, "host_name": "sampleMilvus", "https_host": "example.https.host", "https_port": 9, "origin": "native", "root_path": "Sample path", "secret_key": "Sample bucket secret access key", "service_display_name": "sampleService", "service_id": "sampleService123", "status": "running", "status_code": 10, "tags": ["Tags"], "tshirt_size": "small", "type": "milvus"}]}`)
 				}))
 			})
 			It(`Invoke ListMilvusServices successfully`, func() {
@@ -21342,10 +28534,14 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 				// Construct an instance of the CreateMilvusServiceOptions model
 				createMilvusServiceOptionsModel := new(watsonxdatav2.CreateMilvusServiceOptions)
+				createMilvusServiceOptionsModel.BucketName = core.StringPtr("Sample bucket name")
 				createMilvusServiceOptionsModel.Origin = core.StringPtr("native")
-				createMilvusServiceOptionsModel.Description = core.StringPtr("milvus service for running sql queries")
+				createMilvusServiceOptionsModel.RootPath = core.StringPtr("Sample path")
 				createMilvusServiceOptionsModel.ServiceDisplayName = core.StringPtr("sampleService")
+				createMilvusServiceOptionsModel.BucketType = core.StringPtr("Sample bucket type")
+				createMilvusServiceOptionsModel.Description = core.StringPtr("milvus service for running sql queries")
 				createMilvusServiceOptionsModel.Tags = []string{"tag1", "tag2"}
+				createMilvusServiceOptionsModel.TshirtSize = core.StringPtr("small")
 				createMilvusServiceOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				createMilvusServiceOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Expect response parsing to fail since we are receiving a text/plain response
@@ -21401,7 +28597,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "created_by": "<username>@<domain>.com", "created_on": 9, "description": "milvus service for running sql queries", "grpc_host": "example.grpc.host", "grpc_port": 8, "host_name": "sampleMilvus", "https_host": "example.https.host", "https_port": 9, "origin": "native", "service_display_name": "sampleService", "service_id": "sampleService123", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "milvus"}`)
+					fmt.Fprintf(res, "%s", `{"access_key": "Sample bucket access key", "actions": ["Actions"], "bucket_name": "Sample bucket name", "bucket_type": "Sample bucket type", "created_by": "<username>@<domain>.com", "created_on": 9, "description": "milvus service for running sql queries", "endpoint": "Sample bucket type", "grpc_host": "example.grpc.host", "grpc_port": 8, "host_name": "sampleMilvus", "https_host": "example.https.host", "https_port": 9, "origin": "native", "root_path": "Sample path", "secret_key": "Sample bucket secret access key", "service_display_name": "sampleService", "service_id": "sampleService123", "status": "running", "status_code": 10, "tags": ["Tags"], "tshirt_size": "small", "type": "milvus"}`)
 				}))
 			})
 			It(`Invoke CreateMilvusService successfully with retries`, func() {
@@ -21415,10 +28611,14 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 				// Construct an instance of the CreateMilvusServiceOptions model
 				createMilvusServiceOptionsModel := new(watsonxdatav2.CreateMilvusServiceOptions)
+				createMilvusServiceOptionsModel.BucketName = core.StringPtr("Sample bucket name")
 				createMilvusServiceOptionsModel.Origin = core.StringPtr("native")
-				createMilvusServiceOptionsModel.Description = core.StringPtr("milvus service for running sql queries")
+				createMilvusServiceOptionsModel.RootPath = core.StringPtr("Sample path")
 				createMilvusServiceOptionsModel.ServiceDisplayName = core.StringPtr("sampleService")
+				createMilvusServiceOptionsModel.BucketType = core.StringPtr("Sample bucket type")
+				createMilvusServiceOptionsModel.Description = core.StringPtr("milvus service for running sql queries")
 				createMilvusServiceOptionsModel.Tags = []string{"tag1", "tag2"}
+				createMilvusServiceOptionsModel.TshirtSize = core.StringPtr("small")
 				createMilvusServiceOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				createMilvusServiceOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -21477,7 +28677,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(201)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "created_by": "<username>@<domain>.com", "created_on": 9, "description": "milvus service for running sql queries", "grpc_host": "example.grpc.host", "grpc_port": 8, "host_name": "sampleMilvus", "https_host": "example.https.host", "https_port": 9, "origin": "native", "service_display_name": "sampleService", "service_id": "sampleService123", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "milvus"}`)
+					fmt.Fprintf(res, "%s", `{"access_key": "Sample bucket access key", "actions": ["Actions"], "bucket_name": "Sample bucket name", "bucket_type": "Sample bucket type", "created_by": "<username>@<domain>.com", "created_on": 9, "description": "milvus service for running sql queries", "endpoint": "Sample bucket type", "grpc_host": "example.grpc.host", "grpc_port": 8, "host_name": "sampleMilvus", "https_host": "example.https.host", "https_port": 9, "origin": "native", "root_path": "Sample path", "secret_key": "Sample bucket secret access key", "service_display_name": "sampleService", "service_id": "sampleService123", "status": "running", "status_code": 10, "tags": ["Tags"], "tshirt_size": "small", "type": "milvus"}`)
 				}))
 			})
 			It(`Invoke CreateMilvusService successfully`, func() {
@@ -21496,10 +28696,14 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 				// Construct an instance of the CreateMilvusServiceOptions model
 				createMilvusServiceOptionsModel := new(watsonxdatav2.CreateMilvusServiceOptions)
+				createMilvusServiceOptionsModel.BucketName = core.StringPtr("Sample bucket name")
 				createMilvusServiceOptionsModel.Origin = core.StringPtr("native")
-				createMilvusServiceOptionsModel.Description = core.StringPtr("milvus service for running sql queries")
+				createMilvusServiceOptionsModel.RootPath = core.StringPtr("Sample path")
 				createMilvusServiceOptionsModel.ServiceDisplayName = core.StringPtr("sampleService")
+				createMilvusServiceOptionsModel.BucketType = core.StringPtr("Sample bucket type")
+				createMilvusServiceOptionsModel.Description = core.StringPtr("milvus service for running sql queries")
 				createMilvusServiceOptionsModel.Tags = []string{"tag1", "tag2"}
+				createMilvusServiceOptionsModel.TshirtSize = core.StringPtr("small")
 				createMilvusServiceOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				createMilvusServiceOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -21520,10 +28724,14 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 				// Construct an instance of the CreateMilvusServiceOptions model
 				createMilvusServiceOptionsModel := new(watsonxdatav2.CreateMilvusServiceOptions)
+				createMilvusServiceOptionsModel.BucketName = core.StringPtr("Sample bucket name")
 				createMilvusServiceOptionsModel.Origin = core.StringPtr("native")
-				createMilvusServiceOptionsModel.Description = core.StringPtr("milvus service for running sql queries")
+				createMilvusServiceOptionsModel.RootPath = core.StringPtr("Sample path")
 				createMilvusServiceOptionsModel.ServiceDisplayName = core.StringPtr("sampleService")
+				createMilvusServiceOptionsModel.BucketType = core.StringPtr("Sample bucket type")
+				createMilvusServiceOptionsModel.Description = core.StringPtr("milvus service for running sql queries")
 				createMilvusServiceOptionsModel.Tags = []string{"tag1", "tag2"}
+				createMilvusServiceOptionsModel.TshirtSize = core.StringPtr("small")
 				createMilvusServiceOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				createMilvusServiceOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
@@ -21565,10 +28773,14 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 				// Construct an instance of the CreateMilvusServiceOptions model
 				createMilvusServiceOptionsModel := new(watsonxdatav2.CreateMilvusServiceOptions)
+				createMilvusServiceOptionsModel.BucketName = core.StringPtr("Sample bucket name")
 				createMilvusServiceOptionsModel.Origin = core.StringPtr("native")
-				createMilvusServiceOptionsModel.Description = core.StringPtr("milvus service for running sql queries")
+				createMilvusServiceOptionsModel.RootPath = core.StringPtr("Sample path")
 				createMilvusServiceOptionsModel.ServiceDisplayName = core.StringPtr("sampleService")
+				createMilvusServiceOptionsModel.BucketType = core.StringPtr("Sample bucket type")
+				createMilvusServiceOptionsModel.Description = core.StringPtr("milvus service for running sql queries")
 				createMilvusServiceOptionsModel.Tags = []string{"tag1", "tag2"}
+				createMilvusServiceOptionsModel.TshirtSize = core.StringPtr("small")
 				createMilvusServiceOptionsModel.AuthInstanceID = core.StringPtr("testString")
 				createMilvusServiceOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -21652,7 +28864,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "created_by": "<username>@<domain>.com", "created_on": 9, "description": "milvus service for running sql queries", "grpc_host": "example.grpc.host", "grpc_port": 8, "host_name": "sampleMilvus", "https_host": "example.https.host", "https_port": 9, "origin": "native", "service_display_name": "sampleService", "service_id": "sampleService123", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "milvus"}`)
+					fmt.Fprintf(res, "%s", `{"access_key": "Sample bucket access key", "actions": ["Actions"], "bucket_name": "Sample bucket name", "bucket_type": "Sample bucket type", "created_by": "<username>@<domain>.com", "created_on": 9, "description": "milvus service for running sql queries", "endpoint": "Sample bucket type", "grpc_host": "example.grpc.host", "grpc_port": 8, "host_name": "sampleMilvus", "https_host": "example.https.host", "https_port": 9, "origin": "native", "root_path": "Sample path", "secret_key": "Sample bucket secret access key", "service_display_name": "sampleService", "service_id": "sampleService123", "status": "running", "status_code": 10, "tags": ["Tags"], "tshirt_size": "small", "type": "milvus"}`)
 				}))
 			})
 			It(`Invoke GetMilvusService successfully with retries`, func() {
@@ -21709,7 +28921,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "created_by": "<username>@<domain>.com", "created_on": 9, "description": "milvus service for running sql queries", "grpc_host": "example.grpc.host", "grpc_port": 8, "host_name": "sampleMilvus", "https_host": "example.https.host", "https_port": 9, "origin": "native", "service_display_name": "sampleService", "service_id": "sampleService123", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "milvus"}`)
+					fmt.Fprintf(res, "%s", `{"access_key": "Sample bucket access key", "actions": ["Actions"], "bucket_name": "Sample bucket name", "bucket_type": "Sample bucket type", "created_by": "<username>@<domain>.com", "created_on": 9, "description": "milvus service for running sql queries", "endpoint": "Sample bucket type", "grpc_host": "example.grpc.host", "grpc_port": 8, "host_name": "sampleMilvus", "https_host": "example.https.host", "https_port": 9, "origin": "native", "root_path": "Sample path", "secret_key": "Sample bucket secret access key", "service_display_name": "sampleService", "service_id": "sampleService123", "status": "running", "status_code": 10, "tags": ["Tags"], "tshirt_size": "small", "type": "milvus"}`)
 				}))
 			})
 			It(`Invoke GetMilvusService successfully`, func() {
@@ -21972,7 +29184,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "created_by": "<username>@<domain>.com", "created_on": 9, "description": "milvus service for running sql queries", "grpc_host": "example.grpc.host", "grpc_port": 8, "host_name": "sampleMilvus", "https_host": "example.https.host", "https_port": 9, "origin": "native", "service_display_name": "sampleService", "service_id": "sampleService123", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "milvus"}`)
+					fmt.Fprintf(res, "%s", `{"access_key": "Sample bucket access key", "actions": ["Actions"], "bucket_name": "Sample bucket name", "bucket_type": "Sample bucket type", "created_by": "<username>@<domain>.com", "created_on": 9, "description": "milvus service for running sql queries", "endpoint": "Sample bucket type", "grpc_host": "example.grpc.host", "grpc_port": 8, "host_name": "sampleMilvus", "https_host": "example.https.host", "https_port": 9, "origin": "native", "root_path": "Sample path", "secret_key": "Sample bucket secret access key", "service_display_name": "sampleService", "service_id": "sampleService123", "status": "running", "status_code": 10, "tags": ["Tags"], "tshirt_size": "small", "type": "milvus"}`)
 				}))
 			})
 			It(`Invoke UpdateMilvusService successfully with retries`, func() {
@@ -22054,7 +29266,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"actions": ["Actions"], "created_by": "<username>@<domain>.com", "created_on": 9, "description": "milvus service for running sql queries", "grpc_host": "example.grpc.host", "grpc_port": 8, "host_name": "sampleMilvus", "https_host": "example.https.host", "https_port": 9, "origin": "native", "service_display_name": "sampleService", "service_id": "sampleService123", "status": "running", "status_code": 10, "tags": ["Tags"], "type": "milvus"}`)
+					fmt.Fprintf(res, "%s", `{"access_key": "Sample bucket access key", "actions": ["Actions"], "bucket_name": "Sample bucket name", "bucket_type": "Sample bucket type", "created_by": "<username>@<domain>.com", "created_on": 9, "description": "milvus service for running sql queries", "endpoint": "Sample bucket type", "grpc_host": "example.grpc.host", "grpc_port": 8, "host_name": "sampleMilvus", "https_host": "example.https.host", "https_port": 9, "origin": "native", "root_path": "Sample path", "secret_key": "Sample bucket secret access key", "service_display_name": "sampleService", "service_id": "sampleService123", "status": "running", "status_code": 10, "tags": ["Tags"], "tshirt_size": "small", "type": "milvus"}`)
 				}))
 			})
 			It(`Invoke UpdateMilvusService successfully`, func() {
@@ -22180,6 +29392,1163 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			})
 		})
 	})
+	Describe(`ListMilvusServiceDatabases(listMilvusServiceDatabasesOptions *ListMilvusServiceDatabasesOptions) - Operation response error`, func() {
+		listMilvusServiceDatabasesPath := "/milvus_services/testString/databases"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(listMilvusServiceDatabasesPath))
+					Expect(req.Method).To(Equal("GET"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke ListMilvusServiceDatabases with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the ListMilvusServiceDatabasesOptions model
+				listMilvusServiceDatabasesOptionsModel := new(watsonxdatav2.ListMilvusServiceDatabasesOptions)
+				listMilvusServiceDatabasesOptionsModel.ServiceID = core.StringPtr("testString")
+				listMilvusServiceDatabasesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listMilvusServiceDatabasesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.ListMilvusServiceDatabases(listMilvusServiceDatabasesOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.ListMilvusServiceDatabases(listMilvusServiceDatabasesOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`ListMilvusServiceDatabases(listMilvusServiceDatabasesOptions *ListMilvusServiceDatabasesOptions)`, func() {
+		listMilvusServiceDatabasesPath := "/milvus_services/testString/databases"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(listMilvusServiceDatabasesPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"databases": ["default"]}`)
+				}))
+			})
+			It(`Invoke ListMilvusServiceDatabases successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the ListMilvusServiceDatabasesOptions model
+				listMilvusServiceDatabasesOptionsModel := new(watsonxdatav2.ListMilvusServiceDatabasesOptions)
+				listMilvusServiceDatabasesOptionsModel.ServiceID = core.StringPtr("testString")
+				listMilvusServiceDatabasesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listMilvusServiceDatabasesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.ListMilvusServiceDatabasesWithContext(ctx, listMilvusServiceDatabasesOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.ListMilvusServiceDatabases(listMilvusServiceDatabasesOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.ListMilvusServiceDatabasesWithContext(ctx, listMilvusServiceDatabasesOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(listMilvusServiceDatabasesPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"databases": ["default"]}`)
+				}))
+			})
+			It(`Invoke ListMilvusServiceDatabases successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.ListMilvusServiceDatabases(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the ListMilvusServiceDatabasesOptions model
+				listMilvusServiceDatabasesOptionsModel := new(watsonxdatav2.ListMilvusServiceDatabasesOptions)
+				listMilvusServiceDatabasesOptionsModel.ServiceID = core.StringPtr("testString")
+				listMilvusServiceDatabasesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listMilvusServiceDatabasesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.ListMilvusServiceDatabases(listMilvusServiceDatabasesOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke ListMilvusServiceDatabases with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the ListMilvusServiceDatabasesOptions model
+				listMilvusServiceDatabasesOptionsModel := new(watsonxdatav2.ListMilvusServiceDatabasesOptions)
+				listMilvusServiceDatabasesOptionsModel.ServiceID = core.StringPtr("testString")
+				listMilvusServiceDatabasesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listMilvusServiceDatabasesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.ListMilvusServiceDatabases(listMilvusServiceDatabasesOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the ListMilvusServiceDatabasesOptions model with no property values
+				listMilvusServiceDatabasesOptionsModelNew := new(watsonxdatav2.ListMilvusServiceDatabasesOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = watsonxDataService.ListMilvusServiceDatabases(listMilvusServiceDatabasesOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke ListMilvusServiceDatabases successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the ListMilvusServiceDatabasesOptions model
+				listMilvusServiceDatabasesOptionsModel := new(watsonxdatav2.ListMilvusServiceDatabasesOptions)
+				listMilvusServiceDatabasesOptionsModel.ServiceID = core.StringPtr("testString")
+				listMilvusServiceDatabasesOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listMilvusServiceDatabasesOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.ListMilvusServiceDatabases(listMilvusServiceDatabasesOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`ListMilvusDatabaseCollections(listMilvusDatabaseCollectionsOptions *ListMilvusDatabaseCollectionsOptions) - Operation response error`, func() {
+		listMilvusDatabaseCollectionsPath := "/milvus_services/testString/databases/testString/collections"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(listMilvusDatabaseCollectionsPath))
+					Expect(req.Method).To(Equal("GET"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke ListMilvusDatabaseCollections with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the ListMilvusDatabaseCollectionsOptions model
+				listMilvusDatabaseCollectionsOptionsModel := new(watsonxdatav2.ListMilvusDatabaseCollectionsOptions)
+				listMilvusDatabaseCollectionsOptionsModel.ServiceID = core.StringPtr("testString")
+				listMilvusDatabaseCollectionsOptionsModel.DatabaseID = core.StringPtr("testString")
+				listMilvusDatabaseCollectionsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listMilvusDatabaseCollectionsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.ListMilvusDatabaseCollections(listMilvusDatabaseCollectionsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.ListMilvusDatabaseCollections(listMilvusDatabaseCollectionsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`ListMilvusDatabaseCollections(listMilvusDatabaseCollectionsOptions *ListMilvusDatabaseCollectionsOptions)`, func() {
+		listMilvusDatabaseCollectionsPath := "/milvus_services/testString/databases/testString/collections"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(listMilvusDatabaseCollectionsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"collections": [{"collection_id": 12, "collection_name": "col1", "physical_channels": ["PhysicalChannels"], "virtual_channels": ["VirtualChannels"]}]}`)
+				}))
+			})
+			It(`Invoke ListMilvusDatabaseCollections successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the ListMilvusDatabaseCollectionsOptions model
+				listMilvusDatabaseCollectionsOptionsModel := new(watsonxdatav2.ListMilvusDatabaseCollectionsOptions)
+				listMilvusDatabaseCollectionsOptionsModel.ServiceID = core.StringPtr("testString")
+				listMilvusDatabaseCollectionsOptionsModel.DatabaseID = core.StringPtr("testString")
+				listMilvusDatabaseCollectionsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listMilvusDatabaseCollectionsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.ListMilvusDatabaseCollectionsWithContext(ctx, listMilvusDatabaseCollectionsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.ListMilvusDatabaseCollections(listMilvusDatabaseCollectionsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.ListMilvusDatabaseCollectionsWithContext(ctx, listMilvusDatabaseCollectionsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(listMilvusDatabaseCollectionsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"collections": [{"collection_id": 12, "collection_name": "col1", "physical_channels": ["PhysicalChannels"], "virtual_channels": ["VirtualChannels"]}]}`)
+				}))
+			})
+			It(`Invoke ListMilvusDatabaseCollections successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.ListMilvusDatabaseCollections(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the ListMilvusDatabaseCollectionsOptions model
+				listMilvusDatabaseCollectionsOptionsModel := new(watsonxdatav2.ListMilvusDatabaseCollectionsOptions)
+				listMilvusDatabaseCollectionsOptionsModel.ServiceID = core.StringPtr("testString")
+				listMilvusDatabaseCollectionsOptionsModel.DatabaseID = core.StringPtr("testString")
+				listMilvusDatabaseCollectionsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listMilvusDatabaseCollectionsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.ListMilvusDatabaseCollections(listMilvusDatabaseCollectionsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke ListMilvusDatabaseCollections with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the ListMilvusDatabaseCollectionsOptions model
+				listMilvusDatabaseCollectionsOptionsModel := new(watsonxdatav2.ListMilvusDatabaseCollectionsOptions)
+				listMilvusDatabaseCollectionsOptionsModel.ServiceID = core.StringPtr("testString")
+				listMilvusDatabaseCollectionsOptionsModel.DatabaseID = core.StringPtr("testString")
+				listMilvusDatabaseCollectionsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listMilvusDatabaseCollectionsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.ListMilvusDatabaseCollections(listMilvusDatabaseCollectionsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the ListMilvusDatabaseCollectionsOptions model with no property values
+				listMilvusDatabaseCollectionsOptionsModelNew := new(watsonxdatav2.ListMilvusDatabaseCollectionsOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = watsonxDataService.ListMilvusDatabaseCollections(listMilvusDatabaseCollectionsOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke ListMilvusDatabaseCollections successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the ListMilvusDatabaseCollectionsOptions model
+				listMilvusDatabaseCollectionsOptionsModel := new(watsonxdatav2.ListMilvusDatabaseCollectionsOptions)
+				listMilvusDatabaseCollectionsOptionsModel.ServiceID = core.StringPtr("testString")
+				listMilvusDatabaseCollectionsOptionsModel.DatabaseID = core.StringPtr("testString")
+				listMilvusDatabaseCollectionsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				listMilvusDatabaseCollectionsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.ListMilvusDatabaseCollections(listMilvusDatabaseCollectionsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateMilvusServicePause(createMilvusServicePauseOptions *CreateMilvusServicePauseOptions) - Operation response error`, func() {
+		createMilvusServicePausePath := "/milvus_services/testString/pause"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createMilvusServicePausePath))
+					Expect(req.Method).To(Equal("POST"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke CreateMilvusServicePause with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateMilvusServicePauseOptions model
+				createMilvusServicePauseOptionsModel := new(watsonxdatav2.CreateMilvusServicePauseOptions)
+				createMilvusServicePauseOptionsModel.ServiceID = core.StringPtr("testString")
+				createMilvusServicePauseOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createMilvusServicePauseOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.CreateMilvusServicePause(createMilvusServicePauseOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.CreateMilvusServicePause(createMilvusServicePauseOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateMilvusServicePause(createMilvusServicePauseOptions *CreateMilvusServicePauseOptions)`, func() {
+		createMilvusServicePausePath := "/milvus_services/testString/pause"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createMilvusServicePausePath))
+					Expect(req.Method).To(Equal("POST"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"message": "Message", "message_code": "MessageCode"}`)
+				}))
+			})
+			It(`Invoke CreateMilvusServicePause successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the CreateMilvusServicePauseOptions model
+				createMilvusServicePauseOptionsModel := new(watsonxdatav2.CreateMilvusServicePauseOptions)
+				createMilvusServicePauseOptionsModel.ServiceID = core.StringPtr("testString")
+				createMilvusServicePauseOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createMilvusServicePauseOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.CreateMilvusServicePauseWithContext(ctx, createMilvusServicePauseOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.CreateMilvusServicePause(createMilvusServicePauseOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.CreateMilvusServicePauseWithContext(ctx, createMilvusServicePauseOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createMilvusServicePausePath))
+					Expect(req.Method).To(Equal("POST"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"message": "Message", "message_code": "MessageCode"}`)
+				}))
+			})
+			It(`Invoke CreateMilvusServicePause successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.CreateMilvusServicePause(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the CreateMilvusServicePauseOptions model
+				createMilvusServicePauseOptionsModel := new(watsonxdatav2.CreateMilvusServicePauseOptions)
+				createMilvusServicePauseOptionsModel.ServiceID = core.StringPtr("testString")
+				createMilvusServicePauseOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createMilvusServicePauseOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.CreateMilvusServicePause(createMilvusServicePauseOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke CreateMilvusServicePause with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateMilvusServicePauseOptions model
+				createMilvusServicePauseOptionsModel := new(watsonxdatav2.CreateMilvusServicePauseOptions)
+				createMilvusServicePauseOptionsModel.ServiceID = core.StringPtr("testString")
+				createMilvusServicePauseOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createMilvusServicePauseOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.CreateMilvusServicePause(createMilvusServicePauseOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the CreateMilvusServicePauseOptions model with no property values
+				createMilvusServicePauseOptionsModelNew := new(watsonxdatav2.CreateMilvusServicePauseOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = watsonxDataService.CreateMilvusServicePause(createMilvusServicePauseOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(201)
+				}))
+			})
+			It(`Invoke CreateMilvusServicePause successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateMilvusServicePauseOptions model
+				createMilvusServicePauseOptionsModel := new(watsonxdatav2.CreateMilvusServicePauseOptions)
+				createMilvusServicePauseOptionsModel.ServiceID = core.StringPtr("testString")
+				createMilvusServicePauseOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createMilvusServicePauseOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.CreateMilvusServicePause(createMilvusServicePauseOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateMilvusServiceResume(createMilvusServiceResumeOptions *CreateMilvusServiceResumeOptions) - Operation response error`, func() {
+		createMilvusServiceResumePath := "/milvus_services/testString/resume"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createMilvusServiceResumePath))
+					Expect(req.Method).To(Equal("POST"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke CreateMilvusServiceResume with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateMilvusServiceResumeOptions model
+				createMilvusServiceResumeOptionsModel := new(watsonxdatav2.CreateMilvusServiceResumeOptions)
+				createMilvusServiceResumeOptionsModel.ServiceID = core.StringPtr("testString")
+				createMilvusServiceResumeOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createMilvusServiceResumeOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.CreateMilvusServiceResume(createMilvusServiceResumeOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.CreateMilvusServiceResume(createMilvusServiceResumeOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateMilvusServiceResume(createMilvusServiceResumeOptions *CreateMilvusServiceResumeOptions)`, func() {
+		createMilvusServiceResumePath := "/milvus_services/testString/resume"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createMilvusServiceResumePath))
+					Expect(req.Method).To(Equal("POST"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"message": "Message", "message_code": "MessageCode"}`)
+				}))
+			})
+			It(`Invoke CreateMilvusServiceResume successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the CreateMilvusServiceResumeOptions model
+				createMilvusServiceResumeOptionsModel := new(watsonxdatav2.CreateMilvusServiceResumeOptions)
+				createMilvusServiceResumeOptionsModel.ServiceID = core.StringPtr("testString")
+				createMilvusServiceResumeOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createMilvusServiceResumeOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.CreateMilvusServiceResumeWithContext(ctx, createMilvusServiceResumeOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.CreateMilvusServiceResume(createMilvusServiceResumeOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.CreateMilvusServiceResumeWithContext(ctx, createMilvusServiceResumeOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createMilvusServiceResumePath))
+					Expect(req.Method).To(Equal("POST"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"message": "Message", "message_code": "MessageCode"}`)
+				}))
+			})
+			It(`Invoke CreateMilvusServiceResume successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.CreateMilvusServiceResume(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the CreateMilvusServiceResumeOptions model
+				createMilvusServiceResumeOptionsModel := new(watsonxdatav2.CreateMilvusServiceResumeOptions)
+				createMilvusServiceResumeOptionsModel.ServiceID = core.StringPtr("testString")
+				createMilvusServiceResumeOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createMilvusServiceResumeOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.CreateMilvusServiceResume(createMilvusServiceResumeOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke CreateMilvusServiceResume with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateMilvusServiceResumeOptions model
+				createMilvusServiceResumeOptionsModel := new(watsonxdatav2.CreateMilvusServiceResumeOptions)
+				createMilvusServiceResumeOptionsModel.ServiceID = core.StringPtr("testString")
+				createMilvusServiceResumeOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createMilvusServiceResumeOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.CreateMilvusServiceResume(createMilvusServiceResumeOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the CreateMilvusServiceResumeOptions model with no property values
+				createMilvusServiceResumeOptionsModelNew := new(watsonxdatav2.CreateMilvusServiceResumeOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = watsonxDataService.CreateMilvusServiceResume(createMilvusServiceResumeOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(201)
+				}))
+			})
+			It(`Invoke CreateMilvusServiceResume successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateMilvusServiceResumeOptions model
+				createMilvusServiceResumeOptionsModel := new(watsonxdatav2.CreateMilvusServiceResumeOptions)
+				createMilvusServiceResumeOptionsModel.ServiceID = core.StringPtr("testString")
+				createMilvusServiceResumeOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createMilvusServiceResumeOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.CreateMilvusServiceResume(createMilvusServiceResumeOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateMilvusServiceScale(createMilvusServiceScaleOptions *CreateMilvusServiceScaleOptions) - Operation response error`, func() {
+		createMilvusServiceScalePath := "/milvus_services/testString/scale"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createMilvusServiceScalePath))
+					Expect(req.Method).To(Equal("POST"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke CreateMilvusServiceScale with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateMilvusServiceScaleOptions model
+				createMilvusServiceScaleOptionsModel := new(watsonxdatav2.CreateMilvusServiceScaleOptions)
+				createMilvusServiceScaleOptionsModel.ServiceID = core.StringPtr("testString")
+				createMilvusServiceScaleOptionsModel.TshirtSize = core.StringPtr("small")
+				createMilvusServiceScaleOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createMilvusServiceScaleOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.CreateMilvusServiceScale(createMilvusServiceScaleOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.CreateMilvusServiceScale(createMilvusServiceScaleOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`CreateMilvusServiceScale(createMilvusServiceScaleOptions *CreateMilvusServiceScaleOptions)`, func() {
+		createMilvusServiceScalePath := "/milvus_services/testString/scale"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createMilvusServiceScalePath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"message": "Message", "message_code": "MessageCode"}`)
+				}))
+			})
+			It(`Invoke CreateMilvusServiceScale successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the CreateMilvusServiceScaleOptions model
+				createMilvusServiceScaleOptionsModel := new(watsonxdatav2.CreateMilvusServiceScaleOptions)
+				createMilvusServiceScaleOptionsModel.ServiceID = core.StringPtr("testString")
+				createMilvusServiceScaleOptionsModel.TshirtSize = core.StringPtr("small")
+				createMilvusServiceScaleOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createMilvusServiceScaleOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.CreateMilvusServiceScaleWithContext(ctx, createMilvusServiceScaleOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.CreateMilvusServiceScale(createMilvusServiceScaleOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.CreateMilvusServiceScaleWithContext(ctx, createMilvusServiceScaleOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(createMilvusServiceScalePath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(201)
+					fmt.Fprintf(res, "%s", `{"message": "Message", "message_code": "MessageCode"}`)
+				}))
+			})
+			It(`Invoke CreateMilvusServiceScale successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.CreateMilvusServiceScale(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the CreateMilvusServiceScaleOptions model
+				createMilvusServiceScaleOptionsModel := new(watsonxdatav2.CreateMilvusServiceScaleOptions)
+				createMilvusServiceScaleOptionsModel.ServiceID = core.StringPtr("testString")
+				createMilvusServiceScaleOptionsModel.TshirtSize = core.StringPtr("small")
+				createMilvusServiceScaleOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createMilvusServiceScaleOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.CreateMilvusServiceScale(createMilvusServiceScaleOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke CreateMilvusServiceScale with error: Operation validation and request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateMilvusServiceScaleOptions model
+				createMilvusServiceScaleOptionsModel := new(watsonxdatav2.CreateMilvusServiceScaleOptions)
+				createMilvusServiceScaleOptionsModel.ServiceID = core.StringPtr("testString")
+				createMilvusServiceScaleOptionsModel.TshirtSize = core.StringPtr("small")
+				createMilvusServiceScaleOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createMilvusServiceScaleOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.CreateMilvusServiceScale(createMilvusServiceScaleOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the CreateMilvusServiceScaleOptions model with no property values
+				createMilvusServiceScaleOptionsModelNew := new(watsonxdatav2.CreateMilvusServiceScaleOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = watsonxDataService.CreateMilvusServiceScale(createMilvusServiceScaleOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(201)
+				}))
+			})
+			It(`Invoke CreateMilvusServiceScale successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the CreateMilvusServiceScaleOptions model
+				createMilvusServiceScaleOptionsModel := new(watsonxdatav2.CreateMilvusServiceScaleOptions)
+				createMilvusServiceScaleOptionsModel.ServiceID = core.StringPtr("testString")
+				createMilvusServiceScaleOptionsModel.TshirtSize = core.StringPtr("small")
+				createMilvusServiceScaleOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				createMilvusServiceScaleOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.CreateMilvusServiceScale(createMilvusServiceScaleOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
 	Describe(`ListIngestionJobs(listIngestionJobsOptions *ListIngestionJobsOptions) - Operation response error`, func() {
 		listIngestionJobsPath := "/ingestion_jobs"
 		Context(`Using mock server endpoint with invalid JSON response`, func() {
@@ -22192,7 +30561,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 					Expect(req.Method).To(Equal("GET"))
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
-					Expect(req.URL.Query()["page"]).To(Equal([]string{fmt.Sprint(int64(1))}))
+					Expect(req.URL.Query()["start"]).To(Equal([]string{"1"}))
 					Expect(req.URL.Query()["jobs_per_page"]).To(Equal([]string{fmt.Sprint(int64(1))}))
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
@@ -22210,7 +30579,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				// Construct an instance of the ListIngestionJobsOptions model
 				listIngestionJobsOptionsModel := new(watsonxdatav2.ListIngestionJobsOptions)
 				listIngestionJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				listIngestionJobsOptionsModel.Page = core.Int64Ptr(int64(1))
+				listIngestionJobsOptionsModel.Start = core.StringPtr("1")
 				listIngestionJobsOptionsModel.JobsPerPage = core.Int64Ptr(int64(1))
 				listIngestionJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Expect response parsing to fail since we are receiving a text/plain response
@@ -22244,7 +30613,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
-					Expect(req.URL.Query()["page"]).To(Equal([]string{fmt.Sprint(int64(1))}))
+					Expect(req.URL.Query()["start"]).To(Equal([]string{"1"}))
 					Expect(req.URL.Query()["jobs_per_page"]).To(Equal([]string{fmt.Sprint(int64(1))}))
 					// Sleep a short time to support a timeout test
 					time.Sleep(100 * time.Millisecond)
@@ -22267,7 +30636,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				// Construct an instance of the ListIngestionJobsOptions model
 				listIngestionJobsOptionsModel := new(watsonxdatav2.ListIngestionJobsOptions)
 				listIngestionJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				listIngestionJobsOptionsModel.Page = core.Int64Ptr(int64(1))
+				listIngestionJobsOptionsModel.Start = core.StringPtr("1")
 				listIngestionJobsOptionsModel.JobsPerPage = core.Int64Ptr(int64(1))
 				listIngestionJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -22307,7 +30676,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
 					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
-					Expect(req.URL.Query()["page"]).To(Equal([]string{fmt.Sprint(int64(1))}))
+					Expect(req.URL.Query()["start"]).To(Equal([]string{"1"}))
 					Expect(req.URL.Query()["jobs_per_page"]).To(Equal([]string{fmt.Sprint(int64(1))}))
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
@@ -22332,7 +30701,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				// Construct an instance of the ListIngestionJobsOptions model
 				listIngestionJobsOptionsModel := new(watsonxdatav2.ListIngestionJobsOptions)
 				listIngestionJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				listIngestionJobsOptionsModel.Page = core.Int64Ptr(int64(1))
+				listIngestionJobsOptionsModel.Start = core.StringPtr("1")
 				listIngestionJobsOptionsModel.JobsPerPage = core.Int64Ptr(int64(1))
 				listIngestionJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -22354,7 +30723,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				// Construct an instance of the ListIngestionJobsOptions model
 				listIngestionJobsOptionsModel := new(watsonxdatav2.ListIngestionJobsOptions)
 				listIngestionJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				listIngestionJobsOptionsModel.Page = core.Int64Ptr(int64(1))
+				listIngestionJobsOptionsModel.Start = core.StringPtr("1")
 				listIngestionJobsOptionsModel.JobsPerPage = core.Int64Ptr(int64(1))
 				listIngestionJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
@@ -22397,7 +30766,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				// Construct an instance of the ListIngestionJobsOptions model
 				listIngestionJobsOptionsModel := new(watsonxdatav2.ListIngestionJobsOptions)
 				listIngestionJobsOptionsModel.AuthInstanceID = core.StringPtr("testString")
-				listIngestionJobsOptionsModel.Page = core.Int64Ptr(int64(1))
+				listIngestionJobsOptionsModel.Start = core.StringPtr("1")
 				listIngestionJobsOptionsModel.JobsPerPage = core.Int64Ptr(int64(1))
 				listIngestionJobsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -22411,6 +30780,107 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			})
 			AfterEach(func() {
 				testServer.Close()
+			})
+		})
+		Context(`Test pagination helper method on response`, func() {
+			It(`Invoke GetNextStart successfully`, func() {
+				responseObject := new(watsonxdatav2.IngestionJobCollection)
+				nextObject := new(watsonxdatav2.IngestionJobCollectionPage)
+				nextObject.Href = core.StringPtr("ibm.com?start=abc-123")
+				responseObject.Next = nextObject
+
+				value, err := responseObject.GetNextStart()
+				Expect(err).To(BeNil())
+				Expect(value).To(Equal(core.StringPtr("abc-123")))
+			})
+			It(`Invoke GetNextStart without a "Next" property in the response`, func() {
+				responseObject := new(watsonxdatav2.IngestionJobCollection)
+
+				value, err := responseObject.GetNextStart()
+				Expect(err).To(BeNil())
+				Expect(value).To(BeNil())
+			})
+			It(`Invoke GetNextStart without any query params in the "Next" URL`, func() {
+				responseObject := new(watsonxdatav2.IngestionJobCollection)
+				nextObject := new(watsonxdatav2.IngestionJobCollectionPage)
+				nextObject.Href = core.StringPtr("ibm.com")
+				responseObject.Next = nextObject
+
+				value, err := responseObject.GetNextStart()
+				Expect(err).To(BeNil())
+				Expect(value).To(BeNil())
+			})
+		})
+		Context(`Using mock server endpoint - paginated response`, func() {
+			BeforeEach(func() {
+				var requestNumber int = 0
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(listIngestionJobsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					requestNumber++
+					if requestNumber == 1 {
+						fmt.Fprintf(res, "%s", `{"next":{"href":"https://myhost.com/somePath?start=1"},"total_count":2,"limit":1,"ingestion_jobs":[{"create_if_not_exist":false,"csv_property":{"encoding":"utf-8","escape_character":"|","field_delimiter":",","header":true,"line_delimiter":"\n"},"details":"Path does not exist 'demobucket/data/yellow_tripdata_2022-01.parquet'. Detail: [errno 2] No such file or directory","end_timestamp":"1685088775","engine_id":"spark123","engine_name":"sparkdemo","execute_config":{"driver_cores":1,"driver_memory":"2G","executor_cores":1,"executor_memory":"2G","num_executors":1},"instance_id":"1684432229673971","job_id":"ingestion-1699459946935","partition_by":"col1, col2","schema":"{\"type\":\"struct\",\"schema-id\":0,\"fields\":[{\"id\":1,\"name\":\"ID\",\"required\":true,\"type\":\"int\"},{\"id\":2,\"name\":\"Name\",\"required\":true,\"type\":\"string\"}]}","source_data_files":"s3://demobucket/data/yellow_tripdata_2022-01.parquet","source_file_type":"csv","start_timestamp":"1685084455","status":"running","target_table":"demodb.test.targettable","username":"ibmlhadmin","validate_csv_header":false}]}`)
+					} else if requestNumber == 2 {
+						fmt.Fprintf(res, "%s", `{"total_count":2,"limit":1,"ingestion_jobs":[{"create_if_not_exist":false,"csv_property":{"encoding":"utf-8","escape_character":"|","field_delimiter":",","header":true,"line_delimiter":"\n"},"details":"Path does not exist 'demobucket/data/yellow_tripdata_2022-01.parquet'. Detail: [errno 2] No such file or directory","end_timestamp":"1685088775","engine_id":"spark123","engine_name":"sparkdemo","execute_config":{"driver_cores":1,"driver_memory":"2G","executor_cores":1,"executor_memory":"2G","num_executors":1},"instance_id":"1684432229673971","job_id":"ingestion-1699459946935","partition_by":"col1, col2","schema":"{\"type\":\"struct\",\"schema-id\":0,\"fields\":[{\"id\":1,\"name\":\"ID\",\"required\":true,\"type\":\"int\"},{\"id\":2,\"name\":\"Name\",\"required\":true,\"type\":\"string\"}]}","source_data_files":"s3://demobucket/data/yellow_tripdata_2022-01.parquet","source_file_type":"csv","start_timestamp":"1685084455","status":"running","target_table":"demodb.test.targettable","username":"ibmlhadmin","validate_csv_header":false}]}`)
+					} else {
+						res.WriteHeader(400)
+					}
+				}))
+			})
+			It(`Use IngestionJobsPager.GetNext successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				listIngestionJobsOptionsModel := &watsonxdatav2.ListIngestionJobsOptions{
+					AuthInstanceID: core.StringPtr("testString"),
+					JobsPerPage: core.Int64Ptr(int64(1)),
+				}
+
+				pager, err := watsonxDataService.NewIngestionJobsPager(listIngestionJobsOptionsModel)
+				Expect(err).To(BeNil())
+				Expect(pager).ToNot(BeNil())
+
+				var allResults []watsonxdatav2.IngestionJob
+				for pager.HasNext() {
+					nextPage, err := pager.GetNext()
+					Expect(err).To(BeNil())
+					Expect(nextPage).ToNot(BeNil())
+					allResults = append(allResults, nextPage...)
+				}
+				Expect(len(allResults)).To(Equal(2))
+			})
+			It(`Use IngestionJobsPager.GetAll successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				listIngestionJobsOptionsModel := &watsonxdatav2.ListIngestionJobsOptions{
+					AuthInstanceID: core.StringPtr("testString"),
+					JobsPerPage: core.Int64Ptr(int64(1)),
+				}
+
+				pager, err := watsonxDataService.NewIngestionJobsPager(listIngestionJobsOptionsModel)
+				Expect(err).To(BeNil())
+				Expect(pager).ToNot(BeNil())
+
+				allResults, err := pager.GetAll()
+				Expect(err).To(BeNil())
+				Expect(allResults).ToNot(BeNil())
+				Expect(len(allResults)).To(Equal(2))
 			})
 		})
 	})
@@ -23677,53 +32147,222 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			})
 		})
 	})
+	Describe(`GetEndpoints(getEndpointsOptions *GetEndpointsOptions) - Operation response error`, func() {
+		getEndpointsPath := "/endpoints"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getEndpointsPath))
+					Expect(req.Method).To(Equal("GET"))
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke GetEndpoints with error: Operation response processing error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetEndpointsOptions model
+				getEndpointsOptionsModel := new(watsonxdatav2.GetEndpointsOptions)
+				getEndpointsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getEndpointsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := watsonxDataService.GetEndpoints(getEndpointsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				watsonxDataService.EnableRetries(0, 0)
+				result, response, operationErr = watsonxDataService.GetEndpoints(getEndpointsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`GetEndpoints(getEndpointsOptions *GetEndpointsOptions)`, func() {
+		getEndpointsPath := "/endpoints"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getEndpointsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"endpoints": [{"external_host": "https://cpg-svc.your-hostname.apps.your-domain.com", "service_type": "cpg"}]}`)
+				}))
+			})
+			It(`Invoke GetEndpoints successfully with retries`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+				watsonxDataService.EnableRetries(0, 0)
+
+				// Construct an instance of the GetEndpointsOptions model
+				getEndpointsOptionsModel := new(watsonxdatav2.GetEndpointsOptions)
+				getEndpointsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getEndpointsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := watsonxDataService.GetEndpointsWithContext(ctx, getEndpointsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				watsonxDataService.DisableRetries()
+				result, response, operationErr := watsonxDataService.GetEndpoints(getEndpointsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = watsonxDataService.GetEndpointsWithContext(ctx, getEndpointsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(getEndpointsPath))
+					Expect(req.Method).To(Equal("GET"))
+
+					Expect(req.Header["Authinstanceid"]).ToNot(BeNil())
+					Expect(req.Header["Authinstanceid"][0]).To(Equal(fmt.Sprintf("%v", "testString")))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"endpoints": [{"external_host": "https://cpg-svc.your-hostname.apps.your-domain.com", "service_type": "cpg"}]}`)
+				}))
+			})
+			It(`Invoke GetEndpoints successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := watsonxDataService.GetEndpoints(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the GetEndpointsOptions model
+				getEndpointsOptionsModel := new(watsonxdatav2.GetEndpointsOptions)
+				getEndpointsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getEndpointsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = watsonxDataService.GetEndpoints(getEndpointsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke GetEndpoints with error: Operation request error`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetEndpointsOptions model
+				getEndpointsOptionsModel := new(watsonxdatav2.GetEndpointsOptions)
+				getEndpointsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getEndpointsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := watsonxDataService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := watsonxDataService.GetEndpoints(getEndpointsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke GetEndpoints successfully`, func() {
+				watsonxDataService, serviceErr := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(watsonxDataService).ToNot(BeNil())
+
+				// Construct an instance of the GetEndpointsOptions model
+				getEndpointsOptionsModel := new(watsonxdatav2.GetEndpointsOptions)
+				getEndpointsOptionsModel.AuthInstanceID = core.StringPtr("testString")
+				getEndpointsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := watsonxDataService.GetEndpoints(getEndpointsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
 	Describe(`Model constructor tests`, func() {
 		Context(`Using a service client instance`, func() {
 			watsonxDataService, _ := watsonxdatav2.NewWatsonxDataV2(&watsonxdatav2.WatsonxDataV2Options{
 				URL:           "http://watsonxdatav2modelgenerator.com",
 				Authenticator: &core.NoAuthAuthenticator{},
-			})
-			It(`Invoke NewAddPrestissimoEngineCatalogsOptions successfully`, func() {
-				// Construct an instance of the AddPrestissimoEngineCatalogsOptions model
-				engineID := "testString"
-				addPrestissimoEngineCatalogsOptionsModel := watsonxDataService.NewAddPrestissimoEngineCatalogsOptions(engineID)
-				addPrestissimoEngineCatalogsOptionsModel.SetEngineID("testString")
-				addPrestissimoEngineCatalogsOptionsModel.SetCatalogNames("testString")
-				addPrestissimoEngineCatalogsOptionsModel.SetAuthInstanceID("testString")
-				addPrestissimoEngineCatalogsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
-				Expect(addPrestissimoEngineCatalogsOptionsModel).ToNot(BeNil())
-				Expect(addPrestissimoEngineCatalogsOptionsModel.EngineID).To(Equal(core.StringPtr("testString")))
-				Expect(addPrestissimoEngineCatalogsOptionsModel.CatalogNames).To(Equal(core.StringPtr("testString")))
-				Expect(addPrestissimoEngineCatalogsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
-				Expect(addPrestissimoEngineCatalogsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
-			})
-			It(`Invoke NewAddPrestoEngineCatalogsOptions successfully`, func() {
-				// Construct an instance of the AddPrestoEngineCatalogsOptions model
-				engineID := "testString"
-				addPrestoEngineCatalogsOptionsModel := watsonxDataService.NewAddPrestoEngineCatalogsOptions(engineID)
-				addPrestoEngineCatalogsOptionsModel.SetEngineID("testString")
-				addPrestoEngineCatalogsOptionsModel.SetCatalogNames("testString")
-				addPrestoEngineCatalogsOptionsModel.SetAuthInstanceID("testString")
-				addPrestoEngineCatalogsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
-				Expect(addPrestoEngineCatalogsOptionsModel).ToNot(BeNil())
-				Expect(addPrestoEngineCatalogsOptionsModel.EngineID).To(Equal(core.StringPtr("testString")))
-				Expect(addPrestoEngineCatalogsOptionsModel.CatalogNames).To(Equal(core.StringPtr("testString")))
-				Expect(addPrestoEngineCatalogsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
-				Expect(addPrestoEngineCatalogsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
-			})
-			It(`Invoke NewAddSparkEngineCatalogsOptions successfully`, func() {
-				// Construct an instance of the AddSparkEngineCatalogsOptions model
-				engineID := "testString"
-				addSparkEngineCatalogsOptionsModel := watsonxDataService.NewAddSparkEngineCatalogsOptions(engineID)
-				addSparkEngineCatalogsOptionsModel.SetEngineID("testString")
-				addSparkEngineCatalogsOptionsModel.SetCatalogNames("testString")
-				addSparkEngineCatalogsOptionsModel.SetAuthInstanceID("testString")
-				addSparkEngineCatalogsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
-				Expect(addSparkEngineCatalogsOptionsModel).ToNot(BeNil())
-				Expect(addSparkEngineCatalogsOptionsModel.EngineID).To(Equal(core.StringPtr("testString")))
-				Expect(addSparkEngineCatalogsOptionsModel.CatalogNames).To(Equal(core.StringPtr("testString")))
-				Expect(addSparkEngineCatalogsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
-				Expect(addSparkEngineCatalogsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewBucketDetails successfully`, func() {
 				bucketName := "sample-bucket"
@@ -23744,18 +32383,6 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(createActivateBucketOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewCreateBucketRegistrationOptions successfully`, func() {
-				// Construct an instance of the BucketDetails model
-				bucketDetailsModel := new(watsonxdatav2.BucketDetails)
-				Expect(bucketDetailsModel).ToNot(BeNil())
-				bucketDetailsModel.AccessKey = core.StringPtr("b9cbf248ea5c4c96947e64407108559j")
-				bucketDetailsModel.BucketName = core.StringPtr("sample-bucket")
-				bucketDetailsModel.Endpoint = core.StringPtr("https://s3.<region>.cloud-object-storage.appdomain.cloud/")
-				bucketDetailsModel.SecretKey = core.StringPtr("13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87")
-				Expect(bucketDetailsModel.AccessKey).To(Equal(core.StringPtr("b9cbf248ea5c4c96947e64407108559j")))
-				Expect(bucketDetailsModel.BucketName).To(Equal(core.StringPtr("sample-bucket")))
-				Expect(bucketDetailsModel.Endpoint).To(Equal(core.StringPtr("https://s3.<region>.cloud-object-storage.appdomain.cloud/")))
-				Expect(bucketDetailsModel.SecretKey).To(Equal(core.StringPtr("13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87")))
-
 				// Construct an instance of the BucketCatalog model
 				bucketCatalogModel := new(watsonxdatav2.BucketCatalog)
 				Expect(bucketCatalogModel).ToNot(BeNil())
@@ -23766,30 +32393,71 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(bucketCatalogModel.CatalogTags).To(Equal([]string{"catalog_tag_1", "catalog_tag_2"}))
 				Expect(bucketCatalogModel.CatalogType).To(Equal(core.StringPtr("iceberg")))
 
+				// Construct an instance of the BucketDetails model
+				bucketDetailsModel := new(watsonxdatav2.BucketDetails)
+				Expect(bucketDetailsModel).ToNot(BeNil())
+				bucketDetailsModel.AccessKey = core.StringPtr("b9cbf248ea5c4c96947e64407108559j")
+				bucketDetailsModel.BucketName = core.StringPtr("sample-bucket")
+				bucketDetailsModel.Endpoint = core.StringPtr("https://s3.<region>.cloud-object-storage.appdomain.cloud/")
+				bucketDetailsModel.KeyFile = core.StringPtr("key_file")
+				bucketDetailsModel.Provider = core.StringPtr("ibm_cos")
+				bucketDetailsModel.Region = core.StringPtr("us-south")
+				bucketDetailsModel.SecretKey = core.StringPtr("13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87")
+				Expect(bucketDetailsModel.AccessKey).To(Equal(core.StringPtr("b9cbf248ea5c4c96947e64407108559j")))
+				Expect(bucketDetailsModel.BucketName).To(Equal(core.StringPtr("sample-bucket")))
+				Expect(bucketDetailsModel.Endpoint).To(Equal(core.StringPtr("https://s3.<region>.cloud-object-storage.appdomain.cloud/")))
+				Expect(bucketDetailsModel.KeyFile).To(Equal(core.StringPtr("key_file")))
+				Expect(bucketDetailsModel.Provider).To(Equal(core.StringPtr("ibm_cos")))
+				Expect(bucketDetailsModel.Region).To(Equal(core.StringPtr("us-south")))
+				Expect(bucketDetailsModel.SecretKey).To(Equal(core.StringPtr("13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87")))
+
+				// Construct an instance of the StorageDetails model
+				storageDetailsModel := new(watsonxdatav2.StorageDetails)
+				Expect(storageDetailsModel).ToNot(BeNil())
+				storageDetailsModel.AccessKey = core.StringPtr("<access_key>")
+				storageDetailsModel.ApplicationID = core.StringPtr("<application_id>")
+				storageDetailsModel.AuthMode = core.StringPtr("<account_key/sas/service_principle>")
+				storageDetailsModel.ContainerName = core.StringPtr("sample-container")
+				storageDetailsModel.DirectoryID = core.StringPtr("<directory_id>")
+				storageDetailsModel.Endpoint = core.StringPtr("abfss://<container_name>@<storage_account_name>.dfs.core.windows.net/")
+				storageDetailsModel.SasToken = core.StringPtr("<sas_token>")
+				storageDetailsModel.SecretKey = core.StringPtr("secret_key")
+				storageDetailsModel.StorageAccountName = core.StringPtr("sample-storage")
+				Expect(storageDetailsModel.AccessKey).To(Equal(core.StringPtr("<access_key>")))
+				Expect(storageDetailsModel.ApplicationID).To(Equal(core.StringPtr("<application_id>")))
+				Expect(storageDetailsModel.AuthMode).To(Equal(core.StringPtr("<account_key/sas/service_principle>")))
+				Expect(storageDetailsModel.ContainerName).To(Equal(core.StringPtr("sample-container")))
+				Expect(storageDetailsModel.DirectoryID).To(Equal(core.StringPtr("<directory_id>")))
+				Expect(storageDetailsModel.Endpoint).To(Equal(core.StringPtr("abfss://<container_name>@<storage_account_name>.dfs.core.windows.net/")))
+				Expect(storageDetailsModel.SasToken).To(Equal(core.StringPtr("<sas_token>")))
+				Expect(storageDetailsModel.SecretKey).To(Equal(core.StringPtr("secret_key")))
+				Expect(storageDetailsModel.StorageAccountName).To(Equal(core.StringPtr("sample-storage")))
+
 				// Construct an instance of the CreateBucketRegistrationOptions model
-				var createBucketRegistrationOptionsBucketDetails *watsonxdatav2.BucketDetails = nil
 				createBucketRegistrationOptionsBucketType := "ibm_cos"
 				createBucketRegistrationOptionsDescription := "COS bucket for customer data"
 				createBucketRegistrationOptionsManagedBy := "ibm"
-				createBucketRegistrationOptionsModel := watsonxDataService.NewCreateBucketRegistrationOptions(createBucketRegistrationOptionsBucketDetails, createBucketRegistrationOptionsBucketType, createBucketRegistrationOptionsDescription, createBucketRegistrationOptionsManagedBy)
-				createBucketRegistrationOptionsModel.SetBucketDetails(bucketDetailsModel)
+				createBucketRegistrationOptionsModel := watsonxDataService.NewCreateBucketRegistrationOptions(createBucketRegistrationOptionsBucketType, createBucketRegistrationOptionsDescription, createBucketRegistrationOptionsManagedBy)
 				createBucketRegistrationOptionsModel.SetBucketType("ibm_cos")
 				createBucketRegistrationOptionsModel.SetDescription("COS bucket for customer data")
 				createBucketRegistrationOptionsModel.SetManagedBy("ibm")
 				createBucketRegistrationOptionsModel.SetAssociatedCatalog(bucketCatalogModel)
+				createBucketRegistrationOptionsModel.SetBucketDetails(bucketDetailsModel)
 				createBucketRegistrationOptionsModel.SetBucketDisplayName("sample-bucket-displayname")
 				createBucketRegistrationOptionsModel.SetRegion("us-south")
+				createBucketRegistrationOptionsModel.SetStorageDetails(storageDetailsModel)
 				createBucketRegistrationOptionsModel.SetTags([]string{"bucket-tag1", "bucket-tag2"})
 				createBucketRegistrationOptionsModel.SetAuthInstanceID("testString")
 				createBucketRegistrationOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
 				Expect(createBucketRegistrationOptionsModel).ToNot(BeNil())
-				Expect(createBucketRegistrationOptionsModel.BucketDetails).To(Equal(bucketDetailsModel))
 				Expect(createBucketRegistrationOptionsModel.BucketType).To(Equal(core.StringPtr("ibm_cos")))
 				Expect(createBucketRegistrationOptionsModel.Description).To(Equal(core.StringPtr("COS bucket for customer data")))
 				Expect(createBucketRegistrationOptionsModel.ManagedBy).To(Equal(core.StringPtr("ibm")))
 				Expect(createBucketRegistrationOptionsModel.AssociatedCatalog).To(Equal(bucketCatalogModel))
+				Expect(createBucketRegistrationOptionsModel.BucketDetails).To(Equal(bucketDetailsModel))
 				Expect(createBucketRegistrationOptionsModel.BucketDisplayName).To(Equal(core.StringPtr("sample-bucket-displayname")))
 				Expect(createBucketRegistrationOptionsModel.Region).To(Equal(core.StringPtr("us-south")))
+				Expect(createBucketRegistrationOptionsModel.StorageDetails).To(Equal(storageDetailsModel))
 				Expect(createBucketRegistrationOptionsModel.Tags).To(Equal([]string{"bucket-tag1", "bucket-tag2"}))
 				Expect(createBucketRegistrationOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(createBucketRegistrationOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
@@ -23803,12 +32471,14 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				columnModel.Extra = core.StringPtr("varchar")
 				columnModel.Length = core.StringPtr("30")
 				columnModel.Scale = core.StringPtr("2")
+				columnModel.Precision = core.StringPtr("10")
 				columnModel.Type = core.StringPtr("varchar")
 				Expect(columnModel.ColumnName).To(Equal(core.StringPtr("expenses")))
 				Expect(columnModel.Comment).To(Equal(core.StringPtr("expenses column")))
 				Expect(columnModel.Extra).To(Equal(core.StringPtr("varchar")))
 				Expect(columnModel.Length).To(Equal(core.StringPtr("30")))
 				Expect(columnModel.Scale).To(Equal(core.StringPtr("2")))
+				Expect(columnModel.Precision).To(Equal(core.StringPtr("10")))
 				Expect(columnModel.Type).To(Equal(core.StringPtr("varchar")))
 
 				// Construct an instance of the CreateColumnsOptions model
@@ -23847,32 +32517,78 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				// Construct an instance of the DatabaseDetails model
 				databaseDetailsModel := new(watsonxdatav2.DatabaseDetails)
 				Expect(databaseDetailsModel).ToNot(BeNil())
+				databaseDetailsModel.AuthenticationType = core.StringPtr("LDAP")
+				databaseDetailsModel.BrokerAuthenticationPassword = core.StringPtr("samplepassword")
+				databaseDetailsModel.BrokerAuthenticationType = core.StringPtr("PASSWORD")
+				databaseDetailsModel.BrokerAuthenticationUser = core.StringPtr("sampleuser")
 				databaseDetailsModel.Certificate = core.StringPtr("contents of a pem/crt file")
 				databaseDetailsModel.CertificateExtension = core.StringPtr("pem/crt")
+				databaseDetailsModel.ConnectionMethod = core.StringPtr("basic, apikey")
+				databaseDetailsModel.ConnectionMode = core.StringPtr("service_name")
+				databaseDetailsModel.ConnectionModeValue = core.StringPtr("orclpdb")
+				databaseDetailsModel.ConnectionType = core.StringPtr("JDBC, Arrow flight")
+				databaseDetailsModel.ControllerAuthenticationPassword = core.StringPtr("samplepassword")
+				databaseDetailsModel.ControllerAuthenticationType = core.StringPtr("PASSWORD")
+				databaseDetailsModel.ControllerAuthenticationUser = core.StringPtr("sampleuser")
+				databaseDetailsModel.CpdHostname = core.StringPtr("samplecpdhostname")
+				databaseDetailsModel.CredentialsKey = core.StringPtr("eyJ0eXBlIjoic2VydmljZV9hY2NvdW50IiwicHJvamVjdF9pZCI6ImNvbm9wcy1iaWdxdWVyeSIsInByaXZhdGVfa2V5X2lkIjoiMGY3......")
 				databaseDetailsModel.DatabaseName = core.StringPtr("new_database")
 				databaseDetailsModel.Hostname = core.StringPtr("db2@<hostname>.com")
 				databaseDetailsModel.HostnameInCertificate = core.StringPtr("samplehostname")
 				databaseDetailsModel.Hosts = core.StringPtr("abc.com:1234,xyz.com:4321")
+				databaseDetailsModel.InformixServer = core.StringPtr("ol_informix1410")
 				databaseDetailsModel.Password = core.StringPtr("samplepassword")
 				databaseDetailsModel.Port = core.Int64Ptr(int64(4553))
+				databaseDetailsModel.ProjectID = core.StringPtr("conops-bigquery")
 				databaseDetailsModel.Sasl = core.BoolPtr(true)
+				databaseDetailsModel.ServiceApiKey = core.StringPtr("sampleapikey")
+				databaseDetailsModel.ServiceHostname = core.StringPtr("api.dataplatform.dev.cloud.ibm.com")
+				databaseDetailsModel.ServicePassword = core.StringPtr("samplepassword")
+				databaseDetailsModel.ServicePort = core.Int64Ptr(int64(443))
+				databaseDetailsModel.ServiceSsl = core.BoolPtr(true)
+				databaseDetailsModel.ServiceTokenURL = core.StringPtr("sampletoakenurl")
+				databaseDetailsModel.ServiceUsername = core.StringPtr("sampleusername")
 				databaseDetailsModel.Ssl = core.BoolPtr(true)
 				databaseDetailsModel.Tables = core.StringPtr("kafka_table_name")
 				databaseDetailsModel.Username = core.StringPtr("sampleuser")
 				databaseDetailsModel.ValidateServerCertificate = core.BoolPtr(true)
+				databaseDetailsModel.VerifyHostName = core.BoolPtr(true)
+				Expect(databaseDetailsModel.AuthenticationType).To(Equal(core.StringPtr("LDAP")))
+				Expect(databaseDetailsModel.BrokerAuthenticationPassword).To(Equal(core.StringPtr("samplepassword")))
+				Expect(databaseDetailsModel.BrokerAuthenticationType).To(Equal(core.StringPtr("PASSWORD")))
+				Expect(databaseDetailsModel.BrokerAuthenticationUser).To(Equal(core.StringPtr("sampleuser")))
 				Expect(databaseDetailsModel.Certificate).To(Equal(core.StringPtr("contents of a pem/crt file")))
 				Expect(databaseDetailsModel.CertificateExtension).To(Equal(core.StringPtr("pem/crt")))
+				Expect(databaseDetailsModel.ConnectionMethod).To(Equal(core.StringPtr("basic, apikey")))
+				Expect(databaseDetailsModel.ConnectionMode).To(Equal(core.StringPtr("service_name")))
+				Expect(databaseDetailsModel.ConnectionModeValue).To(Equal(core.StringPtr("orclpdb")))
+				Expect(databaseDetailsModel.ConnectionType).To(Equal(core.StringPtr("JDBC, Arrow flight")))
+				Expect(databaseDetailsModel.ControllerAuthenticationPassword).To(Equal(core.StringPtr("samplepassword")))
+				Expect(databaseDetailsModel.ControllerAuthenticationType).To(Equal(core.StringPtr("PASSWORD")))
+				Expect(databaseDetailsModel.ControllerAuthenticationUser).To(Equal(core.StringPtr("sampleuser")))
+				Expect(databaseDetailsModel.CpdHostname).To(Equal(core.StringPtr("samplecpdhostname")))
+				Expect(databaseDetailsModel.CredentialsKey).To(Equal(core.StringPtr("eyJ0eXBlIjoic2VydmljZV9hY2NvdW50IiwicHJvamVjdF9pZCI6ImNvbm9wcy1iaWdxdWVyeSIsInByaXZhdGVfa2V5X2lkIjoiMGY3......")))
 				Expect(databaseDetailsModel.DatabaseName).To(Equal(core.StringPtr("new_database")))
 				Expect(databaseDetailsModel.Hostname).To(Equal(core.StringPtr("db2@<hostname>.com")))
 				Expect(databaseDetailsModel.HostnameInCertificate).To(Equal(core.StringPtr("samplehostname")))
 				Expect(databaseDetailsModel.Hosts).To(Equal(core.StringPtr("abc.com:1234,xyz.com:4321")))
+				Expect(databaseDetailsModel.InformixServer).To(Equal(core.StringPtr("ol_informix1410")))
 				Expect(databaseDetailsModel.Password).To(Equal(core.StringPtr("samplepassword")))
 				Expect(databaseDetailsModel.Port).To(Equal(core.Int64Ptr(int64(4553))))
+				Expect(databaseDetailsModel.ProjectID).To(Equal(core.StringPtr("conops-bigquery")))
 				Expect(databaseDetailsModel.Sasl).To(Equal(core.BoolPtr(true)))
+				Expect(databaseDetailsModel.ServiceApiKey).To(Equal(core.StringPtr("sampleapikey")))
+				Expect(databaseDetailsModel.ServiceHostname).To(Equal(core.StringPtr("api.dataplatform.dev.cloud.ibm.com")))
+				Expect(databaseDetailsModel.ServicePassword).To(Equal(core.StringPtr("samplepassword")))
+				Expect(databaseDetailsModel.ServicePort).To(Equal(core.Int64Ptr(int64(443))))
+				Expect(databaseDetailsModel.ServiceSsl).To(Equal(core.BoolPtr(true)))
+				Expect(databaseDetailsModel.ServiceTokenURL).To(Equal(core.StringPtr("sampletoakenurl")))
+				Expect(databaseDetailsModel.ServiceUsername).To(Equal(core.StringPtr("sampleusername")))
 				Expect(databaseDetailsModel.Ssl).To(Equal(core.BoolPtr(true)))
 				Expect(databaseDetailsModel.Tables).To(Equal(core.StringPtr("kafka_table_name")))
 				Expect(databaseDetailsModel.Username).To(Equal(core.StringPtr("sampleuser")))
 				Expect(databaseDetailsModel.ValidateServerCertificate).To(Equal(core.BoolPtr(true)))
+				Expect(databaseDetailsModel.VerifyHostName).To(Equal(core.BoolPtr(true)))
 
 				// Construct an instance of the DatabaseRegistrationPrototypeDatabasePropertiesItems model
 				databaseRegistrationPrototypeDatabasePropertiesItemsModel := new(watsonxdatav2.DatabaseRegistrationPrototypeDatabasePropertiesItems)
@@ -23935,6 +32651,103 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(createDb2EngineOptionsModel.Tags).To(Equal([]string{"tag1", "tag2"}))
 				Expect(createDb2EngineOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(createDb2EngineOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewCreateDriverRegistrationOptions successfully`, func() {
+				// Construct an instance of the CreateDriverRegistrationOptions model
+				driver := CreateMockReader("This is a mock file.")
+				driverName := "testString"
+				connectionType := "testString"
+				createDriverRegistrationOptionsModel := watsonxDataService.NewCreateDriverRegistrationOptions(driver, driverName, connectionType)
+				createDriverRegistrationOptionsModel.SetDriver(CreateMockReader("This is a mock file."))
+				createDriverRegistrationOptionsModel.SetDriverName("testString")
+				createDriverRegistrationOptionsModel.SetConnectionType("testString")
+				createDriverRegistrationOptionsModel.SetDriverContentType("testString")
+				createDriverRegistrationOptionsModel.SetVersion("testString")
+				createDriverRegistrationOptionsModel.SetAuthInstanceID("testString")
+				createDriverRegistrationOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(createDriverRegistrationOptionsModel).ToNot(BeNil())
+				Expect(createDriverRegistrationOptionsModel.Driver).To(Equal(CreateMockReader("This is a mock file.")))
+				Expect(createDriverRegistrationOptionsModel.DriverName).To(Equal(core.StringPtr("testString")))
+				Expect(createDriverRegistrationOptionsModel.ConnectionType).To(Equal(core.StringPtr("testString")))
+				Expect(createDriverRegistrationOptionsModel.DriverContentType).To(Equal(core.StringPtr("testString")))
+				Expect(createDriverRegistrationOptionsModel.Version).To(Equal(core.StringPtr("testString")))
+				Expect(createDriverRegistrationOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(createDriverRegistrationOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewCreateExecuteQueryOptions successfully`, func() {
+				// Construct an instance of the CreateExecuteQueryOptions model
+				engineID := "testString"
+				createExecuteQueryOptionsSqlString := "select expenses from expenditure"
+				createExecuteQueryOptionsModel := watsonxDataService.NewCreateExecuteQueryOptions(engineID, createExecuteQueryOptionsSqlString)
+				createExecuteQueryOptionsModel.SetEngineID("testString")
+				createExecuteQueryOptionsModel.SetSqlString("select expenses from expenditure")
+				createExecuteQueryOptionsModel.SetCatalogName("sampleCatalog")
+				createExecuteQueryOptionsModel.SetSchemaName("SampleSchema1")
+				createExecuteQueryOptionsModel.SetAuthInstanceID("testString")
+				createExecuteQueryOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(createExecuteQueryOptionsModel).ToNot(BeNil())
+				Expect(createExecuteQueryOptionsModel.EngineID).To(Equal(core.StringPtr("testString")))
+				Expect(createExecuteQueryOptionsModel.SqlString).To(Equal(core.StringPtr("select expenses from expenditure")))
+				Expect(createExecuteQueryOptionsModel.CatalogName).To(Equal(core.StringPtr("sampleCatalog")))
+				Expect(createExecuteQueryOptionsModel.SchemaName).To(Equal(core.StringPtr("SampleSchema1")))
+				Expect(createExecuteQueryOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(createExecuteQueryOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewCreateHdfsStorageOptions successfully`, func() {
+				// Construct an instance of the CreateHdfsStorageOptions model
+				bucketDisplayName := "testString"
+				bucketType := "testString"
+				hmsThriftURI := "testString"
+				hmsThriftPort := int64(1)
+				coreSite := "testString"
+				hdfsSite := "testString"
+				kerberos := "testString"
+				catalogName := "testString"
+				catalogType := "testString"
+				createHdfsStorageOptionsModel := watsonxDataService.NewCreateHdfsStorageOptions(bucketDisplayName, bucketType, hmsThriftURI, hmsThriftPort, coreSite, hdfsSite, kerberos, catalogName, catalogType)
+				createHdfsStorageOptionsModel.SetBucketDisplayName("testString")
+				createHdfsStorageOptionsModel.SetBucketType("testString")
+				createHdfsStorageOptionsModel.SetHmsThriftURI("testString")
+				createHdfsStorageOptionsModel.SetHmsThriftPort(int64(1))
+				createHdfsStorageOptionsModel.SetCoreSite("testString")
+				createHdfsStorageOptionsModel.SetHdfsSite("testString")
+				createHdfsStorageOptionsModel.SetKerberos("testString")
+				createHdfsStorageOptionsModel.SetCatalogName("testString")
+				createHdfsStorageOptionsModel.SetCatalogType("testString")
+				createHdfsStorageOptionsModel.SetKrb5Config("testString")
+				createHdfsStorageOptionsModel.SetHiveKeytab(CreateMockReader("This is a mock file."))
+				createHdfsStorageOptionsModel.SetHiveKeytabContentType("testString")
+				createHdfsStorageOptionsModel.SetHdfsKeytab(CreateMockReader("This is a mock file."))
+				createHdfsStorageOptionsModel.SetHdfsKeytabContentType("testString")
+				createHdfsStorageOptionsModel.SetHiveServerPrincipal("testString")
+				createHdfsStorageOptionsModel.SetHiveClientPrincipal("testString")
+				createHdfsStorageOptionsModel.SetHdfsPrincipal("testString")
+				createHdfsStorageOptionsModel.SetDescription("testString")
+				createHdfsStorageOptionsModel.SetCreatedOn("testString")
+				createHdfsStorageOptionsModel.SetAuthInstanceID("testString")
+				createHdfsStorageOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(createHdfsStorageOptionsModel).ToNot(BeNil())
+				Expect(createHdfsStorageOptionsModel.BucketDisplayName).To(Equal(core.StringPtr("testString")))
+				Expect(createHdfsStorageOptionsModel.BucketType).To(Equal(core.StringPtr("testString")))
+				Expect(createHdfsStorageOptionsModel.HmsThriftURI).To(Equal(core.StringPtr("testString")))
+				Expect(createHdfsStorageOptionsModel.HmsThriftPort).To(Equal(core.Int64Ptr(int64(1))))
+				Expect(createHdfsStorageOptionsModel.CoreSite).To(Equal(core.StringPtr("testString")))
+				Expect(createHdfsStorageOptionsModel.HdfsSite).To(Equal(core.StringPtr("testString")))
+				Expect(createHdfsStorageOptionsModel.Kerberos).To(Equal(core.StringPtr("testString")))
+				Expect(createHdfsStorageOptionsModel.CatalogName).To(Equal(core.StringPtr("testString")))
+				Expect(createHdfsStorageOptionsModel.CatalogType).To(Equal(core.StringPtr("testString")))
+				Expect(createHdfsStorageOptionsModel.Krb5Config).To(Equal(core.StringPtr("testString")))
+				Expect(createHdfsStorageOptionsModel.HiveKeytab).To(Equal(CreateMockReader("This is a mock file.")))
+				Expect(createHdfsStorageOptionsModel.HiveKeytabContentType).To(Equal(core.StringPtr("testString")))
+				Expect(createHdfsStorageOptionsModel.HdfsKeytab).To(Equal(CreateMockReader("This is a mock file.")))
+				Expect(createHdfsStorageOptionsModel.HdfsKeytabContentType).To(Equal(core.StringPtr("testString")))
+				Expect(createHdfsStorageOptionsModel.HiveServerPrincipal).To(Equal(core.StringPtr("testString")))
+				Expect(createHdfsStorageOptionsModel.HiveClientPrincipal).To(Equal(core.StringPtr("testString")))
+				Expect(createHdfsStorageOptionsModel.HdfsPrincipal).To(Equal(core.StringPtr("testString")))
+				Expect(createHdfsStorageOptionsModel.Description).To(Equal(core.StringPtr("testString")))
+				Expect(createHdfsStorageOptionsModel.CreatedOn).To(Equal(core.StringPtr("testString")))
+				Expect(createHdfsStorageOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(createHdfsStorageOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewCreateIngestionJobsLocalFilesOptions successfully`, func() {
 				// Construct an instance of the CreateIngestionJobsLocalFilesOptions model
@@ -24038,23 +32851,97 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(createIngestionJobsOptionsModel.ValidateCsvHeader).To(Equal(core.BoolPtr(false)))
 				Expect(createIngestionJobsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
+			It(`Invoke NewCreateIntegrationOptions successfully`, func() {
+				// Construct an instance of the CreateIntegrationOptions model
+				createIntegrationOptionsModel := watsonxDataService.NewCreateIntegrationOptions()
+				createIntegrationOptionsModel.SetApikey("testString")
+				createIntegrationOptionsModel.SetEnableDataPolicyWithinWxd(false)
+				createIntegrationOptionsModel.SetPassword("password")
+				createIntegrationOptionsModel.SetResource("resource_name")
+				createIntegrationOptionsModel.SetServiceType("ranger")
+				createIntegrationOptionsModel.SetStorageCatalogs([]string{"testString"})
+				createIntegrationOptionsModel.SetURL("http://abcd.efgh.com:9876/")
+				createIntegrationOptionsModel.SetUsername("username")
+				createIntegrationOptionsModel.SetAuthInstanceID("testString")
+				createIntegrationOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(createIntegrationOptionsModel).ToNot(BeNil())
+				Expect(createIntegrationOptionsModel.Apikey).To(Equal(core.StringPtr("testString")))
+				Expect(createIntegrationOptionsModel.EnableDataPolicyWithinWxd).To(Equal(core.BoolPtr(false)))
+				Expect(createIntegrationOptionsModel.Password).To(Equal(core.StringPtr("password")))
+				Expect(createIntegrationOptionsModel.Resource).To(Equal(core.StringPtr("resource_name")))
+				Expect(createIntegrationOptionsModel.ServiceType).To(Equal(core.StringPtr("ranger")))
+				Expect(createIntegrationOptionsModel.StorageCatalogs).To(Equal([]string{"testString"}))
+				Expect(createIntegrationOptionsModel.URL).To(Equal(core.StringPtr("http://abcd.efgh.com:9876/")))
+				Expect(createIntegrationOptionsModel.Username).To(Equal(core.StringPtr("username")))
+				Expect(createIntegrationOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(createIntegrationOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
 			It(`Invoke NewCreateMilvusServiceOptions successfully`, func() {
 				// Construct an instance of the CreateMilvusServiceOptions model
+				createMilvusServiceOptionsBucketName := "Sample bucket name"
 				createMilvusServiceOptionsOrigin := "native"
-				createMilvusServiceOptionsModel := watsonxDataService.NewCreateMilvusServiceOptions(createMilvusServiceOptionsOrigin)
+				createMilvusServiceOptionsRootPath := "Sample path"
+				createMilvusServiceOptionsServiceDisplayName := "sampleService"
+				createMilvusServiceOptionsModel := watsonxDataService.NewCreateMilvusServiceOptions(createMilvusServiceOptionsBucketName, createMilvusServiceOptionsOrigin, createMilvusServiceOptionsRootPath, createMilvusServiceOptionsServiceDisplayName)
+				createMilvusServiceOptionsModel.SetBucketName("Sample bucket name")
 				createMilvusServiceOptionsModel.SetOrigin("native")
-				createMilvusServiceOptionsModel.SetDescription("milvus service for running sql queries")
+				createMilvusServiceOptionsModel.SetRootPath("Sample path")
 				createMilvusServiceOptionsModel.SetServiceDisplayName("sampleService")
+				createMilvusServiceOptionsModel.SetBucketType("Sample bucket type")
+				createMilvusServiceOptionsModel.SetDescription("milvus service for running sql queries")
 				createMilvusServiceOptionsModel.SetTags([]string{"tag1", "tag2"})
+				createMilvusServiceOptionsModel.SetTshirtSize("small")
 				createMilvusServiceOptionsModel.SetAuthInstanceID("testString")
 				createMilvusServiceOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
 				Expect(createMilvusServiceOptionsModel).ToNot(BeNil())
+				Expect(createMilvusServiceOptionsModel.BucketName).To(Equal(core.StringPtr("Sample bucket name")))
 				Expect(createMilvusServiceOptionsModel.Origin).To(Equal(core.StringPtr("native")))
-				Expect(createMilvusServiceOptionsModel.Description).To(Equal(core.StringPtr("milvus service for running sql queries")))
+				Expect(createMilvusServiceOptionsModel.RootPath).To(Equal(core.StringPtr("Sample path")))
 				Expect(createMilvusServiceOptionsModel.ServiceDisplayName).To(Equal(core.StringPtr("sampleService")))
+				Expect(createMilvusServiceOptionsModel.BucketType).To(Equal(core.StringPtr("Sample bucket type")))
+				Expect(createMilvusServiceOptionsModel.Description).To(Equal(core.StringPtr("milvus service for running sql queries")))
 				Expect(createMilvusServiceOptionsModel.Tags).To(Equal([]string{"tag1", "tag2"}))
+				Expect(createMilvusServiceOptionsModel.TshirtSize).To(Equal(core.StringPtr("small")))
 				Expect(createMilvusServiceOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(createMilvusServiceOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewCreateMilvusServicePauseOptions successfully`, func() {
+				// Construct an instance of the CreateMilvusServicePauseOptions model
+				serviceID := "testString"
+				createMilvusServicePauseOptionsModel := watsonxDataService.NewCreateMilvusServicePauseOptions(serviceID)
+				createMilvusServicePauseOptionsModel.SetServiceID("testString")
+				createMilvusServicePauseOptionsModel.SetAuthInstanceID("testString")
+				createMilvusServicePauseOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(createMilvusServicePauseOptionsModel).ToNot(BeNil())
+				Expect(createMilvusServicePauseOptionsModel.ServiceID).To(Equal(core.StringPtr("testString")))
+				Expect(createMilvusServicePauseOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(createMilvusServicePauseOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewCreateMilvusServiceResumeOptions successfully`, func() {
+				// Construct an instance of the CreateMilvusServiceResumeOptions model
+				serviceID := "testString"
+				createMilvusServiceResumeOptionsModel := watsonxDataService.NewCreateMilvusServiceResumeOptions(serviceID)
+				createMilvusServiceResumeOptionsModel.SetServiceID("testString")
+				createMilvusServiceResumeOptionsModel.SetAuthInstanceID("testString")
+				createMilvusServiceResumeOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(createMilvusServiceResumeOptionsModel).ToNot(BeNil())
+				Expect(createMilvusServiceResumeOptionsModel.ServiceID).To(Equal(core.StringPtr("testString")))
+				Expect(createMilvusServiceResumeOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(createMilvusServiceResumeOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewCreateMilvusServiceScaleOptions successfully`, func() {
+				// Construct an instance of the CreateMilvusServiceScaleOptions model
+				serviceID := "testString"
+				createMilvusServiceScaleOptionsModel := watsonxDataService.NewCreateMilvusServiceScaleOptions(serviceID)
+				createMilvusServiceScaleOptionsModel.SetServiceID("testString")
+				createMilvusServiceScaleOptionsModel.SetTshirtSize("small")
+				createMilvusServiceScaleOptionsModel.SetAuthInstanceID("testString")
+				createMilvusServiceScaleOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(createMilvusServiceScaleOptionsModel).ToNot(BeNil())
+				Expect(createMilvusServiceScaleOptionsModel.ServiceID).To(Equal(core.StringPtr("testString")))
+				Expect(createMilvusServiceScaleOptionsModel.TshirtSize).To(Equal(core.StringPtr("small")))
+				Expect(createMilvusServiceScaleOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(createMilvusServiceScaleOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewCreateNetezzaEngineOptions successfully`, func() {
 				// Construct an instance of the NetezzaEngineDetailsBody model
@@ -24100,7 +32987,6 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				createOtherEngineOptionsModel.SetDescription("external engine description")
 				createOtherEngineOptionsModel.SetOrigin("external")
 				createOtherEngineOptionsModel.SetTags([]string{"tag1", "tag2"})
-				createOtherEngineOptionsModel.SetType("netezza")
 				createOtherEngineOptionsModel.SetAuthInstanceID("testString")
 				createOtherEngineOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
 				Expect(createOtherEngineOptionsModel).ToNot(BeNil())
@@ -24109,9 +32995,22 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(createOtherEngineOptionsModel.Description).To(Equal(core.StringPtr("external engine description")))
 				Expect(createOtherEngineOptionsModel.Origin).To(Equal(core.StringPtr("external")))
 				Expect(createOtherEngineOptionsModel.Tags).To(Equal([]string{"tag1", "tag2"}))
-				Expect(createOtherEngineOptionsModel.Type).To(Equal(core.StringPtr("netezza")))
 				Expect(createOtherEngineOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(createOtherEngineOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewCreatePrestissimoEngineCatalogsOptions successfully`, func() {
+				// Construct an instance of the CreatePrestissimoEngineCatalogsOptions model
+				engineID := "testString"
+				createPrestissimoEngineCatalogsOptionsModel := watsonxDataService.NewCreatePrestissimoEngineCatalogsOptions(engineID)
+				createPrestissimoEngineCatalogsOptionsModel.SetEngineID("testString")
+				createPrestissimoEngineCatalogsOptionsModel.SetCatalogName("testString")
+				createPrestissimoEngineCatalogsOptionsModel.SetAuthInstanceID("testString")
+				createPrestissimoEngineCatalogsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(createPrestissimoEngineCatalogsOptionsModel).ToNot(BeNil())
+				Expect(createPrestissimoEngineCatalogsOptionsModel.EngineID).To(Equal(core.StringPtr("testString")))
+				Expect(createPrestissimoEngineCatalogsOptionsModel.CatalogName).To(Equal(core.StringPtr("testString")))
+				Expect(createPrestissimoEngineCatalogsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(createPrestissimoEngineCatalogsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewCreatePrestissimoEngineOptions successfully`, func() {
 				// Construct an instance of the PrestissimoNodeDescriptionBody model
@@ -24186,6 +33085,20 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(createPrestissimoEngineOptionsModel.Version).To(Equal(core.StringPtr("1.2.3")))
 				Expect(createPrestissimoEngineOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(createPrestissimoEngineOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewCreatePrestoEngineCatalogsOptions successfully`, func() {
+				// Construct an instance of the CreatePrestoEngineCatalogsOptions model
+				engineID := "testString"
+				createPrestoEngineCatalogsOptionsModel := watsonxDataService.NewCreatePrestoEngineCatalogsOptions(engineID)
+				createPrestoEngineCatalogsOptionsModel.SetEngineID("testString")
+				createPrestoEngineCatalogsOptionsModel.SetCatalogName("testString")
+				createPrestoEngineCatalogsOptionsModel.SetAuthInstanceID("testString")
+				createPrestoEngineCatalogsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(createPrestoEngineCatalogsOptionsModel).ToNot(BeNil())
+				Expect(createPrestoEngineCatalogsOptionsModel.EngineID).To(Equal(core.StringPtr("testString")))
+				Expect(createPrestoEngineCatalogsOptionsModel.CatalogName).To(Equal(core.StringPtr("testString")))
+				Expect(createPrestoEngineCatalogsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(createPrestoEngineCatalogsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewCreatePrestoEngineOptions successfully`, func() {
 				// Construct an instance of the NodeDescriptionBody model
@@ -24270,6 +33183,190 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(createPreviewIngestionFileOptionsModel.SourceFileType).To(Equal(core.StringPtr("csv")))
 				Expect(createPreviewIngestionFileOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
+			It(`Invoke NewCreateSalIntegrationEnrichmentGlobalSettingsOptions successfully`, func() {
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration model
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration)
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel).ToNot(BeNil())
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.AssignmentThreshold = core.Float64Ptr(float64(0.14))
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.SuggestionThreshold = core.Float64Ptr(float64(0.9))
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.AssignmentThreshold).To(Equal(core.Float64Ptr(float64(0.14))))
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.SuggestionThreshold).To(Equal(core.Float64Ptr(float64(0.9))))
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration model
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration)
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel).ToNot(BeNil())
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.AssignmentThreshold = core.Float64Ptr(float64(0.1))
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.SuggestionThreshold = core.Float64Ptr(float64(0.1))
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.AssignmentThreshold).To(Equal(core.Float64Ptr(float64(0.1))))
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.SuggestionThreshold).To(Equal(core.Float64Ptr(float64(0.1))))
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansion model
+				salIntegrationEnrichmentSettingsSemanticExpansionModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansion)
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionModel).ToNot(BeNil())
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGeneration = core.BoolPtr(true)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGenerationConfiguration = salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansion = core.BoolPtr(true)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansionConfiguration = salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGeneration).To(Equal(core.BoolPtr(true)))
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGenerationConfiguration).To(Equal(salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel))
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansion).To(Equal(core.BoolPtr(true)))
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansionConfiguration).To(Equal(salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel))
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsTermAssignment model
+				salIntegrationEnrichmentSettingsTermAssignmentModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsTermAssignment)
+				Expect(salIntegrationEnrichmentSettingsTermAssignmentModel).ToNot(BeNil())
+				salIntegrationEnrichmentSettingsTermAssignmentModel.ClassBasedAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.EvaluateNegativeAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.LlmBasedAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsCustom = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsDefault = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.NameMatching = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.TermAssignmentThreshold = core.Float64Ptr(float64(0.3))
+				salIntegrationEnrichmentSettingsTermAssignmentModel.TermSuggestionThreshold = core.Float64Ptr(float64(0.4))
+				Expect(salIntegrationEnrichmentSettingsTermAssignmentModel.ClassBasedAssignments).To(Equal(core.BoolPtr(false)))
+				Expect(salIntegrationEnrichmentSettingsTermAssignmentModel.EvaluateNegativeAssignments).To(Equal(core.BoolPtr(false)))
+				Expect(salIntegrationEnrichmentSettingsTermAssignmentModel.LlmBasedAssignments).To(Equal(core.BoolPtr(false)))
+				Expect(salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsCustom).To(Equal(core.BoolPtr(false)))
+				Expect(salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsDefault).To(Equal(core.BoolPtr(false)))
+				Expect(salIntegrationEnrichmentSettingsTermAssignmentModel.NameMatching).To(Equal(core.BoolPtr(false)))
+				Expect(salIntegrationEnrichmentSettingsTermAssignmentModel.TermAssignmentThreshold).To(Equal(core.Float64Ptr(float64(0.3))))
+				Expect(salIntegrationEnrichmentSettingsTermAssignmentModel.TermSuggestionThreshold).To(Equal(core.Float64Ptr(float64(0.4))))
+
+				// Construct an instance of the CreateSalIntegrationEnrichmentGlobalSettingsOptions model
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel := watsonxDataService.NewCreateSalIntegrationEnrichmentGlobalSettingsOptions()
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.SetSemanticExpansion(salIntegrationEnrichmentSettingsSemanticExpansionModel)
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.SetTermAssignment(salIntegrationEnrichmentSettingsTermAssignmentModel)
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.SetAuthInstanceID("testString")
+				createSalIntegrationEnrichmentGlobalSettingsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(createSalIntegrationEnrichmentGlobalSettingsOptionsModel).ToNot(BeNil())
+				Expect(createSalIntegrationEnrichmentGlobalSettingsOptionsModel.SemanticExpansion).To(Equal(salIntegrationEnrichmentSettingsSemanticExpansionModel))
+				Expect(createSalIntegrationEnrichmentGlobalSettingsOptionsModel.TermAssignment).To(Equal(salIntegrationEnrichmentSettingsTermAssignmentModel))
+				Expect(createSalIntegrationEnrichmentGlobalSettingsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(createSalIntegrationEnrichmentGlobalSettingsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewCreateSalIntegrationEnrichmentOptions successfully`, func() {
+				// Construct an instance of the EnrichmentObj model
+				enrichmentObjModel := new(watsonxdatav2.EnrichmentObj)
+				Expect(enrichmentObjModel).ToNot(BeNil())
+				enrichmentObjModel.Catalog = core.StringPtr("iceberg_data")
+				enrichmentObjModel.Operation = core.StringPtr("create")
+				enrichmentObjModel.Schema = core.StringPtr("testString")
+				enrichmentObjModel.Tables = []string{"testString"}
+				Expect(enrichmentObjModel.Catalog).To(Equal(core.StringPtr("iceberg_data")))
+				Expect(enrichmentObjModel.Operation).To(Equal(core.StringPtr("create")))
+				Expect(enrichmentObjModel.Schema).To(Equal(core.StringPtr("testString")))
+				Expect(enrichmentObjModel.Tables).To(Equal([]string{"testString"}))
+
+				// Construct an instance of the CreateSalIntegrationEnrichmentOptions model
+				createSalIntegrationEnrichmentOptionsModel := watsonxDataService.NewCreateSalIntegrationEnrichmentOptions()
+				createSalIntegrationEnrichmentOptionsModel.SetEnrichmentPrototype(enrichmentObjModel)
+				createSalIntegrationEnrichmentOptionsModel.SetAuthInstanceID("testString")
+				createSalIntegrationEnrichmentOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(createSalIntegrationEnrichmentOptionsModel).ToNot(BeNil())
+				Expect(createSalIntegrationEnrichmentOptionsModel.EnrichmentPrototype).To(Equal(enrichmentObjModel))
+				Expect(createSalIntegrationEnrichmentOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(createSalIntegrationEnrichmentOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewCreateSalIntegrationEnrichmentSettingsOptions successfully`, func() {
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration model
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration)
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel).ToNot(BeNil())
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.AssignmentThreshold = core.Float64Ptr(float64(0.14))
+				salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.SuggestionThreshold = core.Float64Ptr(float64(0.9))
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.AssignmentThreshold).To(Equal(core.Float64Ptr(float64(0.14))))
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel.SuggestionThreshold).To(Equal(core.Float64Ptr(float64(0.9))))
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration model
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration)
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel).ToNot(BeNil())
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.AssignmentThreshold = core.Float64Ptr(float64(0.1))
+				salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.SuggestionThreshold = core.Float64Ptr(float64(0.1))
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.AssignmentThreshold).To(Equal(core.Float64Ptr(float64(0.1))))
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel.SuggestionThreshold).To(Equal(core.Float64Ptr(float64(0.1))))
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsSemanticExpansion model
+				salIntegrationEnrichmentSettingsSemanticExpansionModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansion)
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionModel).ToNot(BeNil())
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGeneration = core.BoolPtr(true)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGenerationConfiguration = salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansion = core.BoolPtr(true)
+				salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansionConfiguration = salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGeneration).To(Equal(core.BoolPtr(true)))
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionModel.DescriptionGenerationConfiguration).To(Equal(salIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfigurationModel))
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansion).To(Equal(core.BoolPtr(true)))
+				Expect(salIntegrationEnrichmentSettingsSemanticExpansionModel.NameExpansionConfiguration).To(Equal(salIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfigurationModel))
+
+				// Construct an instance of the SalIntegrationEnrichmentSettingsTermAssignment model
+				salIntegrationEnrichmentSettingsTermAssignmentModel := new(watsonxdatav2.SalIntegrationEnrichmentSettingsTermAssignment)
+				Expect(salIntegrationEnrichmentSettingsTermAssignmentModel).ToNot(BeNil())
+				salIntegrationEnrichmentSettingsTermAssignmentModel.ClassBasedAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.EvaluateNegativeAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.LlmBasedAssignments = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsCustom = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsDefault = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.NameMatching = core.BoolPtr(false)
+				salIntegrationEnrichmentSettingsTermAssignmentModel.TermAssignmentThreshold = core.Float64Ptr(float64(0.3))
+				salIntegrationEnrichmentSettingsTermAssignmentModel.TermSuggestionThreshold = core.Float64Ptr(float64(0.4))
+				Expect(salIntegrationEnrichmentSettingsTermAssignmentModel.ClassBasedAssignments).To(Equal(core.BoolPtr(false)))
+				Expect(salIntegrationEnrichmentSettingsTermAssignmentModel.EvaluateNegativeAssignments).To(Equal(core.BoolPtr(false)))
+				Expect(salIntegrationEnrichmentSettingsTermAssignmentModel.LlmBasedAssignments).To(Equal(core.BoolPtr(false)))
+				Expect(salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsCustom).To(Equal(core.BoolPtr(false)))
+				Expect(salIntegrationEnrichmentSettingsTermAssignmentModel.MlBasedAssignmentsDefault).To(Equal(core.BoolPtr(false)))
+				Expect(salIntegrationEnrichmentSettingsTermAssignmentModel.NameMatching).To(Equal(core.BoolPtr(false)))
+				Expect(salIntegrationEnrichmentSettingsTermAssignmentModel.TermAssignmentThreshold).To(Equal(core.Float64Ptr(float64(0.3))))
+				Expect(salIntegrationEnrichmentSettingsTermAssignmentModel.TermSuggestionThreshold).To(Equal(core.Float64Ptr(float64(0.4))))
+
+				// Construct an instance of the CreateSalIntegrationEnrichmentSettingsOptions model
+				createSalIntegrationEnrichmentSettingsOptionsModel := watsonxDataService.NewCreateSalIntegrationEnrichmentSettingsOptions()
+				createSalIntegrationEnrichmentSettingsOptionsModel.SetSemanticExpansion(salIntegrationEnrichmentSettingsSemanticExpansionModel)
+				createSalIntegrationEnrichmentSettingsOptionsModel.SetTermAssignment(salIntegrationEnrichmentSettingsTermAssignmentModel)
+				createSalIntegrationEnrichmentSettingsOptionsModel.SetProjectID("testString")
+				createSalIntegrationEnrichmentSettingsOptionsModel.SetAuthInstanceID("testString")
+				createSalIntegrationEnrichmentSettingsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(createSalIntegrationEnrichmentSettingsOptionsModel).ToNot(BeNil())
+				Expect(createSalIntegrationEnrichmentSettingsOptionsModel.SemanticExpansion).To(Equal(salIntegrationEnrichmentSettingsSemanticExpansionModel))
+				Expect(createSalIntegrationEnrichmentSettingsOptionsModel.TermAssignment).To(Equal(salIntegrationEnrichmentSettingsTermAssignmentModel))
+				Expect(createSalIntegrationEnrichmentSettingsOptionsModel.ProjectID).To(Equal(core.StringPtr("testString")))
+				Expect(createSalIntegrationEnrichmentSettingsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(createSalIntegrationEnrichmentSettingsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewCreateSalIntegrationOptions successfully`, func() {
+				// Construct an instance of the CreateSalIntegrationOptions model
+				createSalIntegrationOptionsApikey := "12efd3raq"
+				createSalIntegrationOptionsEngineID := "presto-01"
+				createSalIntegrationOptionsModel := watsonxDataService.NewCreateSalIntegrationOptions(createSalIntegrationOptionsApikey, createSalIntegrationOptionsEngineID)
+				createSalIntegrationOptionsModel.SetApikey("12efd3raq")
+				createSalIntegrationOptionsModel.SetEngineID("presto-01")
+				createSalIntegrationOptionsModel.SetStorageResourceCrn("crn:v1:staging:public:cloud-object-storage:global:a/a7026b374f39f570d20984c1ac6ecf63:5778e94f-c8c7-46a8-9878-d5eeadb51161")
+				createSalIntegrationOptionsModel.SetStorageType("bmcos_object_storage")
+				createSalIntegrationOptionsModel.SetTrialPlan(true)
+				createSalIntegrationOptionsModel.SetAuthInstanceID("testString")
+				createSalIntegrationOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(createSalIntegrationOptionsModel).ToNot(BeNil())
+				Expect(createSalIntegrationOptionsModel.Apikey).To(Equal(core.StringPtr("12efd3raq")))
+				Expect(createSalIntegrationOptionsModel.EngineID).To(Equal(core.StringPtr("presto-01")))
+				Expect(createSalIntegrationOptionsModel.StorageResourceCrn).To(Equal(core.StringPtr("crn:v1:staging:public:cloud-object-storage:global:a/a7026b374f39f570d20984c1ac6ecf63:5778e94f-c8c7-46a8-9878-d5eeadb51161")))
+				Expect(createSalIntegrationOptionsModel.StorageType).To(Equal(core.StringPtr("bmcos_object_storage")))
+				Expect(createSalIntegrationOptionsModel.TrialPlan).To(Equal(core.BoolPtr(true)))
+				Expect(createSalIntegrationOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(createSalIntegrationOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewCreateSalIntegrationUploadGlossaryOptions successfully`, func() {
+				// Construct an instance of the CreateSalIntegrationUploadGlossaryOptions model
+				replaceOption := "all"
+				createSalIntegrationUploadGlossaryOptionsModel := watsonxDataService.NewCreateSalIntegrationUploadGlossaryOptions(replaceOption)
+				createSalIntegrationUploadGlossaryOptionsModel.SetReplaceOption("all")
+				createSalIntegrationUploadGlossaryOptionsModel.SetGlossaryCsv(CreateMockReader("This is a mock file."))
+				createSalIntegrationUploadGlossaryOptionsModel.SetGlossaryCsvContentType("testString")
+				createSalIntegrationUploadGlossaryOptionsModel.SetAuthInstanceID("testString")
+				createSalIntegrationUploadGlossaryOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(createSalIntegrationUploadGlossaryOptionsModel).ToNot(BeNil())
+				Expect(createSalIntegrationUploadGlossaryOptionsModel.ReplaceOption).To(Equal(core.StringPtr("all")))
+				Expect(createSalIntegrationUploadGlossaryOptionsModel.GlossaryCsv).To(Equal(CreateMockReader("This is a mock file.")))
+				Expect(createSalIntegrationUploadGlossaryOptionsModel.GlossaryCsvContentType).To(Equal(core.StringPtr("testString")))
+				Expect(createSalIntegrationUploadGlossaryOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(createSalIntegrationUploadGlossaryOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
 			It(`Invoke NewCreateSchemaOptions successfully`, func() {
 				// Construct an instance of the CreateSchemaOptions model
 				engineID := "testString"
@@ -24282,6 +33379,8 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				createSchemaOptionsModel.SetCustomPath("sample-path")
 				createSchemaOptionsModel.SetSchemaName("SampleSchema1")
 				createSchemaOptionsModel.SetBucketName("sample-bucket")
+				createSchemaOptionsModel.SetHostname("db2@hostname.com")
+				createSchemaOptionsModel.SetPort(int64(4553))
 				createSchemaOptionsModel.SetAuthInstanceID("testString")
 				createSchemaOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
 				Expect(createSchemaOptionsModel).ToNot(BeNil())
@@ -24290,6 +33389,8 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(createSchemaOptionsModel.CustomPath).To(Equal(core.StringPtr("sample-path")))
 				Expect(createSchemaOptionsModel.SchemaName).To(Equal(core.StringPtr("SampleSchema1")))
 				Expect(createSchemaOptionsModel.BucketName).To(Equal(core.StringPtr("sample-bucket")))
+				Expect(createSchemaOptionsModel.Hostname).To(Equal(core.StringPtr("db2@hostname.com")))
+				Expect(createSchemaOptionsModel.Port).To(Equal(core.Int64Ptr(int64(4553))))
 				Expect(createSchemaOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(createSchemaOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
@@ -24367,6 +33468,20 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(createSparkEngineApplicationOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(createSparkEngineApplicationOptionsModel.State).To(Equal([]string{"testString"}))
 				Expect(createSparkEngineApplicationOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewCreateSparkEngineCatalogsOptions successfully`, func() {
+				// Construct an instance of the CreateSparkEngineCatalogsOptions model
+				engineID := "testString"
+				createSparkEngineCatalogsOptionsModel := watsonxDataService.NewCreateSparkEngineCatalogsOptions(engineID)
+				createSparkEngineCatalogsOptionsModel.SetEngineID("testString")
+				createSparkEngineCatalogsOptionsModel.SetCatalogName("testString")
+				createSparkEngineCatalogsOptionsModel.SetAuthInstanceID("testString")
+				createSparkEngineCatalogsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(createSparkEngineCatalogsOptionsModel).ToNot(BeNil())
+				Expect(createSparkEngineCatalogsOptionsModel.EngineID).To(Equal(core.StringPtr("testString")))
+				Expect(createSparkEngineCatalogsOptionsModel.CatalogName).To(Equal(core.StringPtr("testString")))
+				Expect(createSparkEngineCatalogsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(createSparkEngineCatalogsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewCreateSparkEngineOptions successfully`, func() {
 				// Construct an instance of the SparkDefaultConfig model
@@ -24448,51 +33563,6 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(createSparkEngineOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(createSparkEngineOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
-			It(`Invoke NewCreateSparkEnginePauseOptions successfully`, func() {
-				// Construct an instance of the CreateSparkEnginePauseOptions model
-				engineID := "testString"
-				createSparkEnginePauseOptionsModel := watsonxDataService.NewCreateSparkEnginePauseOptions(engineID)
-				createSparkEnginePauseOptionsModel.SetEngineID("testString")
-				createSparkEnginePauseOptionsModel.SetAuthInstanceID("testString")
-				createSparkEnginePauseOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
-				Expect(createSparkEnginePauseOptionsModel).ToNot(BeNil())
-				Expect(createSparkEnginePauseOptionsModel.EngineID).To(Equal(core.StringPtr("testString")))
-				Expect(createSparkEnginePauseOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
-				Expect(createSparkEnginePauseOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
-			})
-			It(`Invoke NewCreateSparkEngineResumeOptions successfully`, func() {
-				// Construct an instance of the CreateSparkEngineResumeOptions model
-				engineID := "testString"
-				createSparkEngineResumeOptionsModel := watsonxDataService.NewCreateSparkEngineResumeOptions(engineID)
-				createSparkEngineResumeOptionsModel.SetEngineID("testString")
-				createSparkEngineResumeOptionsModel.SetAuthInstanceID("testString")
-				createSparkEngineResumeOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
-				Expect(createSparkEngineResumeOptionsModel).ToNot(BeNil())
-				Expect(createSparkEngineResumeOptionsModel.EngineID).To(Equal(core.StringPtr("testString")))
-				Expect(createSparkEngineResumeOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
-				Expect(createSparkEngineResumeOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
-			})
-			It(`Invoke NewCreateSparkEngineScaleOptions successfully`, func() {
-				// Construct an instance of the CreateSparkEngineScaleOptions model
-				engineID := "testString"
-				createSparkEngineScaleOptionsModel := watsonxDataService.NewCreateSparkEngineScaleOptions(engineID)
-				createSparkEngineScaleOptionsModel.SetEngineID("testString")
-				createSparkEngineScaleOptionsModel.SetNumberOfNodes(int64(2))
-				createSparkEngineScaleOptionsModel.SetAuthInstanceID("testString")
-				createSparkEngineScaleOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
-				Expect(createSparkEngineScaleOptionsModel).ToNot(BeNil())
-				Expect(createSparkEngineScaleOptionsModel.EngineID).To(Equal(core.StringPtr("testString")))
-				Expect(createSparkEngineScaleOptionsModel.NumberOfNodes).To(Equal(core.Int64Ptr(int64(2))))
-				Expect(createSparkEngineScaleOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
-				Expect(createSparkEngineScaleOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
-			})
-			It(`Invoke NewDatabaseDetails successfully`, func() {
-				hostname := "db2@<hostname>.com"
-				port := int64(4553)
-				_model, err := watsonxDataService.NewDatabaseDetails(hostname, port)
-				Expect(_model).ToNot(BeNil())
-				Expect(err).To(BeNil())
-			})
 			It(`Invoke NewDatabaseRegistrationPrototypeDatabasePropertiesItems successfully`, func() {
 				encrypt := true
 				key := "hive.metastore"
@@ -24500,6 +33570,18 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				_model, err := watsonxDataService.NewDatabaseRegistrationPrototypeDatabasePropertiesItems(encrypt, key, value)
 				Expect(_model).ToNot(BeNil())
 				Expect(err).To(BeNil())
+			})
+			It(`Invoke NewDeleteBucketRegistrationOptions successfully`, func() {
+				// Construct an instance of the DeleteBucketRegistrationOptions model
+				bucketID := "testString"
+				deleteBucketRegistrationOptionsModel := watsonxDataService.NewDeleteBucketRegistrationOptions(bucketID)
+				deleteBucketRegistrationOptionsModel.SetBucketID("testString")
+				deleteBucketRegistrationOptionsModel.SetAuthInstanceID("testString")
+				deleteBucketRegistrationOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(deleteBucketRegistrationOptionsModel).ToNot(BeNil())
+				Expect(deleteBucketRegistrationOptionsModel.BucketID).To(Equal(core.StringPtr("testString")))
+				Expect(deleteBucketRegistrationOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(deleteBucketRegistrationOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewDeleteColumnOptions successfully`, func() {
 				// Construct an instance of the DeleteColumnOptions model
@@ -24561,6 +33643,33 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(deleteDeactivateBucketOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(deleteDeactivateBucketOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
+			It(`Invoke NewDeleteDriverEnginesOptions successfully`, func() {
+				// Construct an instance of the DeleteDriverEnginesOptions model
+				driverID := "testString"
+				engineIds := "testString"
+				deleteDriverEnginesOptionsModel := watsonxDataService.NewDeleteDriverEnginesOptions(driverID, engineIds)
+				deleteDriverEnginesOptionsModel.SetDriverID("testString")
+				deleteDriverEnginesOptionsModel.SetEngineIds("testString")
+				deleteDriverEnginesOptionsModel.SetAuthInstanceID("testString")
+				deleteDriverEnginesOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(deleteDriverEnginesOptionsModel).ToNot(BeNil())
+				Expect(deleteDriverEnginesOptionsModel.DriverID).To(Equal(core.StringPtr("testString")))
+				Expect(deleteDriverEnginesOptionsModel.EngineIds).To(Equal(core.StringPtr("testString")))
+				Expect(deleteDriverEnginesOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(deleteDriverEnginesOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewDeleteDriverRegistrationOptions successfully`, func() {
+				// Construct an instance of the DeleteDriverRegistrationOptions model
+				driverID := "testString"
+				deleteDriverRegistrationOptionsModel := watsonxDataService.NewDeleteDriverRegistrationOptions(driverID)
+				deleteDriverRegistrationOptionsModel.SetDriverID("testString")
+				deleteDriverRegistrationOptionsModel.SetAuthInstanceID("testString")
+				deleteDriverRegistrationOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(deleteDriverRegistrationOptionsModel).ToNot(BeNil())
+				Expect(deleteDriverRegistrationOptionsModel.DriverID).To(Equal(core.StringPtr("testString")))
+				Expect(deleteDriverRegistrationOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(deleteDriverRegistrationOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
 			It(`Invoke NewDeleteEngineOptions successfully`, func() {
 				// Construct an instance of the DeleteEngineOptions model
 				engineID := "testString"
@@ -24585,6 +33694,18 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(deleteIngestionJobsOptionsModel.JobID).To(Equal(core.StringPtr("testString")))
 				Expect(deleteIngestionJobsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(deleteIngestionJobsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewDeleteIntegrationOptions successfully`, func() {
+				// Construct an instance of the DeleteIntegrationOptions model
+				integrationID := "testString"
+				deleteIntegrationOptionsModel := watsonxDataService.NewDeleteIntegrationOptions(integrationID)
+				deleteIntegrationOptionsModel.SetIntegrationID("testString")
+				deleteIntegrationOptionsModel.SetAuthInstanceID("testString")
+				deleteIntegrationOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(deleteIntegrationOptionsModel).ToNot(BeNil())
+				Expect(deleteIntegrationOptionsModel.IntegrationID).To(Equal(core.StringPtr("testString")))
+				Expect(deleteIntegrationOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(deleteIntegrationOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewDeleteMilvusServiceOptions successfully`, func() {
 				// Construct an instance of the DeleteMilvusServiceOptions model
@@ -24663,6 +33784,13 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(deletePrestoEngineCatalogsOptionsModel.CatalogNames).To(Equal(core.StringPtr("testString")))
 				Expect(deletePrestoEngineCatalogsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(deletePrestoEngineCatalogsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewDeleteSalIntegrationOptions successfully`, func() {
+				// Construct an instance of the DeleteSalIntegrationOptions model
+				deleteSalIntegrationOptionsModel := watsonxDataService.NewDeleteSalIntegrationOptions()
+				deleteSalIntegrationOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(deleteSalIntegrationOptionsModel).ToNot(BeNil())
+				Expect(deleteSalIntegrationOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewDeleteSchemaOptions successfully`, func() {
 				// Construct an instance of the DeleteSchemaOptions model
@@ -24749,6 +33877,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				deleteTableOptionsModel.SetSchemaID("testString")
 				deleteTableOptionsModel.SetTableID("testString")
 				deleteTableOptionsModel.SetEngineID("testString")
+				deleteTableOptionsModel.SetType("testString")
 				deleteTableOptionsModel.SetAuthInstanceID("testString")
 				deleteTableOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
 				Expect(deleteTableOptionsModel).ToNot(BeNil())
@@ -24756,20 +33885,37 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(deleteTableOptionsModel.SchemaID).To(Equal(core.StringPtr("testString")))
 				Expect(deleteTableOptionsModel.TableID).To(Equal(core.StringPtr("testString")))
 				Expect(deleteTableOptionsModel.EngineID).To(Equal(core.StringPtr("testString")))
+				Expect(deleteTableOptionsModel.Type).To(Equal(core.StringPtr("testString")))
 				Expect(deleteTableOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(deleteTableOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
-			It(`Invoke NewDeregisterBucketOptions successfully`, func() {
-				// Construct an instance of the DeregisterBucketOptions model
+			It(`Invoke NewEnrichmentObj successfully`, func() {
+				catalog := "iceberg_data"
+				operation := "create"
+				schema := "testString"
+				_model, err := watsonxDataService.NewEnrichmentObj(catalog, operation, schema)
+				Expect(_model).ToNot(BeNil())
+				Expect(err).To(BeNil())
+			})
+			It(`Invoke NewGetBucketObjectPropertiesOptions successfully`, func() {
+				// Construct an instance of the Path model
+				pathModel := new(watsonxdatav2.Path)
+				Expect(pathModel).ToNot(BeNil())
+				pathModel.Path = core.StringPtr("string")
+				Expect(pathModel.Path).To(Equal(core.StringPtr("string")))
+
+				// Construct an instance of the GetBucketObjectPropertiesOptions model
 				bucketID := "testString"
-				deregisterBucketOptionsModel := watsonxDataService.NewDeregisterBucketOptions(bucketID)
-				deregisterBucketOptionsModel.SetBucketID("testString")
-				deregisterBucketOptionsModel.SetAuthInstanceID("testString")
-				deregisterBucketOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
-				Expect(deregisterBucketOptionsModel).ToNot(BeNil())
-				Expect(deregisterBucketOptionsModel.BucketID).To(Equal(core.StringPtr("testString")))
-				Expect(deregisterBucketOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
-				Expect(deregisterBucketOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+				getBucketObjectPropertiesOptionsModel := watsonxDataService.NewGetBucketObjectPropertiesOptions(bucketID)
+				getBucketObjectPropertiesOptionsModel.SetBucketID("testString")
+				getBucketObjectPropertiesOptionsModel.SetPaths([]watsonxdatav2.Path{*pathModel})
+				getBucketObjectPropertiesOptionsModel.SetAuthInstanceID("testString")
+				getBucketObjectPropertiesOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(getBucketObjectPropertiesOptionsModel).ToNot(BeNil())
+				Expect(getBucketObjectPropertiesOptionsModel.BucketID).To(Equal(core.StringPtr("testString")))
+				Expect(getBucketObjectPropertiesOptionsModel.Paths).To(Equal([]watsonxdatav2.Path{*pathModel}))
+				Expect(getBucketObjectPropertiesOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(getBucketObjectPropertiesOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewGetBucketRegistrationOptions successfully`, func() {
 				// Construct an instance of the GetBucketRegistrationOptions model
@@ -24807,6 +33953,15 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(getDatabaseOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(getDatabaseOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
+			It(`Invoke NewGetEndpointsOptions successfully`, func() {
+				// Construct an instance of the GetEndpointsOptions model
+				getEndpointsOptionsModel := watsonxDataService.NewGetEndpointsOptions()
+				getEndpointsOptionsModel.SetAuthInstanceID("testString")
+				getEndpointsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(getEndpointsOptionsModel).ToNot(BeNil())
+				Expect(getEndpointsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(getEndpointsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
 			It(`Invoke NewGetIngestionJobOptions successfully`, func() {
 				// Construct an instance of the GetIngestionJobOptions model
 				jobID := "testString"
@@ -24819,6 +33974,20 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(getIngestionJobOptionsModel.JobID).To(Equal(core.StringPtr("testString")))
 				Expect(getIngestionJobOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(getIngestionJobOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewGetIntegrationsOptions successfully`, func() {
+				// Construct an instance of the GetIntegrationsOptions model
+				integrationID := "testString"
+				getIntegrationsOptionsModel := watsonxDataService.NewGetIntegrationsOptions(integrationID)
+				getIntegrationsOptionsModel.SetIntegrationID("testString")
+				getIntegrationsOptionsModel.SetAuthInstanceID("testString")
+				getIntegrationsOptionsModel.SetSecret("testString")
+				getIntegrationsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(getIntegrationsOptionsModel).ToNot(BeNil())
+				Expect(getIntegrationsOptionsModel.IntegrationID).To(Equal(core.StringPtr("testString")))
+				Expect(getIntegrationsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(getIntegrationsOptionsModel.Secret).To(Equal(core.StringPtr("testString")))
+				Expect(getIntegrationsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewGetMilvusServiceOptions successfully`, func() {
 				// Construct an instance of the GetMilvusServiceOptions model
@@ -24886,6 +34055,133 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(getPrestoEngineOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(getPrestoEngineOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
+			It(`Invoke NewGetSalIntegrationEnrichmentAssetsOptions successfully`, func() {
+				// Construct an instance of the GetSalIntegrationEnrichmentAssetsOptions model
+				getSalIntegrationEnrichmentAssetsOptionsModel := watsonxDataService.NewGetSalIntegrationEnrichmentAssetsOptions()
+				getSalIntegrationEnrichmentAssetsOptionsModel.SetProjectID("testString")
+				getSalIntegrationEnrichmentAssetsOptionsModel.SetAuthInstanceID("testString")
+				getSalIntegrationEnrichmentAssetsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(getSalIntegrationEnrichmentAssetsOptionsModel).ToNot(BeNil())
+				Expect(getSalIntegrationEnrichmentAssetsOptionsModel.ProjectID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationEnrichmentAssetsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationEnrichmentAssetsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewGetSalIntegrationEnrichmentDataAssetOptions successfully`, func() {
+				// Construct an instance of the GetSalIntegrationEnrichmentDataAssetOptions model
+				getSalIntegrationEnrichmentDataAssetOptionsModel := watsonxDataService.NewGetSalIntegrationEnrichmentDataAssetOptions()
+				getSalIntegrationEnrichmentDataAssetOptionsModel.SetProjectID("testString")
+				getSalIntegrationEnrichmentDataAssetOptionsModel.SetAssetID("testString")
+				getSalIntegrationEnrichmentDataAssetOptionsModel.SetAuthInstanceID("testString")
+				getSalIntegrationEnrichmentDataAssetOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(getSalIntegrationEnrichmentDataAssetOptionsModel).ToNot(BeNil())
+				Expect(getSalIntegrationEnrichmentDataAssetOptionsModel.ProjectID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationEnrichmentDataAssetOptionsModel.AssetID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationEnrichmentDataAssetOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationEnrichmentDataAssetOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewGetSalIntegrationEnrichmentGlobalSettingsOptions successfully`, func() {
+				// Construct an instance of the GetSalIntegrationEnrichmentGlobalSettingsOptions model
+				getSalIntegrationEnrichmentGlobalSettingsOptionsModel := watsonxDataService.NewGetSalIntegrationEnrichmentGlobalSettingsOptions()
+				getSalIntegrationEnrichmentGlobalSettingsOptionsModel.SetAuthInstanceID("testString")
+				getSalIntegrationEnrichmentGlobalSettingsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(getSalIntegrationEnrichmentGlobalSettingsOptionsModel).ToNot(BeNil())
+				Expect(getSalIntegrationEnrichmentGlobalSettingsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationEnrichmentGlobalSettingsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewGetSalIntegrationEnrichmentJobRunLogsOptions successfully`, func() {
+				// Construct an instance of the GetSalIntegrationEnrichmentJobRunLogsOptions model
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel := watsonxDataService.NewGetSalIntegrationEnrichmentJobRunLogsOptions()
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.SetJobID("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.SetJobRunID("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.SetProjectID("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.SetAuthInstanceID("testString")
+				getSalIntegrationEnrichmentJobRunLogsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(getSalIntegrationEnrichmentJobRunLogsOptionsModel).ToNot(BeNil())
+				Expect(getSalIntegrationEnrichmentJobRunLogsOptionsModel.JobID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationEnrichmentJobRunLogsOptionsModel.JobRunID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationEnrichmentJobRunLogsOptionsModel.ProjectID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationEnrichmentJobRunLogsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationEnrichmentJobRunLogsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewGetSalIntegrationEnrichmentJobRunsOptions successfully`, func() {
+				// Construct an instance of the GetSalIntegrationEnrichmentJobRunsOptions model
+				getSalIntegrationEnrichmentJobRunsOptionsModel := watsonxDataService.NewGetSalIntegrationEnrichmentJobRunsOptions()
+				getSalIntegrationEnrichmentJobRunsOptionsModel.SetJobID("testString")
+				getSalIntegrationEnrichmentJobRunsOptionsModel.SetProjectID("testString")
+				getSalIntegrationEnrichmentJobRunsOptionsModel.SetAuthInstanceID("testString")
+				getSalIntegrationEnrichmentJobRunsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(getSalIntegrationEnrichmentJobRunsOptionsModel).ToNot(BeNil())
+				Expect(getSalIntegrationEnrichmentJobRunsOptionsModel.JobID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationEnrichmentJobRunsOptionsModel.ProjectID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationEnrichmentJobRunsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationEnrichmentJobRunsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewGetSalIntegrationEnrichmentJobsOptions successfully`, func() {
+				// Construct an instance of the GetSalIntegrationEnrichmentJobsOptions model
+				getSalIntegrationEnrichmentJobsOptionsModel := watsonxDataService.NewGetSalIntegrationEnrichmentJobsOptions()
+				getSalIntegrationEnrichmentJobsOptionsModel.SetWkcProjectID("testString")
+				getSalIntegrationEnrichmentJobsOptionsModel.SetAuthInstanceID("testString")
+				getSalIntegrationEnrichmentJobsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(getSalIntegrationEnrichmentJobsOptionsModel).ToNot(BeNil())
+				Expect(getSalIntegrationEnrichmentJobsOptionsModel.WkcProjectID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationEnrichmentJobsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationEnrichmentJobsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewGetSalIntegrationEnrichmentSettingsOptions successfully`, func() {
+				// Construct an instance of the GetSalIntegrationEnrichmentSettingsOptions model
+				getSalIntegrationEnrichmentSettingsOptionsModel := watsonxDataService.NewGetSalIntegrationEnrichmentSettingsOptions()
+				getSalIntegrationEnrichmentSettingsOptionsModel.SetProjectID("testString")
+				getSalIntegrationEnrichmentSettingsOptionsModel.SetAuthInstanceID("testString")
+				getSalIntegrationEnrichmentSettingsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(getSalIntegrationEnrichmentSettingsOptionsModel).ToNot(BeNil())
+				Expect(getSalIntegrationEnrichmentSettingsOptionsModel.ProjectID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationEnrichmentSettingsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationEnrichmentSettingsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewGetSalIntegrationGlossaryTermsOptions successfully`, func() {
+				// Construct an instance of the GetSalIntegrationGlossaryTermsOptions model
+				getSalIntegrationGlossaryTermsOptionsModel := watsonxDataService.NewGetSalIntegrationGlossaryTermsOptions()
+				getSalIntegrationGlossaryTermsOptionsModel.SetAuthInstanceID("testString")
+				getSalIntegrationGlossaryTermsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(getSalIntegrationGlossaryTermsOptionsModel).ToNot(BeNil())
+				Expect(getSalIntegrationGlossaryTermsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationGlossaryTermsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewGetSalIntegrationMappingsOptions successfully`, func() {
+				// Construct an instance of the GetSalIntegrationMappingsOptions model
+				catalogName := "testString"
+				schemaName := "testString"
+				getSalIntegrationMappingsOptionsModel := watsonxDataService.NewGetSalIntegrationMappingsOptions(catalogName, schemaName)
+				getSalIntegrationMappingsOptionsModel.SetCatalogName("testString")
+				getSalIntegrationMappingsOptionsModel.SetSchemaName("testString")
+				getSalIntegrationMappingsOptionsModel.SetAuthInstanceID("testString")
+				getSalIntegrationMappingsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(getSalIntegrationMappingsOptionsModel).ToNot(BeNil())
+				Expect(getSalIntegrationMappingsOptionsModel.CatalogName).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationMappingsOptionsModel.SchemaName).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationMappingsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationMappingsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewGetSalIntegrationOptions successfully`, func() {
+				// Construct an instance of the GetSalIntegrationOptions model
+				getSalIntegrationOptionsModel := watsonxDataService.NewGetSalIntegrationOptions()
+				getSalIntegrationOptionsModel.SetAuthInstanceID("testString")
+				getSalIntegrationOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(getSalIntegrationOptionsModel).ToNot(BeNil())
+				Expect(getSalIntegrationOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewGetSalIntegrationUploadGlossaryStatusOptions successfully`, func() {
+				// Construct an instance of the GetSalIntegrationUploadGlossaryStatusOptions model
+				getSalIntegrationUploadGlossaryStatusOptionsModel := watsonxDataService.NewGetSalIntegrationUploadGlossaryStatusOptions()
+				getSalIntegrationUploadGlossaryStatusOptionsModel.SetProcessID("testString")
+				getSalIntegrationUploadGlossaryStatusOptionsModel.SetAuthInstanceID("testString")
+				getSalIntegrationUploadGlossaryStatusOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(getSalIntegrationUploadGlossaryStatusOptionsModel).ToNot(BeNil())
+				Expect(getSalIntegrationUploadGlossaryStatusOptionsModel.ProcessID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationUploadGlossaryStatusOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(getSalIntegrationUploadGlossaryStatusOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
 			It(`Invoke NewGetSparkEngineApplicationStatusOptions successfully`, func() {
 				// Construct an instance of the GetSparkEngineApplicationStatusOptions model
 				engineID := "testString"
@@ -24951,6 +34247,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				getTableOptionsModel.SetSchemaID("testString")
 				getTableOptionsModel.SetTableID("testString")
 				getTableOptionsModel.SetEngineID("testString")
+				getTableOptionsModel.SetType("testString")
 				getTableOptionsModel.SetAuthInstanceID("testString")
 				getTableOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
 				Expect(getTableOptionsModel).ToNot(BeNil())
@@ -24958,8 +34255,24 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(getTableOptionsModel.SchemaID).To(Equal(core.StringPtr("testString")))
 				Expect(getTableOptionsModel.TableID).To(Equal(core.StringPtr("testString")))
 				Expect(getTableOptionsModel.EngineID).To(Equal(core.StringPtr("testString")))
+				Expect(getTableOptionsModel.Type).To(Equal(core.StringPtr("testString")))
 				Expect(getTableOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(getTableOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewListAllIntegrationsOptions successfully`, func() {
+				// Construct an instance of the ListAllIntegrationsOptions model
+				listAllIntegrationsOptionsModel := watsonxDataService.NewListAllIntegrationsOptions()
+				listAllIntegrationsOptionsModel.SetAuthInstanceID("testString")
+				listAllIntegrationsOptionsModel.SetSecret("testString")
+				listAllIntegrationsOptionsModel.SetServiceType("testString")
+				listAllIntegrationsOptionsModel.SetState([]string{"testString"})
+				listAllIntegrationsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(listAllIntegrationsOptionsModel).ToNot(BeNil())
+				Expect(listAllIntegrationsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(listAllIntegrationsOptionsModel.Secret).To(Equal(core.StringPtr("testString")))
+				Expect(listAllIntegrationsOptionsModel.ServiceType).To(Equal(core.StringPtr("testString")))
+				Expect(listAllIntegrationsOptionsModel.State).To(Equal([]string{"testString"}))
+				Expect(listAllIntegrationsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewListBucketObjectsOptions successfully`, func() {
 				// Construct an instance of the ListBucketObjectsOptions model
@@ -24967,10 +34280,12 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				listBucketObjectsOptionsModel := watsonxDataService.NewListBucketObjectsOptions(bucketID)
 				listBucketObjectsOptionsModel.SetBucketID("testString")
 				listBucketObjectsOptionsModel.SetAuthInstanceID("testString")
+				listBucketObjectsOptionsModel.SetPath("testString")
 				listBucketObjectsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
 				Expect(listBucketObjectsOptionsModel).ToNot(BeNil())
 				Expect(listBucketObjectsOptionsModel.BucketID).To(Equal(core.StringPtr("testString")))
 				Expect(listBucketObjectsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(listBucketObjectsOptionsModel.Path).To(Equal(core.StringPtr("testString")))
 				Expect(listBucketObjectsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewListBucketRegistrationsOptions successfully`, func() {
@@ -25030,19 +34345,55 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(listDb2EnginesOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(listDb2EnginesOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
+			It(`Invoke NewListDriverRegistrationOptions successfully`, func() {
+				// Construct an instance of the ListDriverRegistrationOptions model
+				listDriverRegistrationOptionsModel := watsonxDataService.NewListDriverRegistrationOptions()
+				listDriverRegistrationOptionsModel.SetAuthInstanceID("testString")
+				listDriverRegistrationOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(listDriverRegistrationOptionsModel).ToNot(BeNil())
+				Expect(listDriverRegistrationOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(listDriverRegistrationOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
 			It(`Invoke NewListIngestionJobsOptions successfully`, func() {
 				// Construct an instance of the ListIngestionJobsOptions model
 				authInstanceID := "testString"
 				listIngestionJobsOptionsModel := watsonxDataService.NewListIngestionJobsOptions(authInstanceID)
 				listIngestionJobsOptionsModel.SetAuthInstanceID("testString")
-				listIngestionJobsOptionsModel.SetPage(int64(1))
+				listIngestionJobsOptionsModel.SetStart("1")
 				listIngestionJobsOptionsModel.SetJobsPerPage(int64(1))
 				listIngestionJobsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
 				Expect(listIngestionJobsOptionsModel).ToNot(BeNil())
 				Expect(listIngestionJobsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
-				Expect(listIngestionJobsOptionsModel.Page).To(Equal(core.Int64Ptr(int64(1))))
+				Expect(listIngestionJobsOptionsModel.Start).To(Equal(core.StringPtr("1")))
 				Expect(listIngestionJobsOptionsModel.JobsPerPage).To(Equal(core.Int64Ptr(int64(1))))
 				Expect(listIngestionJobsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewListMilvusDatabaseCollectionsOptions successfully`, func() {
+				// Construct an instance of the ListMilvusDatabaseCollectionsOptions model
+				serviceID := "testString"
+				databaseID := "testString"
+				listMilvusDatabaseCollectionsOptionsModel := watsonxDataService.NewListMilvusDatabaseCollectionsOptions(serviceID, databaseID)
+				listMilvusDatabaseCollectionsOptionsModel.SetServiceID("testString")
+				listMilvusDatabaseCollectionsOptionsModel.SetDatabaseID("testString")
+				listMilvusDatabaseCollectionsOptionsModel.SetAuthInstanceID("testString")
+				listMilvusDatabaseCollectionsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(listMilvusDatabaseCollectionsOptionsModel).ToNot(BeNil())
+				Expect(listMilvusDatabaseCollectionsOptionsModel.ServiceID).To(Equal(core.StringPtr("testString")))
+				Expect(listMilvusDatabaseCollectionsOptionsModel.DatabaseID).To(Equal(core.StringPtr("testString")))
+				Expect(listMilvusDatabaseCollectionsOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(listMilvusDatabaseCollectionsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewListMilvusServiceDatabasesOptions successfully`, func() {
+				// Construct an instance of the ListMilvusServiceDatabasesOptions model
+				serviceID := "testString"
+				listMilvusServiceDatabasesOptionsModel := watsonxDataService.NewListMilvusServiceDatabasesOptions(serviceID)
+				listMilvusServiceDatabasesOptionsModel.SetServiceID("testString")
+				listMilvusServiceDatabasesOptionsModel.SetAuthInstanceID("testString")
+				listMilvusServiceDatabasesOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(listMilvusServiceDatabasesOptionsModel).ToNot(BeNil())
+				Expect(listMilvusServiceDatabasesOptionsModel.ServiceID).To(Equal(core.StringPtr("testString")))
+				Expect(listMilvusServiceDatabasesOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(listMilvusServiceDatabasesOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewListMilvusServicesOptions successfully`, func() {
 				// Construct an instance of the ListMilvusServicesOptions model
@@ -25242,29 +34593,17 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(pausePrestoEngineOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(pausePrestoEngineOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
-			It(`Invoke NewRenameTableOptions successfully`, func() {
-				// Construct an instance of the RenameTableOptions model
-				catalogID := "testString"
-				schemaID := "testString"
-				tableID := "testString"
+			It(`Invoke NewPauseSparkEngineOptions successfully`, func() {
+				// Construct an instance of the PauseSparkEngineOptions model
 				engineID := "testString"
-				body := map[string]interface{}{"anyKey": "anyValue"}
-				renameTableOptionsModel := watsonxDataService.NewRenameTableOptions(catalogID, schemaID, tableID, engineID, body)
-				renameTableOptionsModel.SetCatalogID("testString")
-				renameTableOptionsModel.SetSchemaID("testString")
-				renameTableOptionsModel.SetTableID("testString")
-				renameTableOptionsModel.SetEngineID("testString")
-				renameTableOptionsModel.SetBody(map[string]interface{}{"anyKey": "anyValue"})
-				renameTableOptionsModel.SetAuthInstanceID("testString")
-				renameTableOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
-				Expect(renameTableOptionsModel).ToNot(BeNil())
-				Expect(renameTableOptionsModel.CatalogID).To(Equal(core.StringPtr("testString")))
-				Expect(renameTableOptionsModel.SchemaID).To(Equal(core.StringPtr("testString")))
-				Expect(renameTableOptionsModel.TableID).To(Equal(core.StringPtr("testString")))
-				Expect(renameTableOptionsModel.EngineID).To(Equal(core.StringPtr("testString")))
-				Expect(renameTableOptionsModel.Body).To(Equal(map[string]interface{}{"anyKey": "anyValue"}))
-				Expect(renameTableOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
-				Expect(renameTableOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+				pauseSparkEngineOptionsModel := watsonxDataService.NewPauseSparkEngineOptions(engineID)
+				pauseSparkEngineOptionsModel.SetEngineID("testString")
+				pauseSparkEngineOptionsModel.SetAuthInstanceID("testString")
+				pauseSparkEngineOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(pauseSparkEngineOptionsModel).ToNot(BeNil())
+				Expect(pauseSparkEngineOptionsModel.EngineID).To(Equal(core.StringPtr("testString")))
+				Expect(pauseSparkEngineOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(pauseSparkEngineOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewRestartPrestissimoEngineOptions successfully`, func() {
 				// Construct an instance of the RestartPrestissimoEngineOptions model
@@ -25313,6 +34652,18 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(resumePrestoEngineOptionsModel.EngineID).To(Equal(core.StringPtr("testString")))
 				Expect(resumePrestoEngineOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(resumePrestoEngineOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewResumeSparkEngineOptions successfully`, func() {
+				// Construct an instance of the ResumeSparkEngineOptions model
+				engineID := "testString"
+				resumeSparkEngineOptionsModel := watsonxDataService.NewResumeSparkEngineOptions(engineID)
+				resumeSparkEngineOptionsModel.SetEngineID("testString")
+				resumeSparkEngineOptionsModel.SetAuthInstanceID("testString")
+				resumeSparkEngineOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(resumeSparkEngineOptionsModel).ToNot(BeNil())
+				Expect(resumeSparkEngineOptionsModel.EngineID).To(Equal(core.StringPtr("testString")))
+				Expect(resumeSparkEngineOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(resumeSparkEngineOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewRollbackTableOptions successfully`, func() {
 				// Construct an instance of the RollbackTableOptions model
@@ -25457,6 +34808,20 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(scalePrestoEngineOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(scalePrestoEngineOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
+			It(`Invoke NewScaleSparkEngineOptions successfully`, func() {
+				// Construct an instance of the ScaleSparkEngineOptions model
+				engineID := "testString"
+				scaleSparkEngineOptionsModel := watsonxDataService.NewScaleSparkEngineOptions(engineID)
+				scaleSparkEngineOptionsModel.SetEngineID("testString")
+				scaleSparkEngineOptionsModel.SetNumberOfNodes(int64(2))
+				scaleSparkEngineOptionsModel.SetAuthInstanceID("testString")
+				scaleSparkEngineOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(scaleSparkEngineOptionsModel).ToNot(BeNil())
+				Expect(scaleSparkEngineOptionsModel.EngineID).To(Equal(core.StringPtr("testString")))
+				Expect(scaleSparkEngineOptionsModel.NumberOfNodes).To(Equal(core.Int64Ptr(int64(2))))
+				Expect(scaleSparkEngineOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(scaleSparkEngineOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
 			It(`Invoke NewStartSparkEngineHistoryServerOptions successfully`, func() {
 				// Construct an instance of the StartSparkEngineHistoryServerOptions model
 				engineID := "testString"
@@ -25473,10 +34838,12 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(startSparkEngineHistoryServerOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(startSparkEngineHistoryServerOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
-			It(`Invoke NewSyncCatalogs successfully`, func() {
-				autoAddNewTables := true
-				syncIcebergMd := true
-				_model, err := watsonxDataService.NewSyncCatalogs(autoAddNewTables, syncIcebergMd)
+			It(`Invoke NewStorageDetails successfully`, func() {
+				authMode := "<account_key/sas/service_principle>"
+				containerName := "sample-container"
+				endpoint := "abfss://<container_name>@<storage_account_name>.dfs.core.windows.net/"
+				storageAccountName := "sample-storage"
+				_model, err := watsonxDataService.NewStorageDetails(authMode, containerName, endpoint, storageAccountName)
 				Expect(_model).ToNot(BeNil())
 				Expect(err).To(BeNil())
 			})
@@ -25552,6 +34919,36 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(updateDb2EngineOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(updateDb2EngineOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
+			It(`Invoke NewUpdateDriverEnginesOptions successfully`, func() {
+				// Construct an instance of the UpdateDriverEnginesOptions model
+				driverID := "testString"
+				body := map[string]interface{}{"anyKey": "anyValue"}
+				updateDriverEnginesOptionsModel := watsonxDataService.NewUpdateDriverEnginesOptions(driverID, body)
+				updateDriverEnginesOptionsModel.SetDriverID("testString")
+				updateDriverEnginesOptionsModel.SetBody(map[string]interface{}{"anyKey": "anyValue"})
+				updateDriverEnginesOptionsModel.SetAuthInstanceID("testString")
+				updateDriverEnginesOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(updateDriverEnginesOptionsModel).ToNot(BeNil())
+				Expect(updateDriverEnginesOptionsModel.DriverID).To(Equal(core.StringPtr("testString")))
+				Expect(updateDriverEnginesOptionsModel.Body).To(Equal(map[string]interface{}{"anyKey": "anyValue"}))
+				Expect(updateDriverEnginesOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(updateDriverEnginesOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewUpdateIntegrationOptions successfully`, func() {
+				// Construct an instance of the UpdateIntegrationOptions model
+				integrationID := "testString"
+				integrationPatch := map[string]interface{}{"anyKey": "anyValue"}
+				updateIntegrationOptionsModel := watsonxDataService.NewUpdateIntegrationOptions(integrationID, integrationPatch)
+				updateIntegrationOptionsModel.SetIntegrationID("testString")
+				updateIntegrationOptionsModel.SetIntegrationPatch(map[string]interface{}{"anyKey": "anyValue"})
+				updateIntegrationOptionsModel.SetAuthInstanceID("testString")
+				updateIntegrationOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(updateIntegrationOptionsModel).ToNot(BeNil())
+				Expect(updateIntegrationOptionsModel.IntegrationID).To(Equal(core.StringPtr("testString")))
+				Expect(updateIntegrationOptionsModel.IntegrationPatch).To(Equal(map[string]interface{}{"anyKey": "anyValue"}))
+				Expect(updateIntegrationOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(updateIntegrationOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
 			It(`Invoke NewUpdateMilvusServiceOptions successfully`, func() {
 				// Construct an instance of the UpdateMilvusServiceOptions model
 				serviceID := "testString"
@@ -25612,6 +35009,18 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(updatePrestoEngineOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(updatePrestoEngineOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
+			It(`Invoke NewUpdateSalIntegrationOptions successfully`, func() {
+				// Construct an instance of the UpdateSalIntegrationOptions model
+				body := map[string]interface{}{"anyKey": "anyValue"}
+				updateSalIntegrationOptionsModel := watsonxDataService.NewUpdateSalIntegrationOptions(body)
+				updateSalIntegrationOptionsModel.SetBody(map[string]interface{}{"anyKey": "anyValue"})
+				updateSalIntegrationOptionsModel.SetAuthInstanceID("testString")
+				updateSalIntegrationOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(updateSalIntegrationOptionsModel).ToNot(BeNil())
+				Expect(updateSalIntegrationOptionsModel.Body).To(Equal(map[string]interface{}{"anyKey": "anyValue"}))
+				Expect(updateSalIntegrationOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(updateSalIntegrationOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
 			It(`Invoke NewUpdateSparkEngineOptions successfully`, func() {
 				// Construct an instance of the UpdateSparkEngineOptions model
 				engineID := "testString"
@@ -25642,6 +35051,32 @@ var _ = Describe(`WatsonxDataV2`, func() {
 				Expect(updateSyncCatalogOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
 				Expect(updateSyncCatalogOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
+			It(`Invoke NewUpdateTableOptions successfully`, func() {
+				// Construct an instance of the UpdateTableOptions model
+				catalogID := "testString"
+				schemaID := "testString"
+				tableID := "testString"
+				engineID := "testString"
+				body := map[string]interface{}{"anyKey": "anyValue"}
+				updateTableOptionsModel := watsonxDataService.NewUpdateTableOptions(catalogID, schemaID, tableID, engineID, body)
+				updateTableOptionsModel.SetCatalogID("testString")
+				updateTableOptionsModel.SetSchemaID("testString")
+				updateTableOptionsModel.SetTableID("testString")
+				updateTableOptionsModel.SetEngineID("testString")
+				updateTableOptionsModel.SetBody(map[string]interface{}{"anyKey": "anyValue"})
+				updateTableOptionsModel.SetType("testString")
+				updateTableOptionsModel.SetAuthInstanceID("testString")
+				updateTableOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(updateTableOptionsModel).ToNot(BeNil())
+				Expect(updateTableOptionsModel.CatalogID).To(Equal(core.StringPtr("testString")))
+				Expect(updateTableOptionsModel.SchemaID).To(Equal(core.StringPtr("testString")))
+				Expect(updateTableOptionsModel.TableID).To(Equal(core.StringPtr("testString")))
+				Expect(updateTableOptionsModel.EngineID).To(Equal(core.StringPtr("testString")))
+				Expect(updateTableOptionsModel.Body).To(Equal(map[string]interface{}{"anyKey": "anyValue"}))
+				Expect(updateTableOptionsModel.Type).To(Equal(core.StringPtr("testString")))
+				Expect(updateTableOptionsModel.AuthInstanceID).To(Equal(core.StringPtr("testString")))
+				Expect(updateTableOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
 		})
 	})
 	Describe(`Model unmarshaling tests`, func() {
@@ -25671,6 +35106,9 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			model.AccessKey = core.StringPtr("b9cbf248ea5c4c96947e64407108559j")
 			model.BucketName = core.StringPtr("sample-bucket")
 			model.Endpoint = core.StringPtr("https://s3.<region>.cloud-object-storage.appdomain.cloud/")
+			model.KeyFile = core.StringPtr("key_file")
+			model.Provider = core.StringPtr("ibm_cos")
+			model.Region = core.StringPtr("us-south")
 			model.SecretKey = core.StringPtr("13b4045cac1a0be54c9fjbe53cb22df5fn397cd2c45b66c87")
 
 			b, err := json.Marshal(model)
@@ -25715,6 +35153,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			model.Extra = core.StringPtr("varchar")
 			model.Length = core.StringPtr("30")
 			model.Scale = core.StringPtr("2")
+			model.Precision = core.StringPtr("10")
 			model.Type = core.StringPtr("varchar")
 
 			b, err := json.Marshal(model)
@@ -25771,19 +35210,42 @@ var _ = Describe(`WatsonxDataV2`, func() {
 		It(`Invoke UnmarshalDatabaseDetails successfully`, func() {
 			// Construct an instance of the model.
 			model := new(watsonxdatav2.DatabaseDetails)
+			model.AuthenticationType = core.StringPtr("LDAP")
+			model.BrokerAuthenticationPassword = core.StringPtr("samplepassword")
+			model.BrokerAuthenticationType = core.StringPtr("PASSWORD")
+			model.BrokerAuthenticationUser = core.StringPtr("sampleuser")
 			model.Certificate = core.StringPtr("contents of a pem/crt file")
 			model.CertificateExtension = core.StringPtr("pem/crt")
+			model.ConnectionMethod = core.StringPtr("basic, apikey")
+			model.ConnectionMode = core.StringPtr("service_name")
+			model.ConnectionModeValue = core.StringPtr("orclpdb")
+			model.ConnectionType = core.StringPtr("JDBC, Arrow flight")
+			model.ControllerAuthenticationPassword = core.StringPtr("samplepassword")
+			model.ControllerAuthenticationType = core.StringPtr("PASSWORD")
+			model.ControllerAuthenticationUser = core.StringPtr("sampleuser")
+			model.CpdHostname = core.StringPtr("samplecpdhostname")
+			model.CredentialsKey = core.StringPtr("eyJ0eXBlIjoic2VydmljZV9hY2NvdW50IiwicHJvamVjdF9pZCI6ImNvbm9wcy1iaWdxdWVyeSIsInByaXZhdGVfa2V5X2lkIjoiMGY3......")
 			model.DatabaseName = core.StringPtr("new_database")
 			model.Hostname = core.StringPtr("db2@<hostname>.com")
 			model.HostnameInCertificate = core.StringPtr("samplehostname")
 			model.Hosts = core.StringPtr("abc.com:1234,xyz.com:4321")
+			model.InformixServer = core.StringPtr("ol_informix1410")
 			model.Password = core.StringPtr("samplepassword")
 			model.Port = core.Int64Ptr(int64(4553))
+			model.ProjectID = core.StringPtr("conops-bigquery")
 			model.Sasl = core.BoolPtr(true)
+			model.ServiceApiKey = core.StringPtr("sampleapikey")
+			model.ServiceHostname = core.StringPtr("api.dataplatform.dev.cloud.ibm.com")
+			model.ServicePassword = core.StringPtr("samplepassword")
+			model.ServicePort = core.Int64Ptr(int64(443))
+			model.ServiceSsl = core.BoolPtr(true)
+			model.ServiceTokenURL = core.StringPtr("sampletoakenurl")
+			model.ServiceUsername = core.StringPtr("sampleusername")
 			model.Ssl = core.BoolPtr(true)
 			model.Tables = core.StringPtr("kafka_table_name")
 			model.Username = core.StringPtr("sampleuser")
 			model.ValidateServerCertificate = core.BoolPtr(true)
+			model.VerifyHostName = core.BoolPtr(true)
 
 			b, err := json.Marshal(model)
 			Expect(err).To(BeNil())
@@ -25805,6 +35267,7 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			model.DatabaseDisplayName = core.StringPtr("new_database")
 			model.Description = core.StringPtr("External database description")
 			model.Tags = []string{"testdatabase", "userdatabase"}
+			model.Topics = nil
 
 			b, err := json.Marshal(model)
 			Expect(err).To(BeNil())
@@ -25834,6 +35297,27 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 			var result *watsonxdatav2.DatabaseRegistrationPatchDatabaseDetails
 			err = watsonxdatav2.UnmarshalDatabaseRegistrationPatchDatabaseDetails(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
+		It(`Invoke UnmarshalDatabaseRegistrationPatchTopicsItems successfully`, func() {
+			// Construct an instance of the model.
+			model := new(watsonxdatav2.DatabaseRegistrationPatchTopicsItems)
+			model.CreatedOn = core.StringPtr("1686792721")
+			model.FileContents = core.StringPtr("sample file contents")
+			model.FileName = core.StringPtr("sample file name")
+			model.TopicName = core.StringPtr("customer")
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *watsonxdatav2.DatabaseRegistrationPatchTopicsItems
+			err = watsonxdatav2.UnmarshalDatabaseRegistrationPatchTopicsItems(raw, &result)
 			Expect(err).To(BeNil())
 			Expect(result).ToNot(BeNil())
 			Expect(result).To(Equal(model))
@@ -25896,6 +35380,24 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			Expect(result).ToNot(BeNil())
 			Expect(result).To(Equal(model))
 		})
+		It(`Invoke UnmarshalDriverRegistrationEnginePrototype successfully`, func() {
+			// Construct an instance of the model.
+			model := new(watsonxdatav2.DriverRegistrationEnginePrototype)
+			model.Engines = []string{"testString"}
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *watsonxdatav2.DriverRegistrationEnginePrototype
+			err = watsonxdatav2.UnmarshalDriverRegistrationEnginePrototype(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
 		It(`Invoke UnmarshalEngineDetailsBody successfully`, func() {
 			// Construct an instance of the model.
 			model := new(watsonxdatav2.EngineDetailsBody)
@@ -25916,6 +35418,25 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 			var result *watsonxdatav2.EngineDetailsBody
 			err = watsonxdatav2.UnmarshalEngineDetailsBody(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
+		It(`Invoke UnmarshalEnginePropertiesLogConfiguration successfully`, func() {
+			// Construct an instance of the model.
+			model := new(watsonxdatav2.EnginePropertiesLogConfiguration)
+			model.Coordinator = nil
+			model.Worker = nil
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *watsonxdatav2.EnginePropertiesLogConfiguration
+			err = watsonxdatav2.UnmarshalEnginePropertiesLogConfiguration(raw, &result)
 			Expect(err).To(BeNil())
 			Expect(result).ToNot(BeNil())
 			Expect(result).To(Equal(model))
@@ -25977,6 +35498,27 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			Expect(result).ToNot(BeNil())
 			Expect(result).To(Equal(model))
 		})
+		It(`Invoke UnmarshalEnrichmentObj successfully`, func() {
+			// Construct an instance of the model.
+			model := new(watsonxdatav2.EnrichmentObj)
+			model.Catalog = core.StringPtr("iceberg_data")
+			model.Operation = core.StringPtr("create")
+			model.Schema = core.StringPtr("testString")
+			model.Tables = []string{"testString"}
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *watsonxdatav2.EnrichmentObj
+			err = watsonxdatav2.UnmarshalEnrichmentObj(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
 		It(`Invoke UnmarshalIngestionJobPrototypeCsvProperty successfully`, func() {
 			// Construct an instance of the model.
 			model := new(watsonxdatav2.IngestionJobPrototypeCsvProperty)
@@ -26017,6 +35559,30 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 			var result *watsonxdatav2.IngestionJobPrototypeExecuteConfig
 			err = watsonxdatav2.UnmarshalIngestionJobPrototypeExecuteConfig(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
+		It(`Invoke UnmarshalIntegrationPatch successfully`, func() {
+			// Construct an instance of the model.
+			model := new(watsonxdatav2.IntegrationPatch)
+			model.Apikey = core.StringPtr("apikey")
+			model.EnableDataPolicyWithinWxd = core.BoolPtr(false)
+			model.Password = core.StringPtr("password")
+			model.Resource = core.StringPtr("presto01")
+			model.StorageCatalogs = []string{"iceberg_data", "hive_data"}
+			model.URL = core.StringPtr("ikc.url")
+			model.Username = core.StringPtr("username@email.com")
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *watsonxdatav2.IntegrationPatch
+			err = watsonxdatav2.UnmarshalIntegrationPatch(raw, &result)
 			Expect(err).To(BeNil())
 			Expect(result).ToNot(BeNil())
 			Expect(result).To(Equal(model))
@@ -26132,6 +35698,24 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 			var result *watsonxdatav2.OtherEngineDetailsBody
 			err = watsonxdatav2.UnmarshalOtherEngineDetailsBody(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
+		It(`Invoke UnmarshalPath successfully`, func() {
+			// Construct an instance of the model.
+			model := new(watsonxdatav2.Path)
+			model.Path = core.StringPtr("string")
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *watsonxdatav2.Path
+			err = watsonxdatav2.UnmarshalPath(raw, &result)
 			Expect(err).To(BeNil())
 			Expect(result).ToNot(BeNil())
 			Expect(result).To(Equal(model))
@@ -26308,8 +35892,10 @@ var _ = Describe(`WatsonxDataV2`, func() {
 			model := new(watsonxdatav2.PrestoEngineEngineProperties)
 			model.Catalog = nil
 			model.Configuration = nil
+			model.EventListener = nil
 			model.Global = nil
 			model.Jvm = nil
+			model.LogConfig = nil
 
 			b, err := json.Marshal(model)
 			Expect(err).To(BeNil())
@@ -26350,9 +35936,10 @@ var _ = Describe(`WatsonxDataV2`, func() {
 		It(`Invoke UnmarshalPrestoEnginePatchRemoveEngineProperties successfully`, func() {
 			// Construct an instance of the model.
 			model := new(watsonxdatav2.PrestoEnginePatchRemoveEngineProperties)
+			model.Catalog = nil
 			model.Configuration = nil
 			model.Jvm = nil
-			model.Catalog = nil
+			model.EventListener = []string{}
 
 			b, err := json.Marshal(model)
 			Expect(err).To(BeNil())
@@ -26381,6 +35968,24 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 			var result *watsonxdatav2.PrestoEnginePropertiesCatalog
 			err = watsonxdatav2.UnmarshalPrestoEnginePropertiesCatalog(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
+		It(`Invoke UnmarshalPrestoEnginePropertiesEventListener successfully`, func() {
+			// Construct an instance of the model.
+			model := new(watsonxdatav2.PrestoEnginePropertiesEventListener)
+			model.EventListenerProperty = core.StringPtr("testString")
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *watsonxdatav2.PrestoEnginePropertiesEventListener
+			err = watsonxdatav2.UnmarshalPrestoEnginePropertiesEventListener(raw, &result)
 			Expect(err).To(BeNil())
 			Expect(result).ToNot(BeNil())
 			Expect(result).To(Equal(model))
@@ -26499,6 +36104,147 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 			var result *watsonxdatav2.RemoveEnginePropertiesOaiGenJvm
 			err = watsonxdatav2.UnmarshalRemoveEnginePropertiesOaiGenJvm(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
+		It(`Invoke UnmarshalRemoveEnginePropertiesPrestissimoOaiGenJvm successfully`, func() {
+			// Construct an instance of the model.
+			model := new(watsonxdatav2.RemoveEnginePropertiesPrestissimoOaiGenJvm)
+			model.Coordinator = []string{"testString"}
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *watsonxdatav2.RemoveEnginePropertiesPrestissimoOaiGenJvm
+			err = watsonxdatav2.UnmarshalRemoveEnginePropertiesPrestissimoOaiGenJvm(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
+		It(`Invoke UnmarshalSalIntegrationEnrichmentSettings successfully`, func() {
+			// Construct an instance of the model.
+			model := new(watsonxdatav2.SalIntegrationEnrichmentSettings)
+			model.SemanticExpansion = nil
+			model.TermAssignment = nil
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *watsonxdatav2.SalIntegrationEnrichmentSettings
+			err = watsonxdatav2.UnmarshalSalIntegrationEnrichmentSettings(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
+		It(`Invoke UnmarshalSalIntegrationEnrichmentSettingsSemanticExpansion successfully`, func() {
+			// Construct an instance of the model.
+			model := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansion)
+			model.DescriptionGeneration = core.BoolPtr(true)
+			model.DescriptionGenerationConfiguration = nil
+			model.NameExpansion = core.BoolPtr(true)
+			model.NameExpansionConfiguration = nil
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansion
+			err = watsonxdatav2.UnmarshalSalIntegrationEnrichmentSettingsSemanticExpansion(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
+		It(`Invoke UnmarshalSalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration successfully`, func() {
+			// Construct an instance of the model.
+			model := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration)
+			model.AssignmentThreshold = core.Float64Ptr(float64(0.14))
+			model.SuggestionThreshold = core.Float64Ptr(float64(0.9))
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration
+			err = watsonxdatav2.UnmarshalSalIntegrationEnrichmentSettingsSemanticExpansionDescriptionGenerationConfiguration(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
+		It(`Invoke UnmarshalSalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration successfully`, func() {
+			// Construct an instance of the model.
+			model := new(watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration)
+			model.AssignmentThreshold = core.Float64Ptr(float64(0.1))
+			model.SuggestionThreshold = core.Float64Ptr(float64(0.1))
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *watsonxdatav2.SalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration
+			err = watsonxdatav2.UnmarshalSalIntegrationEnrichmentSettingsSemanticExpansionNameExpansionConfiguration(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
+		It(`Invoke UnmarshalSalIntegrationEnrichmentSettingsTermAssignment successfully`, func() {
+			// Construct an instance of the model.
+			model := new(watsonxdatav2.SalIntegrationEnrichmentSettingsTermAssignment)
+			model.ClassBasedAssignments = core.BoolPtr(false)
+			model.EvaluateNegativeAssignments = core.BoolPtr(false)
+			model.LlmBasedAssignments = core.BoolPtr(false)
+			model.MlBasedAssignmentsCustom = core.BoolPtr(false)
+			model.MlBasedAssignmentsDefault = core.BoolPtr(false)
+			model.NameMatching = core.BoolPtr(false)
+			model.TermAssignmentThreshold = core.Float64Ptr(float64(0.3))
+			model.TermSuggestionThreshold = core.Float64Ptr(float64(0.4))
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *watsonxdatav2.SalIntegrationEnrichmentSettingsTermAssignment
+			err = watsonxdatav2.UnmarshalSalIntegrationEnrichmentSettingsTermAssignment(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
+		It(`Invoke UnmarshalSalIntegrationPatch successfully`, func() {
+			// Construct an instance of the model.
+			model := new(watsonxdatav2.SalIntegrationPatch)
+			model.Op = core.StringPtr("add")
+			model.Path = core.StringPtr("storage")
+			model.Value = core.StringPtr("new-apikey")
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *watsonxdatav2.SalIntegrationPatch
+			err = watsonxdatav2.UnmarshalSalIntegrationPatch(raw, &result)
 			Expect(err).To(BeNil())
 			Expect(result).ToNot(BeNil())
 			Expect(result).To(Equal(model))
@@ -26657,6 +36403,32 @@ var _ = Describe(`WatsonxDataV2`, func() {
 
 			var result *watsonxdatav2.SparkVolumeDetails
 			err = watsonxdatav2.UnmarshalSparkVolumeDetails(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
+		It(`Invoke UnmarshalStorageDetails successfully`, func() {
+			// Construct an instance of the model.
+			model := new(watsonxdatav2.StorageDetails)
+			model.AccessKey = core.StringPtr("<access_key>")
+			model.ApplicationID = core.StringPtr("<application_id>")
+			model.AuthMode = core.StringPtr("<account_key/sas/service_principle>")
+			model.ContainerName = core.StringPtr("sample-container")
+			model.DirectoryID = core.StringPtr("<directory_id>")
+			model.Endpoint = core.StringPtr("abfss://<container_name>@<storage_account_name>.dfs.core.windows.net/")
+			model.SasToken = core.StringPtr("<sas_token>")
+			model.SecretKey = core.StringPtr("secret_key")
+			model.StorageAccountName = core.StringPtr("sample-storage")
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *watsonxdatav2.StorageDetails
+			err = watsonxdatav2.UnmarshalStorageDetails(raw, &result)
 			Expect(err).To(BeNil())
 			Expect(result).ToNot(BeNil())
 			Expect(result).To(Equal(model))
